@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Access denied{% endblock %}
+
+{% block content %}
+<div class="cq-hero cq-fade-in text-center">
+  <p class="cq-eyebrow mb-2">Error 403</p>
+  <div class="display-1 mb-3" aria-hidden="true">🔒</div>
+  <h1 class="h2 cq-title-gradient mb-3">{{ t('msg.access_denied') }}</h1>
+  <p class="cq-muted mb-4 mx-auto" style="max-width: 38rem;">
+    This page is meant for a different account or a higher role. If you believe
+    you should have access, sign in with the right account or ask an
+    administrator for help.
+  </p>
+  <div class="d-flex flex-wrap gap-3 justify-content-center">
+    <a class="btn btn-cq btn-cq-primary" href="{{ url_for('public.landing') }}">
+      {{ t('nav.home') }}
+    </a>
+    {% if current_user.is_authenticated %}
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('dashboard.index') }}">
+        {{ t('nav.dashboard') }}
+      </a>
+    {% else %}
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('auth.login') }}">
+        {{ t('nav.login') }}
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

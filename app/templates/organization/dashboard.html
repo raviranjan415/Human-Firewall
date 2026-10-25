@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}HR &amp; T&P Dashboard · {{ org.name }} · Human Firewall{% endblock %}
+
+{% block content %}
+<!-- HEADER / ORG BADGE -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <h1 class="h2 mb-0">{{ org.name }}</h1>
+      <span class="badge bg-primary text-uppercase">{{ org.subscription_plan }} Plan</span>
+      <span class="badge {% if org.subscription_status == 'active' %}bg-success{% else %}bg-warning{% endif %}">
+        {{ org.subscription_status|capitalize }}
+      </span>
+    </div>
+    <p class="cq-muted small mb-0">
+      Enterprise Training Management &amp; Operational Analytics Hub · Scoped Workspace ID #{{ org.id }}
+    </p>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{{ url_for('organization.export_pdf_report', org_id=org.id) }}" class="btn btn-outline-light btn-sm">
+      📄 Download Executive PDF
+    </a>
+    <a href="{{ url_for('organization.export_csv_report', org_id=org.id) }}" class="btn btn-outline-info btn-sm">
+      📊 Export CSV Records
+    </a>
+  </div>
+</div>
+
+<!-- ORG CODE & SEAT MANAGEMENT BANNER -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="cq-card h-100 p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <span class="cq-eyebrow mb-1">Enrollment Credential</span>
+          <h2 class="h5 mb-0">Organization Code</h2>
+        </div>
+        <form method="post" action="{{ url_for('organization.rotate_code', org_id=org.id) }}"
+              onsubmit="return confirm('Rotating the code will generate a new code. Existing members will NOT be affected. Continue?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-outline-warning btn-sm">🔄 Rotate Code</button>
+        </form>
+      </div>
+
+      <div class="d-flex align-items-center gap-3 p-2 bg-dark rounded border border-secondary mb-2">
+        <code class="fs-4 text-info fw-bold tracking-wider mb-0" id="orgCodeDisplay">{{ org.org_code }}</code>
+        <button class="btn btn-sm btn-cq btn-cq-ghost ms-auto"
+                onclick="navigator.clipboard.writeText('{{ org.org_code }}'); alert('Organization Code copied to clipboard: {{ org.org_code }}');">
+          📋 Copy Code
+        </button>
+      </div>
+      <p class="cq-muted small mb-0">
+        Share this code with authorized students or employees along with their Registration ID.
+        {% if org.require_passcode %}<span class="text-warning">Passcode protection is currently active.</span>{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cq-card h-100 p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <span class="cq-eyebrow mb-1">Seat Entitlement</span>
+          <h2 class="h5 mb-0">Capacity Utilization</h2>
+        </div>
+        <span class="badge bg-dark text-info fs-6">
+          {{ metrics.occupied_seats }} / {{ metrics.seats_purchased }} Seats
+        </span>
+      </div>
+
+      <div class="progress mb-2" style="height: 12px; background: rgba(255,255,255,0.08);">
+        {% set pct = (metrics.occupied_seats / metrics.seats_purchased * 100) if metrics.seats_purchased else 0 %}
+        <div class="progress-bar bg-gradient-info" role="progressbar"
+             style="width: {{ pct }}%;" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+
+      <div class="d-flex justify-content-between small cq-muted">
+        <span>Available: <strong class="text-white">{{ metrics.available_seats }} seats</strong></span>
+        <span>Pending Approval: <strong class="text-warning">{{ metrics.pending_members }}</strong></span>
+        <span>Plan Capacity: <strong>{{ metrics.seats_purchased }} seats</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE METRICS TILES -->
+<section class="mb-4">
+  <div class="row g-3">
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value text-info">{{ metrics.total_eligible }}</div>
+        <div class="cq-stat-label">Eligible Registry</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value text-success">{{ metrics.active_members }}</div>
+        <div class="cq-stat-label">Active Learners</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value text-warning">{{ metrics.pending_members }}</div>
+        <div class="cq-stat-label">Pending Approval</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value text-primary">{{ metrics.labs_passed }}</div>
+        <div class="cq-stat-label">Labs Completed</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value text-purple">{{ metrics.certs_issued }}</div>
+        <div class="cq-stat-label">Certificates Issued</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value {% if metrics.overdue_assignments > 0 %}text-danger{% else %}text-muted{% endif %}">
+          {{ metrics.overdue_assignments }}
+        </div>
+        <div class="cq-stat-label">Overdue Tasks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK ACTION NAVIGATION PILLS -->
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="{{ url_for('organization.eligible_members_list', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+    📋 Pre-Approved Registry ({{ metrics.total_eligible }})
+  </a>
+  <a href="{{ url_for('organization.members_list', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+    👥 Manage Members ({{ metrics.active_members }})
+  </a>
+  <a href="{{ url_for('organization.assignments_list', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+    🎯 Training Assignments ({{ metrics.total_assigned }})
+  </a>
+  <a href="{{ url_for('organization.workspace_overview', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+    👁️ View Workspace as Learner
+  </a>
+</div>
+
+<!-- WORKSPACE CONTROLS & RECENT ACTIVITIES -->
+<div class="row g-4 mb-4">
+  <!-- PENDING REGISTRATIONS REQUIRING APPROVAL -->
+  <div class="col-lg-6">
+    <div class="cq-card h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">Pending Enrollment Requests</h2>
+        <span class="badge bg-warning">{{ pending_approvals|length }} pending</span>
+      </div>
+
+      {% if pending_approvals %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0 small">
+            <thead>
+              <tr>
+                <th>Learner</th>
+                <th>Reg / Emp ID</th>
+                <th>Requested</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in pending_approvals %}
+                <tr>
+                  <td>
+                    <strong>{{ p.user.name }}</strong><br>
+                    <span class="cq-muted">{{ p.user.email }}</span>
+                  </td>
+                  <td><code>{{ p.registration_id or 'N/A' }}</code></td>
+                  <td>{{ p.joined_at.strftime('%b %d') }}</td>
+                  <td>
+                    <form method="post" action="{{ url_for('organization.approve_member', org_id=org.id, membership_id=p.id) }}">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-success py-0 px-2">Approve</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="cq-muted small mb-0 p-3 text-center">
+          No pending approvals at this time. All eligible enrollments are processed.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- WORKSPACE SETTINGS & ENROLLMENT POLICY -->
+  <div class="col-lg-6">
+    <div class="cq-card h-100 p-4">
+      <h2 class="h5 mb-3">Workspace Security &amp; Enrollment Policies</h2>
+      <form method="post" action="{{ url_for('organization.update_settings', org_id=org.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label class="form-label" for="domain">Allowed Email Domain</label>
+          <input type="text" id="domain" name="domain" class="form-control form-control-sm"
+                 value="{{ org.domain or '' }}" placeholder="e.g. campus.edu or company.corp">
+          <div class="form-text cq-muted small">Restricts enrollment to institutional email domain.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="passcode">Enrollment Passcode</label>
+          <input type="password" id="passcode" name="passcode" class="form-control form-control-sm"
+                 placeholder="{% if org.require_passcode %}•••••••• (Passcode is active){% else %}Set new passcode{% endif %}">
+          {% if org.require_passcode %}
+            <div class="form-check mt-1">
+              <input type="checkbox" id="remove_passcode" name="remove_passcode" class="form-check-input" value="1">
+              <label class="form-check-label small text-warning" for="remove_passcode">Remove Passcode Protection</label>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-check mb-4">
+          <input type="checkbox" id="require_approval" name="require_approval" class="form-check-input"
+                 value="1" {% if org.require_approval %}checked{% endif %}>
+          <label class="form-check-label small" for="require_approval">
+            Require HR / Coordinator Approval Before Activating Workspace Seats
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-sm btn-cq btn-cq-primary">
+          Save Workspace Policies
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

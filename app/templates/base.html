@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="{{ current_locale() }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="description" content="{{ t('brand.hero_subtitle') }}">
+  <title>{% block title %}{{ t('brand.name') }}{% endblock %} · {{ t('brand.name') }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/brand.css') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/human-firewall-mark.svg') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="cq-body {{ theme_classes() }} {% block body_class %}{% endblock %}">
+  <a class="cq-skip" href="#main">{{ t('nav.menu') }}</a>
+
+  <nav class="navbar navbar-expand-lg cq-navbar" aria-label="{{ t('nav.menu') }}">
+    <div class="container-xxl">
+      <a class="navbar-brand cq-brand d-flex align-items-center gap-2" href="{{ url_for('public.landing') }}">
+        <img src="{{ url_for('static', filename='images/human-firewall-mark.svg') }}" alt="Human Firewall" width="34" height="34" class="cq-brand-logo">
+        <span class="d-flex flex-column leading-none">
+          <span class="fw-bold fs-5" style="letter-spacing: 0.5px; color: #0f172a;">HUMAN <span style="color: #2563eb;">FIREWALL</span></span>
+          <small class="cq-muted" style="font-size: 0.65rem; letter-spacing: 0.8px;">{{ t('brand.tagline') }}</small>
+        </span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cqNav"
+              aria-controls="cqNav" aria-expanded="false" aria-label="{{ t('nav.menu') }}">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="cqNav">
+        <ul class="navbar-nav cq-nav me-auto mb-2 mb-lg-0">
+          {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/dashboard') %}active{% endif %}"
+                 href="{{ url_for('dashboard.index') }}">{{ t('nav.dashboard') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/learning') %}active{% endif %}"
+                 href="{{ url_for('learning.index') }}">
+                🛡️ Defense Rooms
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/labs') %}active{% endif %}"
+                 href="{{ url_for('labs.index') }}">{{ t('nav.labs') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/what-happened') %}active{% endif %}"
+                 href="{{ url_for('incidents.index') }}">{{ t('nav.incidents') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/cyber-news') %}active{% endif %}"
+                 href="{{ url_for('news.index') }}">{{ t('nav.news') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/about') %}active{% endif %}"
+                 href="{{ url_for('public.about') }}">ℹ️ About</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                 aria-expanded="false">🏆 {{ t('nav.leaderboard') }}</a>
+              <ul class="dropdown-menu cq-dropdown">
+                <li><a class="dropdown-item" href="{{ url_for('dashboard.leaderboard') }}">{{ t('nav.leaderboard') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('dashboard.achievements') }}">{{ t('nav.achievements') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('dashboard.challenges') }}">{{ t('nav.challenges') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('certificates.index') }}">{{ t('nav.certificates') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('analytics.index') }}">{{ t('nav.analytics') }}</a></li>
+              </ul>
+            </li>
+
+            <!-- Organization Workspace Link -->
+            {% if active_org %}
+              <li class="nav-item">
+                <a class="nav-link {% if request_path.startswith('/org') %}active{% endif %}"
+                   href="{{ url_for('organization.workspace_overview', org_id=active_org.id) }}">
+                  🏢 {{ active_org.name }}
+                </a>
+              </li>
+            {% endif %}
+
+            <!-- HR / T&P Dashboard for Authorized Admins -->
+            {% if active_org and current_user.is_org_admin_for(active_org.id) %}
+              <li class="nav-item">
+                <a class="nav-link text-primary fw-semibold"
+                   href="{{ url_for('organization.workspace_dashboard', org_id=active_org.id) }}">
+                  📊 HR Dashboard
+                </a>
+              </li>
+            {% endif %}
+          {% else %}
+            <!-- Public Navigation -->
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('public.landing') }}">{{ t('nav.home') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/about') %}active{% endif %}"
+                 href="{{ url_for('public.about') }}">ℹ️ About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('organization.enterprise_plans') }}">{{ t('nav.enterprise') }}</a>
+            </li>
+          {% endif %}
+        </ul>
+
+        <ul class="navbar-nav cq-nav align-items-lg-center">
+          <!-- Enterprise link for public/logged in -->
+          {% if not current_user.is_authenticated %}
+            <li class="nav-item me-lg-2">
+              <a class="btn btn-outline-info btn-sm" href="{{ url_for('organization.enterprise_plans') }}">
+                Organizations &amp; HR
+              </a>
+            </li>
+          {% endif %}
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+               aria-expanded="false">{{ t('nav.language') }}</a>
+            <ul class="dropdown-menu dropdown-menu-end cq-dropdown">
+              {% for locale in available_locales() %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('public.set_language', code=locale.code) }}">
+                    {{ locale.label }}{% if locale.code == current_locale() %} ✓{% endif %}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          {% if current_user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                <span>{{ current_user.name }}</span>
+                {% if unread_notifications %}
+                  <span class="cq-badge cq-badge-cyan">{{ unread_notifications|length }}</span>
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end cq-dropdown" style="min-width: 18rem;">
+                <li class="px-3 py-2">
+                  <div class="fw-bold">{{ t('dash.level') }} {{ current_user.level }}</div>
+                  <div class="cq-muted small">{{ current_user.xp_total }} XP · {{ t('dash.streak') }} {{ current_user.current_streak }}</div>
+                  {% if active_org %}
+                    <div class="badge bg-secondary mt-1">Workspace: {{ active_org.name }}</div>
+                  {% endif %}
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                {% for note in unread_notifications %}
+                  <li class="px-3 py-1 small">{{ note.title_en if current_locale() == 'en' else (note.title_hi or note.title_en) }}</li>
+                {% endfor %}
+                {% if unread_notifications %}
+                  <li>
+                    <form method="post" action="{{ url_for('dashboard.mark_notifications_read') }}" class="px-3 py-1">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-cq btn-cq-ghost w-100">{{ t('get.close') }}</button>
+                    </form>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                {% endif %}
+                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">{{ t('nav.profile') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.join_org') }}">🏢 Join an Organization</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.settings') }}">{{ t('nav.settings') }}</a></li>
+
+                {% if joined_orgs|length > 1 %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li class="dropdown-header small text-uppercase">Switch Workspace</li>
+                  {% for org in joined_orgs %}
+                    <li>
+                      <form method="post" action="{{ url_for('auth.switch_workspace', org_id=org.id) }}" class="px-2">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="dropdown-item small {% if active_org and active_org.id == org.id %}fw-bold text-info{% endif %}">
+                          {{ org.name }} {% if active_org and active_org.id == org.id %}✓{% endif %}
+                        </button>
+                      </form>
+                    </li>
+                  {% endfor %}
+                {% endif %}
+
+                {% if active_org and current_user.is_org_admin_for(active_org.id) %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-info fw-bold" href="{{ url_for('organization.workspace_dashboard', org_id=active_org.id) }}">📊 HR Admin Portal</a></li>
+                {% endif %}
+
+                {% if current_user.is_admin %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-warning" href="{{ url_for('admin.index') }}">{{ t('nav.admin') }}</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <form method="post" action="{{ url_for('auth.logout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="dropdown-item text-danger">{{ t('nav.logout') }}</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ t('nav.login') }}</a></li>
+            <li class="nav-item ms-lg-2">
+              <a class="btn btn-cq btn-cq-primary btn-sm" href="{{ url_for('auth.register') }}">Create Personal Account</a>
+            </li>
+            <li class="nav-item ms-lg-1">
+              <a class="btn btn-cq btn-cq-purple btn-sm" href="{{ url_for('auth.enroll') }}">Enroll With Org</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <main id="main" class="container-xxl py-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for category, message in messages %}
+            <div class="alert cq-alert cq-alert-{{ 'success' if category == 'success' else ('error' if category in ['error', 'danger'] else 'info') }} cq-fade-in"
+                 role="alert" data-cq-autodismiss>
+              {{ t(message) if '.' in message else message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="cq-footer bg-white border-top mt-5 py-4">
+    <div class="container-xxl">
+      <div class="row g-4 align-items-center mb-3">
+        <div class="col-md-7">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="fw-bold text-dark">HUMAN <span style="color:#2563eb;">FIREWALL</span></span>
+            <span class="badge bg-light text-secondary border small">Cyber Defense Awareness</span>
+          </div>
+          <p class="text-secondary small mb-2">
+            Professional Cyber Resilience &amp; Threat Detection Training Platform. Conceived and developed by <strong>Ravi Ranjan</strong> to empower humans as the ultimate security perimeter.
+          </p>
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <a href="https://www.linkedin.com/in/ravi6745" target="_blank" rel="noopener noreferrer" 
+               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2" style="font-size: 0.8rem; border-color: #0a66c2; color: #0a66c2;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+              </svg>
+              Ravi Ranjan on LinkedIn
+            </a>
+            <span class="text-muted small">&bull;</span>
+            <span class="text-muted small">National Cyber Helpline: <strong>1930</strong></span>
+          </div>
+        </div>
+        <div class="col-md-5 text-md-end">
+          <div class="d-flex flex-wrap gap-3 justify-content-md-end small">
+            <a href="{{ url_for('public.about') }}" class="fw-semibold text-primary">About Us</a>
+            <a href="{{ url_for('learning.index') }}" class="text-secondary">Defense Rooms</a>
+            <a href="{{ url_for('labs.index') }}" class="text-secondary">Practical Labs</a>
+            <a href="{{ url_for('incidents.index') }}" class="text-secondary">Case Studies</a>
+            <a href="{{ url_for('public.privacy') }}" class="text-secondary">Privacy</a>
+            <a href="{{ url_for('public.terms') }}" class="text-secondary">Terms</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

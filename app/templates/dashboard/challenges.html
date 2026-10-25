@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.challenges') }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{{ t('nav.challenges') }}</h1>
+
+<section class="cq-card mb-4 cq-fade-in" aria-labelledby="daily-heading">
+  <h2 id="daily-heading" class="h5 mb-3">{{ t('dash.daily_challenge') }}</h2>
+  {% if daily %}
+    <span class="cq-badge cq-badge-orange mb-2">{{ daily.xp }} {{ t('get.points') }}</span>
+    <h3 class="h5 mb-3">{{ t_content(daily.lab, 'title') }}</h3>
+    <a class="btn btn-cq btn-cq-primary" href="{{ url_for('labs.detail', lab_id=daily.lab.id) }}">{{ t('get.start_lab') }}</a>
+  {% else %}
+    <p class="cq-muted mb-0">No daily challenge is available right now — check back soon.</p>
+  {% endif %}
+</section>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <section class="cq-card h-100" aria-labelledby="labs-heading">
+      <h2 id="labs-heading" class="h5 mb-3">Practice labs</h2>
+      {% if labs %}
+        <ul class="list-unstyled mb-0">
+          {% for lab in labs %}
+            <li class="py-2 border-bottom" style="border-color: var(--cq-line) !important;">
+              <a href="{{ url_for('labs.detail', lab_id=lab.id) }}">{{ t_content(lab, 'title') }}</a>
+              <span class="cq-badge cq-badge-cyan ms-1">{{ t('lab.' ~ lab.level) }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="col-lg-4">
+    <section class="cq-card h-100" aria-labelledby="games-heading">
+      <h2 id="games-heading" class="h5 mb-3">{{ t('nav.games') }}</h2>
+      {% if games %}
+        <ul class="list-unstyled mb-0">
+          {% for game in games %}
+            <li class="py-2 border-bottom" style="border-color: var(--cq-line) !important;">
+              <a href="{{ url_for('games.play', slug=game.slug) }}">{{ t_content(game, 'title') }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="col-lg-4">
+    <section class="cq-card h-100" aria-labelledby="comics-heading">
+      <h2 id="comics-heading" class="h5 mb-3">{{ t('nav.comics') }}</h2>
+      {% if comics %}
+        <ul class="list-unstyled mb-0">
+          {% for comic in comics %}
+            <li class="py-2 border-bottom" style="border-color: var(--cq-line) !important;">
+              <a href="{{ url_for('learning.comic_detail', slug=comic.slug) }}">{{ t_content(comic, 'title') }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

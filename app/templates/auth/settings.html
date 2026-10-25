@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.settings') }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{{ t('nav.settings') }}</h1>
+
+<form method="post" action="{{ url_for('auth.settings') }}">
+  {{ form.hidden_tag() }}
+
+  <section class="cq-card mb-4" aria-labelledby="settings-profile">
+    <h2 id="settings-profile" class="h5 mb-3">Profile</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.display_name.id }}">{{ t('auth.display_name') }}</label>
+        {{ form.display_name(class="form-control") }}
+        {% for error in form.display_name.errors %}
+          <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.locale.id }}">{{ t('nav.language') }}</label>
+        {{ form.locale(class="form-select") }}
+        {% for error in form.locale.errors %}
+          <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.timezone.id }}">Time zone</label>
+        {{ form.timezone(class="form-control", placeholder="Asia/Kolkata") }}
+        {% for error in form.timezone.errors %}
+          <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.learning_mode.id }}">Learning mode</label>
+        {{ form.learning_mode(class="form-select") }}
+        {% for error in form.learning_mode.errors %}
+          <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="cq-card mb-4" aria-labelledby="settings-accessibility">
+    <h2 id="settings-accessibility" class="h5 mb-3">Accessibility</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.text_size.id }}">Text size</label>
+        {{ form.text_size(class="form-select") }}
+        {% for error in form.text_size.errors %}
+          <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-md-6">
+        <div class="form-check mb-2">
+          {{ form.reduce_motion(class="form-check-input") }}
+          <label class="form-check-label" for="{{ form.reduce_motion.id }}">Reduce motion</label>
+        </div>
+        <div class="form-check">
+          {{ form.high_contrast(class="form-check-input") }}
+          <label class="form-check-label" for="{{ form.high_contrast.id }}">High contrast</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cq-card mb-4" aria-labelledby="settings-notifications">
+    <h2 id="settings-notifications" class="h5 mb-3">Notifications &amp; privacy</h2>
+    <div class="form-check mb-2">
+      {{ form.email_notifications(class="form-check-input") }}
+      <label class="form-check-label" for="{{ form.email_notifications.id }}">Email notifications</label>
+    </div>
+    <div class="form-check">
+      {{ form.public_leaderboard(class="form-check-input") }}
+      <label class="form-check-label" for="{{ form.public_leaderboard.id }}">Show me on the public leaderboard</label>
+    </div>
+  </section>
+
+  <div class="d-flex flex-wrap gap-3 align-items-center">
+    <button type="submit" class="btn btn-cq btn-cq-primary">{{ t('nav.settings') }}</button>
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('analytics.export_csv') }}">{{ t('get.download') }}</a>
+    <span class="cq-muted small">Download my data (CSV)</span>
+  </div>
+</form>
+{% endblock %}

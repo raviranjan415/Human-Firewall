@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Content — {{ t('nav.admin') }}{% endblock %}
+
+{% set state_class = {
+  'draft': 'cq-badge',
+  'review': 'cq-badge-orange',
+  'published': 'cq-badge-green',
+  'archived': 'cq-badge-red'
+} %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('nav.admin') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">Labs &amp; content workflow</h1>
+  <p class="cq-muted mb-0">
+    Move labs between workflow states here. A lab becomes visible to learners only once it is
+    published <em>and</em> has an authored interactive task.
+  </p>
+</section>
+
+<section aria-labelledby="content-warning-heading" class="mb-4">
+  <div class="cq-alert cq-alert-error" role="alert">
+    <h2 id="content-warning-heading" class="h5 mb-1">Read before publishing</h2>
+    <p class="mb-0">
+      A lab with no authored task cannot be published — the server will refuse it. Publishing drafted
+      roadmap entries would expose unfinished content to learners, so do not do it. Publish only labs
+      that are genuinely interactive.
+    </p>
+  </div>
+</section>
+
+<section aria-labelledby="content-filter-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="content-filter-heading" class="h5 mb-3">{{ t('get.filter') }}</h2>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-sm btn-cq {{ 'btn-cq-primary' if not selected_state else 'btn-cq-ghost' }}"
+         href="{{ url_for('admin.content') }}">
+        {{ t('get.all') }}
+      </a>
+      {% for state in states %}
+        <a class="btn btn-sm btn-cq {{ 'btn-cq-primary' if selected_state == state else 'btn-cq-ghost' }}"
+           href="{{ url_for('admin.content', state=state) }}">
+          {{ state|capitalize }}
+          <span class="cq-badge ms-1">{{ counts.get(state, 0) }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="labs-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="labs-heading" class="visually-hidden">Labs</h2>
+    {% if labs %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">{{ labs|length }} lab{{ '' if labs|length == 1 else 's' }} listed</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ t('lab.number') }}</th>
+              <th scope="col">Title</th>
+              <th scope="col">{{ t('get.level') }}</th>
+              <th scope="col">State</th>
+              <th scope="col">XP</th>
+              <th scope="col">{{ t('lab.pass_score') }}</th>
+              <th scope="col">Task authored</th>
+              <th scope="col">Change state</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for lab in labs %}
+              <tr>
+                <td>{{ lab.number }}</td>
+                <th scope="row" class="fw-normal">{{ t_content(lab, 'title') }}</th>
+                <td>{{ t('lab.' ~ lab.level) }}</td>
+                <td>
+                  <span class="cq-badge {{ state_class.get(lab.state, 'cq-badge') }}">
+                    {{ lab.state|capitalize }}
+                  </span>
+                </td>
+                <td>{{ lab.xp_reward }}</td>
+                <td>{{ lab.pass_score }}%</td>
+                <td>
+                  {% if lab.task_en %}
+                    <span class="cq-badge cq-badge-green">Yes</span>
+                  {% else %}
+                    <span class="cq-badge cq-badge-red">Missing</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="post" action="{{ url_for('admin.set_lab_state', lab_id=lab.id) }}"
+                        class="d-flex gap-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <label class="visually-hidden" for="lab-state-{{ lab.id }}">New state for lab {{ lab.number }}</label>
+                    <select class="form-select form-select-sm" id="lab-state-{{ lab.id }}" name="state">
+                      {% for state in states %}
+                        <option value="{{ state }}" {% if lab.state == state %}selected{% endif %}>{{ state|capitalize }}</option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-cq btn-cq-primary"
+                            aria-label="Save new state for lab {{ lab.number }}">
+                      Save
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

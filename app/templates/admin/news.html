@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}News review — {{ t('nav.admin') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('nav.admin') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">News review queue</h1>
+  <p class="cq-muted mb-0">
+    Ingested stories land here as <em>pending</em>. They become visible to learners only once you
+    approve them. Read each item against its original source before deciding.
+  </p>
+</section>
+
+<section aria-labelledby="news-filter-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="news-filter-heading" class="h5 mb-3">{{ t('get.filter') }}</h2>
+    <div class="d-flex flex-wrap gap-2">
+      {% for state in ['pending', 'approved', 'rejected'] %}
+        <a class="btn btn-sm btn-cq {{ 'btn-cq-primary' if selected_state == state else 'btn-cq-ghost' }}"
+           href="{{ url_for('admin.news_queue', state=state) }}">
+          {{ state|capitalize }}
+          <span class="cq-badge ms-1">{{ counts.get(state, 0) }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="news-warning-heading" class="mb-4">
+  <div class="cq-alert cq-alert-error" role="alert">
+    <h2 id="news-warning-heading" class="h5 mb-1">Do not approve unfinished stories</h2>
+    <p class="mb-0">
+      Approving a story while its factual fields are still empty shows learners an unfinished article.
+      Fill in (or confirm) the summary, what happened, who is affected, why it matters and what to do
+      before approving.
+    </p>
+  </div>
+</section>
+
+<section aria-labelledby="queue-heading" class="mb-4">
+  <h2 id="queue-heading" class="visually-hidden">Stories in queue</h2>
+  {% if stories %}
+    <div class="row g-3">
+      {% for story in stories %}
+        {% set missing = [
+          ('Summary', story.summary_en),
+          ('What happened', story.what_happened_en),
+          ('Who is affected', story.who_is_affected_en),
+          ('Why it matters', story.why_it_matters_en),
+          ('What to do', story.what_to_do_en)
+        ] %}
+        <div class="col-12 col-xl-6">
+          <article class="cq-card h-100 d-flex flex-column">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+              {% if story.source %}<span class="cq-badge">{{ story.source.name }}</span>{% endif %}
+              <span class="cq-badge cq-badge-orange">{{ story.review_state|capitalize }}</span>
+              {% if story.is_breaking %}<span class="cq-badge cq-badge-red">Breaking</span>{% endif %}
+            </div>
+
+            <h3 class="h5 mb-2">{{ story.title }}</h3>
+
+            <p class="cq-muted small mb-2">
+              {% if story.published_at %}Published {{ story.published_at.strftime('%d %b %Y %H:%M') }}{% else %}No publication date{% endif %}
+              · Fetched {{ story.fetched_at.strftime('%d %b %Y %H:%M') if story.fetched_at else '—' }}
+            </p>
+            <p class="cq-muted small mb-2">
+              <span class="fw-semibold">Content hash:</span>
+              <code>{{ story.content_hash }}</code>
+            </p>
+
+            <ul class="list-unstyled small mb-3">
+              {% for label, value in missing %}
+                <li class="d-flex align-items-center gap-2 py-1 border-bottom">
+                  {% if value %}
+                    <span class="cq-badge cq-badge-green">Present</span>
+                  {% else %}
+                    <span class="cq-badge cq-badge-red">Empty</span>
+                  {% endif %}
+                  <span>{{ label }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+
+            <div class="mt-auto d-flex flex-wrap gap-2">
+              {% if story.url %}
+                <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ story.url }}"
+                   target="_blank" rel="noopener noreferrer"
+                   aria-label="Open the original article for {{ story.title }} (opens in a new tab)">
+                  Original article
+                </a>
+              {% endif %}
+
+              <form method="post" action="{{ url_for('admin.review_news', news_id=story.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="decision" value="approved">
+                <input type="hidden" name="state" value="{{ selected_state }}">
+                <button type="submit" class="btn btn-cq btn-cq-success btn-sm"
+                        aria-label="Approve story: {{ story.title }}">
+                  Approve
+                </button>
+              </form>
+
+              <form method="post" action="{{ url_for('admin.review_news', news_id=story.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="decision" value="rejected">
+                <input type="hidden" name="state" value="{{ selected_state }}">
+                <button type="submit" class="btn btn-cq btn-cq-danger btn-sm"
+                        aria-label="Reject story: {{ story.title }}">
+                  Reject
+                </button>
+              </form>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-card">
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Enjoy with Safety — Learn to Spot Cyber Scams{% endblock %}
+
+{% block content %}
+<!-- ============================================================= HERO -->
+<section class="cq-hero cq-fade-in mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-8">
+      <p class="cq-eyebrow mb-2">Social engineering awareness training</p>
+      <h1 class="display-5 cq-title-gradient mb-3">{{ t('brand.hero_title') }}</h1>
+      <p class="lead cq-muted mb-3">{{ t('brand.hero_subtitle') }}</p>
+      <p class="mb-1 fw-bold">“{{ t('brand.motto') }}”</p>
+      <p class="cq-muted mb-4">{{ t('brand.secondary') }}</p>
+
+      <div class="d-flex flex-wrap gap-3">
+        {% if current_user.is_authenticated %}
+          <a class="btn btn-cq btn-cq-primary btn-lg" href="{{ url_for('dashboard.index') }}">
+            {{ t('nav.dashboard') }}
+          </a>
+          <a class="btn btn-cq btn-cq-purple btn-lg" href="{{ url_for('organization.enterprise_plans') }}">
+            🏢 Enterprise Plans
+          </a>
+        {% else %}
+          <a class="btn btn-cq btn-cq-primary btn-lg" href="{{ url_for('auth.register') }}">
+            Start Personal Learning
+          </a>
+          <a class="btn btn-cq btn-cq-cyan btn-lg" href="{{ url_for('auth.enroll') }}">
+            Join with Org Code / Reg ID
+          </a>
+          <a class="btn btn-cq btn-cq-ghost btn-lg" href="{{ url_for('organization.enterprise_plans') }}">
+            🏢 Enterprise &amp; Universities
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card hoverable text-center">
+        <div class="d-flex justify-content-center mb-3">
+          <img src="{{ url_for('static', filename='images/human-firewall-mark.svg') }}" alt="Human Firewall Shield" style="width: 72px; height: 72px;">
+        </div>
+        <h3 class="h6 text-info mb-1">Defensive Cyber Instincts</h3>
+        <p class="cq-muted mb-0 small">
+          No real credentials. No real attacks. Safe, hands-on practice on
+          simulated scams so that caution and verification become an unconscious reflex.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= 3 CUSTOMER EXPERIENCES -->
+<section class="mb-5">
+  <p class="cq-eyebrow">Enterprise &amp; Self-Paced Training</p>
+  <h2 class="mb-3">Three Tailored Learning Experiences</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="display-6 mb-2">👤</div>
+          <h3 class="h5 text-info">1. Personal Learning</h3>
+          <p class="cq-muted small mb-3">
+            Register freely with any personal email. No organization code or employee ID required.
+            Earn XP, build learning streaks, unlock achievements, and gain verifiable certificates.
+            Your profile and progress remain yours permanently.
+          </p>
+        </div>
+        <div>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-cq btn-cq-primary w-100">
+            Create Personal Account &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="display-6 mb-2">🎓</div>
+          <h3 class="h5 text-primary">2. Organization-Based Learning</h3>
+          <p class="cq-muted small mb-3">
+            Students and employees join dedicated organizational workspaces via pre-approved
+            Registration ID or Employee ID verification and secure Organization Codes.
+            Keep personal progress while completing corporate or university assignments.
+          </p>
+        </div>
+        <div>
+          <a href="{{ url_for('auth.enroll') }}" class="btn btn-sm btn-cq btn-cq-cyan w-100">
+            Enroll with Org Credentials &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="display-6 mb-2">📊</div>
+          <h3 class="h5 text-purple">3. HR &amp; T&amp;P Administration</h3>
+          <p class="cq-muted small mb-3">
+            Comprehensive management portal for corporate training managers, HR teams, and T&amp;P coordinators.
+            Import eligible member CSVs, assign courses with deadlines, track completion rates, and export verified audit reports.
+          </p>
+        </div>
+        <div>
+          <a href="{{ url_for('organization.enterprise_plans') }}" class="btn btn-sm btn-cq btn-cq-purple w-100">
+            Explore Enterprise Solutions &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= LIVE STATS -->
+<section class="mb-5">
+  <h2 class="h4 mb-3">What is already live</h2>
+  <div class="row g-3">
+    <div class="col-6 col-lg">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ stats.labs }}</div>
+        <div class="cq-stat-label">Published labs</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ stats.video_lessons }}</div>
+        <div class="cq-stat-label">Video lessons</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ stats.comics }}</div>
+        <div class="cq-stat-label">Comics</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ stats.games }}</div>
+        <div class="cq-stat-label">Games</div>
+      </div>
+    </div>
+    <div class="col-12 col-lg">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ stats.incidents }}</div>
+        <div class="cq-stat-label">Researched incidents</div>
+      </div>
+    </div>
+  </div>
+  <p class="cq-muted small mt-2 mb-0">
+    These figures are read live from the platform database, so they show exactly
+    what is published right now — nothing is rounded up.
+  </p>
+</section>
+
+<!-- ==================================================== WHAT YOU LEARN -->
+<section class="mb-5">
+  <p class="cq-eyebrow">Featured skills</p>
+  <h2 class="mb-3">What you will learn</h2>
+  <div class="row g-3">
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">🎣</div>
+        <h3 class="h6">Phishing &amp; spear phishing</h3>
+        <p class="cq-muted mb-0 small">
+          Learn to slow down and check the sender, the link and the tone of a
+          message before you click. We practise look-alike domains, urgent
+          “verify your account” e-mails and messages that sound like they come
+          from someone you know.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">📞</div>
+        <h3 class="h6">Scam calls &amp; messages</h3>
+        <p class="cq-muted mb-0 small">
+          Spot the pressure tactics behind OTP requests, fake job offers and
+          “your account will be blocked” frauds. You will see how the same scam
+          changes its costume across SMS, WhatsApp-style chats and phone calls.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">🎭</div>
+        <h3 class="h6">Deepfakes &amp; impersonation</h3>
+        <p class="cq-muted mb-0 small">
+          Understand why a familiar voice or face on a video call is no longer
+          proof by itself, and learn simple verification habits — callback on a
+          number you already trust, or ask a question only the real person could
+          answer.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">🔑</div>
+        <h3 class="h6">Passwords &amp; account hygiene</h3>
+        <p class="cq-muted mb-0 small">
+          Build the basics that break most attacks: long unique passwords, a
+          password manager and multi-factor authentication. We explain why reusing
+          one password puts every account at risk at the same time.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">🌐</div>
+        <h3 class="h6">Safe browsing &amp; privacy</h3>
+        <p class="cq-muted mb-0 small">
+          Notice the small signals that separate a real website from a fake one,
+          understand what permissions apps ask for, and make calmer, more
+          informed choices about the information you share online.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="cq-card hoverable h-100">
+        <div class="fs-2 mb-2" aria-hidden="true">🚨</div>
+        <h3 class="h6">Incident response</h3>
+        <p class="cq-muted mb-0 small">
+          Everyone makes a mistake. Learn what to do in the first few minutes
+          after clicking a bad link or sharing a code — change the password, turn
+          on MFA, tell the right person — instead of hiding it and hoping.
+        </p>
+      </div>
+    </div>
+  </div>
+  <p class="cq-muted small mt-3 mb-0">
+    Honest note: awareness training reduces risk, but no course can promise that
+    you will never be targeted or never make a mistake. Our goal is to make good
+    reactions faster and more automatic.
+  </p>
+</section>
+
+<!-- ==================================================== LAB PATHWAY -->
+<section class="mb-5">
+  <div class="cq-card">
+    <p class="cq-eyebrow">Practical lab pathway</p>
+    <h2 class="h3 mb-3">One hundred connected investigations</h2>
+    <p class="cq-muted">
+      The practical labs form a single guided path of 100 investigations. Each lab
+      builds on the one before it, and a lab only opens once the previous one has
+      been passed — so the difficulty climbs with you instead of jumping.
+      Completion is verified on the server before any XP is awarded.
+    </p>
+
+    <div class="row g-3 my-2">
+      <div class="col-md-6 col-xl-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value" style="font-size:1.15rem;">{{ t('lab.basic') }}</div>
+          <div class="cq-stat-label">Labs 1–30</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value" style="font-size:1.15rem;">{{ t('lab.intermediate') }}</div>
+          <div class="cq-stat-label">Labs 31–60</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value" style="font-size:1.15rem;">{{ t('lab.advanced') }}</div>
+          <div class="cq-stat-label">Labs 61–90</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value" style="font-size:1.15rem;">{{ t('lab.capstone') }}</div>
+          <div class="cq-stat-label">Labs 91–100</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="h6 mt-4">Certificate milestones</h3>
+    <p class="mb-3">
+      Passing a certificate tier is tied to how many labs you have completed:
+      <span class="cq-badge cq-badge-cyan">30 labs</span>
+      <span class="cq-badge cq-badge-cyan">60 labs</span>
+      <span class="cq-badge cq-badge-cyan">90 labs</span>
+      <span class="cq-badge cq-badge-purple">100 labs</span>
+    </p>
+
+    <div class="cq-alert cq-alert-info">
+      <strong>Where we are today:</strong>
+      {{ stats.labs }} lab{{ '' if stats.labs == 1 else 's' }} {{ 'is' if stats.labs == 1 else 'are' }}
+      currently published and interactive. The full set of 100 is being authored
+      and tested in phases, so not every lab has been released yet. Any content
+      that is still a draft or a sample is clearly labelled as a prototype on the
+      page itself — we would rather show you a smaller honest number than an
+      impressive one that does not work.
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================== BILINGUAL -->
+<section class="mb-5">
+  <div class="cq-card">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <p class="cq-eyebrow">Available in two languages</p>
+        <h2 class="h4 mb-2">Learn in English or Hindi</h2>
+        <p class="cq-muted mb-0">
+          The whole learning experience — lessons, labs, feedback and the
+          interface — is available in English and Hindi. Switching language never
+          changes your progress or your account: only the words change.
+        </p>
+      </div>
+      <div class="col-lg-4">
+        <div class="d-flex flex-wrap gap-2">
+          {% for locale in available_locales() %}
+            <a class="btn btn-cq btn-cq-ghost"
+               href="{{ url_for('public.set_language', code=locale.code) }}"
+               {% if locale.code == current_locale() %}aria-current="true"{% endif %}>
+              {{ locale.label }}{% if locale.code == current_locale() %} ✓{% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================== FINAL CTA -->
+<section class="cq-hero cq-fade-in mb-3">
+  <div class="text-center">
+    <p class="cq-eyebrow mb-2">Ready to begin?</p>
+    <h2 class="h2 cq-title-gradient mb-3">Start your cyber quest today</h2>
+    <p class="cq-muted mb-4 mx-auto" style="max-width: 40rem;">
+      Create a free account, work through the labs in order, and watch your
+      progress, XP and certificates build up as you go.
+    </p>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      {% if current_user.is_authenticated %}
+        <a class="btn btn-cq btn-cq-primary btn-lg" href="{{ url_for('dashboard.index') }}">
+          {{ t('nav.dashboard') }}
+        </a>
+      {% else %}
+        <a class="btn btn-cq btn-cq-primary btn-lg" href="{{ url_for('auth.register') }}">
+          {{ t('get.started') }}
+        </a>
+        <a class="btn btn-cq btn-cq-purple btn-lg" href="{{ url_for('auth.login') }}">
+          {{ t('nav.login') }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<p class="cq-muted small text-center mb-0">
+  Everything on this platform is a simulation created for defensive education.
+  All people, companies and incidents shown in the training are fictional, there
+  is no real attack content, and no screen anywhere on this site will ever ask
+  you for a real password, OTP or banking detail.
+</p>
+{% endblock %}

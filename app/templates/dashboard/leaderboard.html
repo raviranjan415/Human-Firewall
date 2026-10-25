@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.leaderboard') }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{{ t('nav.leaderboard') }}</h1>
+
+<div class="btn-group mb-3 flex-wrap" role="group" aria-label="{{ t('get.filter') }}">
+  {% set scopes = [('global', 'Global'), ('weekly', 'This week'), ('monthly', 'This month'), ('beginner', 'Beginners')] %}
+  {% for value, label in scopes %}
+    <a class="btn btn-cq {{ 'btn-cq-primary' if scope == value else 'btn-cq-ghost' }}"
+       href="{{ url_for('dashboard.leaderboard', scope=value) }}"
+       aria-pressed="{{ 'true' if scope == value else 'false' }}"
+       {% if scope == value %}aria-current="page"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</div>
+
+<div class="cq-card mb-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <span class="cq-muted">{{ t('dash.leaderboard_position') }}</span>
+    <span class="cq-stat-value">{{ my_rank if my_rank else '—' }}</span>
+  </div>
+</div>
+
+<div class="cq-card">
+  {% if rows %}
+    <div class="table-responsive">
+      <table class="cq-table">
+        <caption class="cq-muted small caption-top">Only display names are shown. You can opt out of the public leaderboard from your Settings page.</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ t('dash.leaderboard_position') }}</th>
+            <th scope="col">Name</th>
+            <th scope="col">{{ t('dash.level') }}</th>
+            <th scope="col" class="text-end">XP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr {% if row.user_id == current_user.id %}style="background: rgba(34, 211, 238, 0.12);"{% endif %}>
+              <td class="{{ 'cq-rank-1' if row.rank == 1 else ('cq-rank-2' if row.rank == 2 else ('cq-rank-3' if row.rank == 3 else '')) }}">
+                {{ row.rank }}{% if row.rank <= 3 %} <span aria-hidden="true">★</span>{% endif %}
+              </td>
+              <td>
+                {{ row.name }}
+                {% if row.user_id == current_user.id %}<span class="cq-badge cq-badge-cyan ms-1">You</span>{% endif %}
+              </td>
+              <td>{{ row.level }}</td>
+              <td class="text-end">{{ row.xp }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+  {% endif %}
+</div>
+
+<p class="cq-muted small mt-3 mb-0">
+  The leaderboard shows display names only — never email addresses or other personal data.
+  You can opt out of the public leaderboard at any time from your Settings page.
+</p>
+{% endblock %}

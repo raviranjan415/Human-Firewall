@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ t_content(lab, 'title') }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('labs.index') }}">&larr; {{ t('nav.labs') }}</a>
+</div>
+
+<section class="cq-hero mb-4">
+  <p class="cq-eyebrow mb-1">{{ t('lab.number') }} {{ lab.number }}</p>
+  <h1 class="cq-title-gradient mb-2">{{ t_content(lab, 'title') }}</h1>
+  <p class="cq-muted mb-0">{{ t('lab.complete_prev') }}</p>
+</section>
+
+<section class="cq-card mb-4">
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <span class="cq-badge cq-badge-orange cq-pulse">{{ t('get.locked') }}</span>
+    <span class="cq-badge cq-badge-cyan">{{ t('lab.' ~ lab.level) }}</span>
+  </div>
+
+  {% if lock.reason == 'level' %}
+    {% set thresholds = {'basic': 0, 'intermediate': 30, 'advanced': 60, 'capstone': 90} %}
+    <p class="mb-2">
+      The {{ t('lab.' ~ lab.level) }} level opens after {{ thresholds.get(lab.level, 0) }} labs are passed.
+      You need {{ lock.missing_labs }} more to reach it.
+    </p>
+    <div class="cq-progress mb-2" role="img"
+         aria-label="{{ lock.missing_labs }} labs still to complete">
+      <span data-cq-value="{{ [100 - (lock.missing_labs * 100 // (thresholds.get(lab.level, 1) or 1)), 0]|max }}"></span>
+    </div>
+    <p class="cq-muted small mb-0">{{ t('lab.validated') }}</p>
+  {% elif lock.reason == 'prerequisite' and prerequisite %}
+    <h2 class="h5 mb-2">Finish this lab first</h2>
+    <p class="mb-2">{{ t('lab.number') }} {{ prerequisite.number }} &middot; {{ t_content(prerequisite, 'title') }}</p>
+    <a class="btn btn-cq btn-cq-primary btn-sm"
+       href="{{ url_for('labs.detail', lab_id=prerequisite.id) }}">{{ t('get.start_lab') }}</a>
+  {% else %}
+    <p class="mb-0">{{ t('lab.complete_prev') }}</p>
+  {% endif %}
+</section>
+
+<div class="d-flex flex-wrap gap-2">
+  <a class="btn btn-cq btn-cq-primary" href="{{ url_for('labs.next_lab') }}">{{ t('get.continue') }}</a>
+  <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('labs.index') }}">{{ t('nav.labs') }}</a>
+  <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('dashboard.index') }}">{{ t('nav.dashboard') }}</a>
+</div>
+{% endblock %}

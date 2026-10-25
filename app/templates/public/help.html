@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Help &amp; Support{% endblock %}
+
+{% block content %}
+<div class="cq-fade-in">
+  <p class="cq-eyebrow">Support</p>
+  <h1 class="mb-2">Help &amp; support</h1>
+  <p class="cq-muted mb-4">
+    Answers to the questions we hear most often. If yours is not here, scroll to
+    the end for how to reach us.
+  </p>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <section class="mb-4">
+        <h2 class="h4">How to get started</h2>
+        <ol>
+          <li>Create a free account — you only need a username and e-mail.</li>
+          <li>Open your dashboard to see your level, XP and recommended next step.</li>
+          <li>Work through the practical labs in order; each one builds on the last.</li>
+          <li>Add video lessons, comics and games alongside the labs whenever you like.</li>
+        </ol>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Why is a lab locked?</h2>
+        <p>
+          Labs have prerequisites so the difficulty climbs gradually. A lab only
+          unlocks once the <strong>previous lab has been passed</strong>. If you see
+          a lock, open the earlier lab and complete it first — the lock will clear
+          automatically. Completion is checked on the server before XP is awarded,
+          so passing is what counts, not simply opening the page.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">How XP and levels work</h2>
+        <p>Points are awarded for finishing activities:</p>
+        <div class="table-responsive">
+          <table class="cq-table">
+            <caption class="cq-muted small">XP awarded per activity</caption>
+            <thead>
+              <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">XP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Video lesson</td><td>20</td></tr>
+              <tr><td>Comic</td><td>15</td></tr>
+              <tr><td>{{ t('lab.basic') }} lab</td><td>30</td></tr>
+              <tr><td>{{ t('lab.intermediate') }} lab</td><td>50</td></tr>
+              <tr><td>{{ t('lab.advanced') }} lab</td><td>75</td></tr>
+              <tr><td>{{ t('lab.capstone') }}</td><td>150</td></tr>
+              <tr><td>Daily challenge</td><td>25</td></tr>
+              <tr><td>Perfect-score bonus</td><td>+10</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cq-muted small mb-0">
+          As your total XP grows, your level rises and you appear higher on the
+          leaderboard.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">How certificates work</h2>
+        <p>
+          Certificates are tied to how many labs you have completed, and each has a
+          default passing score of <strong>80%</strong>:
+        </p>
+        <ul>
+          <li><span class="cq-badge cq-badge-cyan">30 labs</span> — first tier</li>
+          <li><span class="cq-badge cq-badge-cyan">60 labs</span> — second tier</li>
+          <li><span class="cq-badge cq-badge-cyan">90 labs</span> — third tier</li>
+          <li><span class="cq-badge cq-badge-purple">100 labs</span> — full pathway</li>
+        </ul>
+        <p>
+          Once you are eligible, you can generate the certificate, download it as
+          a PDF, and share it. Anyone can confirm a certificate is genuine using its
+          verification code on the
+          <a href="{{ url_for('certificates.verify') }}">{{ t('cert.verify') }}</a>
+          page.
+        </p>
+        <p class="cq-muted small mb-0">{{ t('cert.note') }}</p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">How to change the language</h2>
+        <p class="mb-0">
+          Use the language menu in the top navigation bar, or the language links on
+          the home page. You can also set a default language in your
+          <a href="{{ url_for('auth.settings') }}">Settings</a>. Switching language
+          never affects your progress.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">I forgot my password</h2>
+        <p class="mb-0">
+          On the sign-in page, choose “{{ t('auth.forgot') }}” and enter your
+          e-mail. Follow the reset link to choose a new password. The link is
+          time-limited, so if it has expired simply request a new one.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Troubleshooting</h2>
+        <div class="accordion" id="cqTrouble">
+          <details class="cq-card mb-2">
+            <summary class="fw-bold">A page will not load or looks broken</summary>
+            <p class="cq-muted small mb-0 mt-2">
+              Refresh the page. If it persists, try clearing your browser cache or
+              opening the site in a different browser. Some pages need JavaScript
+              enabled.
+            </p>
+          </details>
+          <details class="cq-card mb-2">
+            <summary class="fw-bold">My XP or progress did not update</summary>
+            <p class="cq-muted small mb-0 mt-2">
+              Progress is saved when an activity is properly completed, not when it
+              is opened. Retry the activity and check that it shows as completed
+              before refreshing.
+            </p>
+          </details>
+          <details class="cq-card mb-2">
+            <summary class="fw-bold">I got a “Too many requests” message</summary>
+            <p class="cq-muted small mb-0 mt-2">
+              Rate limiting protects your account and the service from abuse. Wait a
+              short while, then try again — see the
+              <a href="{{ url_for('public.landing') }}">home page</a> if you need to
+              start over.
+            </p>
+          </details>
+          <details class="cq-card mb-2">
+            <summary class="fw-bold">I cannot generate my certificate</summary>
+            <p class="cq-muted small mb-0 mt-2">
+              Check that you have completed enough labs for the tier and met the pass
+              score. The certificates page shows how many more you need.
+            </p>
+          </details>
+          <details class="cq-card">
+            <summary class="fw-bold">Password reset e-mail never arrived</summary>
+            <p class="cq-muted small mb-0 mt-2">
+              In local development no e-mail service is configured, so no reset
+              e-mail is sent. Instead, the reset link is shown directly on screen
+              only when the app is running in debug mode. For real deployments an
+              administrator must configure mail.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Still stuck?</h2>
+        <p class="mb-0">
+          Visit the <a href="{{ url_for('public.help') }}">{{ t('footer.help') }}</a>
+          area to reach the team, or use the
+          <a href="{{ url_for('public.accessibility') }}">{{ t('footer.accessibility') }}</a>
+          page if the problem is about how the site works for you.
+        </p>
+      </section>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card hoverable">
+        <h2 class="h6">Quick links</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('auth.login') }}">{{ t('nav.login') }}</a>
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('auth.register') }}">{{ t('nav.register') }}</a>
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('certificates.verify') }}">{{ t('cert.verify') }}</a>
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.accessibility') }}">{{ t('footer.accessibility') }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

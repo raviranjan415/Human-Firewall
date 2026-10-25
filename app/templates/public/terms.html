@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Use{% endblock %}
+
+{% block content %}
+<div class="cq-fade-in">
+  <p class="cq-eyebrow">Legal</p>
+  <h1 class="mb-2">Terms of use</h1>
+  <p class="cq-muted mb-4">
+    These terms describe how you may use CyberQuest. By creating an account or
+    browsing the platform, you agree to them.
+  </p>
+
+  <div class="cq-alert cq-alert-info mb-4">
+    <strong>Template terms.</strong>
+    This is a starting set of terms written for a training platform. Have them
+    reviewed for your own organisation and jurisdiction before production use.
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <section class="mb-4">
+        <h2 class="h4">Educational purpose only</h2>
+        <p>
+          CyberQuest is a defensive, educational awareness platform. Its content
+          exists to help you recognise and avoid social engineering. Everything is
+          a simulation: the scams, e-mails, messages, phone calls and fake websites
+          shown in the training are fictional and are not working tools.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Acceptable use</h2>
+        <ul>
+          <li>Use the platform only for learning and teaching about cyber safety.</li>
+          <li>
+            <strong>Do not</strong> use anything you learn here to attack, defraud
+            or harm another person or organisation.
+          </li>
+          <li>
+            <strong>Do not</strong> attempt to harvest credentials, break into the
+            service, scrape it at scale, or interfere with other learners.
+          </li>
+          <li>Do not re-use the training scenarios as ready-made attack material.</li>
+        </ul>
+        <p>
+          You are responsible for understanding and following the law where you
+          live. Any misuse of the platform is your responsibility, not ours.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Your account</h2>
+        <ul>
+          <li>Keep your password private and use multi-factor authentication.</li>
+          <li>Do not share your account with others.</li>
+          <li>Give accurate account details and keep them up to date.</li>
+          <li>
+            You are responsible for activity that happens under your account. Tell
+            us promptly through
+            <a href="{{ url_for('public.help') }}">{{ t('footer.help') }}</a> if you
+            think it has been compromised.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Age guidance</h2>
+        <p>
+          The platform is intended for learners aged <strong>15 and above</strong>.
+          Younger users should take part with the guidance of a parent, guardian or
+          teacher.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Certificates</h2>
+        <p>
+          Certificates issued here are a <strong>platform training record</strong>.
+          They confirm that you completed a set of labs on CyberQuest — they are
+          <strong>not</strong> an accredited professional certification and carry
+          no external or professional standing.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Content accuracy and confidence labels</h2>
+        <p>
+          Our real-world incident stories are researched from public reporting, but
+          the full details are not always known. We therefore label the
+          <strong>confidence level</strong> of historical incidents instead of
+          presenting every detail as certain. Some material is still a prototype and
+          is marked as such. If you spot something that looks wrong, please tell us.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Availability</h2>
+        <p>
+          We aim to keep CyberQuest available, but we do not promise uninterrupted
+          service. The platform is being built in phases, so features and content
+          may change, and some parts may be temporarily unavailable.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Changes to these terms</h2>
+        <p class="mb-0">
+          We may update these terms as the platform grows. When we make a
+          significant change we will make it clear on the site. Continuing to use
+          CyberQuest after a change means you accept the updated terms.
+        </p>
+      </section>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card hoverable">
+        <h2 class="h6">In one line</h2>
+        <p class="small cq-muted mb-3">
+          Learn from it, teach from it — never use it to harm anyone.
+        </p>
+        <ul class="list-unstyled mb-0 small">
+          <li class="mb-2">🎓 Defensive education only</li>
+          <li class="mb-2">🔒 Keep your account to yourself</li>
+          <li class="mb-2">👤 Ages 15+</li>
+          <li class="mb-0">📜 Training record, not accreditation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 mb-0">
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.landing') }}">{{ t('nav.home') }}</a>
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.privacy') }}">{{ t('footer.privacy') }}</a>
+  </p>
+</div>
+{% endblock %}

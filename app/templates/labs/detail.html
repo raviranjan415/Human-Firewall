@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% block title %}{{ t_content(lab, 'title') }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('labs.index') }}">&larr; {{ t('nav.labs') }}</a>
+</div>
+
+<header class="mb-4">
+  <p class="cq-eyebrow mb-1">{{ t('lab.number') }} {{ lab.number }}</p>
+  <h1 class="cq-title-gradient mb-2">{{ t_content(lab, 'title') }}</h1>
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <span class="cq-badge cq-badge-cyan">{{ t('lab.' ~ lab.level) }}</span>
+    <span class="cq-badge">{{ t('get.difficulty') }}: {{ lab.difficulty }}</span>
+    <span class="cq-badge">{{ lab.estimated_minutes }} {{ t('get.minutes') }}</span>
+    <span class="cq-badge cq-badge-purple">+{{ xp_reward }} XP</span>
+    <span class="cq-badge">{{ t('lab.pass_score') }}: {{ lab.pass_score }}%</span>
+    {% if passed %}
+      <span class="cq-badge cq-badge-green">{{ t('get.completed') }}{% if best %} &middot; {{ best.percentage }}%{% endif %}</span>
+    {% endif %}
+  </div>
+</header>
+
+<section class="cq-card mb-3">
+  <h2 class="h5 mb-2">{{ t('get.objectives') }}</h2>
+  <p class="cq-muted mb-0">{{ t_content(lab, 'objectives') }}</p>
+</section>
+
+<section class="cq-card mb-3">
+  <h2 class="h5 mb-2">{{ t('get.scenario') }}</h2>
+  <p class="mb-0">{{ t_content(lab, 'scenario') }}</p>
+</section>
+
+{% if payload %}
+  <section class="cq-card mb-3" aria-labelledby="evidence-heading">
+    <h2 class="h5 mb-3" id="evidence-heading">Evidence to inspect</h2>
+    {% if payload is mapping %}
+      {% if payload.get('kind') == 'email' %}
+        <div class="cq-scenario">
+          <div class="cq-scenario-head cq-emailmeta">
+            <div><span class="cq-muted">From:</span> {{ payload.get('from') }}</div>
+            {% if payload.get('reply_to') %}
+              <div><span class="cq-muted">Reply-to:</span> {{ payload.get('reply_to') }}</div>
+            {% endif %}
+            {% if payload.get('subject') %}
+              <div><span class="cq-muted">Subject:</span> {{ payload.get('subject') }}</div>
+            {% endif %}
+          </div>
+          <pre class="cq-pre">{{ payload.get('body') }}</pre>
+        </div>
+      {% elif payload.get('items') %}
+        <div class="cq-card">
+          <ul class="mb-0 list-unstyled d-flex flex-column gap-2">
+            {% for item in payload.get('items') %}
+              <li><pre class="cq-pre">{{ item }}</pre></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif payload.get('body') %}
+        <div class="cq-scenario">
+          {% if payload.get('sender') or payload.get('from') %}
+            <div class="cq-scenario-head cq-emailmeta">
+              <div><span class="cq-muted">From:</span> {{ payload.get('sender') or payload.get('from') }}</div>
+            </div>
+          {% endif %}
+          <pre class="cq-pre">{{ payload.get('body') }}</pre>
+        </div>
+      {% else %}
+        <pre class="cq-pre">{{ payload|tojson(indent=2) }}</pre>
+      {% endif %}
+    {% elif payload is string %}
+      <pre class="cq-pre">{{ payload }}</pre>
+    {% elif payload is sequence %}
+      <ul class="mb-0">
+        {% for item in payload %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <pre class="cq-pre">{{ payload|tojson(indent=2) }}</pre>
+    {% endif %}
+  </section>
+{% endif %}
+
+<section class="cq-card mb-3" aria-labelledby="task-heading">
+  <h2 class="h5 mb-2" id="task-heading">{{ t('get.your_task') }}</h2>
+  <p class="cq-muted mb-3">{{ t_content(lab, 'task') }}</p>
+
+  <form id="lab-form" onsubmit="return false;">
+    {% if lab.task_type == 'single_choice' %}
+      <fieldset>
+        <legend class="visually-hidden">{{ t('get.your_task') }}</legend>
+        {% for option in options %}
+          <label class="cq-choice">
+            <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="answer" value="{{ option.id }}">
+            <span>{{ option.text }}</span>
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% elif lab.task_type == 'multi_select' %}
+      <fieldset>
+        <legend class="visually-hidden">{{ t('get.your_task') }}</legend>
+        {% for option in options %}
+          <label class="cq-choice">
+            <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" name="answer" value="{{ option.id }}">
+            <span>{{ option.text }}</span>
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% elif lab.task_type == 'order' %}
+      <ol id="order-list" class="list-unstyled mb-2">
+        {% for option in options %}
+          <li class="cq-choice justify-content-between" data-order-id="{{ option.id }}">
+            <span>{{ option.text }}</span>
+            <span class="btn-group btn-group-sm flex-shrink-0">
+              <button type="button" class="btn btn-cq btn-cq-ghost" data-move="up" aria-label="{{ t('get.previous') }}">&uarr;</button>
+              <button type="button" class="btn btn-cq btn-cq-ghost" data-move="down" aria-label="{{ t('get.next') }}">&darr;</button>
+            </span>
+          </li>
+        {% endfor %}
+      </ol>
+      <input type="hidden" id="answer-order" name="answer">
+    {% elif lab.task_type == 'text_judgement' %}
+      <label class="form-label" for="answer-text">{{ t('get.your_task') }}</label>
+      <textarea id="answer-text" name="answer" class="form-control" rows="6"></textarea>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </form>
+</section>
+
+{% if hints %}
+  <section class="cq-card mb-3" aria-labelledby="hints-heading">
+    <h2 class="h5 mb-2" id="hints-heading">{{ t('get.hint') }}</h2>
+    {% for hint in hints %}
+      <details class="mb-2" data-hint>
+        <summary>{{ t('get.show_hint') }} {{ loop.index }}</summary>
+        <p class="cq-muted mb-0 mt-2">{{ hint.text }}</p>
+      </details>
+    {% endfor %}
+    <p class="cq-muted small mb-0 mt-2">{{ t('lab.hints_used') }}: <span id="hints-used-display">0</span></p>
+  </section>
+{% endif %}
+
+<input type="hidden" id="hints-used" value="0">
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+  <button type="button" id="submit-lab" class="btn btn-cq btn-cq-primary">{{ t('get.submit') }}</button>
+  <span class="cq-muted small">{{ t('lab.validated') }}</span>
+</div>
+
+<div id="lab-feedback" aria-live="polite"></div>
+
+{% if passed %}
+  <section class="cq-card mb-3">
+    <h2 class="h5 mb-2">{{ t('get.explanation') }}</h2>
+    <p class="mb-0">{{ t_content(lab, 'step_by_step') }}</p>
+  </section>
+  <section class="cq-card mb-3">
+    <h2 class="h5 mb-2">{{ t('get.remediation') }}</h2>
+    <p class="mb-0">{{ t_content(lab, 'remediation') }}</p>
+  </section>
+{% else %}
+  <details class="cq-card mb-3">
+    <summary class="h5 mb-0">Show the explanation anyway (no XP impact)</summary>
+    <div class="mt-3">
+      <h2 class="h6">{{ t('get.explanation') }}</h2>
+      <p class="mb-3">{{ t_content(lab, 'step_by_step') }}</p>
+      <h2 class="h6">{{ t('get.remediation') }}</h2>
+      <p class="mb-0">{{ t_content(lab, 'remediation') }}</p>
+    </div>
+  </details>
+{% endif %}
+
+{% if attempts %}
+  <section class="mb-3" aria-labelledby="attempts-heading">
+    <h2 class="h5 mb-3" id="attempts-heading">{{ t('lab.attempts') }}</h2>
+    <div class="table-responsive">
+      <table class="cq-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ t('get.score') }}</th>
+            <th scope="col">{{ t('get.feedback') }}</th>
+            <th scope="col">{{ t('lab.hints_used') }}</th>
+            <th scope="col">{{ t('get.duration') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for attempt in attempts %}
+            <tr>
+              <td>{{ attempt.percentage }}%</td>
+              <td>{{ t_content(attempt, 'feedback') }}</td>
+              <td>{{ attempt.hints_used }}</td>
+              <td>{{ attempt.created_at.strftime('%d %b %Y %H:%M') if attempt.created_at else '' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endif %}
+
+<div class="d-flex flex-wrap gap-2">
+  {% if next_lab %}
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('labs.detail', lab_id=next_lab.id) }}">
+      {{ t('get.next') }}: {{ t_content(next_lab, 'title') }}
+    </a>
+  {% endif %}
+  <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('labs.index') }}">{{ t('get.back') }}</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="application/json" id="lab-config">{{ {
+  'id': lab.id,
+  'taskType': lab.task_type,
+  'labels': {
+    'score': t('get.score'),
+    'perfect': t('get.perfect'),
+    'next': t('get.next'),
+    'locked': t('get.locked')
+  }
+}|tojson }}</script>
+<script>
+(function () {
+  "use strict";
+
+  var config = window.CQ.readJson(document.getElementById('lab-config')) || {};
+  var labels = config.labels || {};
+  var submitUrl = '/api/labs/' + encodeURIComponent(config.id) + '/submit';
+
+  var submitBtn = document.getElementById('submit-lab');
+  var feedbackEl = document.getElementById('lab-feedback');
+  var hintsEl = document.getElementById('hints-used');
+  var hintsDisplay = document.getElementById('hints-used-display');
+  var orderList = document.getElementById('order-list');
+
+  Array.prototype.slice.call(document.querySelectorAll('details[data-hint]')).forEach(function (details) {
+    details.addEventListener('toggle', function () {
+      if (!details.open || details.getAttribute('data-counted') === '1') return;
+      details.setAttribute('data-counted', '1');
+      var used = (parseInt(hintsEl.value, 10) || 0) + 1;
+      hintsEl.value = String(used);
+      if (hintsDisplay) hintsDisplay.textContent = String(used);
+    });
+  });
+
+  if (orderList) {
+    orderList.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-move]');
+      if (!button) return;
+      var item = button.closest('[data-order-id]');
+      if (!item) return;
+      if (button.getAttribute('data-move') === 'up' && item.previousElementSibling) {
+        orderList.insertBefore(item, item.previousElementSibling);
+      } else if (button.getAttribute('data-move') === 'down' && item.nextElementSibling) {
+        orderList.insertBefore(item.nextElementSibling, item);
+      }
+    });
+  }
+
+  function collectAnswer() {
+    if (config.taskType === 'single_choice') {
+      var picked = document.querySelector('input[name="answer"]:checked');
+      return picked ? picked.value : null;
+    }
+    if (config.taskType === 'multi_select') {
+      return Array.prototype.slice.call(document.querySelectorAll('input[name="answer"]:checked'))
+        .map(function (node) { return node.value; });
+    }
+    if (config.taskType === 'order') {
+      return Array.prototype.slice.call(document.querySelectorAll('#order-list [data-order-id]'))
+        .map(function (node) { return node.getAttribute('data-order-id'); });
+    }
+    if (config.taskType === 'text_judgement') {
+      var area = document.getElementById('answer-text');
+      return area ? area.value : '';
+    }
+    return null;
+  }
+
+  function addText(parent, tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    node.textContent = text;
+    parent.appendChild(node);
+    return node;
+  }
+
+  function renderScore(box, percentage, passed) {
+    var line = document.createElement('p');
+    line.className = 'mb-0 mt-2';
+    var value = document.createElement('strong');
+    value.textContent = labels.score + ': ' + percentage + '%';
+    line.appendChild(value);
+    if (percentage === 100) {
+      line.appendChild(document.createTextNode(' \u2014 ' + labels.perfect));
+    }
+    if (passed) {
+      line.classList.add('cq-pulse');
+    }
+    box.appendChild(line);
+  }
+
+  function renderLocked() {
+    feedbackEl.innerHTML = '';
+    var box = document.createElement('div');
+    box.className = 'cq-feedback bad mb-2';
+    addText(box, 'p', 'mb-2', 'This lab is still locked. Finish the prerequisite labs first.');
+    var link = document.createElement('a');
+    link.className = 'btn btn-cq btn-cq-ghost btn-sm';
+    link.href = '/labs/';
+    link.textContent = labels.locked;
+    box.appendChild(link);
+    feedbackEl.appendChild(box);
+    submitBtn.disabled = false;
+  }
+
+  function renderResult(body) {
+    feedbackEl.innerHTML = '';
+    var box = document.createElement('div');
+    box.className = 'cq-feedback ' + (body.passed ? 'good' : 'bad') + ' mb-2 cq-fade-in';
+    addText(box, 'p', 'mb-1', body.feedback || '');
+
+    if (typeof body.percentage === 'number') {
+      renderScore(box, body.percentage, !!body.passed);
+    }
+
+    if (body.passed) {
+      if (body.xp_awarded > 0) {
+        window.CQ.toast('+' + body.xp_awarded + ' XP', 'success');
+      }
+      if (body.next_lab_id) {
+        var next = document.createElement('a');
+        next.className = 'btn btn-cq btn-cq-primary btn-sm mt-3';
+        next.href = '/labs/' + encodeURIComponent(body.next_lab_id);
+        next.textContent = labels.next;
+        box.appendChild(next);
+      }
+    } else {
+      submitBtn.disabled = false;
+    }
+
+    feedbackEl.appendChild(box);
+  }
+
+  submitBtn.addEventListener('click', function () {
+    submitBtn.disabled = true;
+    window.CQ.post(submitUrl, {
+      answer: collectAnswer(),
+      hints_used: parseInt(hintsEl.value, 10) || 0
+    })
+      .then(function (res) {
+        if (res.status === 409) {
+          window.CQ.toast('This lab is still locked.', 'error');
+          renderLocked();
+          return;
+        }
+        if (!res.ok) {
+          window.CQ.toast('We could not check your answer. Please try again.', 'error');
+          submitBtn.disabled = false;
+          return;
+        }
+        renderResult(res.body || {});
+      })
+      .catch(function () {
+        window.CQ.toast('Network error \u2014 please try again.', 'error');
+        submitBtn.disabled = false;
+      });
+  });
+})();
+</script>
+{% endblock %}

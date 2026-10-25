@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Accessibility{% endblock %}
+
+{% block content %}
+<div class="cq-fade-in">
+  <p class="cq-eyebrow">Inclusion</p>
+  <h1 class="mb-2">Accessibility statement</h1>
+  <p class="cq-muted mb-4">
+    CyberQuest is meant to be usable by a wide audience, from teenagers to
+    older adults and people who are not technical. This page explains what we
+    do to support that, and where we still have work to do.
+  </p>
+
+  <div class="cq-alert cq-alert-info mb-4">
+    We have designed the platform with accessibility in mind, but we do not yet
+    claim full conformance with any formal standard. The “Known limitations”
+    section below is deliberately honest about what is not finished.
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <section class="mb-4">
+        <h2 class="h4">What we support</h2>
+        <ul>
+          <li>
+            <strong>Keyboard navigation with a visible focus ring.</strong> You can
+            move through links, buttons and menus using only the keyboard, and the
+            focused item is clearly outlined.
+          </li>
+          <li>
+            <strong>Skip-to-content link.</strong> Press it to jump straight past
+            the navigation to the main content.
+          </li>
+          <li>
+            <strong>Semantic landmarks.</strong> Pages use proper headings,
+            navigation, main and footer regions, so screen readers can move around
+            the structure.
+          </li>
+          <li>
+            <strong>Text alternatives.</strong> Meaningful images and icons carry
+            descriptive <code>alt</code> text or are marked as decorative, and
+            icon-only controls have an accessible label.
+          </li>
+          <li>
+            <strong>Colour contrast.</strong> The default theme is built to keep
+            text readable against the dark background, and meaning is never carried
+            by colour alone.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Display and motion options</h2>
+        <p>
+          Three comfort settings are available, and they apply to every page once
+          switched on. You can change them any time on the
+          <a href="{{ url_for('auth.settings') }}">Settings page</a>:
+        </p>
+        <ul>
+          <li><strong>High-contrast mode</strong> — stronger text and border
+            contrast for easier reading.</li>
+          <li><strong>Large and extra-large text</strong> — increase the base text
+            size of the whole site.</li>
+          <li><strong>Reduce motion</strong> — turns off animations and transitions
+            for people who find movement distracting or uncomfortable.</li>
+        </ul>
+        <a class="btn btn-cq btn-cq-primary" href="{{ url_for('auth.settings') }}">
+          {{ t('nav.settings') }}
+        </a>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Known limitations</h2>
+        <p>We would rather tell you plainly than over-claim:</p>
+        <ul>
+          <li>Some narrative illustrations are still placeholders while the final
+            artwork is produced.</li>
+          <li>Not all content is translated yet — Hindi coverage is growing, and
+            some items may only appear in English for now.</li>
+          <li>Some interactive lab experiences are newer and have had less
+            accessibility testing than the core pages.</li>
+          <li>We have not yet carried out a full audit against a formal standard.</li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Tell us about a barrier</h2>
+        <p class="mb-0">
+          If something is hard to use, please let us know through
+          <a href="{{ url_for('public.help') }}">{{ t('footer.help') }}</a>. Describe
+          the page and what happened, and we will look into it.
+        </p>
+      </section>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card hoverable">
+        <h2 class="h6">Quick switches</h2>
+        <p class="small cq-muted mb-3">
+          All three comfort options live on one page.
+        </p>
+        <a class="btn btn-cq btn-cq-ghost w-100 mb-3" href="{{ url_for('auth.settings') }}">
+          Open settings
+        </a>
+        <ul class="list-unstyled mb-0 small">
+          <li class="mb-2">⌨️ Keyboard friendly</li>
+          <li class="mb-2">🔆 High contrast</li>
+          <li class="mb-2">🔠 Large text</li>
+          <li class="mb-0">🌀 Reduce motion</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 mb-0">
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.landing') }}">{{ t('nav.home') }}</a>
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.help') }}">{{ t('footer.help') }}</a>
+  </p>
+</div>
+{% endblock %}

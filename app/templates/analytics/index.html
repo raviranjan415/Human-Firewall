@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.analytics') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('nav.analytics') }}</h1>
+  <p class="cq-muted mb-0">
+    Every figure on this page is measured from your own recorded activity on this platform.
+    Nothing here is estimated: where there is no data yet, we say so honestly instead of inventing a number.
+  </p>
+</section>
+
+{% set s = overview.stats %}
+
+{# ------------------------------------------------------------------ stats #}
+<section aria-labelledby="analytics-stats-heading" class="mb-4">
+  <h2 id="analytics-stats-heading" class="h4 mb-3">{{ t('dash.continue') }}</h2>
+  <div class="row g-3">
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ s.xp }}</div>
+        <div class="cq-stat-label">{{ t('dash.total_xp') }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ s.level }}</div>
+        <div class="cq-stat-label">{{ t('dash.level') }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ s.streak }}</div>
+        <div class="cq-stat-label">{{ t('dash.streak') }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ s.longest_streak }}</div>
+        <div class="cq-stat-label">{{ t('dash.longest_streak') }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ s.labs_completed }}</div>
+        <div class="cq-stat-label">{{ t('dash.completed_labs') }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ overview.average_score }}%</div>
+        <div class="cq-stat-label">Average lab score</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ overview.first_attempt_success_rate }}%</div>
+        <div class="cq-stat-label">First-attempt success</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ overview.hints_used }}</div>
+        <div class="cq-stat-label">{{ t('lab.hints_used') }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ '%.1f'|format(overview.total_learning_minutes / 60) }}</div>
+        <div class="cq-stat-label">Hours of learning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# -------------------------------------------------------- weekly activity #}
+<section aria-labelledby="weekly-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="weekly-heading" class="h5 mb-3">Weekly activity — last 7 days</h2>
+    <div style="position: relative; height: 260px;">
+      <canvas id="weekly-chart" height="180"
+              role="img"
+              aria-label="Line chart of your learning activity events per day over the last seven days"></canvas>
+    </div>
+    <details class="mt-3">
+      <summary class="cq-muted">View weekly activity as a table</summary>
+      <div class="table-responsive mt-2">
+        <table class="cq-table">
+          <caption class="cq-muted small">Learning events recorded per day (last 7 days)</caption>
+          <thead>
+            <tr><th scope="col">Day</th><th scope="col">Events</th></tr>
+          </thead>
+          <tbody>
+            {% for label in overview.weekly_activity.labels %}
+              <tr>
+                <th scope="row">{{ label }}</th>
+                <td>{{ overview.weekly_activity['values'][loop.index0] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</section>
+
+{# ---------------------------------------------------------- lab progress #}
+<section aria-labelledby="lab-progress-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="lab-progress-heading" class="h5 mb-3">Labs passed by level compared with the published total</h2>
+    <div style="position: relative; height: 280px;">
+      <canvas id="lab-progress-chart" height="180"
+              role="img"
+              aria-label="Bar chart comparing your passed labs against the total published labs for each level"></canvas>
+    </div>
+    <details class="mt-3">
+      <summary class="cq-muted">View lab progress as a table</summary>
+      <div class="table-responsive mt-2">
+        <table class="cq-table">
+          <caption class="cq-muted small">Labs you passed versus the published total, per level</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ t('get.level') }}</th>
+              <th scope="col">{{ t('get.completed') }}</th>
+              <th scope="col">{{ t('total') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for label in overview.lab_progress.labels %}
+              <tr>
+                <th scope="row">{{ t('lab.' ~ label|lower) if label|lower in ['basic', 'intermediate', 'advanced', 'capstone'] else label }}</th>
+                <td>{{ overview.lab_progress['values'][loop.index0] }}</td>
+                <td>{{ overview.lab_progress.targets[loop.index0] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</section>
+
+{# --------------------------------------------------------- streak history #}
+<section aria-labelledby="streak-heading" class="mb-4">
+  <div class="cq-card">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <h2 id="streak-heading" class="h5 mb-0">Streak history — last 30 days</h2>
+      <span class="cq-badge cq-badge-cyan">
+        {{ overview.streak_history.active_days }} {{ t('of') }} 30 active days
+      </span>
+    </div>
+    <div style="position: relative; height: 260px;">
+      <canvas id="streak-chart" height="180"
+              role="img"
+              aria-label="Line chart of qualified active days across the last thirty days"></canvas>
+    </div>
+    <details class="mt-3">
+      <summary class="cq-muted">View streak history as a table</summary>
+      <div class="table-responsive mt-2">
+        <table class="cq-table">
+          <caption class="cq-muted small">Qualified activity per day (last 30 days)</caption>
+          <thead>
+            <tr><th scope="col">Day</th><th scope="col">Activity count</th></tr>
+          </thead>
+          <tbody>
+            {% for label in overview.streak_history.labels %}
+              <tr>
+                <th scope="row">{{ label }}</th>
+                <td>{{ overview.streak_history['values'][loop.index0] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</section>
+
+{# --------------------------------------------------------- topic accuracy #}
+<section aria-labelledby="topic-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="topic-heading" class="h5 mb-3">Accuracy by topic</h2>
+    {% if overview.topic_accuracy %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">Average assessment accuracy per topic</caption>
+          <thead>
+            <tr>
+              <th scope="col">Topic</th>
+              <th scope="col">Accuracy</th>
+              <th scope="col">Attempts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in overview.topic_accuracy %}
+              <tr>
+                <th scope="row">{{ row.topic }}</th>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span>{{ row.accuracy }}%</span>
+                    <div class="cq-progress flex-grow-1" role="presentation">
+                      <span data-cq-value="{{ row.accuracy }}"></span>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ row.attempts }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{# ------------------------------------------------------------- improvement #}
+<section aria-labelledby="improvement-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="improvement-heading" class="h5 mb-3">Measured performance change</h2>
+    {% if overview.improvement.has_data %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">
+            Baseline, post-learning and retention scores per topic. This is measured performance change,
+            not proof that the platform alone caused the improvement.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Topic</th>
+              <th scope="col">Baseline</th>
+              <th scope="col">After learning</th>
+              <th scope="col">Retention</th>
+              <th scope="col">Absolute change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for topic in overview.improvement.topics %}
+              <tr>
+                <th scope="row">{{ topic.topic }}</th>
+                <td>{{ (topic.baseline ~ '%') if topic.baseline is not none else '—' }}</td>
+                <td>{{ (topic.post ~ '%') if topic.post is not none else '—' }}</td>
+                <td>{{ (topic.retention ~ '%') if topic.retention is not none else '—' }}</td>
+                <td>
+                  {% if topic.absolute_improvement is not none %}
+                    {{ '+' if topic.absolute_improvement > 0 else '' }}{{ topic.absolute_improvement }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="cq-alert cq-alert-info mb-0" role="status">
+        <strong>Not enough measurements yet.</strong>
+        Baseline and retention measurements appear here only after you complete the relevant
+        baseline, post-learning and retention assessments. We do not show a guessed or fabricated
+        improvement figure in the meantime.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{# -------------------------------------------------------- commonly missed #}
+<section aria-labelledby="missed-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="missed-heading" class="h5 mb-3">{{ t('dash.recent_mistakes') }}</h2>
+    {% if overview.commonly_missed %}
+      <ul class="list-unstyled mb-3">
+        {% for item in overview.commonly_missed %}
+          <li class="d-flex flex-wrap align-items-center gap-2 py-2 border-bottom">
+            <span class="cq-badge">{{ t('lab.number') }} {{ item.number }}</span>
+            <span class="fw-semibold">{{ item.title }}</span>
+            <span class="cq-muted small ms-auto">{{ t('get.score') }}: {{ item.best_score }}%</span>
+          </li>
+        {% endfor %}
+      </ul>
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('labs.index') }}">{{ t('get.browse_labs') }}</a>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('dash.no_mistakes') }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{# ---------------------------------------------------------- achievements #}
+<section aria-labelledby="ach-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="ach-heading" class="h5 mb-3">{{ t('dash.achievements') }}</h2>
+    <p class="cq-muted">
+      {{ overview.achievement_progress.earned }} {{ t('earned') }} {{ t('of') }}
+      {{ overview.achievement_progress.total }}
+    </p>
+    <div class="cq-progress" role="progressbar"
+         aria-valuenow="{{ overview.achievement_progress.percent }}"
+         aria-valuemin="0" aria-valuemax="100"
+         aria-label="Achievements earned">
+      <span data-cq-value="{{ overview.achievement_progress.percent }}"></span>
+    </div>
+    <p class="cq-muted small mt-2 mb-0">{{ overview.achievement_progress.percent }}%</p>
+  </div>
+</section>
+
+{# ----------------------------------------------------------- download CSV #}
+<section aria-labelledby="download-heading" class="mb-4">
+  <div class="cq-card d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <h2 id="download-heading" class="h5 mb-1">Download my data</h2>
+      <p class="cq-muted mb-0">Your own learning records, exported as a CSV file. You own your data.</p>
+    </div>
+    <a class="btn btn-cq btn-cq-primary" href="{{ url_for('analytics.export_csv') }}">
+      Download my data (CSV)
+    </a>
+  </div>
+</section>
+
+<script type="application/json" id="weekly-data">{{ overview.weekly_activity|tojson }}</script>
+<script type="application/json" id="lab-progress-data">{{ overview.lab_progress|tojson }}</script>
+<script type="application/json" id="streak-data">{{ overview.streak_history|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script>
+(function () {
+  "use strict";
+  var grid = "rgba(120,168,255,0.15)";
+  var ticks = "#93a7c9";
+  var axes = {
+    x: { grid: { color: grid }, ticks: { color: ticks } },
+    y: { grid: { color: grid }, ticks: { color: ticks }, beginAtZero: true }
+  };
+
+  var weeklyNode = document.getElementById("weekly-data");
+  var weeklyCanvas = document.getElementById("weekly-chart");
+  if (weeklyCanvas && weeklyNode) {
+    var weekly = window.CQ.readJson(weeklyNode) || { labels: [], values: [] };
+    new Chart(weeklyCanvas, {
+      type: "line",
+      data: {
+        labels: weekly.labels,
+        datasets: [{
+          label: "Learning events",
+          data: weekly.values,
+          borderColor: "#22d3ee",
+          backgroundColor: "rgba(34,211,238,0.18)",
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: "#22d3ee"
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ticks } } },
+        scales: axes
+      }
+    });
+  }
+
+  var labNode = document.getElementById("lab-progress-data");
+  var labCanvas = document.getElementById("lab-progress-chart");
+  if (labCanvas && labNode) {
+    var lab = window.CQ.readJson(labNode) || { labels: [], values: [], targets: [] };
+    new Chart(labCanvas, {
+      type: "bar",
+      data: {
+        labels: lab.labels,
+        datasets: [
+          {
+            label: "Passed",
+            data: lab.values,
+            backgroundColor: "rgba(34,211,238,0.55)",
+            borderColor: "#22d3ee",
+            borderWidth: 1
+          },
+          {
+            label: "Published total",
+            data: lab.targets,
+            backgroundColor: "rgba(139,92,246,0.45)",
+            borderColor: "#8b5cf6",
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ticks } } },
+        scales: axes
+      }
+    });
+  }
+
+  var streakNode = document.getElementById("streak-data");
+  var streakCanvas = document.getElementById("streak-chart");
+  if (streakCanvas && streakNode) {
+    var streak = window.CQ.readJson(streakNode) || { labels: [], values: [] };
+    new Chart(streakCanvas, {
+      type: "line",
+      data: {
+        labels: streak.labels,
+        datasets: [{
+          label: "Active days",
+          data: streak.values,
+          borderColor: "#22d3ee",
+          backgroundColor: "rgba(34,211,238,0.18)",
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: "#22d3ee"
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ticks } } },
+        scales: axes
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

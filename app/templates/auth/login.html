@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Sign In · Human Firewall{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-12" style="max-width: 440px;">
+    <div class="cq-card cq-fade-in shadow-lg p-4 p-sm-5 border-secondary">
+      
+      <!-- Clean, Human-Crafted Brand Header -->
+      <div class="text-center mb-4">
+        <div class="d-inline-flex justify-content-center align-items-center mb-3 p-2 rounded-circle bg-dark border border-secondary shadow">
+          <img src="{{ url_for('static', filename='images/human-firewall-mark.svg') }}" alt="Human Firewall" width="48" height="48">
+        </div>
+        <h1 class="h3 fw-bold mb-1 cq-title-gradient">Welcome Back</h1>
+        <p class="cq-muted small mb-0">Sign in to continue your cybersecurity defense training</p>
+      </div>
+
+      <!-- Simple, Clean Login Form -->
+      <form method="post" action="{{ url_for('auth.login') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.identifier.id }}">Email or Username</label>
+          {{ form.identifier(class="form-control form-control-lg fs-6", autocomplete="username", placeholder="name@example.com") }}
+          {% for error in form.identifier.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label mb-0" for="{{ form.password.id }}">Password</label>
+            <a href="{{ url_for('auth.forgot_password') }}" class="small text-info text-decoration-none">Forgot password?</a>
+          </div>
+          {{ form.password(class="form-control form-control-lg fs-6", autocomplete="current-password", placeholder="Enter your password") }}
+          {% for error in form.password.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="form-check">
+            {{ form.remember(class="form-check-input") }}
+            <label class="form-check-label small text-secondary" for="{{ form.remember.id }}">Remember me</label>
+          </div>
+          <a href="{{ url_for('auth.recover') }}" class="small text-secondary text-decoration-none" title="Redeem one-time recovery code issued by HR">
+            HR Recovery Code?
+          </a>
+        </div>
+
+        <button type="submit" class="btn btn-cq btn-cq-primary w-100 py-2 fs-6 fw-bold shadow">
+          Sign In
+        </button>
+      </form>
+
+      <div class="position-relative my-4 text-center">
+        <hr class="border-secondary opacity-25">
+        <span class="position-absolute top-50 start-50 translate-middle px-3 small bg-dark text-secondary">or</span>
+      </div>
+
+      <!-- Human-friendly Quick Actions -->
+      <div class="d-grid gap-2 text-center">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-cq btn-cq-ghost">
+          Create Free Personal Account &rarr;
+        </a>
+        <a href="{{ url_for('auth.enroll') }}" class="btn btn-sm btn-cq btn-cq-cyan">
+          🏢 Joining via School or Company? Enroll with Org Code &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

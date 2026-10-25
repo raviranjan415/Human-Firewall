@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Interactive Cyber Defense Rooms · Human Firewall{% endblock %}
+
+{% block content %}
+{% set diff_badges = {'beginner': 'cq-badge-green', 'intermediate': 'cq-badge-cyan', 'advanced': 'cq-badge-orange', 'expert': 'cq-badge-red'} %}
+
+<!-- Hero Header -->
+<section class="cq-hero mb-4 cq-fade-in">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <span class="badge bg-primary px-3 py-1 rounded-pill mb-2">🛡️ Unified Learning Experience</span>
+      <h1 class="h2 text-dark mb-2">Interactive Cyber Defense Rooms</h1>
+      <p class="cq-muted mb-0" style="max-width: 720px;">
+        Inspired by TryHackMe: Each room merges <strong>Video Simulation</strong>, <strong>Cartoon Incident Chat</strong>, <strong>Practical Evidence Lab</strong>, and <strong>Smart Guided MCQ</strong> into one cohesive hands-on mission.
+      </p>
+    </div>
+    <div>
+      <span class="badge bg-light text-dark border p-2 small">
+        ⚡ All-in-One Format: Video + Comic + Lab + MCQ
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- Modules Grid -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="h4 mb-0 text-dark">Defense Learning Modules</h2>
+    <span class="cq-muted small">Select an incident room to begin your defensive training</span>
+  </div>
+  <span class="cq-badge cq-badge-purple">{{ modules|length }} Thematic Modules Available</span>
+</div>
+
+{% if modules %}
+  <div class="row g-4">
+    {% for module in modules %}
+      <div class="col-12 col-lg-6">
+        <article class="cq-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+              <span class="cq-eyebrow text-uppercase">{{ module.slug }}</span>
+              <span class="badge bg-light text-secondary border small">{{ module.lessons|length }} Defense Rooms</span>
+            </div>
+            <h3 class="h5 mb-2 text-dark">{{ t_content(module, 'title') }}</h3>
+            {% if t_content(module, 'summary') %}
+              <p class="cq-muted small mb-3">{{ t_content(module, 'summary') }}</p>
+            {% endif %}
+
+            <!-- Room List inside Module -->
+            {% if module.lessons %}
+              <div class="d-flex flex-column gap-2 mb-3">
+                {% for lesson in module.lessons %}
+                  <div class="p-2 bg-light rounded border d-flex justify-content-between align-items-center gap-2">
+                    <div class="d-flex flex-column">
+                      {% if lesson.video_assets %}
+                        <a class="fw-bold small text-dark" href="{{ url_for('learning.video_detail', video_id=lesson.video_assets[0].id) }}">
+                          {{ t_content(lesson, 'title') }}
+                        </a>
+                      {% else %}
+                        <span class="fw-bold small text-dark">{{ t_content(lesson, 'title') }}</span>
+                      {% endif %}
+                      <div class="d-flex flex-wrap gap-1 align-items-center mt-1">
+                        <span class="badge bg-white text-secondary border" style="font-size: 0.65rem;">🎥 Video</span>
+                        <span class="badge bg-white text-secondary border" style="font-size: 0.65rem;">💬 Comic Chat</span>
+                        <span class="badge bg-white text-secondary border" style="font-size: 0.65rem;">🧪 Lab</span>
+                        <span class="badge bg-white text-secondary border" style="font-size: 0.65rem;">🧠 MCQ</span>
+                        <span class="cq-muted ms-1" style="font-size: 0.7rem;">~{{ lesson.duration_minutes }}m</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      {% if lesson.video_assets %}
+                        {% if lesson.video_assets[0].id in completed_lessons %}
+                          <span class="cq-badge cq-badge-green small">Done ✅</span>
+                        {% else %}
+                          <a href="{{ url_for('learning.video_detail', video_id=lesson.video_assets[0].id) }}" class="btn btn-sm btn-cq btn-cq-primary py-0 px-2" style="font-size: 0.75rem;">
+                            Enter &rarr;
+                          </a>
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+            <span class="small text-secondary">+50 XP per cleared room</span>
+            {% if module.lessons and module.lessons[0].video_assets %}
+              <a href="{{ url_for('learning.video_detail', video_id=module.lessons[0].video_assets[0].id) }}" class="btn btn-sm btn-cq btn-cq-ghost">
+                Start Module &rarr;
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cq-card">
+    <p class="cq-muted mb-0">No modules available.</p>
+  </div>
+{% endif %}
+
+<!-- Quick Access Banners -->
+<div class="row g-4 mt-4">
+  <div class="col-12 col-md-4">
+    <a class="cq-card hoverable d-block h-100 text-decoration-none" href="{{ url_for('labs.index') }}">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fs-4">🧪</span>
+        <h3 class="h6 mb-0 text-dark">Practical Labs (1–40)</h3>
+      </div>
+      <p class="cq-muted small mb-0">Interactive hands-on sandbox challenges with email, SMS, invoice, and QR evidence.</p>
+    </a>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <a class="cq-card hoverable d-block h-100 text-decoration-none" href="{{ url_for('incidents.index') }}">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fs-4">📂</span>
+        <h3 class="h6 mb-0 text-dark">Case Studies Archive</h3>
+      </div>
+      <p class="cq-muted small mb-0">30 thoroughly researched real-world breaches and human vulnerability analyses.</p>
+    </a>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <a class="cq-card hoverable d-block h-100 text-decoration-none" href="{{ url_for('news.index') }}">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fs-4">📡</span>
+        <h3 class="h6 mb-0 text-dark">Live Threat Intelligence</h3>
+      </div>
+      <p class="cq-muted small mb-0">Curated weekly cybersecurity advisories, CERT warnings, and fraud alerts.</p>
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ t('auth.reset_request') }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12" style="max-width: 460px;">
+    <div class="cq-card cq-fade-in">
+      <h1 class="h3 mb-4">{{ t('auth.reset_request') }}</h1>
+
+      {% if reset_link %}
+        <div class="cq-alert cq-alert-info mb-3" role="alert">
+          <p class="mb-2 fw-bold">Your password reset link is ready.</p>
+          <p class="mb-2"><a href="{{ reset_link }}">{{ reset_link }}</a></p>
+          <p class="small mb-0">
+            Please note: no e-mail is actually sent in this deployment. This link is
+            shown on screen only because debug mode is enabled, so you can continue
+            testing the reset flow.
+          </p>
+        </div>
+      {% else %}
+        <div class="cq-alert cq-alert-info mb-3" role="alert">
+          If that account exists, reset instructions have been created.
+        </div>
+      {% endif %}
+
+      <form method="post" action="{{ url_for('auth.forgot_password') }}" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.email.id }}">{{ t('auth.email') }}</label>
+          {{ form.email(class="form-control", autocomplete="email") }}
+          {% for error in form.email.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-cq btn-cq-primary w-100">{{ t('auth.reset_send') }}</button>
+      </form>
+
+      <p class="cq-muted small mt-4 mb-0">
+        <a href="{{ url_for('auth.login') }}">{{ t('nav.login') }}</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

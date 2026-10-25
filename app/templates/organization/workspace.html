@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}{{ org.name }} — Workspace | Human Firewall{% endblock %}
+
+{% block content %}
+<div class="cq-hero cq-fade-in mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <span class="cq-badge cq-badge-purple mb-2">🏢 Organization Workspace</span>
+      <h1 class="display-6 cq-title-gradient mb-1">{{ org.name }}</h1>
+      <p class="cq-muted mb-0">
+        Workspace Code: <code>{{ org.code }}</code> &bull;
+        Member Role: <span class="badge bg-secondary">{{ membership.role | title }}</span> &bull;
+        Registration ID: <strong>{{ membership.registration_id or 'N/A' }}</strong>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('organization.workspace_leaderboard', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+        🏆 Org Leaderboard
+      </a>
+      {% if current_user.is_org_admin_for(org.id) or current_user.is_admin %}
+      <a href="{{ url_for('organization.workspace_dashboard', org_id=org.id) }}" class="btn btn-cq btn-cq-primary">
+        ⚙️ HR Administration
+      </a>
+      {% endif %}
+      <a href="{{ url_for('dashboard.index') }}" class="btn btn-cq btn-cq-ghost">
+        Personal Dashboard &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left column: Assigned Training -->
+  <div class="col-lg-8">
+    <div class="cq-card mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">📋 Assigned Training Tasks</h2>
+        <span class="badge bg-dark">{{ assignments | length }} Assignment{{ '' if assignments|length == 1 else 's' }}</span>
+      </div>
+
+      {% if assignments %}
+      <div class="list-group list-group-flush">
+        {% for a in assignments %}
+        <div class="list-group-item bg-transparent text-light border-secondary p-3">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <span class="badge bg-info text-dark mb-1">{{ a.course_type | upper }}</span>
+              <h3 class="h6 mb-1">
+                {% if a.course_type == 'path' and a.learning_path %}
+                  {{ a.learning_path.title }}
+                {% elif a.course_type == 'lab' and a.lab %}
+                  Lab #{{ a.lab.lab_number }}: {{ a.lab.title }}
+                {% elif a.course_type == 'lab' %}
+                  Defensive Lab #{{ a.lab_id }}
+                {% else %}
+                  Training Path #{{ a.path_id or a.id }}
+                {% endif %}
+              </h3>
+              {% if a.notes %}
+              <p class="small cq-muted mb-1">{{ a.notes }}</p>
+              {% endif %}
+              <div class="small cq-muted">
+                Assigned: {{ a.created_at.strftime('%b %d, %Y') if a.created_at else 'Recent' }}
+                {% if a.due_date %}
+                  &bull; <span class="{% if a.status == 'overdue' %}text-danger fw-bold{% else %}text-warning{% endif %}">
+                    Due Date: {{ a.due_date.strftime('%b %d, %Y') }}
+                    {% if a.status == 'overdue' %}(OVERDUE){% endif %}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+            <div>
+              {% if a.status == 'completed' %}
+                <span class="cq-badge cq-badge-green">Completed</span>
+              {% elif a.status == 'in_progress' %}
+                <span class="cq-badge cq-badge-yellow">In Progress</span>
+              {% elif a.status == 'overdue' %}
+                <span class="cq-badge cq-badge-red">Overdue</span>
+              {% else %}
+                <span class="cq-badge cq-badge-purple">Assigned</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="mt-2">
+            {% if a.lab %}
+              <a href="{{ url_for('labs.lab_detail', lab_num=a.lab.lab_number) }}" class="btn btn-sm btn-cq btn-cq-cyan">
+                Launch Lab #{{ a.lab.lab_number }} &rarr;
+              </a>
+            {% elif a.lab_id %}
+              <a href="{{ url_for('labs.lab_detail', lab_num=a.lab_id) }}" class="btn btn-sm btn-cq btn-cq-cyan">
+                Launch Lab &rarr;
+              </a>
+            {% else %}
+              <a href="{{ url_for('labs.index') }}" class="btn btn-sm btn-cq btn-cq-cyan">
+                Go to Labs &rarr;
+              </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-4">
+        <div class="display-6 mb-2">🎉</div>
+        <p class="cq-muted mb-0">No specific training assignments assigned by your coordinator yet.</p>
+        <p class="small text-secondary">You can still freely explore all open labs and lessons in the catalog!</p>
+        <a href="{{ url_for('labs.index') }}" class="btn btn-cq btn-cq-primary mt-2">Browse All Labs</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Self-directed training reminder -->
+    <div class="cq-card">
+      <h3 class="h6 mb-2">💡 Dual-Learning Model Active</h3>
+      <p class="small cq-muted mb-0">
+        You are currently viewing your <strong>{{ org.name }}</strong> organization workspace.
+        Any training completed here contributes to both your organization's compliance benchmarks
+        and your lifelong personal profile (XP, badges, and verified certificates).
+        If you leave this organization, your personal progress remains intact.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right column: Membership & Progress Snapshot -->
+  <div class="col-lg-4">
+    <div class="cq-card mb-4 text-center">
+      <div class="display-5 mb-2">🛡️</div>
+      <h3 class="h5 mb-1">{{ current_user.display_name }}</h3>
+      <p class="small cq-muted mb-3">{{ current_user.email }}</p>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <div class="cq-stat p-2">
+            <div class="cq-stat-value fs-4">{{ current_user.xp_total }}</div>
+            <div class="cq-stat-label">Total XP</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="cq-stat p-2">
+            <div class="cq-stat-value fs-4">{{ current_user.current_streak }}🔥</div>
+            <div class="cq-stat-label">Streak Days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-group list-group-flush text-start small">
+        <div class="list-group-item bg-transparent text-secondary d-flex justify-content-between px-0">
+          <span>Organization Code:</span>
+          <span class="text-light"><code>{{ org.code }}</code></span>
+        </div>
+        <div class="list-group-item bg-transparent text-secondary d-flex justify-content-between px-0">
+          <span>Enrolled On:</span>
+          <span class="text-light">{{ membership.created_at.strftime('%b %d, %Y') if membership.created_at else 'Active' }}</span>
+        </div>
+        <div class="list-group-item bg-transparent text-secondary d-flex justify-content-between px-0">
+          <span>Verified Status:</span>
+          <span class="badge bg-success">{{ membership.status | upper }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="cq-card">
+      <h4 class="h6 mb-3">Quick Navigation</h4>
+      <div class="d-grid gap-2">
+        <a href="{{ url_for('labs.index') }}" class="btn btn-cq btn-cq-ghost text-start">
+          🧪 Interactive Defensive Labs
+        </a>
+        <a href="{{ url_for('learning.index') }}" class="btn btn-cq btn-cq-ghost text-start">
+          🎥 Cybersecurity Video Lessons
+        </a>
+        <a href="{{ url_for('incidents.index') }}" class="btn btn-cq btn-cq-ghost text-start">
+          📚 Educational Security Stories
+        </a>
+        <a href="{{ url_for('certificates.index') }}" class="btn btn-cq btn-cq-ghost text-start">
+          📜 Verified Milestone Certificates
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

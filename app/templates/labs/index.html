@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}{{ t('lab.title') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero mb-4">
+  <p class="cq-eyebrow">{{ t('nav.labs') }}</p>
+  <h1 class="cq-title-gradient">{{ t('lab.title') }}</h1>
+  <p class="cq-muted mb-0">{{ t('lab.subtitle') }}</p>
+</section>
+
+<section class="cq-card mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-2">
+    <h2 class="h5 mb-0">{{ t('dash.completed_labs') }}</h2>
+    <p class="cq-muted mb-0">{{ completed_labs }} {{ t('of') }} {{ total_labs }}</p>
+  </div>
+  {% set overall_percent = (completed_labs * 100 // total_labs) if total_labs else 0 %}
+  <div class="cq-progress mb-3" role="img"
+       aria-label="{{ completed_labs }} {{ t('of') }} {{ total_labs }}">
+    <span data-cq-value="{{ overall_percent }}"></span>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <a class="btn btn-cq btn-cq-primary" href="{{ url_for('labs.next_lab') }}">{{ t('get.continue') }} &rarr;</a>
+    <span class="cq-muted small">{{ t('lab.validated') }}</span>
+  </div>
+</section>
+
+<section class="mb-4" aria-labelledby="levels-heading">
+  <h2 class="h5 mb-3" id="levels-heading">{{ t('get.level') }}</h2>
+  <div class="row g-3">
+    {% for level in levels %}
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="cq-card h-100 d-flex flex-column">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <h3 class="h6 mb-0">{{ t('lab.' ~ level.level) }}</h3>
+            {% if not level.unlocked %}
+              <span class="cq-badge cq-badge-orange">{{ t('get.locked') }}</span>
+            {% endif %}
+          </div>
+          <p class="cq-muted small mb-2">{{ level.completed }} {{ t('of') }} {{ level.total }}</p>
+          <div class="cq-progress mb-3" role="img"
+               aria-label="{{ level.completed }} {{ t('of') }} {{ level.total }}">
+            <span data-cq-value="{{ level.percent }}"></span>
+          </div>
+          <a class="btn btn-cq btn-cq-ghost btn-sm mt-auto"
+             href="{{ url_for('labs.index', level=level.level) }}">{{ t('get.view_all') }}</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<nav class="mb-3 d-flex flex-wrap align-items-center gap-2" aria-label="{{ t('get.filter') }}">
+  <span class="cq-eyebrow">{{ t('get.filter') }}</span>
+  <a class="btn btn-cq btn-sm {{ 'btn-cq-primary' if not selected_level else 'btn-cq-ghost' }}"
+     href="{{ url_for('labs.index') }}">{{ t('get.all') }}</a>
+  {% for level in levels %}
+    <a class="btn btn-cq btn-sm {{ 'btn-cq-primary' if selected_level == level.level else 'btn-cq-ghost' }}"
+       href="{{ url_for('labs.index', level=level.level) }}">{{ t('lab.' ~ level.level) }}</a>
+  {% endfor %}
+</nav>
+
+<section aria-labelledby="path-heading">
+  <h2 class="h5 mb-3" id="path-heading">{{ t('dash.current_path') }}</h2>
+
+  {% if path %}
+    <div class="d-flex flex-column gap-3">
+      {% for item in path %}
+        <article class="cq-lab-node cq-card{{ ' done' if item.completed else '' }}{{ ' locked' if not item.unlocked else '' }}">
+          <span class="cq-node-num" aria-hidden="true">{{ item.lab.number }}</span>
+          <div class="flex-grow-1">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+              <h3 class="h6 mb-0">{{ t_content(item.lab, 'title') }}</h3>
+              <span class="cq-badge cq-badge-cyan">{{ t('lab.' ~ item.lab.level) }}</span>
+              {% if item.completed %}
+                <span class="cq-badge cq-badge-green">{{ t('get.completed') }}</span>
+              {% endif %}
+              {% if not item.unlocked %}
+                <span class="cq-badge cq-badge-orange">{{ t('get.locked') }}</span>
+              {% endif %}
+            </div>
+            <p class="cq-muted small mb-2">
+              {{ item.lab.estimated_minutes }} {{ t('get.minutes') }} &middot; +{{ item.lab.xp_reward }} XP{% if item.completed and item.best_score is not none %} &middot; {{ t('get.score') }} {{ item.best_score }}%{% endif %}
+            </p>
+            {% if not item.unlocked %}
+              <p class="cq-muted small mb-0">{{ t('lab.complete_prev') }}</p>
+            {% endif %}
+          </div>
+          <div class="align-self-center">
+            {% if item.unlocked %}
+              <a class="btn btn-cq btn-sm {{ 'btn-cq-ghost' if item.completed else 'btn-cq-primary' }}"
+                 href="{{ url_for('labs.detail', lab_id=item.lab.id) }}">
+                {{ t('get.retry') if item.completed else t('get.start_lab') }}
+              </a>
+            {% else %}
+              <span class="btn btn-cq btn-cq-ghost btn-sm disabled" aria-disabled="true">{{ t('get.locked') }}</span>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-card">
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    </div>
+  {% endif %}
+</section>
+
+<section class="cq-card mt-4">
+  <h2 class="h5 mb-2">{{ t('cert.title') }}</h2>
+  <p class="cq-muted mb-2">{{ t('lab.certificate_after') }}:</p>
+  <ul class="mb-0">
+    <li>{{ t('lab.basic') }} &mdash; 30 {{ t('dash.completed_labs') }}</li>
+    <li>{{ t('lab.intermediate') }} &mdash; 60 {{ t('dash.completed_labs') }}</li>
+    <li>{{ t('lab.advanced') }} &mdash; 90 {{ t('dash.completed_labs') }}</li>
+    <li>{{ t('lab.capstone') }} &mdash; 100 {{ t('dash.completed_labs') }}</li>
+  </ul>
+</section>
+{% endblock %}

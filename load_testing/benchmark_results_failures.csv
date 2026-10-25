@@ -1,0 +1,13 @@
+Method,Name,Error,Occurrences,First Seen,Last Seen
+GET,/dashboard/,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /dashboard/'),130,2026-10-25T10:59:21Z,2026-10-25T10:59:32Z
+GET,/cyber-news/,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /cyber-news/'),44,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+POST,/auth/login,HTTPError('400 Client Error: BAD REQUEST for url: /auth/login'),25,2026-10-25T10:59:20Z,2026-10-25T10:59:24Z
+GET,/labs/1,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/1'),83,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/certificates/,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /certificates/'),50,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/labs/5,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/5'),14,2026-10-25T10:59:21Z,2026-10-25T10:59:31Z
+GET,/labs/4,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/4'),26,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/labs/,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/'),133,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/labs/3,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/3'),13,2026-10-25T10:59:21Z,2026-10-25T10:59:32Z
+GET,/labs/2,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /labs/2'),20,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/org/1/workspace,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /org/1/workspace'),100,2026-10-25T10:59:21Z,2026-10-25T10:59:33Z
+GET,/org/1/leaderboard,HTTPError('429 Client Error: TOO MANY REQUESTS for url: /org/1/leaderboard'),54,2026-10-25T10:59:22Z,2026-10-25T10:59:33Z

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.profile') }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{{ t('nav.profile') }}</h1>
+
+<section class="cq-card mb-4 cq-fade-in" aria-labelledby="profile-heading">
+  <div class="d-flex flex-wrap align-items-center gap-3">
+    <div class="cq-brand-mark" aria-hidden="true">{{ current_user.name[:1]|upper }}</div>
+    <div class="flex-grow-1">
+      <h2 id="profile-heading" class="h4 mb-0">{{ current_user.name }}</h2>
+      <div class="cq-muted">@{{ current_user.username }}</div>
+      <div class="cq-muted small">{{ current_user.email }}</div>
+    </div>
+    <span class="cq-badge cq-badge-purple">{{ current_user.role_name }}</span>
+  </div>
+</section>
+
+<section class="cq-card mb-4" aria-labelledby="level-heading">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+    <h2 id="level-heading" class="h5 mb-0">{{ t('dash.level') }} {{ level_info.level }}</h2>
+    <span class="cq-badge cq-badge-cyan">{{ level_info.current_xp }} XP</span>
+  </div>
+  <div class="cq-progress mb-2">
+    <span data-cq-value="{{ level_info.percent }}"></span>
+  </div>
+  <div class="d-flex justify-content-between cq-muted small">
+    <span>{{ level_info.current_xp }} XP</span>
+    <span>Next level at {{ level_info.next_level_xp }} XP</span>
+  </div>
+</section>
+
+<section class="mb-4" aria-labelledby="stats-heading">
+  <h2 id="stats-heading" class="h5 mb-3">{{ t('nav.dashboard') }}</h2>
+  <div class="row g-3">
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.xp }}</div><div class="cq-stat-label">{{ t('dash.total_xp') }}</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.level }}</div><div class="cq-stat-label">{{ t('dash.level') }}</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.streak }}</div><div class="cq-stat-label">{{ t('dash.streak') }}</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.longest_streak }}</div><div class="cq-stat-label">{{ t('dash.longest_streak') }}</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.labs_completed }}</div><div class="cq-stat-label">{{ t('dash.completed_labs') }}</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.comics_completed }}</div><div class="cq-stat-label">Comics read</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.videos_completed }}</div><div class="cq-stat-label">Videos watched</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.games_completed }}</div><div class="cq-stat-label">Games completed</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+      <div class="cq-stat"><div class="cq-stat-value">{{ stats.certificates }}</div><div class="cq-stat-label">{{ t('nav.certificates') }}</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cq-card mb-4" aria-labelledby="xp-heading">
+  <h2 id="xp-heading" class="h5 mb-3">XP breakdown</h2>
+  {% if xp_breakdown %}
+    <div class="table-responsive">
+      <table class="cq-table">
+        <thead>
+          <tr><th scope="col">Reason</th><th scope="col" class="text-end">XP</th></tr>
+        </thead>
+        <tbody>
+          {% for row in xp_breakdown %}
+            <tr>
+              <td>{{ row.reason.replace('_', ' ')|title }}</td>
+              <td class="text-end">{{ row.xp }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="cq-muted mb-0">No XP earned yet — start a lab, game, comic or video lesson.</p>
+  {% endif %}
+</section>
+
+<section class="cq-card mb-4" aria-labelledby="ach-heading">
+  <h2 id="ach-heading" class="h5 mb-3">{{ t('nav.achievements') }}</h2>
+  {% if achievements %}
+    <div class="cq-ach">
+      {% for item in achievements %}
+        <div class="cq-ach-item earned">
+          <div class="cq-ach-icon" aria-hidden="true">{{ item.achievement.icon }}</div>
+          <div class="fw-bold">{{ t_content(item.achievement, 'name') }}</div>
+          <div class="cq-muted small">{{ t_content(item.achievement, 'description') }}</div>
+          <div class="cq-muted small mt-2">{{ item.awarded_at.strftime('%d %b %Y') }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+  {% endif %}
+</section>
+{% endblock %}

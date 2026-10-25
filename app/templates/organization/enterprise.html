@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Enterprise Cybersecurity Training &amp; Subscriptions · Human Firewall{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="cq-hero cq-fade-in mb-5">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-8">
+      <span class="badge bg-primary px-3 py-2 mb-2 text-uppercase fw-semibold" style="letter-spacing: 1px;">
+        Enterprise &amp; Academic Training
+      </span>
+      <h1 class="display-5 cq-title-gradient mb-3">
+        Transform Your Workforce &amp; Students Into an Impenetrable Human Firewall
+      </h1>
+      <p class="lead cq-muted mb-4">
+        Empower colleges, universities, and enterprise organizations with dedicated training workspaces, automated eligibility verification, custom cohorts, and audit-ready operational reporting.
+      </p>
+
+      <div class="d-flex flex-wrap gap-3">
+        <a href="#plans" class="btn btn-cq btn-cq-primary btn-lg">
+          View Subscription Plans
+        </a>
+        <a href="#quote-form" class="btn btn-cq btn-cq-ghost btn-lg">
+          Request Custom Quotation
+        </a>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card p-4 border-info">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="fs-1" aria-hidden="true">🛡️</div>
+          <div>
+            <h3 class="h6 mb-0 text-white">Dedicated Tenant Isolation</h3>
+            <small class="cq-muted">Strict privacy boundaries</small>
+          </div>
+        </div>
+        <ul class="list-unstyled small mb-0 text-muted">
+          <li class="mb-2">✓ Automated Student Reg ID / Employee ID registry</li>
+          <li class="mb-2">✓ HR-assisted audited account recovery</li>
+          <li class="mb-2">✓ 100 Practical labs &amp; interactive threat games</li>
+          <li class="mb-0">✓ Real-time seat allocation &amp; exportable PDF reports</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIPTION PLANS -->
+<section id="plans" class="mb-5">
+  <div class="text-center mb-4">
+    <p class="cq-eyebrow mb-1">Tailored for Institutions &amp; Enterprises</p>
+    <h2 class="h2 mb-2">Training Subscription Plans</h2>
+    <p class="cq-muted mx-auto" style="max-width: 36rem;">
+      Choose the capacity and operational features that match your organization. All plans include server-side seat verification and verified milestone certificates.
+    </p>
+  </div>
+
+  <div class="row g-4 align-items-stretch">
+    <!-- STARTER PLAN -->
+    <div class="col-lg-4">
+      <div class="cq-card h-100 d-flex flex-column justify-content-between p-4">
+        <div>
+          <span class="badge bg-secondary mb-2">Academic / Small Team</span>
+          <h3 class="h4 mb-1">{{ starter.name }}</h3>
+          <p class="cq-muted small mb-3">Ideal for small departments and academic batches.</p>
+
+          <div class="display-6 fw-bold text-white mb-1">
+            ${{ starter.price_per_seat_annual }} <small class="fs-6 cq-muted fw-normal">/ seat / year</small>
+          </div>
+          <div class="badge bg-dark text-info mb-4">Includes {{ starter.seats }} training seats</div>
+
+          <ul class="list-unstyled small mb-4">
+            {% for feat in starter.features %}
+              <li class="mb-2 d-flex align-items-start gap-2">
+                <span class="text-info">✔</span>
+                <span>{{ feat }}</span>
+              </li>
+            {% endfor %}
+            <li class="mb-2 d-flex align-items-start gap-2 text-muted">
+              <span>✔</span>
+              <span>Organization Code enrollment</span>
+            </li>
+          </ul>
+        </div>
+
+        <a href="{{ url_for('organization.register_organization', plan='starter') }}" class="btn btn-outline-info w-100">
+          Select Starter Plan
+        </a>
+      </div>
+    </div>
+
+    <!-- PROFESSIONAL PLAN (FEATURED) -->
+    <div class="col-lg-4">
+      <div class="cq-card h-100 d-flex flex-column justify-content-between p-4 border-primary position-relative" style="background: linear-gradient(180deg, rgba(14, 165, 233, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);">
+        <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-1">MOST POPULAR</span>
+        <div>
+          <span class="badge bg-info text-dark mb-2">Campus / Corporate</span>
+          <h3 class="h4 mb-1 text-white">{{ professional.name }}</h3>
+          <p class="cq-muted small mb-3">For universities, colleges, and enterprise companies.</p>
+
+          <div class="display-6 fw-bold text-info mb-1">
+            ${{ professional.price_per_seat_annual }} <small class="fs-6 cq-muted fw-normal">/ seat / year</small>
+          </div>
+          <div class="badge bg-dark text-cyan mb-4">Includes {{ professional.seats }} training seats</div>
+
+          <ul class="list-unstyled small mb-4">
+            {% for feat in professional.features %}
+              <li class="mb-2 d-flex align-items-start gap-2">
+                <span class="text-cyan fw-bold">✔</span>
+                <span class="text-white">{{ feat }}</span>
+              </li>
+            {% endfor %}
+            <li class="mb-2 d-flex align-items-start gap-2">
+              <span class="text-cyan fw-bold">✔</span>
+              <span class="text-white">Eligible-Member CSV Registry Import</span>
+            </li>
+            <li class="mb-2 d-flex align-items-start gap-2">
+              <span class="text-cyan fw-bold">✔</span>
+              <span class="text-white">HR-Assisted Account Recovery</span>
+            </li>
+          </ul>
+        </div>
+
+        <a href="{{ url_for('organization.register_organization', plan='professional') }}" class="btn btn-cq btn-cq-primary w-100 py-2">
+          Select Professional Plan
+        </a>
+      </div>
+    </div>
+
+    <!-- ENTERPRISE PLAN -->
+    <div class="col-lg-4">
+      <div class="cq-card h-100 d-flex flex-column justify-content-between p-4">
+        <div>
+          <span class="badge bg-purple mb-2">Multi-Campus / Enterprise</span>
+          <h3 class="h4 mb-1">{{ enterprise.name }}</h3>
+          <p class="cq-muted small mb-3">Customized governance for large multinational organizations.</p>
+
+          <div class="display-6 fw-bold text-white mb-1">
+            ${{ enterprise.price_per_seat_annual }} <small class="fs-6 cq-muted fw-normal">/ seat / year</small>
+          </div>
+          <div class="badge bg-dark text-purple mb-4">Includes {{ enterprise.seats }}+ training seats</div>
+
+          <ul class="list-unstyled small mb-4">
+            {% for feat in enterprise.features %}
+              <li class="mb-2 d-flex align-items-start gap-2">
+                <span class="text-purple">✔</span>
+                <span>{{ feat }}</span>
+              </li>
+            {% endfor %}
+            <li class="mb-2 d-flex align-items-start gap-2 text-muted">
+              <span>✔</span>
+              <span>Dedicated Account Manager &amp; Custom Modules</span>
+            </li>
+          </ul>
+        </div>
+
+        <a href="{{ url_for('organization.register_organization', plan='enterprise') }}" class="btn btn-outline-light w-100">
+          Select Enterprise Plan
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTATION & CONTACT FORM -->
+<section id="quote-form" class="mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="cq-card p-4 p-md-5">
+        <div class="text-center mb-4">
+          <span class="fs-1" aria-hidden="true">📋🏢</span>
+          <h2 class="h3 mb-2">Request an Enterprise Training Quotation</h2>
+          <p class="cq-muted small mb-0">
+            Need custom billing, purchase orders, or campus-wide seat licensing? Our corporate training team will generate a formal proposal.
+          </p>
+        </div>
+
+        <form method="post" action="{{ url_for('organization.request_quotation') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label" for="company">Organization / University Name <span class="text-danger">*</span></label>
+              <input type="text" id="company" name="company" class="form-control" required placeholder="e.g. Apex Global Tech or National University">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="contact">Contact Person Name</label>
+              <input type="text" id="contact" name="contact" class="form-control" placeholder="e.g. Jane Doe, Training Director">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label" for="email">Work / Official Email <span class="text-danger">*</span></label>
+              <input type="email" id="email" name="email" class="form-control" required placeholder="training@institution.edu">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="seats">Estimated Number of Learners / Seats</label>
+              <select id="seats" name="seats" class="form-select">
+                <option value="50-150">50 – 150 Seats (Starter)</option>
+                <option value="150-500" selected>150 – 500 Seats (Professional)</option>
+                <option value="500-2500">500 – 2,500 Seats (Enterprise)</option>
+                <option value="2500+">2,500+ Seats (Campus-wide / Global)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="notes">Training Objectives &amp; Special Requirements</label>
+            <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Tell us about your timeline, specific compliance targets (ISO, SOC2, FERPA), or custom social engineering scenarios..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-cq btn-cq-primary w-100 py-2 fs-6">
+            Submit Quotation Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

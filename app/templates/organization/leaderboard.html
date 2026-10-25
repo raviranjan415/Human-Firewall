@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ org.name }} — Leaderboard | Human Firewall{% endblock %}
+
+{% block content %}
+<div class="cq-hero cq-fade-in mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div>
+      <span class="cq-badge cq-badge-purple mb-2">🏢 Organization Leaderboard</span>
+      <h1 class="display-6 cq-title-gradient mb-1">{{ org.name }} Leaderboard</h1>
+      <p class="cq-muted mb-0">
+        Internal cyber resilience rankings scoped strictly to active members of <strong>{{ org.name }}</strong>.
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('organization.workspace_overview', org_id=org.id) }}" class="btn btn-cq btn-cq-ghost">
+        &larr; Back to Workspace
+      </a>
+      {% if current_user.is_org_admin_for(org.id) or current_user.is_admin %}
+      <a href="{{ url_for('organization.workspace_dashboard', org_id=org.id) }}" class="btn btn-cq btn-cq-primary">
+        ⚙️ HR Dashboard
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-12">
+    <div class="cq-card">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+            <tr class="text-secondary small">
+              <th scope="col" style="width: 80px;">Rank</th>
+              <th scope="col">Member</th>
+              <th scope="col">Streak</th>
+              <th scope="col" class="text-end">Total XP</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in rows %}
+            <tr class="{% if user.id == current_user.id %}table-active border-primary{% endif %}">
+              <td>
+                {% if loop.index == 1 %}
+                  <span class="badge bg-warning text-dark fs-6">🥇 1</span>
+                {% elif loop.index == 2 %}
+                  <span class="badge bg-secondary text-light fs-6">🥈 2</span>
+                {% elif loop.index == 3 %}
+                  <span class="badge bg-danger text-light fs-6">🥉 3</span>
+                {% else %}
+                  <span class="text-secondary fw-bold px-2">#{{ loop.index }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="avatar-circle bg-dark border border-secondary rounded-circle d-flex align-items-center justify-content-center text-uppercase fw-bold" style="width: 38px; height: 38px;">
+                    {{ user.display_name[:2] if user.display_name else user.username[:2] }}
+                  </div>
+                  <div>
+                    <div class="fw-bold">
+                      {{ user.display_name or user.username }}
+                      {% if user.id == current_user.id %}
+                        <span class="badge bg-primary ms-1">You</span>
+                      {% endif %}
+                    </div>
+                    <div class="small text-secondary">{{ user.username }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="text-warning fw-bold">{{ user.current_streak }} 🔥</span>
+              </td>
+              <td class="text-end">
+                <span class="cq-stat-value fs-5 text-info">{{ user.xp_total }}</span>
+                <span class="text-secondary small">XP</span>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center py-4 text-secondary">
+                No active member rankings available yet. Complete labs to earn XP!
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

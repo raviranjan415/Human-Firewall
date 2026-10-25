@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}{{ t_content(incident, 'title') }}{% endblock %}
+
+{% set conf_class = {
+  'confirmed': 'cq-badge-green',
+  'reported': 'cq-badge-cyan',
+  'interpretation': 'cq-badge-orange',
+  'disputed': 'cq-badge-red'
+} %}
+
+{% macro section_block(title, value) %}
+  {% if value %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">{{ title }}</h2>
+        <p class="mb-0" style="white-space: pre-line;">{{ value }}</p>
+      </div>
+    </section>
+  {% endif %}
+{% endmacro %}
+
+{% block content %}
+<article>
+  <header class="cq-hero cq-fade-in mb-4">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+      <span class="cq-badge">{{ incident.year }}</span>
+      <span class="cq-badge {{ conf_class.get(incident.confidence, 'cq-badge-cyan') }}">
+        {{ incident.confidence|capitalize }}
+      </span>
+    </div>
+    <h1 class="cq-title-gradient display-6 mb-2">{{ t_content(incident, 'title') }}</h1>
+    <p class="cq-muted mb-2">
+      {% if incident.organization %}{{ incident.organization }}{% endif %}
+      {% if incident.sector %}· {{ incident.sector }}{% endif %}
+      {% if incident.category %}· {{ incident.category }}{% endif %}
+      {% if incident.attack_type %}· {{ incident.attack_type }}{% endif %}
+    </p>
+    {% if incident.uncertainty_note_en or incident.uncertainty_note_hi %}
+      <div class="cq-alert cq-alert-info mb-0" role="note">
+        {{ t_content(incident, 'uncertainty_note') }}
+      </div>
+    {% endif %}
+  </header>
+
+  {{ section_block('What happened', t_content(incident, 'what_happened')) }}
+  {{ section_block('How it worked', t_content(incident, 'how_it_worked')) }}
+  {{ section_block('Weaknesses exploited', t_content(incident, 'weaknesses')) }}
+  {{ section_block('Consequences', t_content(incident, 'consequences')) }}
+  {{ section_block('How it was discovered', t_content(incident, 'discovery')) }}
+  {{ section_block('Response', t_content(incident, 'response')) }}
+  {{ section_block(t('get.remediation'), t_content(incident, 'remediation')) }}
+  {{ section_block('Precautions everyone should take', t_content(incident, 'precautions')) }}
+
+  {% set lessons = t_content(incident, 'lessons') %}
+  {% if lessons %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Lessons</h2>
+        {% if lessons.startswith('[') %}
+          <div class="cq-pre">{{ lessons }}</div>
+        {% else %}
+          <p class="mb-0" style="white-space: pre-line;">{{ lessons }}</p>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% set technical = t_content(incident, 'technical_detail') %}
+  {% if technical %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Technical detail for advanced learners</h2>
+        <details>
+          <summary>Show technical detail (advanced)</summary>
+          <p class="mt-2 mb-0" style="white-space: pre-line;">{{ technical }}</p>
+        </details>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if incident.sources %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-3">Sources</h2>
+        <ul class="list-unstyled mb-0">
+          {% for source in incident.sources %}
+            <li class="py-2 border-bottom">
+              <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>
+              {% if source.publisher %}<span class="cq-muted small">— {{ source.publisher }}</span>{% endif %}
+              {% if source.published_on %}<span class="cq-muted small">· {{ source.published_on }}</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="mb-4">
+    <div class="cq-card">
+      <h2 class="h5 mb-2">Our honesty commitment</h2>
+      <p class="cq-muted mb-2">
+        This platform distinguishes confirmed facts from allegations, and we never invent a source.
+        Every claim in this case study should be traceable to the sources listed above.
+      </p>
+      <p class="cq-muted mb-0">
+        {% if incident.last_reviewed_on %}
+          Last reviewed on {{ incident.last_reviewed_on }}, so you know when this case was last checked.
+        {% else %}
+          This case is awaiting its next scheduled review.
+        {% endif %}
+      </p>
+    </div>
+  </section>
+</article>
+{% endblock %}

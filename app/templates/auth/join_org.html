@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Join Organization Workspace · Human Firewall{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12" style="max-width: 520px;">
+    <div class="cq-card cq-fade-in">
+      <div class="text-center mb-3">
+        <span class="fs-1" aria-hidden="true">🏢🤝</span>
+        <h1 class="h3 mb-1">Link an Organization Workspace</h1>
+        <p class="cq-muted small mb-0">Logged in as <b>{{ current_user.name }}</b> ({{ current_user.email }})</p>
+      </div>
+
+      <div class="alert cq-alert cq-alert-info small mb-4">
+        <strong>Preserve Your Learning Progress:</strong> Linking an organization connects you to your employer's or university's training workspace without creating a duplicate account. Your personal XP, learning streaks, and certificates remain intact and independent.
+      </div>
+
+      <form method="post" action="{{ url_for('auth.join_org') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.org_code.id }}">Organization Code <span class="text-danger">*</span></label>
+          {{ form.org_code(class="form-control text-uppercase font-monospace", placeholder="e.g. HF-ORG-7K29Q") }}
+          <div class="form-text cq-muted small">Ask your HR team or T&P coordinator for your organization code.</div>
+          {% for error in form.org_code.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.registration_id.id }}">Registration ID / Employee ID <span class="text-danger">*</span></label>
+          {{ form.registration_id(class="form-control font-monospace", placeholder="e.g. REG-2026-001 or EMP-4489") }}
+          <div class="form-text cq-muted small">Your unique institutional identifier pre-registered by HR.</div>
+          {% for error in form.registration_id.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="{{ form.passcode.id }}">Enrollment Passcode <span class="cq-muted small">(if required by your organization)</span></label>
+          {{ form.passcode(class="form-control", placeholder="Leave blank if not required") }}
+          {% for error in form.passcode.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-cq btn-cq-primary w-100 py-2 fs-6">
+          Verify Eligibility &amp; Connect Workspace
+        </button>
+      </form>
+
+      <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-link text-decoration-none small text-muted">
+          ← Return to Personal Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

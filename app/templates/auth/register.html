@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ t('auth.register_title') }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12" style="max-width: 520px;">
+    <div class="cq-card cq-fade-in">
+      <p class="cq-eyebrow mb-1">{{ t('brand.name') }}</p>
+      <h1 class="h3 mb-4">{{ t('auth.register_title') }}</h1>
+
+      <form method="post" action="{{ url_for('auth.register') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.username.id }}">{{ t('auth.username') }}</label>
+          {{ form.username(class="form-control", autocomplete="username") }}
+          {% for error in form.username.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.email.id }}">{{ t('auth.email') }}</label>
+          {{ form.email(class="form-control", autocomplete="email") }}
+          {% for error in form.email.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.display_name.id }}">{{ t('auth.display_name') }}</label>
+          {{ form.display_name(class="form-control", autocomplete="nickname") }}
+          {% for error in form.display_name.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.password.id }}">{{ t('auth.password') }}</label>
+          {{ form.password(class="form-control", autocomplete="new-password") }}
+          <div class="form-text cq-muted">At least 10 characters, including a letter and a number.</div>
+          {% for error in form.password.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.confirm_password.id }}">{{ t('auth.confirm_password') }}</label>
+          {{ form.confirm_password(class="form-control", autocomplete="new-password") }}
+          {% for error in form.confirm_password.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-check mb-4">
+          {{ form.accept_terms(class="form-check-input") }}
+          <label class="form-check-label" for="{{ form.accept_terms.id }}">
+            I accept the <a href="{{ url_for('public.terms') }}">terms of use</a> and the
+            <a href="{{ url_for('public.privacy') }}">privacy policy</a>.
+          </label>
+          {% for error in form.accept_terms.errors %}
+            <div class="cq-alert cq-alert-error small mt-2 py-1 px-2" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-cq btn-cq-primary w-100">{{ t('nav.register') }}</button>
+      </form>
+
+      <p class="cq-muted small mt-4 mb-0">
+        {{ t('auth.have_account') }}
+        <a href="{{ url_for('auth.login') }}">{{ t('nav.login') }}</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

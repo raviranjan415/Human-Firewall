@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Users — {{ t('nav.admin') }}{% endblock %}
+
+{% set role_class = {
+  'learner': 'cq-badge-cyan',
+  'instructor': 'cq-badge-purple',
+  'admin': 'cq-badge-orange'
+} %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('nav.admin') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">Users</h1>
+  <p class="cq-muted mb-0">
+    Search accounts and enable or disable access. Disabling a user keeps their records but prevents
+    them from signing in. You cannot disable your own account.
+  </p>
+</section>
+
+<section aria-labelledby="user-filter-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="user-filter-heading" class="h5 mb-3">{{ t('get.filter') }}</h2>
+    <form method="get" action="{{ url_for('admin.users') }}">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-5">
+          <label class="form-label" for="user-q">{{ t('get.search') }}</label>
+          <input class="form-control" type="search" id="user-q" name="q"
+                 value="{{ selected.q }}" placeholder="Username or email">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="user-role">Role</label>
+          <select class="form-select" id="user-role" name="role">
+            <option value="">{{ t('get.all') }}</option>
+            {% for role in roles %}
+              <option value="{{ role }}" {% if selected.role == role %}selected{% endif %}>{{ role|capitalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-2">
+          <button type="submit" class="btn btn-cq btn-cq-primary w-100">{{ t('get.filter') }}</button>
+        </div>
+        <div class="col-12 col-md-2">
+          <a class="btn btn-cq btn-cq-ghost w-100" href="{{ url_for('admin.users') }}">{{ t('get.clear_filters') }}</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section aria-labelledby="user-table-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="user-table-heading" class="visually-hidden">User accounts</h2>
+    {% if users %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">{{ users|length }} account{{ '' if users|length == 1 else 's' }} listed</caption>
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">{{ t('auth.email') }}</th>
+              <th scope="col">Role</th>
+              <th scope="col">{{ t('dash.level') }}</th>
+              <th scope="col">{{ t('dash.total_xp') }}</th>
+              <th scope="col">Status</th>
+              <th scope="col">Created</th>
+              <th scope="col">Last login</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <th scope="row" class="fw-normal">
+                  <div>{{ user.name }}</div>
+                  <div class="cq-muted small">@{{ user.username }}</div>
+                </th>
+                <td>{{ user.email }}</td>
+                <td>
+                  <span class="cq-badge {{ role_class.get(user.role_name, 'cq-badge-cyan') }}">
+                    {{ user.role_name|capitalize }}
+                  </span>
+                </td>
+                <td>{{ user.level }}</td>
+                <td>{{ user.xp_total }}</td>
+                <td>
+                  {% if user.is_active %}
+                    <span class="cq-badge cq-badge-green">Active</span>
+                  {% else %}
+                    <span class="cq-badge cq-badge-red">Disabled</span>
+                  {% endif %}
+                </td>
+                <td>{{ user.created_at.strftime('%d %b %Y') if user.created_at else '—' }}</td>
+                <td>{{ user.last_login_at.strftime('%d %b %Y %H:%M') if user.last_login_at else 'Never' }}</td>
+                <td>
+                  {% if user.id == current_user.id %}
+                    <span class="cq-muted small">You</span>
+                  {% else %}
+                    <form method="post" action="{{ url_for('admin.toggle_user', user_id=user.id) }}">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="q" value="{{ selected.q }}">
+                      <input type="hidden" name="role" value="{{ selected.role }}">
+                      <button type="submit"
+                              class="btn btn-cq btn-sm {{ 'btn-cq-danger' if user.is_active else 'btn-cq-success' }}"
+                              aria-label="{{ 'Disable' if user.is_active else 'Enable' }} account {{ user.name }}">
+                        {{ 'Disable' if user.is_active else 'Enable' }}
+                      </button>
+                    </form>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

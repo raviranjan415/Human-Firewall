@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Audit log — {{ t('nav.admin') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('nav.admin') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">Audit log</h1>
+  <p class="cq-muted mb-0">
+    This log is append-only. It records significant administrative and security-relevant actions, and
+    it never stores passwords, session tokens or unnecessary personal data.
+  </p>
+</section>
+
+<section aria-labelledby="audit-table-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="audit-table-heading" class="h5 mb-3">Recent activity</h2>
+    {% if entries %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">Most recent 200 audit entries, newest first</caption>
+          <thead>
+            <tr>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Action</th>
+              <th scope="col">Target type</th>
+              <th scope="col">Target ID</th>
+              <th scope="col">IP address</th>
+              <th scope="col">Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in entries %}
+              <tr>
+                <td>{{ entry.created_at.strftime('%d %b %Y %H:%M:%S') if entry.created_at else '—' }}</td>
+                <td>{{ entry.action }}</td>
+                <td>{{ entry.target_type or '—' }}</td>
+                <td>{{ entry.target_id or '—' }}</td>
+                <td>{{ entry.ip_address or '—' }}</td>
+                <td>
+                  {% if entry.detail_json %}
+                    <div class="cq-pre">{{ entry.detail_json }}</div>
+                  {% else %}
+                    <span class="cq-muted">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">No audit entries recorded yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section aria-labelledby="audit-note-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="audit-note-heading" class="h5 mb-2">What this log contains</h2>
+    <ul class="cq-muted mb-0">
+      <li class="mb-1">It is append-only: entries are not edited or deleted.</li>
+      <li class="mb-1">It records significant administrative and security-relevant actions.</li>
+      <li class="mb-0">It never stores passwords, session tokens or unnecessary personal data.</li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

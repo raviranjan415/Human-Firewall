@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}{{ story.title }}{% endblock %}
+
+{% block content %}
+<article>
+  <header class="cq-hero cq-fade-in mb-4">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+      {% if story.is_breaking %}
+        <span class="cq-badge cq-badge-red">Breaking</span>
+      {% endif %}
+      {% if story.source %}
+        <span class="cq-badge">{{ story.source.name }}</span>
+      {% endif %}
+      {% if story.published_at %}
+        <span class="cq-muted small">{{ story.published_at.strftime('%d %b %Y') }}</span>
+      {% elif story.fetched_at %}
+        <span class="cq-muted small">Fetched {{ story.fetched_at.strftime('%d %b %Y') }}</span>
+      {% endif %}
+    </div>
+    <h1 class="cq-title-gradient display-6 mb-3">{{ story.title }}</h1>
+    {% if story.url %}
+      <a class="btn btn-cq btn-cq-primary" href="{{ story.url }}"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="Read the original article: {{ story.title }} (opens in a new tab)">
+        Read the original article
+      </a>
+    {% endif %}
+  </header>
+
+  {% if story.summary_en or story.summary_hi %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Summary</h2>
+        <p class="mb-0">{{ story.summary_en or story.summary_hi or '' }}</p>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if story.what_happened_en or story.what_happened_hi %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">What happened</h2>
+        <p class="mb-0" style="white-space: pre-line;">{{ story.what_happened_en or story.what_happened_hi or '' }}</p>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if story.who_is_affected_en or story.who_is_affected_hi %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Who is affected</h2>
+        <p class="mb-0" style="white-space: pre-line;">{{ story.who_is_affected_en or story.who_is_affected_hi or '' }}</p>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if story.why_it_matters_en or story.why_it_matters_hi %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Why it matters</h2>
+        <p class="mb-0" style="white-space: pre-line;">{{ story.why_it_matters_en or story.why_it_matters_hi or '' }}</p>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if story.what_to_do_en or story.what_to_do_hi %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">What to do</h2>
+        <p class="mb-0" style="white-space: pre-line;">{{ story.what_to_do_en or story.what_to_do_hi or '' }}</p>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if story.related_lab_id or story.related_lesson_id %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h5 mb-2">Ready to practise?</h2>
+        <p class="cq-muted">Turn what you just read into a habit.</p>
+        <div class="d-flex flex-wrap gap-2">
+          {% if story.related_lab_id %}
+            <a class="btn btn-cq btn-cq-primary" href="{{ url_for('labs.detail', lab_id=story.related_lab_id) }}">
+              {{ t('get.start_lab') }}
+            </a>
+          {% endif %}
+          {% if story.related_lesson_id %}
+            <a class="btn btn-cq btn-cq-purple" href="{{ url_for('learning.video_detail', video_id=story.related_lesson_id) }}">
+              {{ t('get.watch_videos') }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="mb-4">
+    <div class="cq-card">
+      <h2 class="h5 mb-2">Related stories</h2>
+      {% if related %}
+        <ul class="list-unstyled mb-0">
+          {% for item in related %}
+            <li class="py-2 border-bottom">
+              <a href="{{ url_for('news.detail', news_id=item.id) }}">{{ item.title }}</a>
+              {% if item.source %}<span class="cq-muted small">— {{ item.source.name }}</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="cq-card">
+      <h2 class="h5 mb-2">Our honesty commitment</h2>
+      <p class="cq-muted mb-0">
+        This platform never invents news. We keep the original publication date and source, and we show
+        the story exactly as it was reported rather than rewriting it into something more dramatic.
+      </p>
+    </div>
+  </section>
+</article>
+{% endblock %}

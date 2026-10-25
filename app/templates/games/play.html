@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+{% block title %}{{ t_content(game, 'title') }} · Human Firewall Tricky Game{% endblock %}
+
+{% block content %}
+<!-- Battle Arena Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-1 fw-bold">🎮 System vs. Human Cyber Battle</span>
+    <h1 class="cq-title-gradient h3 mb-0">{{ t_content(game, 'title') }}</h1>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <div class="form-check form-switch mb-0 me-2">
+      <input class="form-check-input" type="checkbox" id="gameSoundToggle" checked>
+      <label class="form-check-label text-secondary small" for="gameSoundToggle">Sound FX 🔊</label>
+    </div>
+    <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('games.index') }}">&larr; Games Hub</a>
+  </div>
+</div>
+
+<!-- Human vs. System Battle HUD -->
+<section class="cq-card mb-4 border-primary shadow-lg p-3 p-sm-4">
+  <div class="row align-items-center g-3">
+    <!-- Player 1: Human Defender -->
+    <div class="col-md-4 text-center text-md-start">
+      <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3">
+        <div class="cq-brand-mark bg-info text-dark rounded-circle fs-3 shadow" style="width: 50px; height: 50px;">
+          🛡️
+        </div>
+        <div>
+          <div class="fw-bold text-light">{{ current_user.display_name or current_user.username }}</div>
+          <div class="small text-info">Human Defender <span id="comboBadge" class="badge bg-success ms-1" style="display: none;">Combo x2!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Score & Round Countdown -->
+    <div class="col-md-4 text-center">
+      <div class="d-flex justify-content-center align-items-baseline gap-2 mb-1">
+        <span class="fs-4 fw-bold text-warning" id="game-score">0</span>
+        <span class="text-secondary small text-uppercase fw-bold">XP Points</span>
+      </div>
+      <div class="cq-timer-bar-wrap">
+        <div class="cq-timer-bar" id="roundTimer"></div>
+      </div>
+      <div class="d-flex justify-content-between small text-secondary">
+        <span id="game-progress" aria-live="polite">Round 1 of {{ scenario_count }}</span>
+        <span id="timerText">15s</span>
+      </div>
+    </div>
+
+    <!-- Player 2: System AI Scammer -->
+    <div class="col-md-4 text-center text-md-end">
+      <div class="d-flex align-items-center justify-content-center justify-content-md-end gap-3">
+        <div>
+          <div class="fw-bold text-danger">Scam Engine 2.0</div>
+          <div class="small text-secondary" id="aiStatus">Crafting Tricky Bait...</div>
+        </div>
+        <div class="cq-brand-mark bg-danger text-white rounded-circle fs-3 shadow" style="width: 50px; height: 50px;">
+          🤖
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Active Scenario Interactive Simulator -->
+<section class="cq-card mb-4 p-0 overflow-hidden border-secondary shadow-lg">
+  <div class="cq-incident-header d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-2">
+      <span class="cq-threat-live-dot"></span>
+      <span class="fw-bold text-light small text-uppercase">Incoming Unverified Communication</span>
+    </div>
+    <button type="button" id="hintToggleBtn" class="btn btn-outline-warning btn-sm py-0 px-2 fs-7">
+      🔍 Clue Radar
+    </button>
+  </div>
+
+  <div class="p-3 p-sm-4" id="scenario-box">
+    <!-- Rendered dynamically by JavaScript -->
+  </div>
+</section>
+
+<!-- Game Results Screen (Revealed on Completion) -->
+<section class="cq-card p-4 text-center border-success shadow-lg" id="game-result" style="display:none" aria-live="polite" tabindex="-1">
+  <div class="display-3 mb-2" id="result-icon">🏆</div>
+  <h2 class="h3 fw-bold mb-2 cq-title-gradient">{{ t('game.result') }}</h2>
+  <p class="fs-5 mb-2">
+    Accuracy: <strong id="result-summary" class="text-warning"></strong> Correct
+  </p>
+  <div class="badge bg-success fs-6 px-4 py-2 mb-3" id="result-note"></div>
+  
+  <div class="cq-card max-w-lg mx-auto mb-4 text-start p-3 bg-dark border-secondary">
+    <h3 class="h6 fw-bold text-info mb-2">💡 Human Firewall Defense Debrief</h3>
+    <p class="cq-muted small mb-0">{{ t_content(game, 'debrief') or 'Legitimate organizations never force panic or ask for OTPs, UPI PINs, or urgent gift card purchases. Always pause and verify.' }}</p>
+  </div>
+
+  <div class="d-flex justify-content-center gap-3">
+    <a class="btn btn-cq btn-cq-primary px-4" href="{{ url_for('games.play', slug=game.slug) }}">{{ t('game.replay') }}</a>
+    <a class="btn btn-cq btn-cq-ghost px-4" href="{{ url_for('games.index') }}">More Games &rarr;</a>
+    <a class="btn btn-cq btn-cq-cyan px-4" href="{{ url_for('dashboard.index') }}">Dashboard &rarr;</a>
+  </div>
+</section>
+
+<!-- Live Threat Intelligence Ticker (Real-World Awareness) -->
+<div class="cq-threat-ticker shadow mt-4">
+  <span class="cq-threat-live-dot"></span>
+  <span class="badge bg-danger small">LIVE THREAT FEED</span>
+  <span class="text-secondary small text-truncate" id="threatTickerText">
+    Trending Scam Alert: Fraudulent 'Digital Arrest' video calls impersonating law enforcement reported nationwide.
+  </span>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="application/json" id="game-data">{{ scenarios_json|tojson }}</script>
+<script type="application/json" id="game-labels">{{ {
+  'isThreat': '🚨 SCAM / PHISHING DETECTED',
+  'isSafe': '✅ VERIFIED SAFE & LEGITIMATE',
+  'next': 'Next Challenge ➔',
+  'warningSigns': '🔍 Caught the Trick',
+  'explanation': 'Key Takeaway'
+}|tojson }}</script>
+
+<script>
+(function () {
+  "use strict";
+
+  var scenarios = window.CQ.readJson(document.getElementById('game-data')) || [];
+  var labels = window.CQ.readJson(document.getElementById('game-labels')) || {};
+  var slug = {{ game.slug|tojson }};
+  var answerUrl = '/api/games/' + encodeURIComponent(slug) + '/answer';
+  var completeUrl = '/api/games/' + encodeURIComponent(slug) + '/complete';
+
+  var total = scenarios.length;
+  var progressEl = document.getElementById('game-progress');
+  var scoreEl = document.getElementById('game-score');
+  var box = document.getElementById('scenario-box');
+  var resultEl = document.getElementById('game-result');
+  var timerBar = document.getElementById('roundTimer');
+  var timerText = document.getElementById('timerText');
+  var aiStatus = document.getElementById('aiStatus');
+  var comboBadge = document.getElementById('comboBadge');
+
+  var score = 0;
+  var correctCount = 0;
+  var currentStreak = 0;
+  var index = 0;
+  var startedAt = Date.now();
+  var timerInterval = null;
+  var timeLeft = 15;
+
+  // Web Audio Synthesizer for Clean Game Sound Effects
+  var audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+  }
+
+  function playFx(type) {
+    var toggle = document.getElementById('gameSoundToggle');
+    if (!toggle || !toggle.checked) return;
+    try {
+      var ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'tick') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
+      } else if (type === 'win') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.2); // A5
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } else if (type === 'lose') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      }
+    } catch (e) {}
+  }
+
+  // Live Threat Ticker Items
+  var tickerItems = [
+    "Trending Scam Alert: Fake electricity bill disconnection SMS asking to call an unknown number.",
+    "Banking Fraud Watch: Scammers creating lookalike domains like 'sbi-reward-points.com' to harvest OTPs.",
+    "UPI Caution: Never enter your UPI PIN to 'receive' cashback or refunds. PIN is strictly to send money.",
+    "Delivery Scam Warning: Fake courier SMS claiming your parcel is detained due to ₹49 unpaid customs fee."
+  ];
+  var tickerIndex = 0;
+  setInterval(function () {
+    tickerIndex = (tickerIndex + 1) % tickerItems.length;
+    var el = document.getElementById('threatTickerText');
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(function () {
+        el.textContent = tickerItems[tickerIndex];
+        el.style.opacity = '1';
+      }, 300);
+    }
+  }, 6000);
+
+  function startRoundTimer() {
+    clearInterval(timerInterval);
+    timeLeft = 15;
+    timerBar.className = 'cq-timer-bar';
+    timerBar.style.width = '100%';
+    timerText.textContent = timeLeft + 's';
+
+    timerInterval = setInterval(function () {
+      timeLeft -= 1;
+      var pct = (timeLeft / 15) * 100;
+      timerBar.style.width = Math.max(0, pct) + '%';
+      timerText.textContent = timeLeft + 's';
+
+      if (timeLeft <= 5) {
+        timerBar.className = 'cq-timer-bar warning';
+        playFx('tick');
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        // Time ran out!
+        handleTimeout();
+      }
+    }, 1000);
+  }
+
+  function handleTimeout() {
+    aiStatus.textContent = '🤖 Clock Ran Out! Trap Sprung!';
+    aiStatus.className = 'small text-danger fw-bold';
+    playFx('lose');
+    currentStreak = 0;
+    comboBadge.style.display = 'none';
+
+    var card = box.querySelector('.cq-scenario');
+    if (card) {
+      var fb = document.createElement('div');
+      fb.className = 'cq-teach-card hint mt-3';
+      fb.innerHTML = '<strong>⏰ Time Expired!</strong> In fast-paced attacks, criminals pressure you with deadlines. Take a breath, analyze the clues, and click below to continue.';
+      card.appendChild(fb);
+      addNextButton(card);
+    }
+  }
+
+  function setEnabled(nodes, enabled) {
+    Array.prototype.slice.call(nodes).forEach(function (n) { n.disabled = !enabled; });
+  }
+
+  function addNextButton(card) {
+    var wrap = document.createElement('div');
+    wrap.className = 'mt-3 text-end';
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-cq btn-cq-primary px-4 fw-bold shadow';
+    button.textContent = labels.next;
+    button.addEventListener('click', function () {
+      index += 1;
+      render();
+    });
+    wrap.appendChild(button);
+    card.appendChild(wrap);
+  }
+
+  function render() {
+    if (index >= total) {
+      finalise();
+      return;
+    }
+
+    clearInterval(timerInterval);
+    var scenario = scenarios[index];
+    progressEl.textContent = 'Round ' + (index + 1) + ' of ' + total;
+    box.innerHTML = '';
+
+    aiStatus.textContent = '🤖 Analyzing your defense...';
+    aiStatus.className = 'small text-warning';
+
+    var card = document.createElement('div');
+    card.className = 'cq-scenario cq-fade-in';
+
+    // Device Mockup Container
+    var mockup = document.createElement('div');
+    mockup.className = 'p-3 rounded-3 mb-3 bg-dark border border-secondary shadow-sm';
+
+    // Simulated Sender Header
+    var senderRow = document.createElement('div');
+    senderRow.className = 'd-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary';
+    
+    var senderName = document.createElement('div');
+    senderName.className = 'd-flex align-items-center gap-2';
+    senderName.innerHTML = '<span class="badge bg-primary rounded-pill">' + (scenario.type ? scenario.type.toUpperCase() : 'MSG') + '</span> <strong class="text-light">' + (scenario.sender || 'Unknown Contact') + '</strong>';
+
+    var timeBadge = document.createElement('span');
+    timeBadge.className = 'text-secondary small';
+    timeBadge.textContent = 'Just Now · Urgent Alert';
+
+    senderRow.appendChild(senderName);
+    senderRow.appendChild(timeBadge);
+    mockup.appendChild(senderRow);
+
+    if (scenario.subject) {
+      var subject = document.createElement('div');
+      subject.className = 'fw-bold text-info mb-2 fs-6';
+      subject.textContent = scenario.subject;
+      mockup.appendChild(subject);
+    }
+
+    if (scenario.body) {
+      var bodyText = document.createElement('div');
+      bodyText.className = 'p-3 rounded-2 text-light font-monospace small bg-black bg-opacity-50 border border-secondary border-opacity-50 mb-2';
+      bodyText.style.whiteSpace = 'pre-wrap';
+      bodyText.textContent = scenario.body;
+      mockup.appendChild(bodyText);
+    }
+
+    card.appendChild(mockup);
+
+    // Interactive Action Controls
+    var controls = document.createElement('div');
+    controls.className = 'd-grid gap-2';
+    card.appendChild(controls);
+    box.appendChild(card);
+
+    var answered = false;
+    startRoundTimer();
+
+    function submitChoice(payload, btn) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+      setEnabled(controls.querySelectorAll('button'), false);
+
+      window.CQ.post(answerUrl, payload)
+        .then(function (res) {
+          if (!res.ok) {
+            answered = false;
+            setEnabled(controls.querySelectorAll('button'), true);
+            window.CQ.toast('Could not verify answer. Please retry.', 'error');
+            return;
+          }
+
+          var body = res.body || {};
+          var isCorrect = body.correct;
+
+          if (isCorrect) {
+            btn.classList.add('btn-success');
+            playFx('win');
+            correctCount += 1;
+            currentStreak += 1;
+            score += (body.xp_value || 25);
+            scoreEl.textContent = String(score);
+
+            aiStatus.textContent = '🤖 Outsmarted! Trick Exposed!';
+            aiStatus.className = 'small text-success fw-bold';
+
+            if (currentStreak >= 2) {
+              comboBadge.style.display = 'inline-block';
+              comboBadge.textContent = 'Combo x' + currentStreak + ' 🔥';
+            }
+          } else {
+            btn.classList.add('btn-danger');
+            playFx('lose');
+            currentStreak = 0;
+            comboBadge.style.display = 'none';
+
+            aiStatus.textContent = '🤖 Trap Sprung! System Scored.';
+            aiStatus.className = 'small text-danger fw-bold';
+          }
+
+          // Show Rich Feedback
+          var fb = document.createElement('div');
+          fb.className = 'cq-teach-card ' + (isCorrect ? 'success' : 'hint');
+          
+          var header = document.createElement('div');
+          header.className = 'd-flex align-items-center gap-2 mb-2';
+          header.innerHTML = isCorrect ? '<span class="fs-4">🛡️</span><strong class="text-success fs-6">Excellently Spotted!</strong>' : '<span class="fs-4">⚠️</span><strong class="text-warning fs-6">You Took the Bait!</strong>';
+          fb.appendChild(header);
+
+          if (body.warning_signs) {
+            var ws = document.createElement('p');
+            ws.className = 'mb-1 small';
+            ws.innerHTML = '<strong>' + labels.warningSigns + ':</strong> ' + body.warning_signs;
+            fb.appendChild(ws);
+          }
+
+          if (body.explanation) {
+            var ex = document.createElement('p');
+            ex.className = 'mb-0 small text-secondary';
+            ex.innerHTML = '<strong>' + labels.explanation + ':</strong> ' + body.explanation;
+            fb.appendChild(ex);
+          }
+
+          card.appendChild(fb);
+          addNextButton(card);
+        })
+        .catch(function () {
+          answered = false;
+          setEnabled(controls.querySelectorAll('button'), true);
+          window.CQ.toast('Network error — please try again.', 'error');
+        });
+    }
+
+    if (scenario.choices && scenario.choices.length > 0) {
+      scenario.choices.forEach(function (choice) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-outline-light text-start p-3 fw-semibold border-secondary';
+        button.textContent = choice.text;
+        button.addEventListener('click', function () {
+          submitChoice({ scenario_id: scenario.id, choice_id: choice.id }, button);
+        });
+        controls.appendChild(button);
+      });
+    } else {
+      var threatBtn = document.createElement('button');
+      threatBtn.type = 'button';
+      threatBtn.className = 'btn btn-outline-danger p-3 fw-bold fs-6 text-start';
+      threatBtn.innerHTML = '🚨 ' + labels.isThreat;
+      threatBtn.addEventListener('click', function () {
+        submitChoice({ scenario_id: scenario.id, is_threat: true }, threatBtn);
+      });
+
+      var safeBtn = document.createElement('button');
+      safeBtn.type = 'button';
+      safeBtn.className = 'btn btn-outline-success p-3 fw-bold fs-6 text-start';
+      safeBtn.innerHTML = '✅ ' + labels.isSafe;
+      safeBtn.addEventListener('click', function () {
+        submitChoice({ scenario_id: scenario.id, is_threat: false }, safeBtn);
+      });
+
+      controls.appendChild(threatBtn);
+      controls.appendChild(safeBtn);
+    }
+  }
+
+  function finalise() {
+    clearInterval(timerInterval);
+    box.innerHTML = '';
+    progressEl.textContent = 'Game Complete';
+
+    var elapsed = Math.round((Date.now() - startedAt) / 1000);
+    var summary = document.getElementById('result-summary');
+    var note = document.getElementById('result-note');
+    var icon = document.getElementById('result-icon');
+    
+    summary.textContent = correctCount + ' / ' + total;
+    var passRatio = total > 0 ? (correctCount / total) : 0;
+
+    if (passRatio >= 0.7) {
+      icon.textContent = '🏆';
+      note.textContent = 'Master Human Firewall Defense! You outsmarted the System Scam Engine.';
+      playFx('win');
+    } else {
+      icon.textContent = '🛡️';
+      note.textContent = 'Good effort! Scammers use tricky psychological tricks. Replay to hone your instincts!';
+    }
+
+    window.CQ.post(completeUrl, { score: correctCount, total: total, time_spent: elapsed })
+      .then(function (res) {
+        var body = res.body || {};
+        if (res.ok && body.xp_awarded > 0) {
+          window.CQ.toast('+' + body.xp_awarded + ' XP Added to Profile!', 'success');
+        }
+        resultEl.style.display = '';
+        resultEl.focus();
+        if (resultEl.scrollIntoView) resultEl.scrollIntoView({ behavior: 'smooth' });
+      });
+  }
+
+  render();
+})();
+</script>
+{% endblock %}

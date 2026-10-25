@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Member Management · {{ org.name }} · Human Firewall{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <a href="{{ url_for('organization.workspace_dashboard', org_id=org.id) }}" class="small text-info text-decoration-none">
+      ← Return to HR Dashboard
+    </a>
+    <h1 class="h2 mb-1">Member Management</h1>
+    <p class="cq-muted small mb-0">Active learners, pending approvals, and account recovery for {{ org.name }}</p>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('organization.export_csv_report', org_id=org.id) }}" class="btn btn-outline-info btn-sm">
+      📊 Export Member Records
+    </a>
+  </div>
+</div>
+
+<!-- SEARCH & FILTER BAR -->
+<div class="cq-card p-3 mb-4">
+  <form method="get" action="{{ url_for('organization.members_list', org_id=org.id) }}" class="row g-2 align-items-center">
+    <div class="col-md-6">
+      <input type="text" name="q" class="form-control form-control-sm" value="{{ search }}"
+             placeholder="Search by username, display name, email, or Reg/Emp ID...">
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select form-select-sm">
+        <option value="">All Statuses</option>
+        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active Members</option>
+        <option value="pending_approval" {% if status_filter == 'pending_approval' %}selected{% endif %}>Pending Approval</option>
+        <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
+      </select>
+    </div>
+    <div class="col-md-3 d-flex gap-1">
+      <button type="submit" class="btn btn-sm btn-info w-100">Filter</button>
+      {% if search or status_filter or dept_filter %}
+        <a href="{{ url_for('organization.members_list', org_id=org.id) }}" class="btn btn-sm btn-outline-light">Reset</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- MEMBERS TABLE -->
+<div class="cq-card">
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle mb-0 small">
+      <thead>
+        <tr>
+          <th>Learner</th>
+          <th>Reg / Emp ID</th>
+          <th>Role in Org</th>
+          <th>Department / Cohort</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if memberships %}
+          {% for m in memberships %}
+            <tr>
+              <td>
+                <div class="fw-bold text-white">{{ m.user.name }}</div>
+                <div class="cq-muted small">{{ m.user.email }}</div>
+                <div class="cq-muted small">Level {{ m.user.level }} · {{ m.user.xp_total }} XP</div>
+              </td>
+              <td><code class="text-info">{{ m.registration_id or '—' }}</code></td>
+              <td>
+                <span class="badge {% if m.role == 'org_admin' %}bg-primary{% elif m.role == 'tp_coordinator' %}bg-purple{% else %}bg-secondary{% endif %}">
+                  {{ m.role }}
+                </span>
+              </td>
+              <td>
+                {{ m.department or '—' }}
+                {% if m.cohort %}<span class="badge bg-dark ms-1">{{ m.cohort }}</span>{% endif %}
+              </td>
+              <td>
+                {% if m.status == 'active' %}
+                  <span class="badge bg-success">Active</span>
+                {% elif m.status == 'pending_approval' %}
+                  <span class="badge bg-warning">Pending</span>
+                {% elif m.status == 'suspended' %}
+                  <span class="badge bg-danger">Suspended</span>
+                {% else %}
+                  <span class="badge bg-dark">{{ m.status }}</span>
+                {% endif %}
+              </td>
+              <td>{{ m.joined_at.strftime('%Y-%m-%d') }}</td>
+              <td>
+                <div class="d-flex flex-wrap gap-1">
+                  {% if m.status == 'pending_approval' %}
+                    <form method="post" action="{{ url_for('organization.approve_member', org_id=org.id, membership_id=m.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-success py-0 px-2" title="Approve member">Approve</button>
+                    </form>
+                  {% endif %}
+
+                  {% if m.status == 'active' %}
+                    <form method="post" action="{{ url_for('organization.toggle_member_status', org_id=org.id, membership_id=m.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="status" value="suspended">
+                      <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="Suspend access"
+                              onclick="return confirm('Suspend workspace access for {{ m.user.name }}?');">
+                        Suspend
+                      </button>
+                    </form>
+                  {% elif m.status == 'suspended' %}
+                    <form method="post" action="{{ url_for('organization.toggle_member_status', org_id=org.id, membership_id=m.id) }}" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="status" value="active">
+                      <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2" title="Restore access">
+                        Activate
+                      </button>
+                    </form>
+                  {% endif %}
+
+                  <!-- HR Account Recovery Action -->
+                  <form method="post" action="{{ url_for('organization.recover_member_account', org_id=org.id, membership_id=m.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-outline-warning py-0 px-2"
+                            title="Generate one-time recovery code if learner cannot access their email"
+                            onclick="return confirm('Generate an audited one-time HR recovery code for {{ m.user.name }}?');">
+                      🔑 Recover
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-4 cq-muted">
+              No members found matching your search.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.achievements') }}{% endblock %}
+{% block content %}
+{% set total_achievements = achievements|length %}
+{% set earned_pct = ((earned_ids|length) * 100 // total_achievements) if total_achievements else 0 %}
+
+<h1 class="h3 mb-4">{{ t('nav.achievements') }}</h1>
+
+<section class="cq-card mb-4" aria-labelledby="summary-heading">
+  <h2 id="summary-heading" class="visually-hidden">{{ t('nav.achievements') }}</h2>
+  <div class="d-flex justify-content-between mb-2">
+    <span class="fw-bold">{{ earned_ids|length }} {{ t('of') }} {{ total_achievements }} {{ t('earned') }}</span>
+    <span class="cq-muted small">{{ earned_pct }}%</span>
+  </div>
+  <div class="cq-progress">
+    <span data-cq-value="{{ earned_pct }}"></span>
+  </div>
+</section>
+
+{% if achievements %}
+  <div class="cq-ach">
+    {% for a in achievements %}
+      <div class="cq-ach-item {{ 'earned' if a.id in earned_ids else 'locked' }}">
+        <div class="cq-ach-icon" aria-hidden="true">{{ a.icon }}</div>
+        <div class="fw-bold">{{ t_content(a, 'name') }}</div>
+        <div class="cq-muted small mb-2">{{ t_content(a, 'description') }}</div>
+        <div class="cq-muted small fst-italic mb-3">
+          {%- if a.criteria_type == 'labs_completed' %}Pass {{ a.criteria_value }} labs
+          {%- elif a.criteria_type == 'perfect_score' %}Score 100% on a lab
+          {%- elif a.criteria_type == 'no_hint_labs' %}Pass {{ a.criteria_value }} labs without hints
+          {%- elif a.criteria_type == 'streak' %}Reach a {{ a.criteria_value }}-day streak
+          {%- elif a.criteria_type == 'videos_completed' %}Watch {{ a.criteria_value }} lessons
+          {%- elif a.criteria_type == 'comics_completed' %}Read {{ a.criteria_value }} comics
+          {%- elif a.criteria_type == 'games_completed' %}Complete {{ a.criteria_value }} games
+          {%- elif a.criteria_type == 'level' %}Reach level {{ a.criteria_value }}
+          {%- elif a.criteria_type == 'certificate_tier' %}Earn the {{ a.criteria_extra }} certificate
+          {%- endif %}
+        </div>
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+          <span class="cq-badge cq-badge-purple">+{{ a.xp_bonus }} XP</span>
+          {% if a.id in earned_ids %}
+            <span class="cq-badge cq-badge-green">{{ t('earned') }}</span>
+          {% else %}
+            <span class="cq-badge cq-badge-orange">{{ t('get.locked') }}</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="cq-muted">{{ t('get.no_results') }}</p>
+{% endif %}
+{% endblock %}

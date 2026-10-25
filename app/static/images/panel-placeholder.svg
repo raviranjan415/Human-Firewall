@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 640 360" width="640" height="360">
+  <title>Illustration placeholder</title>
+  <desc>Placeholder artwork for a comic panel whose final illustration has not been produced yet.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c1830"/>
+      <stop offset="55%" stop-color="#081229"/>
+      <stop offset="100%" stop-color="#050a18"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="55%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect x="1" y="1" width="638" height="358" fill="none" stroke="rgba(120,168,255,0.25)" stroke-width="2"/>
+  <circle cx="320" cy="150" r="58" fill="none" stroke="url(#accent)" stroke-width="4"/>
+  <path d="M320 108 l34 20 v42 l-34 20 -34 -20 v-42 z" fill="none" stroke="url(#accent)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M306 150 l10 11 20 -22" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="252" text-anchor="middle" fill="#e8f0ff" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="700">Panel illustration pending</text>
+  <text x="320" y="282" text-anchor="middle" fill="#93a7c9" font-family="Segoe UI, system-ui, sans-serif" font-size="14">The written story is complete — final artwork is still to be produced.</text>
+</svg>

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}News sources{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('nav.news') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">Where our news comes from</h1>
+  <p class="cq-muted mb-0">
+    Transparency matters: these are the feeds we monitor. We use only RSS feeds and authorised APIs —
+    we never scrape a site against its terms of use.
+  </p>
+</section>
+
+<section aria-labelledby="sources-heading" class="mb-4">
+  <div class="cq-card">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <h2 id="sources-heading" class="h5 mb-0">Configured sources</h2>
+      <span class="cq-badge cq-badge-cyan">{{ total_stories }} approved stor{{ 'y' if total_stories == 1 else 'ies' }}</span>
+    </div>
+
+    {% if sources %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">RSS and authorised-API news sources</caption>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Kind</th>
+              <th scope="col">Status</th>
+              <th scope="col">Last checked</th>
+              <th scope="col">Last result</th>
+              <th scope="col">Links</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for source in sources %}
+              <tr>
+                <th scope="row" class="fw-normal">{{ source.name }}</th>
+                <td>{{ source.kind|upper }}</td>
+                <td>
+                  {% if source.is_active %}
+                    <span class="cq-badge cq-badge-green">Active</span>
+                  {% else %}
+                    <span class="cq-badge cq-badge-orange">Inactive</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {{ source.last_checked_at.strftime('%d %b %Y %H:%M') if source.last_checked_at else 'Never' }}
+                </td>
+                <td>{{ source.last_status or '—' }}</td>
+                <td>
+                  <div class="d-flex flex-wrap gap-2">
+                    {% if source.homepage %}
+                      <a href="{{ source.homepage }}" target="_blank" rel="noopener noreferrer"
+                         aria-label="{{ source.name }} homepage (opens in a new tab)">Homepage</a>
+                    {% endif %}
+                    {% if source.feed_url %}
+                      <a href="{{ source.feed_url }}" target="_blank" rel="noopener noreferrer"
+                         aria-label="{{ source.name }} feed (opens in a new tab)">Feed</a>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<section aria-labelledby="policy-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="policy-heading" class="h5 mb-2">How we handle stories</h2>
+    <ul class="mb-0">
+      <li class="mb-1">We only use RSS feeds and authorised APIs — never scraping against a site's terms.</li>
+      <li class="mb-1">Stories are deduplicated by content hash so the same item is never shown twice.</li>
+      <li class="mb-0">
+        Every new story is hidden until an administrator reviews it, so learners only ever see verified,
+        structured briefings.
+      </li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

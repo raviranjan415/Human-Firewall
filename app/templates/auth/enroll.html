@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Enroll in Organization Workspace · Human Firewall{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12" style="max-width: 580px;">
+    <div class="cq-card cq-fade-in">
+      <div class="text-center mb-3">
+        <span class="fs-1" aria-hidden="true">🏢🛡️</span>
+        <h1 class="h3 mb-1">Organization Enrollment</h1>
+        <p class="cq-muted small mb-0">Join your university, college, or corporate training workspace</p>
+      </div>
+
+      <div class="alert cq-alert cq-alert-info small mb-4">
+        <strong>Eligibility Verification:</strong> Your organization has pre-authorized training for eligible members. Enter your Organization Code and institutional Registration ID or Employee ID to verify and establish your dedicated workspace membership.
+      </div>
+
+      <form method="post" action="{{ url_for('auth.enroll') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.org_code.id }}">Organization Code <span class="text-danger">*</span></label>
+            {{ form.org_code(class="form-control text-uppercase font-monospace", placeholder="e.g. HF-ORG-7K29Q") }}
+            <div class="form-text cq-muted small">Provided by your HR or T&P team.</div>
+            {% for error in form.org_code.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.registration_id.id }}">Registration ID / Employee ID <span class="text-danger">*</span></label>
+            {{ form.registration_id(class="form-control font-monospace", placeholder="e.g. REG-2026-001 or EMP-4489") }}
+            <div class="form-text cq-muted small">Used to verify your seat eligibility.</div>
+            {% for error in form.registration_id.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.passcode.id }}">Enrollment Passcode <span class="cq-muted small">(if required by your organization)</span></label>
+          {{ form.passcode(class="form-control", placeholder="Leave blank if not required") }}
+          {% for error in form.passcode.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.display_name.id }}">Full Name <span class="text-danger">*</span></label>
+          {{ form.display_name(class="form-control", placeholder="Your official full name") }}
+          {% for error in form.display_name.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.username.id }}">Username <span class="text-danger">*</span></label>
+            {{ form.username(class="form-control", placeholder="Choose unique username") }}
+            {% for error in form.username.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.email.id }}">Approved Institutional Email <span class="text-danger">*</span></label>
+            {{ form.email(class="form-control", placeholder="your.name@institution.edu") }}
+            {% for error in form.email.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.password.id }}">Password <span class="text-danger">*</span></label>
+            {{ form.password(class="form-control", placeholder="Min 10 chars, letters & digits") }}
+            {% for error in form.password.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.confirm_password.id }}">Confirm Password <span class="text-danger">*</span></label>
+            {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+            {% for error in form.confirm_password.errors %}
+              <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="form-check mb-4">
+          {{ form.accept_terms(class="form-check-input") }}
+          <label class="form-check-label small" for="{{ form.accept_terms.id }}">
+            I accept the <a href="{{ url_for('public.terms') }}" target="_blank">Terms of Service</a> and <a href="{{ url_for('public.privacy') }}" target="_blank">Privacy Policy</a>.
+          </label>
+          {% for error in form.accept_terms.errors %}
+            <div class="cq-alert cq-alert-error small mt-1 py-1 px-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-cq btn-cq-purple w-100 py-2 fs-6">
+          Verify Eligibility &amp; Join Workspace
+        </button>
+      </form>
+
+      <div class="text-center mt-4">
+        <p class="cq-muted small mb-1">
+          Already have an existing personal Human Firewall account?
+        </p>
+        <a href="{{ url_for('auth.login', type='org') }}" class="btn btn-outline-light btn-sm">
+          Sign In &amp; Link Organization
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

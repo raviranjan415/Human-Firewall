@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.comics') }} · Human Firewall{% endblock %}
+
+{% block content %}
+{% set diff_badges = {'beginner': 'cq-badge-green', 'intermediate': 'cq-badge-cyan', 'advanced': 'cq-badge-orange', 'expert': 'cq-badge-red'} %}
+
+<header class="mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <p class="cq-eyebrow mb-1">Visual Incident Storyboards</p>
+      <h1 class="h2 text-dark mb-1">Incident Comics &amp; Chat Stories</h1>
+      <p class="cq-muted mb-0">{{ comics|length }} incident storyboards integrated across defense rooms.</p>
+    </div>
+    <a href="{{ url_for('learning.index') }}" class="btn btn-cq btn-cq-ghost btn-sm">
+      &larr; View Training Modules
+    </a>
+  </div>
+</header>
+
+<form class="cq-card mb-4" method="get" action="{{ url_for('learning.comics') }}">
+  <div class="row g-3 align-items-end">
+    <div class="col-12 col-md-8">
+      <label class="form-label" for="filter-collection">Collection</label>
+      <select class="form-select" id="filter-collection" name="collection">
+        <option value="">{{ t('get.all') }} (All 10 Collections)</option>
+        {% for c in collections %}
+          <option value="{{ c }}" {% if selected_collection == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12 col-md-4 d-flex gap-2">
+      <button type="submit" class="btn btn-cq btn-cq-primary flex-grow-1">{{ t('get.filter') }}</button>
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('learning.comics') }}">{{ t('get.clear_filters') }}</a>
+    </div>
+  </div>
+</form>
+
+{% if comics %}
+  <div class="row g-4">
+    {% for comic in comics %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <a class="cq-card hoverable d-block h-100 text-decoration-none" href="{{ url_for('learning.comic_detail', slug=comic.slug) }}">
+          <div aria-hidden="true" class="d-flex align-items-center justify-content-center"
+               style="height:120px;border-radius:10px;margin-bottom:.75rem;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:1px solid #e2e8f0;">
+            <span class="fs-1">💬</span>
+          </div>
+          <h2 class="h6 mb-1 text-dark">{{ t_content(comic, 'title') }}</h2>
+          {% if comic.collection %}<p class="cq-eyebrow mb-1" style="font-size:0.68rem;">{{ comic.collection }}</p>{% endif %}
+          {% if comic.character %}<p class="cq-muted small mb-2">Character: {{ comic.character }}</p>{% endif %}
+          <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+            <span class="cq-badge {{ diff_badges.get(comic.difficulty, 'cq-badge-cyan') }}">{{ comic.difficulty|title }}</span>
+            <span class="badge bg-light text-secondary border small">4 Storyboard Panels</span>
+            {% if comic.id in completed %}
+              <span class="badge bg-success small ms-auto">Read ✅</span>
+            {% endif %}
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cq-card">
+    <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+  </div>
+{% endif %}
+{% endblock %}

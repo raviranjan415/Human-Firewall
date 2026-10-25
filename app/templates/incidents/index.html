@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.incidents') }}{% endblock %}
+
+{% set conf_class = {
+  'confirmed': 'cq-badge-green',
+  'reported': 'cq-badge-cyan',
+  'interpretation': 'cq-badge-orange',
+  'disputed': 'cq-badge-red'
+} %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('nav.incidents') }}</h1>
+  <p class="cq-muted mb-0">
+    Researched real-world cyber incidents written as case studies — what happened, how it worked and
+    what could have prevented it. Each case carries a confidence label so confirmed facts are never
+    blurred together with analysis or contested accounts.
+  </p>
+</section>
+
+<section aria-labelledby="filter-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="filter-heading" class="h5 mb-3">{{ t('get.filter') }}</h2>
+    <form method="get" action="{{ url_for('incidents.index') }}">
+      <div class="row g-3">
+        <div class="col-12 col-lg-4">
+          <label class="form-label" for="filter-q">{{ t('get.search') }}</label>
+          <input class="form-control" type="search" id="filter-q" name="q"
+                 value="{{ selected.q }}" placeholder="Title, organisation or summary">
+        </div>
+        <div class="col-12 col-sm-6 col-lg-2">
+          <label class="form-label" for="filter-sector">Sector</label>
+          <select class="form-select" id="filter-sector" name="sector">
+            <option value="">{{ t('get.all') }}</option>
+            {% for sector in sectors %}
+              <option value="{{ sector }}" {% if selected.sector == sector %}selected{% endif %}>{{ sector }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-2">
+          <label class="form-label" for="filter-category">Category</label>
+          <select class="form-select" id="filter-category" name="category">
+            <option value="">{{ t('get.all') }}</option>
+            {% for category in categories %}
+              <option value="{{ category }}" {% if selected.category == category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-2">
+          <label class="form-label" for="filter-confidence">Confidence</label>
+          <select class="form-select" id="filter-confidence" name="confidence">
+            <option value="">{{ t('get.all') }}</option>
+            {% for level in confidence_levels %}
+              <option value="{{ level }}" {% if selected.confidence == level %}selected{% endif %}>
+                {{ level|capitalize }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-2 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-cq btn-cq-primary flex-grow-1">{{ t('get.filter') }}</button>
+        </div>
+      </div>
+      <div class="mt-2">
+        <a href="{{ url_for('incidents.index') }}">{{ t('get.clear_filters') }}</a>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section aria-labelledby="confidence-legend-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="confidence-legend-heading" class="h5 mb-3">How to read the confidence labels</h2>
+    <ul class="list-unstyled mb-3">
+      <li class="d-flex gap-2 mb-2">
+        <span class="cq-badge cq-badge-green">Confirmed</span>
+        <span class="cq-muted">Documented by the affected organisation or by authorities.</span>
+      </li>
+      <li class="d-flex gap-2 mb-2">
+        <span class="cq-badge cq-badge-cyan">Reported</span>
+        <span class="cq-muted">Reported by credible press but not fully confirmed.</span>
+      </li>
+      <li class="d-flex gap-2 mb-2">
+        <span class="cq-badge cq-badge-orange">Interpretation</span>
+        <span class="cq-muted">Analysis or reconstruction, not a primary record.</span>
+      </li>
+      <li class="d-flex gap-2">
+        <span class="cq-badge cq-badge-red">Disputed</span>
+        <span class="cq-muted">Accounts of the case are contested.</span>
+      </li>
+    </ul>
+    <p class="cq-muted small mb-0">
+      This case study archive features 30 thoroughly researched and verified real-world incidents, each with technical vectors, human vulnerabilities, and root-cause defense lessons.
+    </p>
+  </div>
+</section>
+
+<section aria-labelledby="incidents-heading" class="mb-4">
+  <h2 id="incidents-heading" class="visually-hidden">Incident case studies</h2>
+  {% if incidents %}
+    <div class="row g-3">
+      {% for incident in incidents %}
+        <div class="col-12 col-lg-6">
+          <article class="cq-card hoverable h-100 d-flex flex-column">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+              <span class="cq-badge">{{ incident.year }}</span>
+              <span class="cq-badge {{ conf_class.get(incident.confidence, 'cq-badge-cyan') }}">
+                {{ incident.confidence|capitalize }}
+              </span>
+            </div>
+            <h3 class="h5 mb-1">
+              <a href="{{ url_for('incidents.detail', slug=incident.slug) }}">{{ t_content(incident, 'title') }}</a>
+            </h3>
+            <p class="cq-muted small mb-2">
+              {% if incident.organization %}{{ incident.organization }}{% endif %}
+              {% if incident.sector %}· {{ incident.sector }}{% endif %}
+              {% if incident.attack_type %}· {{ incident.attack_type }}{% endif %}
+            </p>
+            <p class="mb-3">{{ t_content(incident, 'summary')|truncate(200, True) }}</p>
+            <div class="mt-auto">
+              <a class="btn btn-cq btn-cq-ghost btn-sm"
+                 href="{{ url_for('incidents.detail', slug=incident.slug) }}"
+                 aria-label="Read the case study: {{ t_content(incident, 'title') }}">
+                Read the case study
+              </a>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-card">
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

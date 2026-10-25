@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}{{ t_content(comic, 'title') }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('learning.comics') }}">&larr; {{ t('nav.comics') }}</a>
+</div>
+
+{% if comic.collection %}<p class="cq-eyebrow mb-1">{{ comic.collection }}</p>{% endif %}
+<h1 class="cq-title-gradient h2 mb-1">{{ t_content(comic, 'title') }}</h1>
+{% if comic.character %}<p class="cq-muted mb-4">{{ comic.character }}</p>{% endif %}
+
+<section class="cq-card mb-4">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <span class="cq-badge cq-badge-red">🚨 Live Incident Log</span>
+    <span class="cq-badge cq-badge-cyan">Real-Person Case Study</span>
+  </div>
+  <h2 class="h5 mb-3">Case Investigation: What Happened</h2>
+  <div class="row g-3">
+    {% if t_content(comic, 'situation') %}
+      <div class="col-12 col-md-6">
+        <div class="p-3" style="background:rgba(255,255,255,0.02);border:1px solid var(--cq-border);border-radius:12px;">
+          <h3 class="h6 mb-2 text-info">1. The Setup (Situation)</h3>
+          <p class="cq-muted mb-0 small">{{ t_content(comic, 'situation') }}</p>
+        </div>
+      </div>
+    {% endif %}
+    {% if t_content(comic, 'problem') %}
+      <div class="col-12 col-md-6">
+        <div class="p-3" style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:12px;">
+          <h3 class="h6 mb-2 text-danger">2. The Red Flag (Problem)</h3>
+          <p class="cq-muted mb-0 small">{{ t_content(comic, 'problem') }}</p>
+        </div>
+      </div>
+    {% endif %}
+    {% if t_content(comic, 'decision') %}
+      <div class="col-12 col-md-6">
+        <div class="p-3" style="background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.2);border-radius:12px;">
+          <h3 class="h6 mb-2 text-warning">3. The Reaction (Decision)</h3>
+          <p class="cq-muted mb-0 small">{{ t_content(comic, 'decision') }}</p>
+        </div>
+      </div>
+    {% endif %}
+    {% if t_content(comic, 'resolution') %}
+      <div class="col-12 col-md-6">
+        <div class="p-3" style="background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.2);border-radius:12px;">
+          <h3 class="h6 mb-2 text-success">4. The Defense (Resolution)</h3>
+          <p class="cq-muted mb-0 small">{{ t_content(comic, 'resolution') }}</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if comic.panels %}
+  <section class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="h5 mb-0">Incident Storyboard</h2>
+      <span class="cq-badge cq-badge-purple">Visual Walkthrough</span>
+    </div>
+    <div class="cq-comic-panels">
+      {% for panel in comic.panels %}
+        <figure class="cq-panel mb-0">
+          {% if panel.image_url %}
+            <img src="{{ panel.image_url }}" alt="{{ t_content(panel, 'alt_text') }}">
+          {% endif %}
+          <figcaption class="cq-panel-caption">
+            <strong class="text-info">Step {{ panel.order_index + 1 }}:</strong>
+            {{ t_content(panel, 'caption') }}
+            {% if t_content(panel, 'dialogue') %}
+              <div class="cq-muted mt-2 p-2" style="background:rgba(255,255,255,0.03);border-radius:8px;font-style:italic;">
+                "{{ t_content(panel, 'dialogue') }}"
+              </div>
+            {% endif %}
+          </figcaption>
+        </figure>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<section class="cq-card mb-4">
+  <h2 class="h5 mb-3">Key Takeaways for You</h2>
+  <ol class="mb-0">
+    {% if t_content(comic, 'lesson_1') %}<li class="mb-2">{{ t_content(comic, 'lesson_1') }}</li>{% endif %}
+    {% if t_content(comic, 'lesson_2') %}<li class="mb-2">{{ t_content(comic, 'lesson_2') }}</li>{% endif %}
+    {% if t_content(comic, 'lesson_3') %}<li class="mb-2">{{ t_content(comic, 'lesson_3') }}</li>{% endif %}
+  </ol>
+</section>
+
+<!-- Smart Incident Quiz: Learn by Doing -->
+<section class="cq-card mb-4" id="incident-quiz-card">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <span class="cq-badge cq-badge-cyan">Quick Verification</span>
+      <h2 class="h5 mb-0">Prove Your Defense Instincts</h2>
+    </div>
+    <span class="cq-badge cq-badge-green" id="quiz-status-badge">Required to Complete</span>
+  </div>
+  <p class="cq-muted small mb-3">If you choose incorrectly, we'll explain the attacker's psychology and give you a helpful hint in simple words.</p>
+
+  <div class="p-3 mb-3" style="background:rgba(255,255,255,0.02);border:1px solid var(--cq-border);border-radius:12px;">
+    <p class="fw-semibold mb-2">Scenario Question:</p>
+    <p class="mb-0">In an incident like this, what is your safest response before taking any action or clicking anything?</p>
+  </div>
+
+  <div class="d-flex flex-column gap-2 mb-3" id="mcq-options-container">
+    <button type="button" class="cq-mcq-option" data-option="A" data-correct="false">
+      <strong>A.</strong> Panic, comply immediately, and keep it secret so nobody gets angry.
+    </button>
+    <button type="button" class="cq-mcq-option" data-option="B" data-correct="false">
+      <strong>B.</strong> Reply directly to the sender asking "Are you really who you claim to be?"
+    </button>
+    <button type="button" class="cq-mcq-option" data-option="C" data-correct="true">
+      <strong>C.</strong> Pause, independently verify using a known trusted channel (phone/in-person), and alert security.
+    </button>
+    <button type="button" class="cq-mcq-option" data-option="D" data-correct="false">
+      <strong>D.</strong> Forward the message to all colleagues asking if they also got it.
+    </button>
+  </div>
+
+  <div id="teaching-feedback-box" class="d-none"></div>
+</section>
+
+<div class="d-flex flex-wrap gap-2 align-items-center">
+  <button type="button" id="mark-complete" class="btn btn-cq btn-cq-success"
+          {% if record and record.status == 'completed' %}disabled{% endif %}>
+    {% if record and record.status == 'completed' %}✓ Completed{% else %}Mark as read{% endif %}
+  </button>
+  {% if comic.related_lab_id %}
+    <a class="btn btn-cq btn-cq-purple" href="{{ url_for('labs.detail', lab_id=comic.related_lab_id) }}">
+      Practise this in a lab &rarr;
+    </a>
+  {% endif %}
+  <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('learning.comics') }}">
+    Browse more lessons
+  </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  "use strict";
+
+  var markBtn = document.getElementById('mark-complete');
+  var quizBadge = document.getElementById('quiz-status-badge');
+  var feedbackBox = document.getElementById('teaching-feedback-box');
+  var optionButtons = document.querySelectorAll('.cq-mcq-option');
+  var isCompleted = {% if record and record.status == 'completed' %}true{% else %}false{% endif %};
+
+  if (isCompleted) {
+    if (quizBadge) quizBadge.textContent = "✓ Solved";
+  }
+
+  var hints = {
+    "A": "Scammers deliberately induce panic and artificial urgency ('act now or be fired!') to override your critical thinking. Silence aids the attacker. Never comply blindly.",
+    "B": "Replying to the same email or phone number just puts you back in touch with the scammer who created it! Always reach out via a trusted phone directory or in-person channel.",
+    "D": "Forwarding live phishing links or payloads across the company risks other employees clicking on it accidentally. Instead, report it directly to your IT or security team."
+  };
+
+  optionButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var isCorrect = btn.getAttribute('data-correct') === 'true';
+      var optKey = btn.getAttribute('data-option');
+
+      optionButtons.forEach(function (b) {
+        b.classList.remove('selected-wrong', 'selected-correct');
+      });
+
+      if (!isCorrect) {
+        btn.classList.add('selected-wrong');
+        feedbackBox.className = "cq-teach-card teaching-hint";
+        feedbackBox.innerHTML =
+          "<h6>💡 Not quite — Here is how to think about it:</h6>" +
+          "<p class='mb-2'>" + hints[optKey] + "</p>" +
+          "<p class='mb-0 small text-warning'><strong>Remember:</strong> Attackers love rush decisions. Take a deep breath and pick the proactive defense answer above.</p>";
+        feedbackBox.classList.remove('d-none');
+      } else {
+        btn.classList.add('selected-correct');
+        feedbackBox.className = "cq-teach-card teaching-success";
+        feedbackBox.innerHTML =
+          "<h6>🎯 Spot on! That is Human Firewall defense in action!</h6>" +
+          "<p class='mb-1'>Independent out-of-band verification is the #1 kryptonite against phishing, spear-phishing, and executive impersonation.</p>" +
+          "<p class='mb-0 small text-success'><strong>Awesome work!</strong> Your lesson progress has been marked complete.</p>";
+        feedbackBox.classList.remove('d-none');
+
+        if (quizBadge) {
+          quizBadge.textContent = "✓ Correct Answer!";
+          quizBadge.className = "cq-badge cq-badge-green";
+        }
+
+        // Trigger complete if not completed
+        if (markBtn && !markBtn.disabled) {
+          markBtn.click();
+        }
+      }
+    });
+  });
+
+  if (markBtn) {
+    markBtn.addEventListener('click', function () {
+      markBtn.disabled = true;
+      markBtn.textContent = 'Saving...';
+      window.CQ.post('/api/comics/{{ comic.id }}/complete', {})
+        .then(function (res) {
+          if (!res.ok) {
+            window.CQ.toast('Could not save your progress. Please try again.', 'error');
+            markBtn.disabled = false;
+            markBtn.textContent = 'Mark as read';
+            return;
+          }
+          markBtn.textContent = '✓ Completed';
+          var body = res.body || {};
+          if (body.first_completion) {
+            window.CQ.toast('+' + (body.xp_awarded || 0) + ' XP Earned!', 'success');
+          } else {
+            window.CQ.toast('Lesson reviewed! (XP previously awarded)', 'success');
+          }
+        })
+        .catch(function () {
+          window.CQ.toast('Network error — please try again.', 'error');
+          markBtn.disabled = false;
+          markBtn.textContent = 'Mark as read';
+        });
+    });
+  }
+})();
+</script>
+{% endblock %}

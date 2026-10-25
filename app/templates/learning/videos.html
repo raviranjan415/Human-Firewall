@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Video Lessons Archive · Human Firewall{% endblock %}
+
+{% block content %}
+{% set diff_badges = {'beginner': 'cq-badge-green', 'intermediate': 'cq-badge-cyan', 'advanced': 'cq-badge-orange', 'expert': 'cq-badge-red'} %}
+
+<header class="mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <p class="cq-eyebrow mb-1">Defense Room Briefings</p>
+      <h1 class="h2 text-dark mb-1">Interactive Video Briefings</h1>
+      <p class="cq-muted mb-0">{{ assets|length }} bilingual animated incident briefings available.</p>
+    </div>
+    <a href="{{ url_for('learning.index') }}" class="btn btn-cq btn-cq-ghost btn-sm">
+      &larr; View Training Modules
+    </a>
+  </div>
+</header>
+
+<form class="cq-card mb-4" method="get" action="{{ url_for('learning.videos') }}">
+  <div class="row g-3 align-items-end">
+    <div class="col-12 col-md-4">
+      <label class="form-label" for="filter-category">Category</label>
+      <select class="form-select" id="filter-category" name="category">
+        <option value="">{{ t('get.all') }}</option>
+        {% for c in categories %}
+          <option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>{{ c|title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12 col-md-4">
+      <label class="form-label" for="filter-difficulty">{{ t('get.difficulty') }}</label>
+      <select class="form-select" id="filter-difficulty" name="difficulty">
+        <option value="">{{ t('get.all') }}</option>
+        {% for d in ['beginner', 'intermediate', 'advanced', 'expert'] %}
+          <option value="{{ d }}" {% if selected_difficulty == d %}selected{% endif %}>{{ d|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12 col-md-4 d-flex gap-2">
+      <button type="submit" class="btn btn-cq btn-cq-primary">{{ t('get.filter') }}</button>
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('learning.videos') }}">{{ t('get.clear_filters') }}</a>
+    </div>
+  </div>
+</form>
+
+{% if assets %}
+  <div class="row g-4">
+    {% for asset in assets %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <a class="cq-card hoverable d-block h-100 text-decoration-none" href="{{ url_for('learning.video_detail', video_id=asset.id) }}">
+          {% if asset.thumbnail_url %}
+            <img src="{{ asset.thumbnail_url }}" alt="{{ t_content(asset, 'title') }}"
+                 style="width:100%;border-radius:10px;margin-bottom:.75rem;">
+          {% else %}
+            <div aria-hidden="true" class="d-flex align-items-center justify-content-center"
+                 style="height:120px;border-radius:10px;margin-bottom:.75rem;background:linear-gradient(135deg,#e0f2fe,#f1f5f9);border:1px solid #e2e8f0;">
+              <span class="fs-1">🛡️</span>
+            </div>
+          {% endif %}
+          <h2 class="h6 mb-2 text-dark">{{ t_content(asset, 'title') }}</h2>
+          <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+            <span class="cq-badge {{ diff_badges.get(asset.lesson.difficulty, 'cq-badge-cyan') }}">{{ asset.lesson.difficulty|title }}</span>
+            <span class="cq-muted small">{{ asset.duration_seconds // 60 }} mins</span>
+            <span class="cq-badge">Module: {{ asset.lesson.category|title }}</span>
+          </div>
+          <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+            <span class="badge bg-light text-dark border small">🎥 Simulation + Chat</span>
+            <span class="badge bg-light text-primary border small">🇬🇧 EN &middot; 🇮🇳 HI</span>
+            {% if asset.id in completed %}
+              <span class="badge bg-success small ms-auto">Cleared ✅</span>
+            {% else %}
+              <span class="badge bg-primary small ms-auto">+50 XP</span>
+            {% endif %}
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cq-card">
+    <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+  </div>
+{% endif %}
+{% endblock %}

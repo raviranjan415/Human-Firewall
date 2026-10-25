@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="cq-fade-in">
+  <p class="cq-eyebrow">Legal</p>
+  <h1 class="mb-2">Privacy policy</h1>
+  <p class="cq-muted mb-4">
+    This page explains, in plain language, what CyberQuest collects, why it
+    collects it, and the choices you have. It describes how this training
+    platform is built to work.
+  </p>
+
+  <div class="cq-alert cq-alert-info mb-4">
+    <strong>Template policy.</strong>
+    This text is a starting point written for a training platform. Review it with
+    your own legal and data-protection advisers before you use it in production.
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <section class="mb-4">
+        <h2 class="h4">What we collect</h2>
+        <ul>
+          <li><strong>Account details</strong> — a username, an e-mail address, an
+            optional display name and your chosen language. We do not ask for your
+            real name, address, phone number or payment details.</li>
+          <li><strong>Learning progress</strong> — which lessons, labs, comics and
+            games you have started or finished, your scores, and which
+            prerequisites you have cleared.</li>
+          <li><strong>XP, levels and streaks</strong> — the points and badges that
+            make up your profile and leaderboard position.</li>
+          <li><strong>Analytics events</strong> — anonymous-style usage signals such
+            as which activities are opened and completed, used to improve the
+            training.</li>
+          <li><strong>Audit and security logs</strong> — sign-in events and similar
+            records that help us keep the service safe and detect abuse.</li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Why we collect it</h2>
+        <ul>
+          <li>To run the training and remember where you are.</li>
+          <li>To show your progress, XP, streaks and achievements.</li>
+          <li>To issue certificates and let them be publicly verified.</li>
+          <li>To keep the service secure and to detect misuse.</li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">What we never collect</h2>
+        <p>
+          CyberQuest teaches defensive awareness on <strong>simulated</strong>
+          scenarios. Nothing on this site asks for real credentials. We never
+          collect your real passwords, one-time passcodes (OTPs), PINs, card
+          numbers or banking details, and we never ask you to enter third-party
+          secrets. All scam examples, e-mails, messages and fake websites in the
+          training are synthetic and created for teaching.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">How passwords are stored</h2>
+        <p>
+          Account passwords are stored only as <strong>salted, one-way
+          hashes</strong>. We cannot read your password back, and neither can
+          anyone who might see the database. Multi-factor authentication adds a
+          second check even if a password is ever guessed.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Cookies and sessions</h2>
+        <ul>
+          <li>A <strong>session cookie</strong> keeps you signed in while you use
+            the platform.</li>
+          <li>A small preference is stored for your chosen <strong>language</strong>
+            so the site stays in the language you picked.</li>
+        </ul>
+        <p class="mb-0">
+          These are needed for the site to work. We do not use them to build
+          advertising profiles.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">How long we keep it</h2>
+        <p>
+          Account and progress data is kept while your account is active, so your
+          learning history and certificates stay intact. Security and audit logs
+          are kept for a limited period needed to investigate problems, then
+          removed. If you ask us to delete your account, we remove your personal
+          data unless we are required to keep a record for legal or security
+          reasons.
+        </p>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Your choices</h2>
+        <ul>
+          <li>
+            <strong>Download your data.</strong> You can export your own learning
+            data at any time from
+            <a href="{{ url_for('analytics.export_csv') }}">your data export</a>
+            (sign in first).
+          </li>
+          <li>
+            <strong>Request deletion.</strong> Ask us to delete your account and
+            personal data — see the contact route below.
+          </li>
+          <li>
+            <strong>Change your details.</strong> Update your profile and language
+            from your account settings.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h4">Contact</h2>
+        <p class="mb-0">
+          For any privacy question, a data export, or a deletion request, reach us
+          through
+          <a href="{{ url_for('public.help') }}">{{ t('footer.help') }}</a>.
+        </p>
+      </section>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cq-card hoverable">
+        <h2 class="h6">At a glance</h2>
+        <ul class="list-unstyled mb-0 small">
+          <li class="mb-2">✅ Progress, XP and certificates only</li>
+          <li class="mb-2">✅ Passwords as salted one-way hashes</li>
+          <li class="mb-2">✅ Simulations are synthetic</li>
+          <li class="mb-2">🚫 No real passwords, OTPs or card data</li>
+          <li class="mb-0">📥 Export your data any time</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 mb-0">
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.landing') }}">{{ t('nav.home') }}</a>
+    <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('public.terms') }}">{{ t('footer.terms') }}</a>
+  </p>
+</div>
+{% endblock %}

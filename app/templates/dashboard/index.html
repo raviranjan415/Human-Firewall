@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Human Firewall{% endblock %}
+
+{% block content %}
+{% set earned_achievements = summary.achievements if summary.achievements is defined else recent_achievements|length %}
+
+<!-- =========================================================================
+     HUMAN HERO GREETING & PROGRESS
+     ========================================================================= -->
+<section class="cq-hero mb-4 cq-fade-in" aria-labelledby="welcome-heading">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="badge bg-primary px-3 py-1 rounded-pill fs-7">🛡️ Level {{ level_info.level }} Cyber Defender</span>
+        {% if current_user.active_organization %}
+          <span class="badge bg-dark border border-secondary px-3 py-1 rounded-pill fs-7">
+            🏢 {{ current_user.active_organization.name }}
+          </span>
+        {% endif %}
+      </div>
+      
+      <h1 id="welcome-heading" class="display-6 fw-bold mb-2">
+        Hello, <span class="cq-title-gradient">{{ current_user.display_name or current_user.name or current_user.username }}</span>! 👋
+      </h1>
+      <p class="cq-muted fs-6 mb-3">
+        Every lesson you finish and scam you spot strengthens your defensive instincts. Ready for today's mission?
+      </p>
+
+      <!-- Level & XP Progress Bar -->
+      <div class="mb-2">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="fw-bold text-light">Level {{ level_info.level }} Progress</span>
+          <span class="text-info fw-semibold">{{ level_info.current_xp }} / {{ level_info.next_level_xp }} XP</span>
+        </div>
+        <div class="cq-progress" style="height: 10px; border-radius: 6px;">
+          <span data-cq-value="{{ level_info.percent }}" style="border-radius: 6px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Human Vital Badges -->
+    <div class="col-lg-5">
+      <div class="row g-2 text-center">
+        <div class="col-4">
+          <div class="cq-card p-3 h-100 hoverable">
+            <div class="display-6 mb-1">🔥</div>
+            <div class="fw-bold fs-5 text-warning">{{ summary.streak }}</div>
+            <div class="text-secondary small text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Day Streak</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="cq-card p-3 h-100 hoverable">
+            <div class="display-6 mb-1">⭐</div>
+            <div class="fw-bold fs-5 text-info">{{ summary.xp }}</div>
+            <div class="text-secondary small text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Total XP</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="cq-card p-3 h-100 hoverable">
+            <div class="display-6 mb-1">🏆</div>
+            <div class="fw-bold fs-5 text-success">{{ summary.rank if summary.rank else 'Top 10%' }}</div>
+            <div class="text-secondary small text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Rank</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     RECOMMENDED ACTIVE MISSION CARD
+     ========================================================================= -->
+<section class="mb-4" aria-labelledby="continue-heading">
+  <div class="cq-card hoverable border-primary shadow-lg p-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="cq-brand-mark bg-primary text-white d-flex align-items-center justify-content-center rounded-3 fs-3 shadow" style="width: 56px; height: 56px;">
+          🎯
+        </div>
+        <div>
+          <span class="cq-badge cq-badge-cyan mb-1">Recommended Mission</span>
+          {% if recommended and recommended.kind == 'lab' %}
+            <h3 class="h4 mb-1">{{ t_content(recommended.lab, 'title') }}</h3>
+            <p class="cq-muted small mb-0">
+              Interactive Defensive Lab #{{ recommended.lab.number }} &bull; {{ recommended.lab.xp_reward }} XP &bull; ~{{ recommended.lab.estimated_minutes }} mins
+            </p>
+          {% elif recommended and recommended.kind == 'game' %}
+            <h3 class="h4 mb-1">{{ t_content(recommended.game, 'title') }}</h3>
+            <p class="cq-muted small mb-0">
+              Scam Hunter Challenge &bull; {{ recommended.game.xp_reward }} XP &bull; Fast-Paced
+            </p>
+          {% elif recommended and recommended.kind == 'video' %}
+            <h3 class="h4 mb-1">{{ t_content(recommended.video, 'title') }}</h3>
+            <p class="cq-muted small mb-0">
+              Incident Case Study &bull; Animated Video Simulation &bull; 1 MCQ Check
+            </p>
+          {% else %}
+            <h3 class="h4 mb-1">Defensive Labs &amp; Incident Case Studies</h3>
+            <p class="cq-muted small mb-0">You're all caught up on primary tasks. Pick any mission below!</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div>
+        {% if recommended and recommended.kind == 'lab' %}
+          <a class="btn btn-cq btn-cq-primary btn-lg shadow px-4" href="{{ url_for('labs.detail', lab_id=recommended.lab.id) }}">
+            Launch Mission &rarr;
+          </a>
+        {% elif recommended and recommended.kind == 'game' %}
+          <a class="btn btn-cq btn-cq-purple btn-lg shadow px-4" href="{{ url_for('games.play', slug=recommended.game.slug) }}">
+            Play Challenge &rarr;
+          </a>
+        {% elif recommended and recommended.kind == 'video' %}
+          <a class="btn btn-cq btn-cq-cyan btn-lg shadow px-4" href="{{ url_for('learning.video_detail', video_id=recommended.video.id) }}">
+            Start Incident Story &rarr;
+          </a>
+        {% else %}
+          <a class="btn btn-cq btn-cq-primary btn-lg shadow px-4" href="{{ url_for('labs.index') }}">
+            Explore All Labs &rarr;
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     4 INTERACTIVE ACTIVITY HUBS
+     ========================================================================= -->
+<section class="mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 fw-bold mb-0">⚡ Training Activities &amp; Missions</h2>
+    <span class="cq-muted small">Choose your mode of learning</span>
+  </div>
+
+  <div class="row g-3">
+    <!-- Hub 1: Interactive Labs -->
+    <div class="col-md-6 col-xl-3">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between p-3 border-secondary">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="display-6">🧪</span>
+            <span class="badge bg-info text-dark">{{ summary.labs_completed }}/{{ summary.total_labs }} Done</span>
+          </div>
+          <h3 class="h5 fw-bold mb-1">Defensive Labs</h3>
+          <p class="cq-muted small mb-3">
+            Hands-on scam simulations. Spot phishing emails, detect lookalike domains, and stop credential theft.
+          </p>
+        </div>
+        <a href="{{ url_for('labs.index') }}" class="btn btn-sm btn-cq btn-cq-cyan w-100">
+          Open Labs ({{ summary.labs_completed }}) &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Hub 2: Incident Room Stories -->
+    <div class="col-md-6 col-xl-3">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between p-3 border-secondary">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="display-6">💬</span>
+            <span class="badge bg-primary text-white">Interactive Story</span>
+          </div>
+          <h3 class="h5 fw-bold mb-1">Incident Debriefs</h3>
+          <p class="cq-muted small mb-3">
+            Real person discussions and animated video scenarios. Solve the 1 tricky MCQ at the end to unlock hints!
+          </p>
+        </div>
+        <a href="{{ url_for('learning.videos') }}" class="btn btn-sm btn-cq btn-cq-primary w-100">
+          Incident Lessons &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Hub 3: Tricky Scam Game -->
+    <div class="col-md-6 col-xl-3">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between p-3 border-secondary">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="display-6">🎮</span>
+            <span class="badge bg-warning text-dark">Speed Battle</span>
+          </div>
+          <h3 class="h5 fw-bold mb-1">Tricky Scam Hunter</h3>
+          <p class="cq-muted small mb-3">
+            Purely tricky scam battles! System vs. Human. Can you outsmart the timer and catch the sneaky trap?
+          </p>
+        </div>
+        <a href="{{ url_for('games.index') }}" class="btn btn-sm btn-cq btn-cq-purple w-100">
+          Play Scam Hunter &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Hub 4: Milestone Certificates -->
+    <div class="col-md-6 col-xl-3">
+      <div class="cq-card hoverable h-100 d-flex flex-column justify-content-between p-3 border-secondary">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="display-6">📜</span>
+            <span class="badge bg-success text-white">{{ summary.certificates }} Earned</span>
+          </div>
+          <h3 class="h5 fw-bold mb-1">Certificates</h3>
+          <p class="cq-muted small mb-3">
+            Verifiable completion milestones at Lab 30, 60, 90, and 100. Backed with QR verification.
+          </p>
+        </div>
+        <a href="{{ url_for('certificates.index') }}" class="btn btn-sm btn-cq btn-cq-ghost w-100">
+          View Certificates &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     NEXT CERTIFICATE TIER & RECENT ACHIEVEMENTS
+     ========================================================================= -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="cq-card h-100 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 fw-bold mb-0">📜 Next Milestone Certificate</h3>
+        {% if milestone %}
+          <span class="cq-badge cq-badge-purple">{{ milestone.tier|upper }}</span>
+        {% endif %}
+      </div>
+
+      {% if milestone %}
+        <p class="cq-muted small mb-2">
+          Complete <strong>{{ milestone.remaining }} more practical lab{{ '' if milestone.remaining == 1 else 's' }}</strong> to unlock your verified {{ milestone.tier|title }} Certificate.
+        </p>
+        <div class="cq-progress purple mb-3" style="height: 12px; border-radius: 6px;">
+          <span data-cq-value="{{ milestone.percent }}" style="border-radius: 6px;"></span>
+        </div>
+        <a class="btn btn-cq btn-cq-primary btn-sm" href="{{ url_for('certificates.index') }}">
+          Track Requirements &rarr;
+        </a>
+      {% else %}
+        <p class="cq-muted mb-3">🎉 Outstanding achievement! You have completed all certificate milestones.</p>
+        <a class="btn btn-cq btn-cq-success btn-sm" href="{{ url_for('certificates.index') }}">View Your Certificates</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cq-card h-100 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 fw-bold mb-0">🎖️ Earned Badges &amp; Achievements</h3>
+        <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('dashboard.achievements') }}">All Badges</a>
+      </div>
+
+      {% if recent_achievements %}
+        <div class="row g-2">
+          {% for item in recent_achievements[:4] %}
+            <div class="col-6">
+              <div class="cq-ach-item earned p-2 d-flex align-items-center gap-2 text-start">
+                <span class="fs-4">{{ item.achievement.icon }}</span>
+                <div>
+                  <div class="small fw-bold text-light">{{ t_content(item.achievement, 'name') }}</div>
+                  <div class="cq-muted" style="font-size: 0.72rem;">Unlocked</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-3">
+          <div class="fs-2 mb-1">🛡️</div>
+          <p class="cq-muted small mb-0">Complete your first lab or incident debrief to unlock your inaugural badge!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

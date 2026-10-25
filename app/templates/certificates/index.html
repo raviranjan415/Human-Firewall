@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}{{ t('cert.title') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('cert.title') }}</h1>
+  <p class="cq-muted mb-0">
+    Earn a certificate tier by passing the required number of validated practical labs.
+    Eligibility is always re-checked on the server when you generate a certificate.
+  </p>
+  <div class="cq-alert cq-alert-info mt-3 mb-0" role="note">
+    <strong>{{ t('cert.note') }}</strong>
+  </div>
+</section>
+
+<section aria-labelledby="tiers-heading" class="mb-4">
+  <h2 id="tiers-heading" class="h4 mb-3">{{ t('cert.tier') }}</h2>
+  <div class="row g-3">
+    {% for entry in eligibility %}
+      {% set tier = tiers[entry.tier] %}
+      <div class="col-12 col-lg-6">
+        <div class="cq-card h-100 d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <h3 class="h5 mb-0">{{ tier.name }}</h3>
+            {% if entry.eligible %}
+              <span class="cq-badge cq-badge-green">{{ t('cert.eligible') }}</span>
+            {% elif entry.reason == 'already_issued' %}
+              <span class="cq-badge cq-badge-cyan">{{ t('get.completed') }}</span>
+            {% else %}
+              <span class="cq-badge cq-badge-orange">{{ t('cert.not_eligible') }}</span>
+            {% endif %}
+          </div>
+
+          <p class="cq-muted mb-2">
+            {{ t('lab.certificate_after') }} {{ tier.required_labs }} {{ t('nav.labs')|lower }}
+            · {{ tier.xp }} XP
+          </p>
+
+          {% if entry.eligible %}
+            <p class="mb-3">You have passed every lab required for this tier.</p>
+            <form method="post" action="{{ url_for('certificates.issue', tier=entry.tier) }}" class="mt-auto">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-cq btn-cq-primary w-100"
+                      aria-label="{{ t('cert.generate') }} — {{ tier.name }}">
+                {{ t('cert.generate') }}
+              </button>
+            </form>
+
+          {% elif entry.reason == 'already_issued' %}
+            <p class="mb-3">You already earned this tier. You can download it at any time.</p>
+            <a class="btn btn-cq btn-cq-success mt-auto"
+               href="{{ url_for('certificates.download', certificate_id=entry.certificate.id) }}"
+               aria-label="Download your {{ tier.name }} certificate (PDF)">
+              {{ t('get.download') }} (PDF)
+            </a>
+
+          {% else %}
+            {% set pct = (entry.completed_labs / entry.required_labs * 100)|round|int if entry.required_labs else 0 %}
+            <p class="mb-2">
+              {{ entry.completed_labs }} {{ t('of') }} {{ entry.required_labs }} {{ t('nav.labs')|lower }}
+            </p>
+            <div class="cq-progress mb-2" role="progressbar"
+                 aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
+                 aria-label="{{ tier.name }} progress">
+              <span data-cq-value="{{ pct }}"></span>
+            </div>
+            <p class="cq-muted small mb-3">
+              {{ entry.remaining }} more {{ t('nav.labs')|lower }} to pass before this tier unlocks.
+            </p>
+            <a class="btn btn-cq btn-cq-ghost mt-auto" href="{{ url_for('labs.index') }}">
+              {{ t('get.browse_labs') }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section aria-labelledby="mine-heading" class="mb-4">
+  <h2 id="mine-heading" class="h4 mb-3">Your certificates</h2>
+  {% if certificates %}
+    <div class="row g-3">
+      {% for certificate in certificates %}
+        <div class="col-12 col-lg-6">
+          <div class="cq-card h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+              <h3 class="h5 mb-0">
+                {{ tiers[certificate.tier].name if certificate.tier in tiers else certificate.tier }}
+              </h3>
+              {% if certificate.revoked %}
+                <span class="cq-badge cq-badge-red">Revoked</span>
+              {% else %}
+                <span class="cq-badge cq-badge-green">{{ t('cert.eligible') }}</span>
+              {% endif %}
+            </div>
+
+            <dl class="row cq-muted small mb-3">
+              <dt class="col-6">Learner</dt>
+              <dd class="col-6 text-end">{{ certificate.learner_name }}</dd>
+              <dt class="col-6">{{ t('get.score') }}</dt>
+              <dd class="col-6 text-end">{{ certificate.score_percentage }}%</dd>
+              <dt class="col-6">{{ t('dash.completed_labs') }}</dt>
+              <dd class="col-6 text-end">{{ certificate.labs_completed }}</dd>
+              <dt class="col-6">{{ t('cert.issue_date') }}</dt>
+              <dd class="col-6 text-end">
+                {{ certificate.issued_at.strftime('%d %b %Y') if certificate.issued_at else '—' }}
+              </dd>
+              <dt class="col-6">Certificate ID</dt>
+              <dd class="col-6 text-end">{{ certificate.certificate_uid }}</dd>
+              <dt class="col-6">{{ t('cert.verification_code') }}</dt>
+              <dd class="col-6 text-end">{{ certificate.verification_code }}</dd>
+            </dl>
+
+            <div class="d-flex flex-wrap gap-2 mt-auto">
+              {% if not certificate.revoked %}
+                <a class="btn btn-cq btn-cq-primary btn-sm"
+                   href="{{ url_for('certificates.download', certificate_id=certificate.id) }}"
+                   aria-label="Download {{ certificate.certificate_uid }} as a PDF">
+                  {{ t('get.download') }} (PDF)
+                </a>
+              {% endif %}
+              <a class="btn btn-cq btn-cq-ghost btn-sm"
+                 href="{{ url_for('certificates.verify', code=certificate.verification_code) }}">
+                {{ t('cert.verify') }}
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-card">
+      <p class="cq-muted mb-0">
+        {{ t('get.no_results') }} Pass the required labs for a tier above, then generate your certificate.
+      </p>
+    </div>
+  {% endif %}
+</section>
+
+<section aria-labelledby="note-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="note-heading" class="h5 mb-2">{{ t('cert.note') }}</h2>
+    <p class="cq-muted mb-0">
+      These certificates record what you have completed on the CyberQuest platform. They are training
+      records, not accredited professional qualifications, and each one carries a verification code that
+      anyone can check on the public verification page.
+    </p>
+  </div>
+</section>
+{% endblock %}

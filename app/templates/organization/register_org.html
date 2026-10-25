@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Register Organization · Human Firewall{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12" style="max-width: 580px;">
+    <div class="cq-card cq-fade-in p-4 p-md-5">
+      <div class="text-center mb-4">
+        <span class="fs-1" aria-hidden="true">🏢✨</span>
+        <h1 class="h3 mb-1">Register Organization Workspace</h1>
+        <p class="cq-muted small mb-0">Create your private cybersecurity training hub</p>
+      </div>
+
+      <form method="post" action="{{ url_for('organization.register_organization') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label class="form-label" for="name">Organization Name <span class="text-danger">*</span></label>
+          <input type="text" id="name" name="name" class="form-control" required placeholder="e.g. Stanford Cybersecurity Institute or Apex Corp">
+          <div class="form-text cq-muted small">The official name that will appear on certificates and dashboards.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="plan">Subscription Plan</label>
+            <select id="plan" name="plan" class="form-select">
+              <option value="starter" {% if selected_plan == 'starter' %}selected{% endif %}>Starter (50 Seats)</option>
+              <option value="professional" {% if selected_plan == 'professional' %}selected{% endif %}>Professional (250 Seats)</option>
+              <option value="enterprise" {% if selected_plan == 'enterprise' %}selected{% endif %}>Enterprise (1000 Seats)</option>
+            </select>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="seats">Total Purchased Seats</label>
+            <input type="number" id="seats" name="seats" class="form-control" min="5" value="50">
+            <div class="form-text cq-muted small">Max concurrent enrolled members.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="domain">Allowed Email Domain <span class="cq-muted small">(optional)</span></label>
+          <input type="text" id="domain" name="domain" class="form-control" placeholder="e.g. university.edu or company.com">
+          <div class="form-text cq-muted small">Leave blank to allow any approved email in your eligible member registry.</div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <label class="form-label" for="contact_name">Primary Administrator Name</label>
+            <input type="text" id="contact_name" name="contact_name" class="form-control"
+                   value="{{ current_user.name if current_user.is_authenticated else '' }}" placeholder="Coordinator or HR Manager">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="contact_email">Administrative Contact Email</label>
+            <input type="email" id="contact_email" name="contact_email" class="form-control"
+                   value="{{ current_user.email if current_user.is_authenticated else '' }}" placeholder="hr@institution.edu">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-cq btn-cq-primary w-100 py-2 fs-6">
+          Initialize Organization Workspace
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

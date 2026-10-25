@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Eligible-Member Registry · {{ org.name }} · Human Firewall{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <a href="{{ url_for('organization.workspace_dashboard', org_id=org.id) }}" class="small text-info text-decoration-none">
+      ← Return to HR Dashboard
+    </a>
+    <h1 class="h2 mb-1">Eligible-Member Registry</h1>
+    <p class="cq-muted small mb-0">Pre-approved institutional roster for {{ org.name }}</p>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{{ url_for('organization.download_csv_template', org_id=org.id) }}" class="btn btn-outline-info btn-sm">
+      📥 Download CSV Template
+    </a>
+    <button class="btn btn-cq btn-cq-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#uploadCollapse">
+      📤 Bulk CSV Upload
+    </button>
+    <button class="btn btn-cq btn-cq-ghost btn-sm" data-bs-toggle="collapse" data-bs-target="#manualAddCollapse">
+      ➕ Add Single Identifier
+    </button>
+  </div>
+</div>
+
+<!-- CSV UPLOAD COLLAPSE PANEL -->
+<div class="collapse mb-4" id="uploadCollapse">
+  <div class="cq-card p-4 border-info">
+    <h2 class="h5 mb-2">Import Eligible Members from CSV</h2>
+    <p class="cq-muted small mb-3">
+      Upload a CSV containing columns: <code>registration_id</code> (required), <code>full_name</code>, <code>email</code>, <code>department</code>, <code>cohort</code>.
+    </p>
+
+    <form method="post" action="{{ url_for('organization.upload_eligible_csv', org_id=org.id) }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-8">
+          <input type="file" name="csv_file" class="form-control" accept=".csv" required>
+        </div>
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-cq btn-cq-primary w-100">Upload &amp; Validate CSV</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MANUAL ADD COLLAPSE PANEL -->
+<div class="collapse mb-4" id="manualAddCollapse">
+  <div class="cq-card p-4">
+    <h2 class="h5 mb-3">Add Single Eligible Member</h2>
+    <form method="post" action="{{ url_for('organization.add_eligible_member_route', org_id=org.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label" for="identifier">Registration ID / Employee ID <span class="text-danger">*</span></label>
+          <input type="text" id="identifier" name="identifier" class="form-control form-control-sm" required placeholder="e.g. REG-2026-901">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="full_name">Full Name</label>
+          <input type="text" id="full_name" name="full_name" class="form-control form-control-sm" placeholder="Student or employee name">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="approved_email">Approved Email</label>
+          <input type="email" id="approved_email" name="approved_email" class="form-control form-control-sm" placeholder="user@campus.edu">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="department">Department</label>
+          <input type="text" id="department" name="department" class="form-control form-control-sm" placeholder="e.g. Computer Science">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="cohort">Cohort / Batch</label>
+          <input type="text" id="cohort" name="cohort" class="form-control form-control-sm" placeholder="e.g. Class of 2026">
+        </div>
+      </div>
+      <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-sm btn-cq btn-cq-primary">Add to Registry</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SEARCH & FILTER BAR -->
+<div class="cq-card p-3 mb-4">
+  <form method="get" action="{{ url_for('organization.eligible_members_list', org_id=org.id) }}" class="row g-2 align-items-center">
+    <div class="col-md-5">
+      <input type="text" name="q" class="form-control form-control-sm" value="{{ search }}" placeholder="Search by ID, name, or email...">
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select form-select-sm">
+        <option value="">All Statuses</option>
+        <option value="eligible" {% if status_filter == 'eligible' %}selected{% endif %}>Eligible — Not Registered</option>
+        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active / Claimed</option>
+        <option value="pending_approval" {% if status_filter == 'pending_approval' %}selected{% endif %}>Pending Approval</option>
+        <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
+        <option value="revoked" {% if status_filter == 'revoked' %}selected{% endif %}>Revoked</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="cohort" class="form-select form-select-sm">
+        <option value="">All Cohorts</option>
+        {% for c in cohorts %}
+          <option value="{{ c }}" {% if cohort_filter == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex gap-1">
+      <button type="submit" class="btn btn-sm btn-info w-100">Filter</button>
+      {% if search or status_filter or cohort_filter %}
+        <a href="{{ url_for('organization.eligible_members_list', org_id=org.id) }}" class="btn btn-sm btn-outline-light">Reset</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- REGISTRY TABLE -->
+<div class="cq-card">
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle mb-0 small">
+      <thead>
+        <tr>
+          <th>Reg / Emp ID</th>
+          <th>Full Name</th>
+          <th>Approved Email</th>
+          <th>Department / Cohort</th>
+          <th>Status</th>
+          <th>Claimed By</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if members %}
+          {% for m in members %}
+            <tr>
+              <td><code class="text-info fw-bold">{{ m.identifier }}</code></td>
+              <td>{{ m.full_name or '—' }}</td>
+              <td>{{ m.approved_email or 'Any permitted' }}</td>
+              <td>
+                {{ m.department or '—' }}
+                {% if m.cohort %}<span class="badge bg-secondary ms-1">{{ m.cohort }}</span>{% endif %}
+              </td>
+              <td>
+                {% if m.status == 'eligible' %}
+                  <span class="badge bg-secondary">Eligible — Not Claimed</span>
+                {% elif m.status == 'active' %}
+                  <span class="badge bg-success">Active Member</span>
+                {% elif m.status == 'pending_approval' %}
+                  <span class="badge bg-warning">Pending Approval</span>
+                {% elif m.status == 'suspended' %}
+                  <span class="badge bg-danger">Suspended</span>
+                {% else %}
+                  <span class="badge bg-dark">{{ m.status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if m.claimed_by %}
+                  <span class="text-white">{{ m.claimed_by.name }}</span><br>
+                  <small class="cq-muted">{{ m.claimed_at.strftime('%Y-%m-%d') if m.claimed_at else '' }}</small>
+                {% else %}
+                  <span class="cq-muted">Unclaimed</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{{ url_for('organization.toggle_eligible_status', org_id=org.id, member_id=m.id) }}" class="d-inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% if m.status == 'suspended' %}
+                    <input type="hidden" name="status" value="eligible">
+                    <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2" title="Restore eligibility">Restore</button>
+                  {% else %}
+                    <input type="hidden" name="status" value="suspended">
+                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="Suspend eligibility">Suspend</button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-4 cq-muted">
+              No eligible member identifiers found matching your criteria.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

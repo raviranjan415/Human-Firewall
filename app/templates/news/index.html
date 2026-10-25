@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.news') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('nav.news') }}</h1>
+  <p class="cq-muted mb-2">
+    This is a reviewed news feed. Every story is distilled into a fixed structure so it stays useful
+    rather than overwhelming: what happened, who is affected, why it matters and what to do about it.
+    A story appears here only after an administrator has reviewed it.
+  </p>
+  <div class="d-flex flex-wrap gap-2 align-items-center">
+    {% if last_checked %}
+      <span class="cq-badge cq-badge-cyan">
+        Sources last checked {{ last_checked.strftime('%d %b %Y %H:%M') }}
+      </span>
+    {% else %}
+      <span class="cq-badge">{{ t('get.not_started') }}</span>
+    {% endif %}
+    <span class="cq-badge cq-badge-orange">
+      {{ pending_count }} st{{ 'ory' if pending_count == 1 else 'ories' }} awaiting review — not yet visible
+    </span>
+    <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('news.sources') }}">Our sources</a>
+  </div>
+</section>
+
+<section aria-labelledby="stories-heading" class="mb-4">
+  <h2 id="stories-heading" class="visually-hidden">Reviewed news stories</h2>
+  {% if stories %}
+    <div class="row g-3">
+      {% for story in stories %}
+        <div class="col-12 col-lg-6">
+          <article class="cq-card h-100 d-flex flex-column">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+              {% if story.is_breaking %}
+                <span class="cq-badge cq-badge-red">Breaking</span>
+              {% endif %}
+              {% if story.source %}
+                <span class="cq-badge">{{ story.source.name }}</span>
+              {% endif %}
+              {% if story.published_at %}
+                <span class="cq-muted small">{{ story.published_at.strftime('%d %b %Y') }}</span>
+              {% endif %}
+            </div>
+
+            <h3 class="h5 mb-2">
+              <a href="{{ url_for('news.detail', news_id=story.id) }}">{{ story.title }}</a>
+            </h3>
+            {% if story.summary_en %}
+              <p class="cq-muted mb-3">{{ story.summary_en }}</p>
+            {% elif story.what_happened_en %}
+              <p class="cq-muted mb-3">{{ story.what_happened_en|truncate(180, True) }}</p>
+            {% endif %}
+
+            <div class="mt-auto d-flex flex-wrap gap-2">
+              <a class="btn btn-cq btn-cq-ghost btn-sm"
+                 href="{{ url_for('news.detail', news_id=story.id) }}"
+                 aria-label="Read the full briefing: {{ story.title }}">
+                Read the full briefing
+              </a>
+              {% if story.url %}
+                <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ story.url }}"
+                   target="_blank" rel="noopener noreferrer"
+                   aria-label="Open the original article: {{ story.title }} (opens in a new tab)">
+                  Original article
+                </a>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="cq-card">
+      <h3 class="h5 mb-2">No reviewed stories yet</h3>
+      <p class="cq-muted mb-2">
+        News appears here after an administrator reviews ingested items and approves them. Until then,
+        nothing is shown to learners — we would rather show nothing than an unverified story.
+      </p>
+      <p class="cq-muted mb-0">
+        Fetched items come from the configured RSS sources via <code>flask ingest-news</code>.
+      </p>
+    </div>
+  {% endif %}
+</section>
+
+<section aria-labelledby="language-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="language-heading" class="h5 mb-2">A note on language</h2>
+    <p class="cq-muted mb-0">
+      News stories are currently English-only. Hindi versions are added during review once each story
+      has been fact-checked; until then we show the original English text rather than an unchecked
+      translation.
+    </p>
+  </div>
+</section>
+{% endblock %}

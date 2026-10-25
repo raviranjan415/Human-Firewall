@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.admin') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('nav.admin') }} console</h1>
+  <p class="cq-muted mb-0">
+    Platform health, content workflow and recent privileged activity. Every figure is computed from
+    recorded activity — nothing on this page is estimated.
+  </p>
+</section>
+
+{% set o = overview %}
+
+<section aria-labelledby="admin-stats-heading" class="mb-4">
+  <h2 id="admin-stats-heading" class="h4 mb-3">Platform overview</h2>
+  <div class="row g-3">
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.registered_users }}</div>
+        <div class="cq-stat-label">Registered users</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.learners }}</div>
+        <div class="cq-stat-label">Learners</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.active_7d }}</div>
+        <div class="cq-stat-label">Active last 7 days</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.active_30d }}</div>
+        <div class="cq-stat-label">Active last 30 days</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.lab_attempts }}</div>
+        <div class="cq-stat-label">Lab attempts</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.lab_pass_rate }}%</div>
+        <div class="cq-stat-label">Lab pass rate</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.certificates_issued }}</div>
+        <div class="cq-stat-label">Certificates issued</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.pending_news }}</div>
+        <div class="cq-stat-label">Stories awaiting review</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.published_news }}</div>
+        <div class="cq-stat-label">Published stories</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.videos_started }} / {{ o.videos_total }}</div>
+        <div class="cq-stat-label">Videos started / total</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.comics_read }} / {{ o.comics_total }}</div>
+        <div class="cq-stat-label">Comics read / total</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="cq-stat h-100">
+        <div class="cq-stat-value">{{ o.certificates_issued }}</div>
+        <div class="cq-stat-label">Certificates held</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="activity-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="activity-heading" class="h5 mb-3">Daily platform activity — last 14 days</h2>
+    <div style="position: relative; height: 280px;">
+      <canvas id="daily-chart" height="180"
+              role="img"
+              aria-label="Line chart of aggregate platform activity events per day over the last fourteen days"></canvas>
+    </div>
+    <details class="mt-3">
+      <summary class="cq-muted">View daily activity as a table</summary>
+      <div class="table-responsive mt-2">
+        <table class="cq-table">
+          <caption class="cq-muted small">Aggregate learning events per day (last 14 days)</caption>
+          <thead>
+            <tr><th scope="col">Day</th><th scope="col">Events</th></tr>
+          </thead>
+          <tbody>
+            {% for label in o.daily_activity.labels %}
+              <tr>
+                <th scope="row">{{ label }}</th>
+                <td>{{ o.daily_activity['values'][loop.index0] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section aria-labelledby="inventory-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="inventory-heading" class="h5 mb-2">Content inventory</h2>
+    <div class="cq-alert cq-alert-info mb-3" role="note">
+      <strong>Interactive vs. planned content.</strong>
+      Only <strong>{{ content_states.labs_published }}</strong> of
+      <strong>{{ content_states.labs_total }}</strong> labs are interactive right now.
+      The remaining {{ content_states.labs_total - content_states.labs_published }} labs are authored
+      plans held in <em>draft</em>. Do not publish a drafted lab until its interactive task has actually
+      been authored — otherwise learners would meet unfinished content.
+    </div>
+    <div class="row g-3">
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.labs_published }}</div>
+          <div class="cq-stat-label">Labs published (interactive)</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.labs_draft }}</div>
+          <div class="cq-stat-label">Labs in draft</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.comics }}</div>
+          <div class="cq-stat-label">Comics</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.games }}</div>
+          <div class="cq-stat-label">Games</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.videos }}</div>
+          <div class="cq-stat-label">Videos</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="cq-stat h-100">
+          <div class="cq-stat-value">{{ content_states.incidents }}</div>
+          <div class="cq-stat-label">Incidents</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="hardest-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="hardest-heading" class="h5 mb-3">Hardest labs</h2>
+    {% if hardest %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">Labs with the lowest pass rate</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ t('lab.number') }}</th>
+              <th scope="col">Title</th>
+              <th scope="col">{{ t('lab.attempts') }}</th>
+              <th scope="col">Passes</th>
+              <th scope="col">Pass rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in hardest %}
+              <tr>
+                <td>{{ row.number }}</td>
+                <th scope="row" class="fw-normal">{{ row.title }}</th>
+                <td>{{ row.attempts }}</td>
+                <td>{{ row.passes }}</td>
+                <td>{{ row.pass_rate }}%</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<section aria-labelledby="audit-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="audit-heading" class="h5 mb-3">Recent admin activity</h2>
+    {% if recent_audit %}
+      <div class="table-responsive">
+        <table class="cq-table">
+          <caption class="cq-muted small">The ten most recent administrative actions</caption>
+          <thead>
+            <tr>
+              <th scope="col">When</th>
+              <th scope="col">Action</th>
+              <th scope="col">Target</th>
+              <th scope="col">Actor</th>
+              <th scope="col">IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in recent_audit %}
+              <tr>
+                <td>{{ entry.created_at.strftime('%d %b %Y %H:%M') if entry.created_at else '—' }}</td>
+                <td>{{ entry.action }}</td>
+                <td>{{ entry.target_type or '—' }}{% if entry.target_id %} #{{ entry.target_id }}{% endif %}</td>
+                <td>{{ entry.actor_id if entry.actor_id is not none else '—' }}</td>
+                <td>{{ entry.ip_address or '—' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="cq-muted mb-0">No administrative activity recorded yet.</p>
+    {% endif %}
+    <div class="mt-3">
+      <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('admin.audit') }}">{{ t('get.view_all') }}</a>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="quicklinks-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="quicklinks-heading" class="h5 mb-3">Quick links</h2>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-cq btn-cq-primary" href="{{ url_for('admin.users') }}">Users</a>
+      <a class="btn btn-cq btn-cq-primary" href="{{ url_for('admin.content') }}">Content</a>
+      <a class="btn btn-cq btn-cq-purple" href="{{ url_for('admin.news_queue') }}">News review queue</a>
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('admin.audit') }}">Audit log</a>
+      <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('analytics.cohort') }}">{{ t('nav.instructor') }}</a>
+    </div>
+  </div>
+</section>
+
+<script type="application/json" id="daily-data">{{ o.daily_activity|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script>
+(function () {
+  "use strict";
+  var grid = "rgba(120,168,255,0.15)";
+  var ticks = "#93a7c9";
+  var node = document.getElementById("daily-data");
+  var canvas = document.getElementById("daily-chart");
+  if (canvas && node) {
+    var daily = window.CQ.readJson(node) || { labels: [], values: [] };
+    new Chart(canvas, {
+      type: "line",
+      data: {
+        labels: daily.labels,
+        datasets: [{
+          label: "Platform activity",
+          data: daily.values,
+          borderColor: "#22d3ee",
+          backgroundColor: "rgba(34,211,238,0.18)",
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: "#22d3ee"
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ticks } } },
+        scales: {
+          x: { grid: { color: grid }, ticks: { color: ticks } },
+          y: { grid: { color: grid }, ticks: { color: ticks }, beginAtZero: true }
+        }
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

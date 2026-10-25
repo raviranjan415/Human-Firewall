@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ t('cert.verify') }}{% endblock %}
+
+{% block content %}
+<section class="cq-hero cq-fade-in mb-4">
+  <p class="cq-eyebrow">{{ t('brand.name') }}</p>
+  <h1 class="cq-title-gradient display-6 mb-2">{{ t('cert.verify') }}</h1>
+  <p class="cq-muted mb-0">
+    Enter the verification code printed on a Human Firewall certificate to check it against the platform's
+    records. Anyone can use this page — you do not need an account.
+  </p>
+</section>
+
+<section aria-labelledby="verify-form-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="verify-form-heading" class="h5 mb-3">{{ t('cert.verification_code') }}</h2>
+    <form method="get" action="{{ url_for('certificates.verify') }}">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-8">
+          <label class="form-label" for="verify-code">{{ t('cert.verification_code') }}</label>
+          <input class="form-control" type="text" id="verify-code" name="code"
+                 value="{{ code }}" autocomplete="off" spellcheck="false"
+                 placeholder="e.g. 1A2B3C4D">
+        </div>
+        <div class="col-12 col-md-4">
+          <button type="submit" class="btn btn-cq btn-cq-primary w-100">{{ t('cert.verify') }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if code and not result %}
+  <section aria-labelledby="not-found-heading" class="mb-4">
+    <div class="cq-alert cq-alert-error" role="alert">
+      <h2 id="not-found-heading" class="h5 mb-1">{{ t('cert.verify') }}: no match</h2>
+      <p class="mb-0">No certificate was found for that code. Check the code and try again.</p>
+    </div>
+  </section>
+{% endif %}
+
+{% if result %}
+  <section aria-labelledby="result-heading" class="mb-4">
+    <div class="cq-card">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h2 id="result-heading" class="h5 mb-0">{{ t('cert.verify') }}: match found</h2>
+        <span class="cq-badge cq-badge-green">{{ t('cert.eligible') }}</span>
+      </div>
+
+      <dl class="row mb-0">
+        <dt class="col-sm-4 cq-muted">Learner</dt>
+        <dd class="col-sm-8">{{ result.learner_name }}</dd>
+        <dt class="col-sm-4 cq-muted">{{ t('cert.tier') }}</dt>
+        <dd class="col-sm-8">{{ result.tier_name }}</dd>
+        <dt class="col-sm-4 cq-muted">{{ t('cert.issue_date') }}</dt>
+        <dd class="col-sm-8">{{ result.issued_at.strftime('%d %b %Y') if result.issued_at else '—' }}</dd>
+        <dt class="col-sm-4 cq-muted">{{ t('dash.completed_labs') }}</dt>
+        <dd class="col-sm-8">{{ result.labs_completed }}</dd>
+        <dt class="col-sm-4 cq-muted">Certificate ID</dt>
+        <dd class="col-sm-8">{{ result.certificate_uid }}</dd>
+        <dt class="col-sm-4 cq-muted">Issuer</dt>
+        <dd class="col-sm-8 mb-0">{{ result.issuer }}</dd>
+      </dl>
+    </div>
+  </section>
+{% endif %}
+
+<section aria-labelledby="qr-heading" class="mb-4">
+  <div class="cq-card">
+    <h2 id="qr-heading" class="h5 mb-2">About the QR code</h2>
+    <p class="cq-muted mb-2">
+      Every CyberQuest PDF certificate carries a QR code. Scanning it opens the public verification
+      page for that certificate, where the same minimum information is shown.
+    </p>
+    <p class="cq-muted mb-0">
+      {{ t('cert.note') }}
+    </p>
+  </div>
+</section>
+{% endblock %}
