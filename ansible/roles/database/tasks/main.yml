@@ -1,0 +1,38 @@
+---
+- name: Install PostgreSQL server and Redis
+  apt:
+    name:
+      - postgresql-16
+      - postgresql-contrib
+      - python3-psycopg2
+      - redis-server
+    state: present
+
+- name: Ensure PostgreSQL service is started and enabled
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Create Human Firewall PostgreSQL database user
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    role_attr_flags: "CREATEDB,NOSUPERUSER"
+    state: present
+  become_user: postgres
+
+- name: Create Human Firewall PostgreSQL application database
+  postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+    encoding: "UTF-8"
+    state: present
+  become_user: postgres
+
+- name: Ensure Redis service is running and enabled
+  service:
+    name: redis-server
+    state: started
+    enabled: yes
+

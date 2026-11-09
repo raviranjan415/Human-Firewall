@@ -1,55 +1,73 @@
 """Locust performance & load testing suite for Human Firewall.
 
-Simulates three realistic user workflows:
-1. Personal Learners: Anonymous and authenticated browsing, lab access, gamification sync.
-2. Organization Members: Accessing dedicated workspace, viewing assignments, checking org leaderboard.
-3. HR / T&P Coordinators: Querying organization dashboard metrics, searching eligible registry, inspecting assignments.
+Simulates 4 realistic enterprise & academic workloads:
+1. Personal Learners: Browsing games, answering scenarios, checking leaderboards.
+2. Organization Members: Accessing dedicated workspace, viewing assignments.
+3. HR / T&P Coordinators: Querying organization metrics and members.
+4. DevOps & SRE Monitors: Polling /healthz, /readyz, and Prometheus /metrics.
 """
 
 from __future__ import annotations
 
 import random
-from locust import HttpUser, TaskSet, task, between
+from locust import HttpUser, TaskSet, between, task
 
 
 class PersonalLearnerBehavior(TaskSet):
     def on_start(self):
-        self.username = f"bench_user_{random.randint(1, 1000)}"
         # Authenticate learner
         self.client.post("/auth/login", data={
             "identifier": "learner1",
             "password": "Testing1pass",
         })
 
-    @task(4)
+    @task(5)
     def browse_homepage(self):
         self.client.get("/")
 
-    @task(3)
+    @task(4)
     def view_dashboard(self):
         self.client.get("/dashboard/")
+
+    @task(5)
+    def browse_games_hub(self):
+        self.client.get("/games/")
+
+    @task(3)
+    def play_game(self):
+        slugs = [
+            "phishing-detective",
+            "smishing-showdown",
+            "password-fortress",
+            "wifi-safety-mission",
+            "malware-hunter",
+            "data-privacy-guardian",
+        ]
+        chosen = random.choice(slugs)
+        self.client.get(f"/games/{chosen}")
+
+    @task(2)
+    def submit_game_answer(self):
+        self.client.post(
+            "/api/games/phishing-detective/answer",
+            json={"scenario_id": 1, "is_threat": True},
+        )
 
     @task(3)
     def browse_labs(self):
         self.client.get("/labs/")
 
     @task(2)
-    def view_lab_detail(self):
-        lab_num = random.choice([1, 2, 3, 4, 5])
-        self.client.get(f"/labs/{lab_num}")
+    def check_leaderboard(self):
+        self.client.get("/dashboard/leaderboard")
 
     @task(1)
     def check_certificates(self):
         self.client.get("/certificates/")
 
-    @task(1)
-    def view_educational_news(self):
-        self.client.get("/cyber-news/")
-
 
 class OrganizationMemberBehavior(TaskSet):
     def on_start(self):
-        # Authenticate learner belonging to workspace
         self.client.post("/auth/login", data={
             "identifier": "learner1",
             "password": "Testing1pass",
@@ -63,14 +81,9 @@ class OrganizationMemberBehavior(TaskSet):
     def view_org_leaderboard(self):
         self.client.get("/org/1/leaderboard")
 
-    @task(2)
-    def check_assigned_labs(self):
-        self.client.get("/labs/1")
-
 
 class HRCoordinatorBehavior(TaskSet):
     def on_start(self):
-        # Authenticate HR Administrator
         self.client.post("/auth/login", data={
             "identifier": "admin",
             "password": "Admin@150305",
@@ -81,22 +94,29 @@ class HRCoordinatorBehavior(TaskSet):
         self.client.get("/org/1/dashboard")
 
     @task(2)
-    def search_eligible_members(self):
-        self.client.get("/org/1/eligible?q=EMP")
+    def view_devops_console(self):
+        self.client.get("/admin/devops?tab=overview")
+
+
+class SREMonitorBehavior(TaskSet):
+    @task(4)
+    def poll_healthz(self):
+        self.client.get("/healthz")
+
+    @task(3)
+    def poll_readyz(self):
+        self.client.get("/readyz")
 
     @task(2)
-    def inspect_active_members(self):
-        self.client.get("/org/1/members")
-
-    @task(1)
-    def view_assignments(self):
-        self.client.get("/org/1/assignments")
+    def scrape_metrics(self):
+        self.client.get("/metrics")
 
 
 class HumanFirewallUser(HttpUser):
-    wait_time = between(0.1, 0.5)  # rapid requests for load benchmarking
+    wait_time = between(0.1, 0.5)
     tasks = {
         PersonalLearnerBehavior: 6,
         OrganizationMemberBehavior: 3,
         HRCoordinatorBehavior: 1,
+        SREMonitorBehavior: 2,
     }

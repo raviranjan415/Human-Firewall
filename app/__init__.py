@@ -37,6 +37,11 @@ def create_app(config_name: str | None = None) -> Flask:
 
     init_i18n(app)
 
+    # Enable ProxyFix for reverse-proxy / multi-replica load balancing
+    from werkzeug.middleware.proxy_fix import ProxyFix
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     return app
 
 

@@ -1,0 +1,33 @@
+---
+- name: Update apt package cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install common utility packages
+  apt:
+    name:
+      - curl
+      - wget
+      - git
+      - htop
+      - jq
+      - unzip
+      - ca-certificates
+      - gnupg
+      - lsb-release
+      - software-properties-common
+      - ufw
+      - systemd-timesyncd
+    state: present
+
+- name: Set system timezone to UTC
+  timezone:
+    name: "{{ system_timezone | default('UTC') }}"
+
+- name: Ensure timesyncd service is running and enabled
+  service:
+    name: systemd-timesyncd
+    state: started
+    enabled: yes
+

@@ -1,0 +1,36 @@
+{
+  "loadbalancers": [
+    {
+      "name": "human-firewall-lb-01",
+      "ansible_host": "198.51.100.10",
+      "private_ip": "10.0.1.10"
+    }
+  ],
+  "webservers": [
+    {
+      "name": "human-firewall-replica-01",
+      "ansible_host": "10.0.10.11",
+      "private_ip": "10.0.10.11",
+      "replica_id": 1
+    },
+    {
+      "name": "human-firewall-replica-02",
+      "ansible_host": "10.0.10.12",
+      "private_ip": "10.0.10.12",
+      "replica_id": 2
+    },
+    {
+      "name": "human-firewall-replica-03",
+      "ansible_host": "10.0.10.13",
+      "private_ip": "10.0.10.13",
+      "replica_id": 3
+    }
+  ],
+  "dbservers": [
+    {
+      "name": "human-firewall-db-01",
+      "ansible_host": "10.0.10.50",
+      "private_ip": "10.0.10.50"
+    }
+  ]
+}

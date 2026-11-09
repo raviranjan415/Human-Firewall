@@ -1,0 +1,175 @@
+# ==============================================================================
+# Human Firewall — Enterprise Continuous Integration & Delivery Pipeline
+# INT333 DevOps Advanced Configuration Management
+# ==============================================================================
+
+name: Human Firewall CI/CD & DevOps Pipeline
+
+on:
+  push:
+    branches: [ "main", "staging" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Job 1: Lint, Code Quality & Security Auditing
+  # ----------------------------------------------------------------------------
+  lint_and_security:
+    name: 1. Code Quality & Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install Linting & Security Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff bandit pip-audit
+
+      - name: Ruff Code Quality Lint
+        run: |
+          ruff check app tests --ignore E501
+
+      - name: Bandit Static Application Security Testing (SAST)
+        run: |
+          bandit -r app -ll -ii --exclude ./tests
+
+  # ----------------------------------------------------------------------------
+  # Job 2: Automated Unit & Integration Testing
+  # ----------------------------------------------------------------------------
+  test_suite:
+    name: 2. Pytest Unit & Integration Tests
+    runs-on: ubuntu-latest
+    needs: lint_and_security
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install Application Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Full Pytest Test Suite
+        env:
+          FLASK_ENV: testing
+          WTF_CSRF_ENABLED: "false"
+        run: |
+          python -m pytest --maxfail=5
+
+  # ----------------------------------------------------------------------------
+  # Job 3: Primary DevOps Configuration Management Validation
+  # ----------------------------------------------------------------------------
+  devops_validation:
+    name: 3. Terraform, Ansible & Puppet Validation
+    runs-on: ubuntu-latest
+    needs: test_suite
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Validate Terraform Syntax & Format
+        run: |
+          cd terraform
+          terraform fmt -check
+          terraform init -backend=false
+          terraform validate
+
+      - name: Set up Ansible
+        run: |
+          sudo apt-get update && sudo apt-get install -y ansible-core
+
+      - name: Validate Ansible Playbooks & Syntax
+        run: |
+          cd ansible
+          ansible-playbook -i inventory/hosts.ini playbooks/site.yml --syntax-check
+          ansible-playbook -i inventory/hosts.ini playbooks/deploy.yml --syntax-check
+          ansible-playbook -i inventory/hosts.ini playbooks/hardening.yml --syntax-check
+
+      - name: Set up Python for Puppet & Drift Validation
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Execute Puppet Configuration Drift Test
+        run: |
+          python puppet/scripts/drift_demo.py
+
+  # ----------------------------------------------------------------------------
+  # Job 4: Container Build & Load Balancer Verification
+  # ----------------------------------------------------------------------------
+  container_verification:
+    name: 4. Docker Build & Smoke Tests
+    runs-on: ubuntu-latest
+    needs: devops_validation
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Application Container Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: human-firewall:ci-${{ github.sha }}
+
+      - name: Verify Docker Compose Architecture
+        run: |
+          docker compose config -q
+          echo "Docker compose topology verified successfully."
+
+  # ----------------------------------------------------------------------------
+  # Job 5: Continuous Deployment to Production
+  # ----------------------------------------------------------------------------
+  deploy_production:
+    name: 5. Production Rolling Deployment
+    runs-on: ubuntu-latest
+    needs: container_verification
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://humanfirewall.example.com
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Execute DevOps Pipeline Orchestrator
+        run: |
+          python -m pip install -r requirements.txt
+          python scripts/devops_orchestrator.py
+
+      - name: Record Production Release Audit
+        run: |
+          echo "Release ${{ github.sha }} successfully deployed to Human Firewall production cluster."
+

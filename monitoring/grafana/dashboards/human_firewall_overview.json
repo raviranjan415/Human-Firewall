@@ -1,0 +1,104 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "Application Cluster & Service Health",
+      "type": "row"
+    },
+    {
+      "id": 1,
+      "title": "Database Status",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "targets": [
+        { "expr": "human_firewall_database_status", "legendFormat": "Database Connectivity" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "options": { "0": { "color": "red", "text": "DOWN" }, "1": { "color": "green", "text": "CONNECTED" } }, "type": "value" }
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Active Registered Users",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "targets": [
+        { "expr": "human_firewall_users_total", "legendFormat": "Total Users" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" } }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Published Awareness Games",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "targets": [
+        { "expr": "human_firewall_games_published", "legendFormat": "Games" }
+      ],
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" } }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Host Memory Utilization (%)",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "targets": [
+        { "expr": "human_firewall_system_memory_percent", "legendFormat": "RAM %" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 75 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "CPU & Memory Utilization History",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 5 },
+      "targets": [
+        { "expr": "human_firewall_system_cpu_percent", "legendFormat": "CPU %" },
+        { "expr": "human_firewall_system_memory_percent", "legendFormat": "RAM %" }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["human-firewall", "devops", "monitoring"],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "title": "Human Firewall — Enterprise SRE Telemetry",
+  "uid": "hf-sre-telemetry"
+}
+

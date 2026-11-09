@@ -42,6 +42,7 @@ from app.services.catalog_labs import CATALOG_LABS as LABS_AUTHORED
 from app.services.catalog_videos import CATALOG_VIDEOS as VIDEO_LESSONS
 from app.services.catalog_comics import COMICS
 from app.services.catalog_incidents import CATALOG_INCIDENTS as INCIDENTS
+from app.services.catalog_games_30 import GAMES_30
 from app.services.seed_data_ext import (
     COMIC_PLACEHOLDER,
     GAMES,
@@ -302,7 +303,14 @@ def ensure_labs() -> list[str]:
 
 def ensure_games() -> list[str]:
     created_games = created_scenarios = 0
-    for spec in GAMES:
+    all_game_specs = list(GAMES_30)
+    existing_slugs = {g["slug"] for g in all_game_specs}
+    for legacy_game in GAMES:
+        if legacy_game["slug"] not in existing_slugs:
+            all_game_specs.append(legacy_game)
+
+    for spec_index, spec in enumerate(all_game_specs):
+        order_idx = spec.get("order_index", spec_index + 1)
         game, is_new = _get_or_create(
             Game,
             {
@@ -310,21 +318,24 @@ def ensure_games() -> list[str]:
                 "title_hi": spec.get("title_hi"),
                 "instructions_en": spec["instructions_en"],
                 "instructions_hi": spec.get("instructions_hi"),
-                "debrief_en": spec["debrief_en"],
+                "debrief_en": spec.get("debrief_en"),
                 "debrief_hi": spec.get("debrief_hi"),
-                "difficulty": spec["difficulty"],
-                "timed": spec["timed"],
-                "xp_reward": spec["xp"],
+                "difficulty": spec.get("difficulty", "beginner"),
+                "timed": spec.get("timed", False),
+                "xp_reward": spec.get("xp", 35),
+                "order_index": order_idx,
                 "state": "published",
             },
             slug=spec["slug"],
         )
         created_games += int(is_new)
-        if not is_new and GameScenario.query.filter_by(game_id=game.id).count():
-            continue
+        existing_count = GameScenario.query.filter_by(game_id=game.id).count()
 
         for index, scenario in enumerate(spec["scenarios"]):
-            if spec["slug"] == "scam-or-legit":
+            if index < existing_count:
+                continue
+
+            if isinstance(scenario, (list, tuple)):
                 body, is_threat, explanation, explanation_hi = scenario
                 db.session.add(
                     GameScenario(
@@ -344,36 +355,31 @@ def ensure_games() -> list[str]:
                 created_scenarios += 1
                 continue
 
-            db.session.add(
-                GameScenario(
-                    game_id=game.id,
-                    order_index=index,
-                    scenario_type=scenario["type"],
-                    sender=scenario.get("sender"),
-                    subject_en=scenario.get("subject"),
-                    body_en=scenario["body"],
-                    meta_json=json.dumps(scenario.get("meta") or {}),
-                    is_threat=scenario["is_threat"],
-                    difficulty=spec["difficulty"],
-                    explanation_en=scenario["explanation_en"],
-                    explanation_hi=scenario.get("explanation_hi"),
-                    warning_signs_en=scenario.get("warning_signs_en"),
-                    warning_signs_hi=scenario.get("warning_signs_hi"),
-                    xp_value=10,
-                )
+            scenario_obj = GameScenario(
+                game_id=game.id,
+                order_index=index,
+                scenario_type=scenario.get("type", "email"),
+                sender=scenario.get("sender"),
+                subject_en=scenario.get("subject"),
+                body_en=scenario.get("body"),
+                meta_json=json.dumps(scenario.get("meta") or {}),
+                is_threat=scenario.get("is_threat", True),
+                difficulty=spec.get("difficulty", "beginner"),
+                explanation_en=scenario.get("explanation_en"),
+                explanation_hi=scenario.get("explanation_hi"),
+                warning_signs_en=scenario.get("warning_signs_en"),
+                warning_signs_hi=scenario.get("warning_signs_hi"),
+                xp_value=10,
             )
+            db.session.add(scenario_obj)
             db.session.flush()
             created_scenarios += 1
-            scenario_row = (
-                GameScenario.query.filter_by(game_id=game.id)
-                .order_by(GameScenario.order_index.desc())
-                .first()
-            )
-            for choice_index, choice in enumerate(scenario["choices"]):
+
+            for choice_index, choice in enumerate(scenario.get("choices", [])):
                 text_en, is_correct, feedback_en, feedback_hi = choice
                 db.session.add(
                     ScenarioChoice(
-                        scenario_id=scenario_row.id,
+                        scenario_id=scenario_obj.id,
                         order_index=choice_index,
                         text_en=text_en,
                         is_correct=is_correct,

@@ -1,0 +1,46 @@
+---
+- name: Set UFW default policies
+  ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+  loop:
+    - { direction: 'incoming', policy: 'deny' }
+    - { direction: 'outgoing', policy: 'allow' }
+
+- name: Allow SSH management port
+  ufw:
+    rule: allow
+    port: "{{ ssh_port | default(22) }}"
+    proto: tcp
+
+- name: Allow Web ingress ports (HTTP & HTTPS) on load balancers
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "{{ http_port | default(80) }}"
+    - "{{ https_port | default(443) }}"
+  when: "'loadbalancers' in group_names"
+
+- name: Allow WSGI application port from internal network
+  ufw:
+    rule: allow
+    port: "{{ app_port | default(5000) }}"
+    proto: tcp
+  when: "'webservers' in group_names"
+
+- name: Allow Database & Redis ports from internal network
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "{{ db_port | default(5432) }}"
+    - "{{ redis_port | default(6379) }}"
+  when: "'dbservers' in group_names"
+
+- name: Enable UFW firewall service
+  ufw:
+    state: enabled
+

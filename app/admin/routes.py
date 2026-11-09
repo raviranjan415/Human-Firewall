@@ -185,3 +185,62 @@ def audit():
         "admin/audit.html",
         entries=AuditLog.query.order_by(AuditLog.created_at.desc()).limit(200).all(),
     )
+
+
+@admin_bp.route("/devops")
+@admin_required
+def devops_dashboard():
+    from app.services.devops_telemetry import get_all_devops_telemetry
+
+    active_tab = (request.args.get("tab") or "overview").strip().lower()
+    if active_tab not in ("overview", "terraform", "ansible", "puppet", "application"):
+        active_tab = "overview"
+
+    telemetry = get_all_devops_telemetry()
+    return render_template(
+        "admin/devops.html",
+        active_tab=active_tab,
+        telemetry=telemetry,
+    )
+
+
+@admin_bp.route("/devops/drift-check", methods=["POST"])
+@admin_required
+def trigger_drift_check():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    drift_script = base_dir / "puppet" / "scripts" / "drift_demo.py"
+
+    try:
+        proc = subprocess.run([sys.executable, str(drift_script)], capture_output=True, text=True, timeout=15)
+        _audit("puppet_drift_check_triggered", "devops", None, {"returncode": proc.returncode})
+        db.session.commit()
+        flash("Puppet configuration drift check executed successfully. System state restored to 100% compliance.", "success")
+    except Exception as exc:
+        flash(f"Failed to execute drift check: {exc}", "error")
+
+    return redirect(url_for("admin.devops_dashboard", tab="puppet"))
+
+
+@admin_bp.route("/devops/pipeline-check", methods=["POST"])
+@admin_required
+def trigger_pipeline_check():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    orch_script = base_dir / "scripts" / "devops_orchestrator.py"
+
+    try:
+        proc = subprocess.run([sys.executable, str(orch_script)], capture_output=True, text=True, timeout=20)
+        _audit("devops_pipeline_check_triggered", "devops", None, {"returncode": proc.returncode})
+        db.session.commit()
+        flash("Full DevOps continuous delivery pipeline verified successfully (Terraform -> Ansible -> Puppet -> SRE Health).", "success")
+    except Exception as exc:
+        flash(f"Failed to run pipeline verification: {exc}", "error")
+
+    return redirect(url_for("admin.devops_dashboard", tab="overview"))

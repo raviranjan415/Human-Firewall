@@ -1,0 +1,42 @@
+# ==============================================================================
+# Global Variables for all hosts
+# ==============================================================================
+---
+app_name: "human-firewall"
+environment_tier: "production"
+app_user: "appuser"
+app_group: "appgroup"
+app_uid: 10001
+app_gid: 10001
+app_root_dir: "/opt/human-firewall"
+
+# Network & Ports
+http_port: 80
+https_port: 443
+app_port: 5000
+db_port: 5432
+redis_port: 6379
+
+# Timezone & NTP
+system_timezone: "UTC"
+ntp_servers:
+  - "0.pool.ntp.org"
+  - "1.pool.ntp.org"
+
+# SSH Hardening
+ssh_port: 22
+permit_root_login: "no"
+password_authentication: "no"
+
+# Sysctl Kernel Security Baseline
+sysctl_settings:
+  net.ipv4.ip_forward: 1
+  net.ipv4.tcp_syncookies: 1
+  net.ipv4.conf.all.rp_filter: 1
+  net.ipv4.conf.default.rp_filter: 1
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.default.accept_redirects: 0
+  net.ipv4.conf.all.send_redirects: 0
+  net.ipv4.conf.default.send_redirects: 0
+  fs.file-max: 2097152
+

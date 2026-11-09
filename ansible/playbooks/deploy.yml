@@ -1,0 +1,39 @@
+# ==============================================================================
+# Human Firewall — Zero-Downtime Application Deployment Playbook
+# ==============================================================================
+---
+- name: Zero-Downtime Rolling Deployment of Application Replicas
+  hosts: webservers
+  serial: 1  # Updates replicas one by one to maintain continuous availability
+  become: yes
+  tasks:
+    - name: Pull or sync latest application build
+      git:
+        repo: "https://github.com/human-firewall/platform.git"
+        dest: "{{ app_root_dir }}"
+        version: "main"
+        force: yes
+
+    - name: Update Python dependencies
+      pip:
+        requirements: "{{ app_root_dir }}/requirements.txt"
+        virtualenv: "{{ app_root_dir }}/.venv"
+
+    - name: Run database schema migrations
+      command: "{{ app_root_dir }}/.venv/bin/python migrate_db.py"
+      args:
+        chdir: "{{ app_root_dir }}"
+      run_once: true
+
+    - name: Reload Human Firewall WSGI service
+      service:
+        name: human-firewall
+        state: reloaded
+
+    - name: Verify replica health before proceeding to next node
+      uri:
+        url: "{{ replica_health_url }}"
+        status_code: 200
+      retries: 5
+      delay: 3
+

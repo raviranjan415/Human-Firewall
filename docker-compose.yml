@@ -1,0 +1,187 @@
+# ==============================================================================
+# Human Firewall — Enterprise Multi-Replica Docker Compose Architecture
+# Load Balanced Flask Cluster with PostgreSQL & Redis Persistence
+# ==============================================================================
+
+version: "3.9"
+
+services:
+  # ----------------------------------------------------------------------------
+  # Ingress: Nginx Load Balancer (Least-Connections Balancing)
+  # ----------------------------------------------------------------------------
+  load_balancer:
+    image: nginx:1.27-alpine
+    container_name: human_firewall_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      app_replica_1:
+        condition: service_healthy
+      app_replica_2:
+        condition: service_healthy
+    networks:
+      - edge_network
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/lb-status | grep -q healthy || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # Application Replicas (Stateless Flask Nodes on Gunicorn WSGI)
+  # ----------------------------------------------------------------------------
+  app_replica_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: human_firewall_replica_1
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-b934789dfa8912e987c4a1120f8923a1}
+      - DATABASE_URL=postgresql+psycopg://human_firewall:CyberSafePass2026!@postgres:5432/human_firewall_db
+      - REDIS_URL=redis://redis:6379/0
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/1
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - SESSION_COOKIE_SECURE=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app_network
+      - data_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  app_replica_2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: human_firewall_replica_2
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-b934789dfa8912e987c4a1120f8923a1}
+      - DATABASE_URL=postgresql+psycopg://human_firewall:CyberSafePass2026!@postgres:5432/human_firewall_db
+      - REDIS_URL=redis://redis:6379/0
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/1
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - SESSION_COOKIE_SECURE=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app_network
+      - data_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  app_replica_3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: human_firewall_replica_3
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-b934789dfa8912e987c4a1120f8923a1}
+      - DATABASE_URL=postgresql+psycopg://human_firewall:CyberSafePass2026!@postgres:5432/human_firewall_db
+      - REDIS_URL=redis://redis:6379/0
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/1
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+      - SESSION_COOKIE_SECURE=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app_network
+      - data_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ----------------------------------------------------------------------------
+  # Data Tier: PostgreSQL Database
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: human_firewall_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: human_firewall
+      POSTGRES_PASSWORD: CyberSafePass2026!
+      POSTGRES_DB: human_firewall_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - data_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U human_firewall -d human_firewall_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # Cache Tier: Redis 7
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: human_firewall_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "volatile-lru"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - data_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+# ------------------------------------------------------------------------------
+# Persistent Storage Volumes
+# ------------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ------------------------------------------------------------------------------
+# Isolated Network Topologies (Zero Trust Segmentation)
+# ------------------------------------------------------------------------------
+networks:
+  edge_network:
+    driver: bridge
+  app_network:
+    driver: bridge
+  data_network:
+    driver: bridge
+    internal: true  # Prevents direct external exposure of DB and Redis
+

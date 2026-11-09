@@ -1,0 +1,11 @@
+# ==============================================================================
+# Variables for Database & Cache Servers
+# ==============================================================================
+---
+db_name: "human_firewall_db"
+db_user: "human_firewall"
+db_password: "CyberSafePass2026!"  # In production, injected via Ansible Vault
+redis_max_memory: "256mb"
+postgres_max_connections: 200
+postgres_shared_buffers: "512MB"
+

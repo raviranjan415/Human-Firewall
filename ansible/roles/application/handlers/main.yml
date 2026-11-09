@@ -1,0 +1,10 @@
+---
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart application
+  service:
+    name: human-firewall
+    state: restarted
+

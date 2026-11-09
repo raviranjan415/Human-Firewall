@@ -30,18 +30,24 @@ def _completed_ids() -> set[int]:
 @login_required
 def index():
     games = Game.query.filter_by(state="published").order_by(Game.order_index).all()
+    game_ids = [game.id for game in games]
+    progress_records = (
+        UserProgress.query.filter(
+            UserProgress.user_id == current_user.id,
+            UserProgress.item_type == "game",
+            UserProgress.item_id.in_(game_ids),
+        ).all()
+        if game_ids
+        else []
+    )
+    best_scores = {record.item_id: record for record in progress_records}
+    completed = {record.item_id for record in progress_records if record.status == "completed"}
+
     return render_template(
         "games/index.html",
         games=games,
-        completed=_completed_ids(),
-        best_scores={
-            game.id: (
-                UserProgress.query.filter_by(
-                    user_id=current_user.id, item_type="game", item_id=game.id
-                ).first()
-            )
-            for game in games
-        },
+        completed=completed,
+        best_scores=best_scores,
     )
 
 

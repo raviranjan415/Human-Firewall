@@ -1,0 +1,10 @@
+# ==============================================================================
+# Production Environment Hiera Overrides
+# ==============================================================================
+---
+human_firewall::environment: "production"
+human_firewall::replica_count: 3
+nginx::worker_processes: "auto"
+nginx::worker_connections: 2048
+security_baseline::enforce_strict_audit: true
+

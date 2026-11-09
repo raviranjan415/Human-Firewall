@@ -1,0 +1,48 @@
+# ==============================================================================
+# Human Firewall — Master Infrastructure & Application Playbook
+# Provisions and Hardens Load Balancers, Replicas, Datastores, and Monitoring
+# ==============================================================================
+---
+- name: Phase 1 — Common Baseline Hardening Across All Nodes
+  hosts: all
+  become: yes
+  roles:
+    - common
+    - security
+    - users
+    - firewall
+
+- name: Phase 2 — Configure Persistence Datastores (PostgreSQL & Redis)
+  hosts: dbservers
+  become: yes
+  roles:
+    - database
+
+- name: Phase 3 — Configure Application Replicas (Flask Cluster)
+  hosts: webservers
+  become: yes
+  roles:
+    - docker
+    - application
+    - monitoring
+
+- name: Phase 4 — Configure Edge Reverse Proxy & Load Balancer
+  hosts: loadbalancers
+  become: yes
+  roles:
+    - nginx
+
+- name: Phase 5 — End-to-End Cluster Health Verification
+  hosts: loadbalancers
+  tasks:
+    - name: Query Nginx Load Balancer status endpoint
+      uri:
+        url: "http://127.0.0.1:{{ http_port }}/lb-status"
+        method: GET
+        status_code: 200
+      register: lb_check
+
+    - name: Display cluster provisioning success summary
+      debug:
+        msg: "Human Firewall Cluster successfully operational! Upstream cluster response: {{ lb_check.json }}"
+

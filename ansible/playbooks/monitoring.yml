@@ -1,0 +1,10 @@
+# ==============================================================================
+# Human Firewall — Monitoring & Observability Verification Playbook
+# ==============================================================================
+---
+- name: Verify Metrics Exporters and Endpoints
+  hosts: all
+  become: yes
+  roles:
+    - monitoring
+

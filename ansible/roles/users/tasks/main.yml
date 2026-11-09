@@ -1,0 +1,24 @@
+---
+- name: Create application service group
+  group:
+    name: "{{ app_group }}"
+    gid: "{{ app_gid }}"
+    state: present
+
+- name: Create unprivileged application system user
+  user:
+    name: "{{ app_user }}"
+    uid: "{{ app_uid }}"
+    group: "{{ app_group }}"
+    shell: /sbin/nologin
+    create_home: no
+    state: present
+
+- name: Ensure app root directory exists with correct ownership
+  file:
+    path: "{{ app_root_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0750'
+

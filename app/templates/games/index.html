@@ -1,45 +1,177 @@
 {% extends "base.html" %}
-{% block title %}{{ t('game.title') }}{% endblock %}
+{% block title %}{{ t('game.title') }} · Human Firewall Interactive Arena{% endblock %}
 
 {% block content %}
-{% set diff_badges = {'beginner': 'cq-badge-green', 'intermediate': 'cq-badge-cyan', 'advanced': 'cq-badge-orange', 'expert': 'cq-badge-red'} %}
-
 <header class="cq-hero mb-4 cq-fade-in">
-  <p class="cq-eyebrow mb-2">{{ t('nav.games') }}</p>
-  <h1 class="cq-title-gradient display-6 mb-2">{{ t('game.title') }}</h1>
-  <p class="cq-muted mb-0">{{ t('brand.motto') }}</p>
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <p class="cq-eyebrow mb-1">Interactive Awareness Arena</p>
+      <h1 class="cq-title-gradient display-6 mb-1">{{ t('game.title') }}</h1>
+      <p class="cq-muted mb-0">30 specialized cybersecurity games across 5 core domains. Practice realistic threat scenarios and build active instincts.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-primary px-3 py-2 fs-6 rounded-pill shadow-sm">
+        🛡️ {{ completed|length }} / {{ games|length }} Completed
+      </span>
+    </div>
+  </div>
 </header>
 
+<!-- Filter Navigation Controls -->
+<div class="cq-card p-3 mb-4 shadow-sm">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <!-- Category Filter Pills -->
+    <div class="d-flex flex-wrap gap-2" id="categoryFilters">
+      <button type="button" class="btn btn-sm btn-cq btn-cq-primary filter-btn active" data-filter="all">
+        All Games ({{ games|length }})
+      </button>
+      <button type="button" class="btn btn-sm btn-cq btn-cq-ghost filter-btn" data-filter="social">
+        Social Engineering (6)
+      </button>
+      <button type="button" class="btn btn-sm btn-cq btn-cq-ghost filter-btn" data-filter="identity">
+        Identity & Passwords (5)
+      </button>
+      <button type="button" class="btn btn-sm btn-cq btn-cq-ghost filter-btn" data-filter="network">
+        Network & Web (6)
+      </button>
+      <button type="button" class="btn btn-sm btn-cq btn-cq-ghost filter-btn" data-filter="malware">
+        Malware & IR (6)
+      </button>
+      <button type="button" class="btn btn-sm btn-cq btn-cq-ghost filter-btn" data-filter="privacy">
+        Privacy & SecOps (7)
+      </button>
+    </div>
+
+    <!-- Search Box -->
+    <div style="min-width: 240px;">
+      <input type="search" id="gameSearchInput" class="form-control form-control-sm" placeholder="🔍 Search games..." aria-label="Search games">
+    </div>
+  </div>
+</div>
+
+<!-- Games Grid -->
 {% if games %}
-  <div class="row g-4">
+  <div class="row g-4" id="gamesGrid">
     {% for game in games %}
       {% set best = best_scores.get(game.id) %}
-      <div class="col-12 col-md-6 col-lg-4">
-        <article class="cq-card hoverable h-100 d-flex flex-column">
-          <h2 class="h5 mb-2">{{ t_content(game, 'title') }}</h2>
+      {% set is_done = game.id in completed %}
+      
+      {# Determine category slug for filtering #}
+      {% set cat = 'social' %}
+      {% if loop.index0 >= 2 and loop.index0 <= 7 %}
+        {% set cat = 'social' %}
+      {% elif loop.index0 >= 8 and loop.index0 <= 12 %}
+        {% set cat = 'identity' %}
+      {% elif loop.index0 >= 13 and loop.index0 <= 18 %}
+        {% set cat = 'network' %}
+      {% elif loop.index0 >= 19 and loop.index0 <= 24 %}
+        {% set cat = 'malware' %}
+      {% elif loop.index0 >= 25 %}
+        {% set cat = 'privacy' %}
+      {% endif %}
+
+      <div class="col-12 col-md-6 col-lg-4 game-item" data-category="{{ cat }}" data-title="{{ game.title_en|lower }} {{ (game.title_hi or '')|lower }}">
+        <article class="cq-card hoverable h-100 d-flex flex-column border-{% if is_done %}success{% else %}secondary{% endif %} shadow-sm">
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <h2 class="h6 fw-bold mb-0 text-dark">{{ t_content(game, 'title') }}</h2>
+            {% if is_done %}
+              <span class="badge bg-success small">✓ {{ t('get.completed') }}</span>
+            {% endif %}
+          </div>
+
+          <p class="small cq-muted mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            {{ t_content(game, 'instructions') or 'Master realistic security defense challenges and protect human identities.' }}
+          </p>
+
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-            <span class="cq-badge {{ diff_badges.get(game.difficulty, 'cq-badge-cyan') }}">{{ game.difficulty }}</span>
-            <span class="cq-badge cq-badge-purple">{{ game.xp_reward }} XP</span>
-            <span class="cq-muted small">{{ game.scenarios|length }} scenarios</span>
+            <span class="badge bg-{% if game.difficulty == 'beginner' %}success{% elif game.difficulty == 'intermediate' %}primary{% elif game.difficulty == 'advanced' %}warning text-dark{% else %}danger{% endif %} text-uppercase" style="font-size: 0.68rem;">
+              {{ game.difficulty }}
+            </span>
+            <span class="badge bg-light text-dark border" style="font-size: 0.68rem;">
+              ⚡ {{ game.xp_reward }} XP
+            </span>
+            <span class="small cq-muted ms-auto">
+              {{ game.scenarios|length }} scenario{% if game.scenarios|length != 1 %}s{% endif %}
+            </span>
           </div>
-          <div class="d-flex flex-wrap gap-2 mb-3">
-            {% if game.id in completed %}
-              <span class="cq-badge cq-badge-green">{{ t('get.completed') }}</span>
-            {% endif %}
+
+          <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
             {% if best %}
-              <span class="cq-badge cq-badge-cyan">{{ t('get.score') }}: {{ best.best_score }}</span>
+              <span class="small text-success fw-bold">Best: {{ best.best_score }} XP</span>
+            {% else %}
+              <span class="small cq-muted">Unattempted</span>
             {% endif %}
+
+            <a class="btn btn-cq btn-cq-primary btn-sm px-3" href="{{ url_for('games.play', slug=game.slug) }}">
+              {% if is_done %}{{ t('game.replay') }}{% else %}{{ t('game.start') }} &rarr;{% endif %}
+            </a>
           </div>
-          <a class="btn btn-cq btn-cq-primary mt-auto align-self-start" href="{{ url_for('games.play', slug=game.slug) }}">
-            {{ t('game.start') }}
-          </a>
         </article>
       </div>
     {% endfor %}
   </div>
+
+  <div id="noMatchesAlert" class="cq-card text-center p-5 mt-4" style="display: none;">
+    <p class="fs-4 mb-2">🔍</p>
+    <h3 class="h5 fw-bold mb-1">No matching games found</h3>
+    <p class="cq-muted small mb-0">Try clearing your search query or selecting a different category filter.</p>
+  </div>
 {% else %}
-  <div class="cq-card">
+  <div class="cq-card p-5 text-center">
     <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
   </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  "use strict";
+  var searchInput = document.getElementById('gameSearchInput');
+  var filterButtons = document.querySelectorAll('.filter-btn');
+  var gameItems = document.querySelectorAll('.game-item');
+  var noMatches = document.getElementById('noMatchesAlert');
+  var currentFilter = 'all';
+
+  function applyFilters() {
+    var query = (searchInput.value || '').trim().toLowerCase();
+    var visibleCount = 0;
+
+    gameItems.forEach(function(item) {
+      var itemCategory = item.getAttribute('data-category');
+      var itemTitle = item.getAttribute('data-title');
+      var matchesCategory = (currentFilter === 'all') || (itemCategory === currentFilter);
+      var matchesQuery = !query || (itemTitle.indexOf(query) !== -1);
+
+      if (matchesCategory && matchesQuery) {
+        item.style.display = '';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    if (noMatches) {
+      noMatches.style.display = (visibleCount === 0) ? 'block' : 'none';
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+  filterButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterButtons.forEach(function(b) {
+        b.classList.remove('active', 'btn-cq-primary');
+        b.classList.add('btn-cq-ghost');
+      });
+      btn.classList.add('active', 'btn-cq-primary');
+      btn.classList.remove('btn-cq-ghost');
+      currentFilter = btn.getAttribute('data-filter');
+      applyFilters();
+    });
+  });
+})();
+</script>
 {% endblock %}

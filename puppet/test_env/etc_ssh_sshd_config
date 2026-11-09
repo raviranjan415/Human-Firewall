@@ -1,0 +1,7 @@
+# Managed by Puppet - OpenSSH Baseline
+Port 22
+Protocol 2
+PermitRootLogin no
+PasswordAuthentication no
+PermitEmptyPasswords no
+ClientAliveInterval 300

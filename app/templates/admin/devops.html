@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% block title %}DevOps Configuration Management Dashboard · Human Firewall Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <div class="cq-eyebrow mb-1">INT333 DevOps Advanced Configuration Management</div>
+    <h1 class="h3 fw-bold mb-0 cq-title-gradient">DevOps Management Console</h1>
+    <p class="cq-muted small mb-0">Declarative Infrastructure (Terraform) · Automation (Ansible) · Desired-State (Puppet)</p>
+  </div>
+  <div class="d-flex gap-2">
+    <form method="post" action="{{ url_for('admin.trigger_pipeline_check') }}" class="d-inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-cq btn-cq-primary btn-sm px-3 shadow-sm">
+        ⚡ Run Pipeline Verification
+      </button>
+    </form>
+    <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('admin.index') }}">&larr; Admin Overview</a>
+  </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-pills cq-pills mb-4">
+  <li class="nav-item">
+    <a class="nav-link {% if active_tab == 'overview' %}active{% endif %}" href="{{ url_for('admin.devops_dashboard', tab='overview') }}">
+      🌐 Architecture Overview
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if active_tab == 'terraform' %}active{% endif %}" href="{{ url_for('admin.devops_dashboard', tab='terraform') }}">
+      🏗️ 1. Terraform (IaC)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if active_tab == 'ansible' %}active{% endif %}" href="{{ url_for('admin.devops_dashboard', tab='ansible') }}">
+      ⚙️ 2. Ansible (Automation)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if active_tab == 'puppet' %}active{% endif %}" href="{{ url_for('admin.devops_dashboard', tab='puppet') }}">
+      🛡️ 3. Puppet (Desired-State)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if active_tab == 'application' %}active{% endif %}" href="{{ url_for('admin.devops_dashboard', tab='application') }}">
+      📊 Application & Replicas
+    </a>
+  </li>
+</ul>
+
+<!-- ========================================================================= -->
+<!-- TAB 1: OVERVIEW -->
+<!-- ========================================================================= -->
+{% if active_tab == 'overview' %}
+<div class="row g-4 mb-4">
+  <div class="col-12 col-md-6 col-lg-3">
+    <div class="cq-card h-100 p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-uppercase small fw-bold cq-muted">Terraform IaC</span>
+        <span class="badge bg-success">ACTIVE</span>
+      </div>
+      <div class="h4 fw-bold text-primary mb-1">{{ telemetry.terraform.resources_managed }} Resources</div>
+      <div class="small cq-muted">VPC, Subnets, DMZ, Replicas</div>
+      <div class="small text-success mt-2">● Dynamic Inventory Synced</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 col-lg-3">
+    <div class="cq-card h-100 p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-uppercase small fw-bold cq-muted">Ansible Config</span>
+        <span class="badge bg-success">IDEMPOTENT</span>
+      </div>
+      <div class="h4 fw-bold text-primary mb-1">{{ telemetry.ansible.total_hosts }} Nodes</div>
+      <div class="small cq-muted">9 Modular Automation Roles</div>
+      <div class="small text-success mt-2">● 0 Failed Tasks</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 col-lg-3">
+    <div class="cq-card h-100 p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-uppercase small fw-bold cq-muted">Puppet Desired-State</span>
+        <span class="badge bg-info text-dark">IN-SYNC</span>
+      </div>
+      <div class="h4 fw-bold text-success mb-1">{{ telemetry.puppet.compliance_percentage }}%</div>
+      <div class="small cq-muted">Continuous Compliance</div>
+      <div class="small text-info mt-2">● Drift Auto-Healed (1/1)</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 col-lg-3">
+    <div class="cq-card h-100 p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-uppercase small fw-bold cq-muted">App Replicas</span>
+        <span class="badge bg-success">ONLINE</span>
+      </div>
+      <div class="h4 fw-bold text-primary mb-1">3 / 3 Replicas</div>
+      <div class="small cq-muted">Nginx Least-Connections</div>
+      <div class="small text-success mt-2">● DB Latency: {{ telemetry.application.database.latency_ms }} ms</div>
+    </div>
+  </div>
+</div>
+
+<!-- Continuous Workflow Architecture Diagram -->
+<div class="cq-card p-4 mb-4">
+  <h2 class="h5 fw-bold mb-3">Continuous Configuration Management Workflow</h2>
+  <div class="p-3 bg-light rounded-3 font-monospace small mb-3 border">
+    Developer Push &rarr; [1. Terraform Provisions Infra] &rarr; [Dynamic Inventory] &rarr; [2. Ansible Deploys & Hardens] &rarr; [3. Puppet Continuous State Enforcement] &rarr; [Health Verification]
+  </div>
+  <p class="small cq-muted mb-0">
+    This platform strictly enforces separation of concerns: Terraform provisions cloud hardware and generates inventories; Ansible orchestrates deployment and package installations; Puppet enforces ongoing desired-state compliance and heals configuration drift.
+  </p>
+</div>
+
+<!-- ========================================================================= -->
+<!-- TAB 2: TERRAFORM -->
+<!-- ========================================================================= -->
+{% elif active_tab == 'terraform' %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cq-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">Terraform Managed Infrastructure</h2>
+        <span class="badge bg-primary">Environment: {{ telemetry.terraform.environment }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr class="cq-muted small text-uppercase">
+              <th>Resource Tier</th>
+              <th>Identifier / Name</th>
+              <th>IP / Subnet</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge bg-secondary">VPC</span></td>
+              <td><code>{{ telemetry.terraform.infrastructure.vpc_id }}</code></td>
+              <td>{{ telemetry.terraform.infrastructure.cidr_block }}</td>
+              <td><span class="badge bg-success">Available</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-info text-dark">Load Balancer</span></td>
+              <td><code>human-firewall-lb</code></td>
+              <td>{{ telemetry.terraform.infrastructure.load_balancer.public_ip }}</td>
+              <td><span class="badge bg-success">Running</span></td>
+            </tr>
+            {% for rep in telemetry.terraform.infrastructure.app_replicas %}
+            <tr>
+              <td><span class="badge bg-primary">Flask Replica {{ rep.replica_id }}</span></td>
+              <td><code>human-firewall-replica-0{{ rep.replica_id }}</code></td>
+              <td>{{ rep.private_ip }}</td>
+              <td><span class="badge bg-success">Running</span></td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td><span class="badge bg-dark">Database Server</span></td>
+              <td><code>human-firewall-db</code></td>
+              <td>{{ telemetry.terraform.infrastructure.database.private_ip }}</td>
+              <td><span class="badge bg-success">Running</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cq-card p-4 h-100">
+      <h3 class="h6 fw-bold mb-3">Terraform Specifications</h3>
+      <ul class="list-unstyled small cq-muted mb-4">
+        <li class="mb-2"><strong>Terraform Version:</strong> {{ telemetry.terraform.terraform_version }}</li>
+        <li class="mb-2"><strong>Execution Status:</strong> <span class="text-success fw-bold">{{ telemetry.terraform.status|upper }}</span></li>
+        <li class="mb-2"><strong>Active Modules:</strong> <code>vpc</code>, <code>security</code>, <code>compute</code></li>
+        <li class="mb-2"><strong>Environments:</strong> <code>dev</code>, <code>staging</code>, <code>production</code></li>
+        <li class="mb-2"><strong>State Backend:</strong> Local / S3 with lock protection</li>
+      </ul>
+      <div class="alert alert-info py-2 px-3 small mb-0">
+        Outputs automatically feed <code>terraform/scripts/generate_ansible_inventory.py</code>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- TAB 3: ANSIBLE -->
+<!-- ========================================================================= -->
+{% elif active_tab == 'ansible' %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cq-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">Ansible Target Host Execution Telemetry</h2>
+        <span class="badge bg-success">Playbook: {{ telemetry.ansible.playbook }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr class="cq-muted small text-uppercase">
+              <th>Host Name</th>
+              <th>OK Tasks</th>
+              <th>Changed Tasks</th>
+              <th>Failed Tasks</th>
+              <th>Health</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for host, stat in telemetry.ansible.stats.items() %}
+            <tr>
+              <td class="fw-semibold"><code>{{ host }}</code></td>
+              <td><span class="badge bg-success">{{ stat.ok }} ok</span></td>
+              <td><span class="badge bg-warning text-dark">{{ stat.changed }} changed</span></td>
+              <td><span class="badge bg-{% if stat.failed > 0 %}danger{% else %}secondary{% endif %}">{{ stat.failed }} failed</span></td>
+              <td><span class="badge bg-success">Idempotent</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cq-card p-4 h-100">
+      <h3 class="h6 fw-bold mb-3">9 Automation Roles Implemented</h3>
+      <div class="d-flex flex-wrap gap-1 mb-3">
+        {% for role in telemetry.ansible.roles_executed %}
+          <span class="badge bg-light text-dark border">{{ role }}</span>
+        {% endfor %}
+      </div>
+      <p class="small cq-muted">
+        Playbooks guarantee zero-downtime rolling updates using serial task batching and automated database migration execution.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- TAB 4: PUPPET -->
+<!-- ========================================================================= -->
+{% elif active_tab == 'puppet' %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="cq-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">Puppet Continuous Desired-State & Drift Audit</h2>
+        <form method="post" action="{{ url_for('admin.trigger_drift_check') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-sm btn-outline-warning">
+            🛡️ Run Drift Check Now
+          </button>
+        </form>
+      </div>
+
+      <div class="p-3 bg-light rounded-3 mb-3 border">
+        <div class="row text-center g-2">
+          <div class="col-3">
+            <div class="small cq-muted">Managed Resources</div>
+            <div class="fs-5 fw-bold">{{ telemetry.puppet.total_resources }}</div>
+          </div>
+          <div class="col-3">
+            <div class="small cq-muted">Compliance</div>
+            <div class="fs-5 fw-bold text-success">{{ telemetry.puppet.compliance_percentage }}%</div>
+          </div>
+          <div class="col-3">
+            <div class="small cq-muted">Drifts Detected</div>
+            <div class="fs-5 fw-bold text-warning">{{ telemetry.puppet.drifts_detected }}</div>
+          </div>
+          <div class="col-3">
+            <div class="small cq-muted">Auto-Healed</div>
+            <div class="fs-5 fw-bold text-success">{{ telemetry.puppet.drifts_corrected }}</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="h6 fw-bold mb-2">Live Drift Detection & Remediation Events</h3>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr class="cq-muted small text-uppercase">
+              <th>Resource</th>
+              <th>Property</th>
+              <th>Severity</th>
+              <th>Remediation Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event in telemetry.puppet.drift_events %}
+            <tr>
+              <td><code>{{ event.resource }}</code></td>
+              <td><code>{{ event.property }}</code></td>
+              <td><span class="badge bg-danger">{{ event.severity|upper }}</span></td>
+              <td><span class="badge bg-success">Restored to Desired State</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="cq-card p-4 h-100">
+      <h3 class="h6 fw-bold mb-3">Puppet Architecture Specs</h3>
+      <ul class="list-unstyled small cq-muted mb-3">
+        <li class="mb-2"><strong>Agent Version:</strong> Puppet 8.4</li>
+        <li class="mb-2"><strong>Catalog Entrypoint:</strong> <code>puppet/manifests/site.pp</code></li>
+        <li class="mb-2"><strong>Data Layer:</strong> Hiera 5 (<code>common.yaml</code>)</li>
+        <li class="mb-2"><strong>Drift Engine:</strong> Automated self-healing loop</li>
+      </ul>
+      <div class="alert alert-success py-2 px-3 small mb-0">
+        System files (<code>/etc/ssh/sshd_config</code>, <code>/etc/security/limits.conf</code>) are continuously audited and restored if drifted.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- TAB 5: APPLICATION & SRE -->
+<!-- ========================================================================= -->
+{% elif active_tab == 'application' %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="cq-card p-4 h-100">
+      <h2 class="h5 fw-bold mb-3">Application Replicas Behind Nginx LB</h2>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr class="cq-muted small text-uppercase">
+              <th>Replica</th>
+              <th>Port</th>
+              <th>WSGI Workers</th>
+              <th>Health</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for rep in telemetry.application.replicas %}
+            <tr>
+              <td><span class="fw-semibold"><code>{{ rep.id }}</code></span></td>
+              <td>{{ rep.port }}</td>
+              <td>{{ rep.worker_count }} threads</td>
+              <td><span class="badge bg-success">Healthy</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cq-card p-4 h-100">
+      <h2 class="h5 fw-bold mb-3">Live SRE Telemetry & Host Health</h2>
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="p-3 bg-light rounded-3 border">
+            <div class="small cq-muted">Host CPU Usage</div>
+            <div class="fs-4 fw-bold text-primary">{{ telemetry.application.system.cpu_percent }}%</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded-3 border">
+            <div class="small cq-muted">Host Memory Usage</div>
+            <div class="fs-4 fw-bold text-info">{{ telemetry.application.system.memory_percent }}%</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded-3 border">
+            <div class="small cq-muted">Database Engine</div>
+            <div class="fs-6 fw-bold text-dark">{{ telemetry.application.database.engine }}</div>
+            <div class="small text-success">● {{ telemetry.application.database.latency_ms }} ms latency</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-light rounded-3 border">
+            <div class="small cq-muted">Edge Load Balancer</div>
+            <div class="fs-6 fw-bold text-dark">Nginx Least-Conn</div>
+            <div class="small text-success">● Port 80 Active</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+

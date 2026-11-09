@@ -1,0 +1,13 @@
+# Managed by Puppet — Desired-State Configuration Engine
+# Any manual modifications will be corrected during the next agent cycle.
+Port <%= @port %>
+Protocol 2
+PermitRootLogin <%= @permit_root_login %>
+PasswordAuthentication <%= @password_authentication %>
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+ClientAliveInterval <%= @client_alive_interval %>
+ClientAliveCountMax <%= @client_alive_count_max %>
+X11Forwarding no
+Subsystem sftp /usr/lib/openssh/sftp-server
+

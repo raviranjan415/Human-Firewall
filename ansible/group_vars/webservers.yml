@@ -1,0 +1,11 @@
+# ==============================================================================
+# Variables for Flask Web Application Replicas
+# ==============================================================================
+---
+gunicorn_workers: 4
+gunicorn_threads: 2
+gunicorn_timeout: 30
+flask_env: "production"
+replica_health_url: "http://127.0.0.1:{{ app_port }}/healthz"
+metrics_url: "http://127.0.0.1:{{ app_port }}/metrics"
+

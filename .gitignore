@@ -27,6 +27,22 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# Terraform & Cloud
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars.json
+.terraformrc
+terraform.rc
+bin/
+terraform/reports/*.json
+
+# Ansible & Puppet
+*.retry
+ansible/reports/*.json
+puppet/reports/*.json
+
 # OS / editors
 .DS_Store
 Thumbs.db

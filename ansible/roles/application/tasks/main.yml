@@ -1,0 +1,66 @@
+---
+- name: Ensure application deployment directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0750'
+  loop:
+    - "{{ app_root_dir }}"
+    - "{{ app_root_dir }}/instance"
+    - "{{ app_root_dir }}/logs"
+
+- name: Deploy application environment variables (.env)
+  template:
+    src: env.j2
+    dest: "{{ app_root_dir }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0600'
+  notify: restart application
+
+- name: Deploy Systemd unit for Human Firewall Gunicorn Service
+  copy:
+    dest: /etc/systemd/system/human-firewall.service
+    content: |
+      [Unit]
+      Description=Human Firewall Cyber Awareness Application Node
+      After=network.target
+
+      [Service]
+      User={{ app_user }}
+      Group={{ app_group }}
+      WorkingDirectory={{ app_root_dir }}
+      Environment="PATH={{ app_root_dir }}/.venv/bin:/usr/local/bin:/usr/bin"
+      EnvironmentFile={{ app_root_dir }}/.env
+      ExecStart={{ app_root_dir }}/.venv/bin/gunicorn --config gunicorn.conf.py run:app
+      ExecReload=/bin/kill -s HUP $MAINPID
+      KillMode=mixed
+      TimeoutStopSec=30
+      Restart=on-failure
+      RestartSec=5s
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: '0644'
+  notify:
+    - reload systemd
+    - restart application
+
+- name: Ensure Human Firewall service is started and enabled
+  service:
+    name: human-firewall
+    state: started
+    enabled: yes
+
+- name: Verify application replica local health check
+  uri:
+    url: "{{ replica_health_url }}"
+    method: GET
+    status_code: 200
+  register: health_result
+  until: health_result.status == 200
+  retries: 6
+  delay: 5
+

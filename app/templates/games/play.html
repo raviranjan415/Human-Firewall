@@ -5,10 +5,15 @@
 <!-- Battle Arena Header -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-1 fw-bold">🎮 System vs. Human Cyber Battle</span>
+    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-1 fw-bold">🎮 2D Top-Down Cyber Quest</span>
     <h1 class="cq-title-gradient h3 mb-0">{{ t_content(game, 'title') }}</h1>
   </div>
   <div class="d-flex align-items-center gap-2">
+    <!-- View Switcher Tabs -->
+    <div class="btn-group btn-group-sm me-2" role="group" aria-label="Game Mode Switcher">
+      <button type="button" class="btn btn-primary active" id="btnMode2D">🕹️ 2D RPG Adventure</button>
+      <button type="button" class="btn btn-outline-primary" id="btnModeSim">⚡ Rapid Simulator</button>
+    </div>
     <div class="form-check form-switch mb-0 me-2">
       <input class="form-check-input" type="checkbox" id="gameSoundToggle" checked>
       <label class="form-check-label text-secondary small" for="gameSoundToggle">Sound FX 🔊</label>
@@ -16,6 +21,86 @@
     <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('games.index') }}">&larr; Games Hub</a>
   </div>
 </div>
+
+<!-- ======================================================================= -->
+<!-- SECTION A: 2D INTERACTIVE ADVENTURE CANVAS ARENA -->
+<!-- ======================================================================= -->
+<section id="sectionMode2D" class="mb-4">
+  <div class="cq-card p-3 mb-2 bg-dark border-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="d-flex align-items-center gap-3">
+      <div class="cq-brand-mark bg-info text-dark rounded-circle fs-4 shadow" style="width: 44px; height: 44px;">
+        🛡️
+      </div>
+      <div>
+        <div class="fw-bold text-light">{{ current_user.display_name or current_user.username }} <span class="badge bg-primary ms-1">Field Investigator</span></div>
+        <div class="small text-secondary">
+          Controls: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&rarr;</kbd><kbd>&darr;</kbd> Move &bull; <kbd>Shift</kbd> Run &bull; <kbd>E</kbd> or <kbd>Space</kbd> Talk / Inspect
+        </div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <div class="text-end">
+        <div class="small text-secondary text-uppercase fw-bold">Patrol Score</div>
+        <span class="fs-5 fw-bold text-warning" id="hud2DScore">0 XP</span>
+      </div>
+      <div class="text-end">
+        <div class="small text-secondary text-uppercase fw-bold">Mission Status</div>
+        <span class="badge bg-success fs-6" id="hud2DProgress">0 / {{ scenario_count }} Protected</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2D Canvas Viewport -->
+  <div class="cq-game2d-container">
+    <canvas id="gameCanvas2D"></canvas>
+    <div class="cq-game2d-overlay" id="game2DOverlay"></div>
+
+    <!-- Victory Modal for 2D Adventure -->
+    <div class="cq-game2d-overlay" id="game2DResultModal" style="display: none;">
+      <div class="cq-card p-4 text-center border-success shadow-lg bg-dark" style="max-width: 520px; width: 90%;">
+        <div class="display-3 mb-2">🏆</div>
+        <h2 class="h3 fw-bold mb-2 cq-title-gradient">Patrol Mission Complete!</h2>
+        <p class="fs-5 mb-1 text-light">Threats Resolved: <strong id="res2DAccuracy" class="text-warning"></strong></p>
+        <p class="fs-6 mb-3 text-info">Total Bounty: <strong id="res2DScore" class="text-success"></strong></p>
+        
+        <div class="cq-card mb-4 text-start p-3 bg-black border-secondary">
+          <h3 class="h6 fw-bold text-warning mb-1">💡 Human Firewall Field Debrief</h3>
+          <p class="cq-muted small mb-0">{{ t_content(game, 'debrief') or 'Legitimate organizations never pressure you into hasty credential transfers. Always verify sender identity directly through established channels.' }}</p>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="button" class="btn btn-cq btn-cq-primary px-3" onclick="location.reload();">Replay Mission &orarr;</button>
+          <a class="btn btn-cq btn-cq-ghost px-3" href="{{ url_for('games.index') }}">More Games &rarr;</a>
+          <a class="btn btn-cq btn-cq-cyan px-3" href="{{ url_for('dashboard.index') }}">Dashboard &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile On-Screen Touch Controls (Visible on tablets & phones) -->
+  <div class="cq-dpad-container rounded-bottom">
+    <div class="cq-dpad-grid">
+      <div></div>
+      <button type="button" class="cq-dpad-btn" id="dpadUp">&uarr;</button>
+      <div></div>
+      <button type="button" class="cq-dpad-btn" id="dpadLeft">&larr;</button>
+      <div></div>
+      <button type="button" class="cq-dpad-btn" id="dpadRight">&rarr;</button>
+      <div></div>
+      <button type="button" class="cq-dpad-btn" id="dpadDown">&darr;</button>
+      <div></div>
+    </div>
+    <div class="d-flex flex-column gap-2">
+      <button type="button" class="cq-action-btn-touch" id="touchInteractBtn">💬 TALK / INSPECT [E]</button>
+      <button type="button" class="btn btn-outline-warning btn-sm" id="touchRunBtn">🏃 Sprint (Hold)</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================= -->
+<!-- SECTION B: CLASSIC RAPID SCENARIO SIMULATOR -->
+<!-- ======================================================================= -->
+<div id="sectionModeSim" style="display: none;">
 
 <!-- Human vs. System Battle HUD -->
 <section class="cq-card mb-4 border-primary shadow-lg p-3 p-sm-4">
@@ -100,6 +185,7 @@
     <a class="btn btn-cq btn-cq-cyan px-4" href="{{ url_for('dashboard.index') }}">Dashboard &rarr;</a>
   </div>
 </section>
+</div><!-- End Section B (sectionModeSim) -->
 
 <!-- Live Threat Intelligence Ticker (Real-World Awareness) -->
 <div class="cq-threat-ticker shadow mt-4">
@@ -112,6 +198,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/game_engine_2d.js') }}"></script>
 <script type="application/json" id="game-data">{{ scenarios_json|tojson }}</script>
 <script type="application/json" id="game-labels">{{ {
   'isThreat': '🚨 SCAM / PHISHING DETECTED',
@@ -128,6 +215,58 @@
   var scenarios = window.CQ.readJson(document.getElementById('game-data')) || [];
   var labels = window.CQ.readJson(document.getElementById('game-labels')) || {};
   var slug = {{ game.slug|tojson }};
+  var answerUrl = '/api/games/' + encodeURIComponent(slug) + '/answer';
+  var completeUrl = '/api/games/' + encodeURIComponent(slug) + '/complete';
+
+  // 1. Mode Switcher (2D RPG vs Rapid Simulator)
+  var btnMode2D = document.getElementById('btnMode2D');
+  var btnModeSim = document.getElementById('btnModeSim');
+  var secMode2D = document.getElementById('sectionMode2D');
+  var secModeSim = document.getElementById('sectionModeSim');
+
+  if (btnMode2D && btnModeSim) {
+    btnMode2D.addEventListener('click', function () {
+      btnMode2D.classList.add('active', 'btn-primary');
+      btnMode2D.classList.remove('btn-outline-primary');
+      btnModeSim.classList.remove('active', 'btn-primary');
+      btnModeSim.classList.add('btn-outline-primary');
+      secMode2D.style.display = 'block';
+      secModeSim.style.display = 'none';
+    });
+
+    btnModeSim.addEventListener('click', function () {
+      btnModeSim.classList.add('active', 'btn-primary');
+      btnModeSim.classList.remove('btn-outline-primary');
+      btnMode2D.classList.remove('active', 'btn-primary');
+      btnMode2D.classList.add('btn-outline-primary');
+      secMode2D.style.display = 'none';
+      secModeSim.style.display = 'block';
+    });
+  }
+
+  // 2. Determine 2D Genre by Game Slug
+  var genre = 'city';
+  if (['smishing-showdown', 'impersonation-trap', 'access-control-master', 'insider-threat-investigation', 'usb-danger-zone'].indexOf(slug) !== -1) {
+    genre = 'office';
+  } else if (['ransomware-rescue', 'malware-hunter', 'backup-recovery-mission', 'digital-evidence-detective'].indexOf(slug) !== -1) {
+    genre = 'lab';
+  } else if (['soc-alert-triage', 'incident-commander', 'network-guardian'].indexOf(slug) !== -1) {
+    genre = 'soc';
+  } else if (['cybersecurity-escape-room'].indexOf(slug) !== -1) {
+    genre = 'escaperoom';
+  }
+
+  // 3. Initialize 2D Engine
+  if (window.Game2DEngine && document.getElementById('gameCanvas2D')) {
+    window.activeGame2D = new window.Game2DEngine({
+      canvasId: 'gameCanvas2D',
+      overlayId: 'game2DOverlay',
+      slug: slug,
+      scenarios: scenarios,
+      genre: genre
+    });
+  }
+
   var answerUrl = '/api/games/' + encodeURIComponent(slug) + '/answer';
   var completeUrl = '/api/games/' + encodeURIComponent(slug) + '/complete';
 

@@ -1,0 +1,14 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+load_testing/benchmark_results*.csv
+instance/*.backup*
+.env
+.DS_Store
+*.swp
+

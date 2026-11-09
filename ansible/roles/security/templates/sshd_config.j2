@@ -1,0 +1,27 @@
+# Hardened OpenSSH Server Configuration
+Port {{ ssh_port | default(22) }}
+Protocol 2
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Authentication & Root Isolation
+PermitRootLogin {{ permit_root_login | default('no') }}
+StrictModes yes
+MaxAuthTries 3
+MaxSessions 5
+PubkeyAuthentication yes
+PasswordAuthentication {{ password_authentication | default('no') }}
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# Network Hardening
+X11Forwarding no
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+# Session Idle Timeout (10 minutes)
+ClientAliveInterval 300
+ClientAliveCountMax 2
+

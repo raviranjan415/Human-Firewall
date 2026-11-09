@@ -37,6 +37,12 @@
                  href="{{ url_for('dashboard.index') }}">{{ t('nav.dashboard') }}</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/games') %}active{% endif %}"
+                 href="{{ url_for('games.index') }}">
+                🎮 {{ t('nav.games') }}
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link {% if request_path.startswith('/learning') %}active{% endif %}"
                  href="{{ url_for('learning.index') }}">
                 🛡️ Defense Rooms
@@ -185,6 +191,7 @@
                 {% if current_user.is_admin %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item text-warning" href="{{ url_for('admin.index') }}">{{ t('nav.admin') }}</a></li>
+                  <li><a class="dropdown-item text-info fw-semibold" href="{{ url_for('admin.devops_dashboard') }}">⚙️ DevOps Console</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider"></li>
                 <li>

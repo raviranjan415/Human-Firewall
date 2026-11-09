@@ -58,6 +58,31 @@ def help():
     return render_template("public/help.html")
 
 
+# Convenience Route Aliases for intuitive top-level navigation
+@public_bp.route("/leaderboard")
+@public_bp.route("/leaderboard/")
+def leaderboard_alias():
+    return redirect("/dashboard/leaderboard", code=302)
+
+
+@public_bp.route("/achievements")
+@public_bp.route("/achievements/")
+def achievements_alias():
+    return redirect("/dashboard/achievements", code=302)
+
+
+@public_bp.route("/profile")
+@public_bp.route("/profile/")
+def profile_alias():
+    return redirect("/auth/profile", code=302)
+
+
+@public_bp.route("/org")
+@public_bp.route("/org/")
+def org_alias():
+    return redirect("/org/enterprise", code=302)
+
+
 @public_bp.route("/healthz")
 def healthz():
     from sqlalchemy import text
@@ -67,4 +92,63 @@ def healthz():
         db_ok = True
     except Exception:  # pragma: no cover - monitoring path
         db_ok = False
-    return {"status": "ok" if db_ok else "degraded", "database": db_ok}
+    return {"status": "ok" if db_ok else "degraded", "database": db_ok, "service": "human-firewall"}
+
+
+@public_bp.route("/readyz")
+def readyz():
+    from sqlalchemy import text
+
+    try:
+        db.session.execute(text("SELECT 1"))
+        return {"status": "ready", "database": "connected"}, 200
+    except Exception as exc:
+        return {"status": "not_ready", "error": str(exc)}, 503
+
+
+@public_bp.route("/metrics")
+def metrics():
+    """Prometheus exposition format endpoint."""
+    from flask import Response
+    from sqlalchemy import text
+    import psutil
+    from app.models import Game, Lab, User
+
+    try:
+        db.session.execute(text("SELECT 1"))
+        db_status = 1
+    except Exception:
+        db_status = 0
+
+    try:
+        user_count = User.query.count()
+        game_count = Game.query.filter_by(state="published").count()
+        lab_count = Lab.query.filter_by(state="published").count()
+    except Exception:
+        user_count = game_count = lab_count = 0
+
+    cpu_usage = psutil.cpu_percent(interval=None)
+    mem_usage = psutil.virtual_memory().percent
+
+    lines = [
+        "# HELP human_firewall_database_status Database connectivity (1 = connected, 0 = down)",
+        "# TYPE human_firewall_database_status gauge",
+        f"human_firewall_database_status {db_status}",
+        "# HELP human_firewall_users_total Total registered users on platform",
+        "# TYPE human_firewall_users_total counter",
+        f"human_firewall_users_total {user_count}",
+        "# HELP human_firewall_games_published Total published games",
+        "# TYPE human_firewall_games_published gauge",
+        f"human_firewall_games_published {game_count}",
+        "# HELP human_firewall_labs_published Total published practical labs",
+        "# TYPE human_firewall_labs_published gauge",
+        f"human_firewall_labs_published {lab_count}",
+        "# HELP human_firewall_system_cpu_percent Host CPU utilization percentage",
+        "# TYPE human_firewall_system_cpu_percent gauge",
+        f"human_firewall_system_cpu_percent {cpu_usage}",
+        "# HELP human_firewall_system_memory_percent Host memory utilization percentage",
+        "# TYPE human_firewall_system_memory_percent gauge",
+        f"human_firewall_system_memory_percent {mem_usage}",
+        "",
+    ]
+    return Response("\n".join(lines), mimetype="text/plain; version=0.0.4; charset=utf-8")

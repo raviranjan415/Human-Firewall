@@ -4,39 +4,40 @@
    ========================================================================== */
 
 :root {
-  /* Slate & Canvas Tokens */
-  --cq-bg: #f8fafc;            /* Clean light canvas */
-  --cq-bg-alt: #f1f5f9;        /* Soft secondary canvas */
-  --cq-surface: #ffffff;       /* Pure white card/surface */
-  --cq-surface-hover: #f8fafc;
-  --cq-border: #e2e8f0;        /* Subtle slate border */
-  --cq-border-strong: #cbd5e1; /* Emphasized border */
+  /* Slate & Canvas Tokens (Strict Professional Cybersecurity Palette) */
+  --cq-bg: #F5F7FA;            /* Soft clean background */
+  --cq-bg-alt: #EDF2F7;        /* Secondary canvas */
+  --cq-surface: #FFFFFF;       /* Pure white card/surface */
+  --cq-surface-hover: #F8FAFC;
+  --cq-border: #E2E8F0;        /* Subtle slate border */
+  --cq-border-strong: #CBD5E1; /* Emphasized border */
 
   /* Text & Typography */
-  --cq-text: #0f172a;          /* Slate 900 (High contrast heading) */
-  --cq-text-body: #334155;     /* Slate 700 (Optimal body reading) */
-  --cq-muted: #64748b;         /* Slate 500 (Subtle metadata) */
+  --cq-navy: #14243A;          /* Deep Navy 900 (High contrast heading) */
+  --cq-text: #14243A;          /* Slate/Navy text */
+  --cq-text-body: #2D3748;     /* High readability body text */
+  --cq-muted: #64748B;         /* Subtle metadata */
 
   /* Brand & Corporate Accents */
-  --cq-blue: #2563eb;          /* Enterprise Royal Blue */
-  --cq-blue-hover: #1d4ed8;
-  --cq-blue-soft: #eff6ff;     /* Soft blue background */
-  --cq-cyan: #0284c7;          /* Sky / Ocean */
-  --cq-purple: #7c3aed;        /* Crisp Purple */
-  --cq-purple-soft: #faf5ff;
+  --cq-blue: #2563EB;          /* Professional Blue */
+  --cq-blue-hover: #1D4ED8;
+  --cq-blue-soft: #EFF6FF;     /* Soft blue accent background */
+  --cq-cyan: #0284C7;          /* Sky / Ocean */
+  --cq-purple: #7C3AED;        /* Purple */
+  --cq-purple-soft: #FAF5FF;
 
   /* Semantic State Tokens */
-  --cq-green: #16a34a;         /* Forest Emerald */
-  --cq-green-soft: #f0fdf4;
-  --cq-green-border: #bbf7d0;
+  --cq-green: #16845B;         /* Verified Emerald Success */
+  --cq-green-soft: #F0FDF4;
+  --cq-green-border: #BBF7D0;
 
-  --cq-orange: #d97706;        /* Warm Amber */
-  --cq-orange-soft: #fffbeb;
-  --cq-orange-border: #fde68a;
+  --cq-orange: #D99A22;        /* Alert Amber Warning */
+  --cq-orange-soft: #FFFBEB;
+  --cq-orange-border: #FDE68A;
 
-  --cq-red: #dc2626;           /* Crisp Crimson */
-  --cq-red-soft: #fef2f2;
-  --cq-red-border: #fecaca;
+  --cq-red: #C74646;           /* Threat Crimson Danger */
+  --cq-red-soft: #FEF2F2;
+  --cq-red-border: #FECACA;
 
   /* Geometry & Shadows */
   --cq-radius: 12px;
@@ -76,7 +77,7 @@ a { color: var(--cq-blue); text-decoration: none; transition: color 0.15s ease; 
 a:hover { color: var(--cq-blue-hover); }
 
 .cq-title-gradient {
-  background: linear-gradient(120deg, #0f172a 20%, #2563eb 80%);
+  background: linear-gradient(120deg, var(--cq-navy) 20%, var(--cq-blue) 80%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -691,3 +692,113 @@ a:hover { color: var(--cq-blue-hover); }
   .cq-hero { padding: 1.5rem 1.15rem; }
   .cq-task-step { font-size: 0.8rem; padding: 0.5rem; }
 }
+
+/* =========================================================================
+   2D Interactive Adventure Game Engine Styles
+   ========================================================================= */
+.cq-game2d-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #060d1a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  border: 1px solid #1e293b;
+}
+
+#gameCanvas2D {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.cq-game2d-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+}
+
+.cq-game2d-phone-mockup {
+  width: 420px;
+  max-width: 92%;
+  background: #0f172a;
+  border: 2px solid #38bdf8;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cq-phone-notch {
+  background: #020617;
+  border-bottom: 1px solid #1e293b;
+}
+
+.cq-phone-sensor {
+  width: 48px;
+  height: 6px;
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+/* Virtual D-Pad for Mobile & Tablet */
+.cq-dpad-container {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .cq-dpad-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #0f172a;
+    border-top: 1px solid #1e293b;
+  }
+}
+
+.cq-dpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-rows: repeat(3, 48px);
+  gap: 4px;
+}
+
+.cq-dpad-btn {
+  background: #1e293b;
+  color: #ffffff;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+.cq-dpad-btn:active {
+  background: #2563eb;
+}
+
+.cq-action-btn-touch {
+  padding: 12px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+.cq-action-btn-touch:active {
+  background: #1d4ed8;
+  transform: translateY(1px);
+}
+
