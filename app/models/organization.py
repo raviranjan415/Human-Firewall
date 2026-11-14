@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import hashlib
 import secrets
 
@@ -18,31 +17,50 @@ ORGANIZATION_PLANS = {
         "name": "Starter Academy",
         "seats": 50,
         "price_per_seat_annual": 12,
-        "features": ["All 100 Practical Labs", "Video Lessons & Comics", "Basic Reporting", "Certificate Verification"],
+        "features": [
+            "All 100 Practical Labs",
+            "Video Lessons & Comics",
+            "Basic Reporting",
+            "Certificate Verification",
+        ],
     },
     PLAN_PROFESSIONAL: {
         "name": "Professional Campus / Enterprise",
         "seats": 250,
         "price_per_seat_annual": 9,
-        "features": ["All Starter Features", "Custom Cohorts & Deadlines", "CSV Registry Bulk Import", "HR-Assisted Account Recovery", "Exportable PDF/CSV Reports", "Priority Support"],
+        "features": [
+            "All Starter Features",
+            "Custom Cohorts & Deadlines",
+            "CSV Registry Bulk Import",
+            "HR-Assisted Account Recovery",
+            "Exportable PDF/CSV Reports",
+            "Priority Support",
+        ],
     },
     PLAN_ENTERPRISE: {
         "name": "Global Enterprise / Multi-Campus",
         "seats": 1000,
         "price_per_seat_annual": 6,
-        "features": ["All Professional Features", "Unlimited Workspaces & Cohorts", "Custom Security Training Scenarios", "Dedicated Account Manager", "SSO & Advanced Tenant Isolation", "99.99% SLA"],
+        "features": [
+            "All Professional Features",
+            "Unlimited Workspaces & Cohorts",
+            "Custom Security Training Scenarios",
+            "Dedicated Account Manager",
+            "SSO & Advanced Tenant Isolation",
+            "99.99% SLA",
+        ],
     },
 }
 
 # Member enrollment statuses (Section 7.5 of requirements)
-STATUS_ELIGIBLE = "eligible"                          # Eligible — Not Registered
-STATUS_INVITATION_SENT = "invitation_sent"            # Invitation Sent
+STATUS_ELIGIBLE = "eligible"  # Eligible — Not Registered
+STATUS_INVITATION_SENT = "invitation_sent"  # Invitation Sent
 STATUS_REGISTRATION_STARTED = "registration_started"  # Registration Started
-STATUS_AWAITING_VERIFICATION = "awaiting_verification" # Awaiting Email Verification
-STATUS_PENDING_APPROVAL = "pending_approval"          # Pending Approval
-STATUS_ACTIVE = "active"                              # Active Member
-STATUS_SUSPENDED = "suspended"                        # Suspended
-STATUS_REVOKED = "revoked"                            # Revoked
+STATUS_AWAITING_VERIFICATION = "awaiting_verification"  # Awaiting Email Verification
+STATUS_PENDING_APPROVAL = "pending_approval"  # Pending Approval
+STATUS_ACTIVE = "active"  # Active Member
+STATUS_SUSPENDED = "suspended"  # Suspended
+STATUS_REVOKED = "revoked"  # Revoked
 
 ENROLLMENT_STATUSES = (
     STATUS_ELIGIBLE,
@@ -82,7 +100,13 @@ class Organization(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), unique=True, nullable=False)
     slug = db.Column(db.String(160), unique=True, nullable=False, index=True)
-    org_code = db.Column(db.String(32), unique=True, nullable=False, index=True, default=generate_org_code)
+    org_code = db.Column(
+        db.String(32),
+        unique=True,
+        nullable=False,
+        index=True,
+        default=generate_org_code,
+    )
     domain = db.Column(db.String(120))  # e.g. "stanford.edu" or "acme.corp"
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
@@ -94,13 +118,17 @@ class Organization(db.Model, TimestampMixin):
     # Seat & Subscription entitlement
     seats_purchased = db.Column(db.Integer, default=50, nullable=False)
     subscription_plan = db.Column(db.String(32), default=PLAN_STARTER, nullable=False)
-    subscription_status = db.Column(db.String(32), default="active", nullable=False)  # active, trial, past_due, expired, cancelled
+    subscription_status = db.Column(
+        db.String(32), default="active", nullable=False
+    )  # active, trial, past_due, expired, cancelled
     subscription_expires_at = db.Column(db.DateTime)
     contact_email = db.Column(db.String(255))
     contact_name = db.Column(db.String(160))
 
     # Relationships
-    members = db.relationship("GroupMembership", back_populates="organization", cascade="all, delete-orphan")
+    members = db.relationship(
+        "GroupMembership", back_populates="organization", cascade="all, delete-orphan"
+    )
     memberships = db.relationship(
         "OrganizationMembership",
         back_populates="organization",
@@ -114,10 +142,14 @@ class Organization(db.Model, TimestampMixin):
         "OrgInvitation", back_populates="organization", cascade="all, delete-orphan"
     )
     subscriptions = db.relationship(
-        "OrganizationSubscription", back_populates="organization", cascade="all, delete-orphan"
+        "OrganizationSubscription",
+        back_populates="organization",
+        cascade="all, delete-orphan",
     )
     invoices = db.relationship(
-        "SubscriptionInvoice", back_populates="organization", cascade="all, delete-orphan"
+        "SubscriptionInvoice",
+        back_populates="organization",
+        cascade="all, delete-orphan",
     )
 
     def set_passcode(self, raw_passcode: str) -> None:
@@ -171,7 +203,10 @@ class Organization(db.Model, TimestampMixin):
         if self.subscription_expires_at and self.subscription_expires_at < utcnow():
             return False, "This organization subscription has expired."
         if self.available_seats <= 0:
-            return False, "All purchased training seats are currently occupied. Contact your organization administrator."
+            return (
+                False,
+                "All purchased training seats are currently occupied. Contact your organization administrator.",
+            )
         return True, ""
 
     def __repr__(self) -> str:
@@ -185,23 +220,37 @@ class OrganizationMembership(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
-    role = db.Column(db.String(32), default=ORG_ROLE_MEMBER, nullable=False)  # member | org_admin | tp_coordinator
+    role = db.Column(
+        db.String(32), default=ORG_ROLE_MEMBER, nullable=False
+    )  # member | org_admin | tp_coordinator
     department = db.Column(db.String(120))
     cohort = db.Column(db.String(120))
-    registration_id = db.Column(db.String(120), index=True)  # Org-scoped ID (University Reg / Emp ID)
-    status = db.Column(db.String(32), default=STATUS_ACTIVE, nullable=False)  # active | pending_approval | suspended | revoked
+    registration_id = db.Column(
+        db.String(120), index=True
+    )  # Org-scoped ID (University Reg / Emp ID)
+    status = db.Column(
+        db.String(32), default=STATUS_ACTIVE, nullable=False
+    )  # active | pending_approval | suspended | revoked
     joined_at = db.Column(db.DateTime, default=utcnow, nullable=False)
 
     user = db.relationship("User", back_populates="memberships")
     organization = db.relationship("Organization", back_populates="memberships")
 
     __table_args__ = (
-        db.UniqueConstraint("user_id", "organization_id", name="uq_user_organization_membership"),
+        db.UniqueConstraint(
+            "user_id", "organization_id", name="uq_user_organization_membership"
+        ),
         db.Index("ix_org_reg_id", "organization_id", "registration_id"),
     )
 
@@ -220,16 +269,25 @@ class EligibleMember(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
-    identifier = db.Column(db.String(120), nullable=False, index=True)  # Student Reg / Emp ID
+    identifier = db.Column(
+        db.String(120), nullable=False, index=True
+    )  # Student Reg / Emp ID
     full_name = db.Column(db.String(160))
     approved_email = db.Column(db.String(255), index=True)
     department = db.Column(db.String(120))
     cohort = db.Column(db.String(120))
     training_group = db.Column(db.String(120))
-    status = db.Column(db.String(32), default=STATUS_ELIGIBLE, nullable=False)  # eligible | invitation_sent | registered | ...
-    claimed_by_user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
+    status = db.Column(
+        db.String(32), default=STATUS_ELIGIBLE, nullable=False
+    )  # eligible | invitation_sent | registered | ...
+    claimed_by_user_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="SET NULL")
+    )
     claimed_at = db.Column(db.DateTime)
     notes = db.Column(db.Text)
 
@@ -238,7 +296,9 @@ class EligibleMember(db.Model, TimestampMixin):
 
     __table_args__ = (
         # Scoped strictly to the issuing organization: two different orgs can have the same identifier!
-        db.UniqueConstraint("organization_id", "identifier", name="uq_org_eligible_identifier"),
+        db.UniqueConstraint(
+            "organization_id", "identifier", name="uq_org_eligible_identifier"
+        ),
         db.Index("ix_org_identifier_status", "organization_id", "identifier", "status"),
     )
 
@@ -253,7 +313,10 @@ class OrgInvitation(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     token_hash = db.Column(db.String(128), unique=True, nullable=False, index=True)
     email = db.Column(db.String(255))
@@ -261,7 +324,9 @@ class OrgInvitation(db.Model, TimestampMixin):
     role = db.Column(db.String(32), default=ORG_ROLE_MEMBER, nullable=False)
     department = db.Column(db.String(120))
     cohort = db.Column(db.String(120))
-    created_by_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
+    created_by_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="SET NULL")
+    )
     expires_at = db.Column(db.DateTime, nullable=False)
     used_at = db.Column(db.DateTime)
     revoked = db.Column(db.Boolean, default=False, nullable=False)
@@ -281,7 +346,10 @@ class EmailVerificationToken(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     token_hash = db.Column(db.String(128), unique=True, nullable=False, index=True)
     expires_at = db.Column(db.DateTime, nullable=False)
@@ -302,7 +370,10 @@ class PasswordResetToken(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     token_hash = db.Column(db.String(128), unique=True, nullable=False, index=True)
     expires_at = db.Column(db.DateTime, nullable=False)
@@ -323,12 +394,20 @@ class AccountRecoveryCode(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
-    issued_by_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    issued_by_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     code_hash = db.Column(db.String(128), nullable=False)
     expires_at = db.Column(db.DateTime, nullable=False)
     used_at = db.Column(db.DateTime)
@@ -350,14 +429,19 @@ class OrganizationSubscription(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, unique=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
     )
     plan_code = db.Column(db.String(32), default=PLAN_STARTER, nullable=False)
     plan_name = db.Column(db.String(64), default="Starter Academy", nullable=False)
     seats_limit = db.Column(db.Integer, default=50, nullable=False)
     billing_cycle = db.Column(db.String(20), default="annual", nullable=False)
     price_cents = db.Column(db.Integer, default=60000, nullable=False)
-    status = db.Column(db.String(32), default="active", nullable=False)  # active, past_due, canceled, expired
+    status = db.Column(
+        db.String(32), default="active", nullable=False
+    )  # active, past_due, canceled, expired
     current_period_start = db.Column(db.DateTime, default=utcnow, nullable=False)
     current_period_end = db.Column(db.DateTime, nullable=False)
     payment_method = db.Column(db.String(64), default="invoice")
@@ -374,12 +458,17 @@ class SubscriptionInvoice(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     invoice_number = db.Column(db.String(64), unique=True, nullable=False)
     amount_cents = db.Column(db.Integer, nullable=False)
     currency = db.Column(db.String(8), default="USD", nullable=False)
-    status = db.Column(db.String(32), default="paid", nullable=False)  # paid, pending, failed, refunded
+    status = db.Column(
+        db.String(32), default="paid", nullable=False
+    )  # paid, pending, failed, refunded
     pdf_url = db.Column(db.String(255))
     paid_at = db.Column(db.DateTime)
 

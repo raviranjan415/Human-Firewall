@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from flask import current_app
 from sqlalchemy import func
@@ -22,15 +22,15 @@ from app.models import (
 )
 from app.models.user import utcnow
 
-
 # ---------------------------------------------------------------------------
 # Levels
 # ---------------------------------------------------------------------------
 
+
 def level_for_xp(xp: int) -> int:
     """Transparent level curve: level 2 at 100 XP, 3 at 400, 4 at 900, ..."""
     xp = max(0, int(xp or 0))
-    return 1 + int(math.isqrt(xp // 100))
+    return 1 + math.isqrt(xp // 100)
 
 
 def xp_for_level(level: int) -> int:
@@ -55,6 +55,7 @@ def level_progress(xp: int) -> dict:
 # ---------------------------------------------------------------------------
 # XP ledger
 # ---------------------------------------------------------------------------
+
 
 def award_xp(
     user: User,
@@ -94,8 +95,13 @@ def award_xp(
 
     user.xp_total = (user.xp_total or 0) + amount
     user.level = level_for_xp(user.xp_total)
-    log_event(user.id, "xp_awarded", item_type=reference_type or None,
-              score=amount, payload={"reason": reason, "reference": reference_id})
+    log_event(
+        user.id,
+        "xp_awarded",
+        item_type=reference_type or None,
+        score=amount,
+        payload={"reason": reason, "reference": reference_id},
+    )
     return amount
 
 
@@ -119,13 +125,21 @@ def xp_reward_for(level: str) -> int:
 # Streaks
 # ---------------------------------------------------------------------------
 
-def record_streak_activity(user: User, day: date | None = None, xp_earned: int = 0) -> StreakDay:
+
+def record_streak_activity(
+    user: User, day: date | None = None, xp_earned: int = 0
+) -> StreakDay:
     """Count a streak day only after a qualifying learning activity."""
     day = day or date.today()
     record = StreakDay.query.filter_by(user_id=user.id, day=day).first()
     if record is None:
-        record = StreakDay(user_id=user.id, day=day, qualified=True, activity_count=1,
-                           xp_earned=xp_earned)
+        record = StreakDay(
+            user_id=user.id,
+            day=day,
+            qualified=True,
+            activity_count=1,
+            xp_earned=xp_earned,
+        )
         db.session.add(record)
     else:
         record.qualified = True
@@ -158,7 +172,9 @@ def _recalculate_streak_counters(user: User, today: date) -> None:
         cursor -= timedelta(days=1)
 
     user.current_streak = current
-    user.longest_streak = max(user.longest_streak or 0, current, len(days) and _longest_run(days))
+    user.longest_streak = max(
+        user.longest_streak or 0, current, len(days) and _longest_run(days)
+    )
 
 
 def _longest_run(days: set[date]) -> int:
@@ -176,6 +192,7 @@ def _longest_run(days: set[date]) -> int:
 # ---------------------------------------------------------------------------
 # Analytics events
 # ---------------------------------------------------------------------------
+
 
 def log_event(
     user_id: int,
@@ -206,6 +223,7 @@ def log_event(
 # ---------------------------------------------------------------------------
 # Achievements
 # ---------------------------------------------------------------------------
+
 
 def user_stats(user: User) -> dict:
     """Derived statistics used by achievement rules and the dashboard."""
@@ -281,7 +299,9 @@ def _criteria_met(achievement: Achievement, stats: dict) -> bool:
         return stats["level"] >= value
     if kind == "certificate_tier":
         return (
-            Certificate.query.filter_by(user_id=stats["user_id"], tier=achievement.criteria_extra)
+            Certificate.query.filter_by(
+                user_id=stats["user_id"], tier=achievement.criteria_extra
+            )
             .filter(Certificate.revoked.is_(False))
             .first()
             is not None
@@ -302,7 +322,9 @@ def evaluate_achievements(user: User) -> list[Achievement]:
         if achievement.id in existing:
             continue
         if _criteria_met(achievement, stats):
-            db.session.add(UserAchievement(user_id=user.id, achievement_id=achievement.id))
+            db.session.add(
+                UserAchievement(user_id=user.id, achievement_id=achievement.id)
+            )
             newly_awarded.append(achievement)
             if achievement.xp_bonus:
                 award_xp(
@@ -343,15 +365,27 @@ def leaderboard(scope: str = "global", limit: int = 20) -> list[dict]:
             .group_by(XPTransaction.user_id)
             .subquery()
         )
-        query = db.session.query(
-            User.id,
-            func.coalesce(User.display_name, User.username).label("name"),
-            func.coalesce(gained.c.gained, 0).label("window_xp"),
-            User.level,
-        ).outerjoin(gained, gained.c.uid == User.id).filter(User.is_active.is_(True))
-        rows = query.order_by(func.coalesce(gained.c.gained, 0).desc()).limit(limit).all()
+        query = (
+            db.session.query(
+                User.id,
+                func.coalesce(User.display_name, User.username).label("name"),
+                func.coalesce(gained.c.gained, 0).label("window_xp"),
+                User.level,
+            )
+            .outerjoin(gained, gained.c.uid == User.id)
+            .filter(User.is_active.is_(True))
+        )
+        rows = (
+            query.order_by(func.coalesce(gained.c.gained, 0).desc()).limit(limit).all()
+        )
         return [
-            {"rank": i, "user_id": r.id, "name": r.name, "xp": int(r.window_xp or 0), "level": r.level}
+            {
+                "rank": i,
+                "user_id": r.id,
+                "name": r.name,
+                "xp": int(r.window_xp or 0),
+                "level": r.level,
+            }
             for i, r in enumerate(rows, start=1)
         ]
 
@@ -360,7 +394,13 @@ def leaderboard(scope: str = "global", limit: int = 20) -> list[dict]:
 
     rows = query.order_by(User.xp_total.desc(), User.id.asc()).limit(limit).all()
     return [
-        {"rank": i, "user_id": r.id, "name": r.name, "xp": int(r.xp_total or 0), "level": r.level}
+        {
+            "rank": i,
+            "user_id": r.id,
+            "name": r.name,
+            "xp": int(r.xp_total or 0),
+            "level": r.level,
+        }
         for i, r in enumerate(rows, start=1)
     ]
 

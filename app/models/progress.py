@@ -6,11 +6,25 @@ from app.extensions import db
 from app.models.user import TimestampMixin, utcnow
 
 # Activity types tracked by UserProgress / LearningEvent.
-ITEM_TYPES = ("video", "comic", "lab", "game", "lesson", "module", "path", "assessment", "challenge")
+ITEM_TYPES = (
+    "video",
+    "comic",
+    "lab",
+    "game",
+    "lesson",
+    "module",
+    "path",
+    "assessment",
+    "challenge",
+)
 
 CERTIFICATE_TIERS = {
     "basic": {"name": "CyberQuest Basic", "required_labs": 30, "xp": 500},
-    "intermediate": {"name": "CyberQuest Intermediate", "required_labs": 60, "xp": 1500},
+    "intermediate": {
+        "name": "CyberQuest Intermediate",
+        "required_labs": 60,
+        "xp": 1500,
+    },
     "advanced": {"name": "CyberQuest Advanced", "required_labs": 90, "xp": 3000},
     "master": {"name": "CyberQuest Master", "required_labs": 100, "xp": 5000},
 }
@@ -26,7 +40,12 @@ class UserProgress(db.Model, TimestampMixin):
     __tablename__ = "user_progress"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     item_type = db.Column(db.String(24), nullable=False, index=True)
     item_id = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(24), default="not_started", nullable=False)
@@ -58,7 +77,12 @@ class XPTransaction(db.Model):
     __tablename__ = "xp_transactions"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     amount = db.Column(db.Integer, nullable=False)
     reason = db.Column(db.String(64), nullable=False)
     reference_type = db.Column(db.String(32), nullable=False, default="")
@@ -79,7 +103,12 @@ class StreakDay(db.Model):
     __tablename__ = "streak_history"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     day = db.Column(db.Date, nullable=False, default=date.today)
     qualified = db.Column(db.Boolean, default=False, nullable=False)
     activity_count = db.Column(db.Integer, default=0, nullable=False)
@@ -113,20 +142,34 @@ class UserAchievement(db.Model):
     __tablename__ = "user_achievements"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    achievement_id = db.Column(db.Integer, db.ForeignKey("achievements.id", ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    achievement_id = db.Column(
+        db.Integer, db.ForeignKey("achievements.id", ondelete="CASCADE"), nullable=False
+    )
     awarded_at = db.Column(db.DateTime, default=utcnow, nullable=False)
 
     achievement = db.relationship("Achievement", back_populates="awards")
 
-    __table_args__ = (db.UniqueConstraint("user_id", "achievement_id", name="uq_user_achievement"),)
+    __table_args__ = (
+        db.UniqueConstraint("user_id", "achievement_id", name="uq_user_achievement"),
+    )
 
 
 class AssessmentAttempt(db.Model):
     __tablename__ = "assessment_attempts"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     topic = db.Column(db.String(120), nullable=False, index=True)
     phase = db.Column(db.String(24), nullable=False, default="knowledge_check")
     # baseline | post | retention | knowledge_check | certificate
@@ -143,8 +186,15 @@ class Certificate(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     certificate_uid = db.Column(db.String(40), unique=True, nullable=False, index=True)
-    verification_code = db.Column(db.String(24), unique=True, nullable=False, index=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    verification_code = db.Column(
+        db.String(24), unique=True, nullable=False, index=True
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     tier = db.Column(db.String(24), nullable=False)
     learner_name = db.Column(db.String(160), nullable=False)
     score_percentage = db.Column(db.Integer, default=0, nullable=False)
@@ -156,7 +206,9 @@ class Certificate(db.Model):
 
     user = db.relationship("User", foreign_keys=[user_id])
 
-    __table_args__ = (db.UniqueConstraint("user_id", "tier", name="uq_certificate_tier_per_user"),)
+    __table_args__ = (
+        db.UniqueConstraint("user_id", "tier", name="uq_certificate_tier_per_user"),
+    )
 
 
 class LearningEvent(db.Model):
@@ -165,7 +217,12 @@ class LearningEvent(db.Model):
     __tablename__ = "learning_analytics"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     event_type = db.Column(db.String(48), nullable=False, index=True)
     item_type = db.Column(db.String(24))
     item_id = db.Column(db.Integer)
@@ -182,7 +239,12 @@ class Notification(db.Model):
     __tablename__ = "notifications"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
     title_en = db.Column(db.String(200), nullable=False)
     title_hi = db.Column(db.String(200))
     body_en = db.Column(db.Text)

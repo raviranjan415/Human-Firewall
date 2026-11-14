@@ -59,7 +59,9 @@ def test_ingestion_deduplicates_and_never_publishes_directly(app, monkeypatch, d
     monkeypatch.setattr(
         feedparser,
         "parse",
-        lambda url: _Feed([_Entry("Story one", "https://example.com/one", "Details here")]),
+        lambda url: _Feed(
+            [_Entry("Story one", "https://example.com/one", "Details here")]
+        ),
     )
     source.rate_limit_seconds = 0
     source.last_checked_at = None
@@ -111,12 +113,24 @@ def test_local_rate_limit_defers_repeated_fetches(app, monkeypatch, db):
 def test_approved_news_only_returns_approved_stories(app, db):
     db.session.add_all(
         [
-            CyberNews(title="Approved", url="https://example.com/a1",
-                      content_hash="1" * 64, review_state="approved"),
-            CyberNews(title="Pending", url="https://example.com/a2",
-                      content_hash="2" * 64, review_state="pending"),
-            CyberNews(title="Rejected", url="https://example.com/a3",
-                      content_hash="3" * 64, review_state="rejected"),
+            CyberNews(
+                title="Approved",
+                url="https://example.com/a1",
+                content_hash="1" * 64,
+                review_state="approved",
+            ),
+            CyberNews(
+                title="Pending",
+                url="https://example.com/a2",
+                content_hash="2" * 64,
+                review_state="pending",
+            ),
+            CyberNews(
+                title="Rejected",
+                url="https://example.com/a3",
+                content_hash="3" * 64,
+                review_state="rejected",
+            ),
         ]
     )
     db.session.commit()
@@ -127,9 +141,13 @@ def test_approved_news_only_returns_approved_stories(app, db):
 
 def test_news_page_lists_approved_stories(client, learner, db):
     db.session.add(
-        CyberNews(title="Verified advisory", url="https://example.com/v1",
-                  content_hash="4" * 64, review_state="approved",
-                  what_happened_en="Something happened.")
+        CyberNews(
+            title="Verified advisory",
+            url="https://example.com/v1",
+            content_hash="4" * 64,
+            review_state="approved",
+            what_happened_en="Something happened.",
+        )
     )
     db.session.commit()
 
@@ -148,6 +166,7 @@ def test_news_sources_page_lists_the_configured_feeds(client, learner):
 # ---------------------------------------------------------------------------
 # Seeding
 # ---------------------------------------------------------------------------
+
 
 def test_roles_are_seeded(app):
     names = {role.name for role in Role.query.all()}
@@ -212,7 +231,10 @@ def test_historical_incidents_carry_a_confidence_label(app):
     assert labels
     for incident in HistoricalIncident.query.all():
         assert incident.confidence in (
-            "confirmed", "reported", "interpretation", "disputed"
+            "confirmed",
+            "reported",
+            "interpretation",
+            "disputed",
         )
         assert incident.last_reviewed_on is not None
 

@@ -27,6 +27,7 @@ def add_passing_attempt(user, lab, db, percentage=100):
 # Learner analytics
 # ---------------------------------------------------------------------------
 
+
 def test_analytics_requires_authentication(client):
     response = client.get("/analytics/")
     assert response.status_code == 302
@@ -73,8 +74,13 @@ def test_commonly_missed_labs_are_derived_from_failed_attempts(app, learner, db)
     lab = Lab.query.filter_by(number=1).first()
     db.session.add(
         LabAttempt(
-            user_id=learner.id, lab_id=lab.id, percentage=20, score=20,
-            max_score=100, passed=False, status="failed",
+            user_id=learner.id,
+            lab_id=lab.id,
+            percentage=20,
+            score=20,
+            max_score=100,
+            passed=False,
+            status="failed",
         )
     )
     db.session.commit()
@@ -91,6 +97,7 @@ def test_hardest_labs_works_on_an_empty_dataset(app):
 # ---------------------------------------------------------------------------
 # Administrator console
 # ---------------------------------------------------------------------------
+
 
 def test_admin_overview_renders(client, admin_user):
     login(client, ADMIN_USERNAME, ADMIN_PASSWORD)
@@ -215,4 +222,6 @@ def test_audit_log_never_records_credentials(client, admin_user, db):
         follow_redirects=True,
     )
     for entry in AuditLog.query.all():
-        assert (entry.detail_json or "") == "" or LEARNER_PASSWORD not in entry.detail_json
+        assert (
+            entry.detail_json or ""
+        ) == "" or LEARNER_PASSWORD not in entry.detail_json

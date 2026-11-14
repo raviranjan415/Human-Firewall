@@ -31,7 +31,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav.enterprise": "Enterprise & Orgs",
         "nav.workspace": "Org Workspace",
         "nav.hr_dashboard": "HR / T&P Dashboard",
-
         # Navigation
         "nav.home": "Home",
         "nav.dashboard": "Dashboard",
@@ -207,7 +206,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "nav.enterprise": "संस्थान एवं कंपनियाँ",
         "nav.workspace": "वर्कस्पेस",
         "nav.hr_dashboard": "एचआर डैशबोर्ड",
-
         "nav.home": "होम",
         "nav.dashboard": "डैशबोर्ड",
         "nav.learn": "सीखें",
@@ -371,7 +369,8 @@ def init_i18n(app) -> None:
 
     @app.before_request
     def _apply_requested_locale():  # pragma: no cover - thin wrapper
-        from flask import request, session as flask_session
+        from flask import request
+        from flask import session as flask_session
 
         lang = request.args.get("lang")
         if lang in current_app.config["SUPPORTED_LOCALES"]:

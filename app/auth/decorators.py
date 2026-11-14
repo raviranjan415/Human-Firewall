@@ -21,7 +21,9 @@ def role_required(*roles: str):
         def wrapper(*args, **kwargs):
             if not current_user.is_authenticated or current_user.role_name not in roles:
                 if request.path.startswith("/api/"):
-                    return jsonify({"error": "forbidden", "message": "Not permitted"}), 403
+                    return jsonify(
+                        {"error": "forbidden", "message": "Not permitted"}
+                    ), 403
                 abort(403)
             return view(*args, **kwargs)
 
@@ -37,6 +39,7 @@ learner_or_higher = role_required(ROLE_ADMIN, ROLE_INSTRUCTOR, ROLE_LEARNER)
 
 def org_admin_required(view):
     """Require Platform Admin or Organization Administrator / T&P Coordinator permissions."""
+
     @wraps(view)
     @login_required
     def wrapper(*args, **kwargs):
@@ -58,6 +61,7 @@ def org_admin_required(view):
 
 def tenant_membership_required(view):
     """Ensure learner or admin has an active membership in the requested organization workspace."""
+
     @wraps(view)
     @login_required
     def wrapper(*args, **kwargs):
@@ -74,4 +78,3 @@ def tenant_membership_required(view):
         return view(*args, **kwargs)
 
     return wrapper
-

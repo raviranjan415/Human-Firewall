@@ -116,7 +116,9 @@ def test_submitting_to_a_locked_lab_is_refused_with_409(client, learner):
     assert response.get_json()["error"] == "locked"
 
 
-@pytest.mark.parametrize("task_type", ["single_choice", "multi_select", "order", "text_judgement"])
+@pytest.mark.parametrize(
+    "task_type", ["single_choice", "multi_select", "order", "text_judgement"]
+)
 def test_scoring_accepts_the_correct_answer(app, task_type):
     lab = Lab.query.filter_by(task_type=task_type, state="published").first()
     if lab is None:
@@ -128,7 +130,9 @@ def test_scoring_accepts_the_correct_answer(app, task_type):
     assert feedback_en and feedback_hi
 
 
-@pytest.mark.parametrize("task_type", ["single_choice", "multi_select", "order", "text_judgement"])
+@pytest.mark.parametrize(
+    "task_type", ["single_choice", "multi_select", "order", "text_judgement"]
+)
 def test_scoring_rejects_a_wrong_answer(app, task_type):
     lab = Lab.query.filter_by(task_type=task_type, state="published").first()
     if lab is None:

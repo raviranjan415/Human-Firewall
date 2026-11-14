@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import logging
+from datetime import UTC, datetime
 
 import argon2
 from flask_login import UserMixin
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 from app.extensions import db
 
@@ -32,7 +32,7 @@ ROLES = (ROLE_LEARNER, ROLE_INSTRUCTOR, ROLE_ADMIN, ROLE_ORG_ADMIN)
 
 def utcnow() -> datetime:
     """Timezone-aware UTC timestamp (stored naive in SQLite)."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class TimestampMixin:
@@ -54,12 +54,12 @@ class Role(db.Model):
 
 
 # Import Organization from app.models.organization so there is a single canonical model.
-from app.models.organization import (  # noqa: E402
-    Organization,
-    OrganizationMembership,
-    STATUS_ACTIVE,
+from app.models.organization import (
     ORG_ROLE_ADMIN,
     ORG_ROLE_TP_COORDINATOR,
+    STATUS_ACTIVE,
+    Organization,
+    OrganizationMembership,
 )
 
 
@@ -104,7 +104,10 @@ class User(db.Model, UserMixin, TimestampMixin):
         order_by="OrganizationMembership.joined_at.desc()",
     )
     preference = db.relationship(
-        "UserPreference", back_populates="user", uselist=False, cascade="all, delete-orphan"
+        "UserPreference",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
     progress_records = db.relationship(
         "UserProgress", back_populates="user", cascade="all, delete-orphan"
@@ -128,7 +131,11 @@ class User(db.Model, UserMixin, TimestampMixin):
                 if _ph.check_needs_rehash(self.password_hash):
                     self.set_password(raw_password)
                 return True
-            except (argon2.exceptions.VerifyMismatchError, argon2.exceptions.VerificationError, argon2.exceptions.InvalidHashError):
+            except (
+                argon2.exceptions.VerifyMismatchError,
+                argon2.exceptions.VerificationError,
+                argon2.exceptions.InvalidHashError,
+            ):
                 return False
         else:
             # Fallback to werkzeug check_password_hash for existing PBKDF2 / scrypt hashes
@@ -164,7 +171,10 @@ class User(db.Model, UserMixin, TimestampMixin):
         if self.role_name in (ROLE_ADMIN, ROLE_ORG_ADMIN):
             return True
         for m in self.memberships:
-            if m.status == STATUS_ACTIVE and m.role in (ORG_ROLE_ADMIN, ORG_ROLE_TP_COORDINATOR):
+            if m.status == STATUS_ACTIVE and m.role in (
+                ORG_ROLE_ADMIN,
+                ORG_ROLE_TP_COORDINATOR,
+            ):
                 return True
         return False
 
@@ -180,7 +190,11 @@ class User(db.Model, UserMixin, TimestampMixin):
         """All organizations where this user has an active membership."""
         orgs = []
         for m in self.memberships:
-            if m.status == STATUS_ACTIVE and m.organization and m.organization.is_active:
+            if (
+                m.status == STATUS_ACTIVE
+                and m.organization
+                and m.organization.is_active
+            ):
                 orgs.append(m.organization)
         return orgs
 
@@ -206,7 +220,11 @@ class User(db.Model, UserMixin, TimestampMixin):
         if self.is_admin:
             return True
         membership = self.get_membership(org_id)
-        return bool(membership and membership.status == STATUS_ACTIVE and membership.role in (ORG_ROLE_ADMIN, ORG_ROLE_TP_COORDINATOR))
+        return bool(
+            membership
+            and membership.status == STATUS_ACTIVE
+            and membership.role in (ORG_ROLE_ADMIN, ORG_ROLE_TP_COORDINATOR)
+        )
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<User {self.username} ({self.role_name})>"
@@ -219,7 +237,10 @@ class UserPreference(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
     )
 
     language = db.Column(db.String(8), default="en", nullable=False)
@@ -237,10 +258,16 @@ class GroupMembership(db.Model, TimestampMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     organization_id = db.Column(
-        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
+        db.Integer,
+        db.ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     group_name = db.Column(db.String(120))
     role_in_group = db.Column(db.String(32), default="member", nullable=False)
@@ -248,7 +275,9 @@ class GroupMembership(db.Model, TimestampMixin):
     organization = db.relationship("Organization", back_populates="members")
 
     __table_args__ = (
-        db.UniqueConstraint("user_id", "organization_id", "group_name", name="uq_group_member"),
+        db.UniqueConstraint(
+            "user_id", "organization_id", "group_name", name="uq_group_member"
+        ),
     )
 
 
@@ -258,15 +287,23 @@ class LearningAssignment(db.Model, TimestampMixin):
     __tablename__ = "learning_assignments"
 
     id = db.Column(db.Integer, primary_key=True)
-    organization_id = db.Column(db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), index=True)
+    organization_id = db.Column(
+        db.Integer, db.ForeignKey("organizations.id", ondelete="CASCADE"), index=True
+    )
     path_id = db.Column(db.Integer, db.ForeignKey("learning_paths.id"))
     lab_id = db.Column(db.Integer, db.ForeignKey("labs.id", ondelete="CASCADE"))
-    course_type = db.Column(db.String(32), default="path", nullable=False)  # path | lab | game
+    course_type = db.Column(
+        db.String(32), default="path", nullable=False
+    )  # path | lab | game
     cohort = db.Column(db.String(120))
-    assignee_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    assignee_id = db.Column(
+        db.Integer, db.ForeignKey("users.id"), nullable=False, index=True
+    )
     assigner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     due_date = db.Column(db.Date)
-    status = db.Column(db.String(24), default="assigned", nullable=False)  # assigned | in_progress | completed | overdue
+    status = db.Column(
+        db.String(24), default="assigned", nullable=False
+    )  # assigned | in_progress | completed | overdue
     notes = db.Column(db.Text)
     completed_at = db.Column(db.DateTime)
 
@@ -275,4 +312,3 @@ class LearningAssignment(db.Model, TimestampMixin):
     organization = db.relationship("Organization")
     learning_path = db.relationship("LearningPath")
     lab = db.relationship("Lab")
-

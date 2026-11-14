@@ -1,122 +1,377 @@
 {% extends "base.html" %}
-{% block title %}{{ story.title }}{% endblock %}
+{% block title %}{{ story.title }} — Cyber News Briefing{% endblock %}
 
 {% block content %}
-<article>
-  <header class="cq-hero cq-fade-in mb-4">
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-      {% if story.is_breaking %}
-        <span class="cq-badge cq-badge-red">Breaking</span>
-      {% endif %}
-      {% if story.source %}
-        <span class="cq-badge">{{ story.source.name }}</span>
-      {% endif %}
-      {% if story.published_at %}
-        <span class="cq-muted small">{{ story.published_at.strftime('%d %b %Y') }}</span>
-      {% elif story.fetched_at %}
-        <span class="cq-muted small">Fetched {{ story.fetched_at.strftime('%d %b %Y') }}</span>
-      {% endif %}
+<article class="cq-fade-in">
+  <!-- Top Navigation & Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="mb-3">
+    <a href="{{ url_for('news.index') }}" class="btn btn-cq btn-cq-ghost btn-sm">
+      &larr; Back to Cyber News Today
+    </a>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="cq-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <div class="d-flex flex-wrap align-items-center gap-1">
+        {% if story.severity == 'Critical' %}
+          <span class="cq-badge cq-badge-red">Critical Severity</span>
+        {% elif story.severity == 'High' %}
+          <span class="cq-badge cq-badge-orange">High Severity</span>
+        {% else %}
+          <span class="cq-badge cq-badge-cyan">{{ story.severity }}</span>
+        {% endif %}
+
+        {% if story.category %}
+          <span class="cq-badge cq-badge-blue">{{ story.category }}</span>
+        {% endif %}
+
+        {% if story.is_breaking %}
+          <span class="cq-badge cq-badge-red">Breaking</span>
+        {% endif %}
+
+        {% if story.source %}
+          <span class="cq-badge">{{ story.source.name }}</span>
+        {% endif %}
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        {% if story.published_at %}
+          <span class="cq-muted small">Incident Date: <strong>{{ story.published_at.strftime('%d %B %Y') }}</strong></span>
+        {% endif %}
+        <a href="/api/news/{{ story.id }}" target="_blank" class="badge bg-light text-secondary border text-decoration-none" title="Raw JSON API payload for this incident">
+          JSON API &nearr;
+        </a>
+      </div>
     </div>
+
     <h1 class="cq-title-gradient display-6 mb-3">{{ story.title }}</h1>
-    {% if story.url %}
-      <a class="btn btn-cq btn-cq-primary" href="{{ story.url }}"
-         target="_blank" rel="noopener noreferrer"
-         aria-label="Read the original article: {{ story.title }} (opens in a new tab)">
-        Read the original article
-      </a>
+
+    <!-- Financial & Market Impact Highlight Banner -->
+    {% if story.financial_impact %}
+      <div class="p-3 mb-3 rounded" style="background: var(--cq-orange-soft); border-left: 4px solid var(--cq-orange);">
+        <div class="d-flex align-items-center gap-2">
+          <span style="font-size: 1.25rem;">💼</span>
+          <div>
+            <strong class="text-dark">Corporate &amp; Financial Fallout:</strong>
+            <span class="text-danger fw-bold ms-1">{{ story.financial_impact }}</span>
+          </div>
+        </div>
+      </div>
     {% endif %}
+
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      {% if story.url %}
+        <a class="btn btn-cq btn-cq-primary btn-sm" href="{{ story.url }}"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="Read original official report for {{ story.title }}">
+          Official Advisory &nearr;
+        </a>
+      {% endif %}
+      <a class="btn btn-cq btn-cq-ghost btn-sm" href="#prevention-checklist">
+        Jump to Action Checklist &darr;
+      </a>
+    </div>
   </header>
 
-  {% if story.summary_en or story.summary_hi %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Summary</h2>
-        <p class="mb-0">{{ story.summary_en or story.summary_hi or '' }}</p>
+  <!-- Section: Multi-Domain Plain English Overview (At a Glance) -->
+  <section class="mb-4">
+    <div class="cq-card">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <span style="font-size: 1.4rem;">📖</span>
+        <h2 class="h5 mb-0 text-dark fw-bold">Executive Overview &amp; Plain-English Summary</h2>
       </div>
-    </section>
-  {% endif %}
+      <p class="lead mb-4" style="font-size: 1.05rem; line-height: 1.6; color: var(--cq-navy);">
+        {{ story.summary_en or story.what_happened_en }}
+      </p>
 
-  {% if story.what_happened_en or story.what_happened_hi %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">What happened</h2>
-        <p class="mb-0" style="white-space: pre-line;">{{ story.what_happened_en or story.what_happened_hi or '' }}</p>
+      {% if story.summary_hi %}
+        <div class="p-3 mb-4 rounded bg-light border">
+          <span class="badge bg-secondary mb-1">हिंदी सारांश</span>
+          <p class="mb-0 text-dark" style="font-size: 0.95rem; line-height: 1.6;">{{ story.summary_hi }}</p>
+        </div>
+      {% endif %}
+
+      <div class="row g-3">
+        <!-- What Happened -->
+        <div class="col-12 col-md-4">
+          <div class="p-3 rounded h-100" style="background: var(--cq-bg-alt); border: 1px solid var(--cq-border);">
+            <div class="d-flex align-items-center gap-2 mb-2 text-primary fw-bold">
+              <span>🎯</span>
+              <h3 class="h6 mb-0">What Happened</h3>
+            </div>
+            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.what_happened_en }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Who Was Affected -->
+        <div class="col-12 col-md-4">
+          <div class="p-3 rounded h-100" style="background: var(--cq-bg-alt); border: 1px solid var(--cq-border);">
+            <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold">
+              <span>👥</span>
+              <h3 class="h6 mb-0 text-dark">Who Was Affected</h3>
+            </div>
+            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.who_is_affected_en }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Why It Matters -->
+        <div class="col-12 col-md-4">
+          <div class="p-3 rounded h-100" style="background: var(--cq-bg-alt); border: 1px solid var(--cq-border);">
+            <div class="d-flex align-items-center gap-2 mb-2 text-danger fw-bold">
+              <span>⚠️</span>
+              <h3 class="h6 mb-0 text-danger">Why It Matters</h3>
+            </div>
+            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.why_it_matters_en }}
+            </p>
+          </div>
+        </div>
       </div>
-    </section>
-  {% endif %}
+    </div>
+  </section>
 
-  {% if story.who_is_affected_en or story.who_is_affected_hi %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Who is affected</h2>
-        <p class="mb-0" style="white-space: pre-line;">{{ story.who_is_affected_en or story.who_is_affected_hi or '' }}</p>
+  <!-- Multi-Domain Deep Dive Grid -->
+  {% set meta = story.meta %}
+  <div class="row g-4 mb-4">
+    <!-- Domain 1: Technical Anatomy (DevOps, IT & Engineers) -->
+    <div class="col-12 col-lg-6">
+      <div class="cq-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size: 1.25rem;">⚙️</span>
+            <h2 class="h6 mb-0 fw-bold text-dark">Technical Anatomy &amp; Exploitation</h2>
+          </div>
+          <span class="badge bg-primary text-white small">For Engineers &amp; DevOps</span>
+        </div>
+
+        {% if meta.technical_analysis %}
+          {% set tech = meta.technical_analysis %}
+          <div class="mb-3">
+            <span class="text-muted small fw-bold d-block mb-1">ATTACK VECTOR:</span>
+            <div class="p-2 rounded bg-light border small text-dark">
+              {{ tech.attack_vector or 'Unspecified attack vector' }}
+            </div>
+          </div>
+
+          {% if tech.cve_list %}
+            <div class="mb-3">
+              <span class="text-muted small fw-bold d-block mb-1">CVE IDENTIFIERS:</span>
+              <div class="d-flex flex-wrap gap-1">
+                {% for cve in tech.cve_list %}
+                  <span class="badge bg-danger text-white">{{ cve }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          {% if tech.mitre_tactics %}
+            <div class="mb-3">
+              <span class="text-muted small fw-bold d-block mb-1">MITRE ATT&amp;CK TACTICS:</span>
+              <div class="d-flex flex-wrap gap-1">
+                {% for tactic in tech.mitre_tactics %}
+                  <span class="badge bg-dark text-light small">{{ tactic }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="mb-0">
+            <span class="text-muted small fw-bold d-block mb-1">ROOT CAUSE BREAKDOWN:</span>
+            <p class="small text-muted mb-0">
+              {{ tech.root_cause or 'Engineering breakdown in progress.' }}
+            </p>
+          </div>
+        {% else %}
+          <p class="small text-muted mb-0">
+            Technical analysis details are summarized in the overview and action checklist.
+          </p>
+        {% endif %}
       </div>
-    </section>
-  {% endif %}
+    </div>
 
-  {% if story.why_it_matters_en or story.why_it_matters_hi %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Why it matters</h2>
-        <p class="mb-0" style="white-space: pre-line;">{{ story.why_it_matters_en or story.why_it_matters_hi or '' }}</p>
+    <!-- Domain 2: Behavioral & Human Factors (HR, Managers & Employees) -->
+    <div class="col-12 col-lg-6">
+      <div class="cq-card h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span style="font-size: 1.25rem;">🧠</span>
+            <h2 class="h6 mb-0 fw-bold text-dark">Behavioral &amp; Human Factors</h2>
+          </div>
+          <span class="badge bg-purple text-white small" style="background-color: var(--cq-purple);">For All Employees &amp; HR</span>
+        </div>
+
+        {% if meta.behavioral_analysis %}
+          {% set behav = meta.behavioral_analysis %}
+          <div class="mb-3">
+            <span class="text-muted small fw-bold d-block mb-1">PRIMARY HUMAN FACTOR:</span>
+            <div class="p-2 rounded small text-dark fw-semibold" style="background: var(--cq-purple-soft); border: 1px solid var(--cq-border);">
+              {{ behav.human_factor or 'Social Engineering / Trust Exploitation' }}
+            </div>
+          </div>
+
+          {% if behav.psychological_hooks %}
+            <div class="mb-3">
+              <span class="text-muted small fw-bold d-block mb-1">PSYCHOLOGICAL TRIGGERS EXPLOITED:</span>
+              <ul class="list-unstyled mb-0 small">
+                {% for hook in behav.psychological_hooks %}
+                  <li class="d-flex align-items-start gap-2 mb-1">
+                    <span class="text-danger fw-bold">&bull;</span>
+                    <span class="text-dark">{{ hook }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <div class="mb-0">
+            <span class="text-muted small fw-bold d-block mb-1">ORGANIZATIONAL &amp; CULTURE GAP:</span>
+            <p class="small text-muted mb-0">
+              {{ behav.organizational_gap or 'Process fatigue or procedural circumvention.' }}
+            </p>
+          </div>
+        {% else %}
+          <p class="small text-muted mb-0">
+            Human factors analysis highlights the necessity of active skepticism and verified protocol adherence.
+          </p>
+        {% endif %}
       </div>
-    </section>
-  {% endif %}
+    </div>
+  </div>
 
-  {% if story.what_to_do_en or story.what_to_do_hi %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">What to do</h2>
-        <p class="mb-0" style="white-space: pre-line;">{{ story.what_to_do_en or story.what_to_do_hi or '' }}</p>
+  <!-- Section 3: Human Firewall Action & Prevention Checklist -->
+  <section id="prevention-checklist" class="mb-4">
+    <div class="cq-card" style="border-top: 4px solid var(--cq-green);">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <span style="font-size: 1.3rem;">🛡️</span>
+          <h2 class="h5 mb-0 fw-bold text-dark">Human Firewall Action &amp; Prevention Checklist</h2>
+        </div>
+        <span class="cq-badge cq-badge-green">Actionable Security Controls</span>
       </div>
-    </section>
-  {% endif %}
 
+      <p class="cq-muted small mb-3">
+        Apply these concrete controls immediately to protect your organization against the exact exploit vector demonstrated in this incident:
+      </p>
+
+      {% if story.what_to_do_en %}
+        <div class="list-group mb-3">
+          {% for line in story.what_to_do_en.split('\n') %}
+            {% if line.strip() %}
+              <label class="list-group-item d-flex gap-3 align-items-start py-3" style="cursor: pointer;">
+                <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" value="" onchange="this.parentElement.classList.toggle('bg-light');">
+                <span class="small text-dark fw-medium">{{ line.strip() }}</span>
+              </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Key Architectural Takeaways -->
+      {% if meta.key_takeaways %}
+        <div class="p-3 rounded mt-3" style="background: var(--cq-green-soft); border: 1px solid var(--cq-green-border);">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <strong class="text-success">💡 Key Architectural Takeaways:</strong>
+          </div>
+          <ul class="mb-0 small text-dark ps-3">
+            {% for takeaway in meta.key_takeaways %}
+              <li class="mb-1">{{ takeaway }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Section 4: Interactive Training Integration (Turn Reading into Muscle Memory) -->
   {% if story.related_lab_id or story.related_lesson_id %}
     <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Ready to practise?</h2>
-        <p class="cq-muted">Turn what you just read into a habit.</p>
+      <div class="cq-card" style="background: linear-gradient(135deg, var(--cq-blue-soft) 0%, var(--cq-surface) 100%);">
+        <h2 class="h5 mb-2 text-dark fw-bold">Turn Awareness into Real Defense Skills</h2>
+        <p class="cq-muted small mb-3">Practice hands-on defensive simulations corresponding to this attack vector:</p>
         <div class="d-flex flex-wrap gap-2">
           {% if story.related_lab_id %}
             <a class="btn btn-cq btn-cq-primary" href="{{ url_for('labs.detail', lab_id=story.related_lab_id) }}">
-              {{ t('get.start_lab') }}
+              Launch Interactive Lab &rarr;
             </a>
           {% endif %}
           {% if story.related_lesson_id %}
             <a class="btn btn-cq btn-cq-purple" href="{{ url_for('learning.video_detail', video_id=story.related_lesson_id) }}">
-              {{ t('get.watch_videos') }}
+              Watch Video Module
             </a>
           {% endif %}
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('games.index') }}">
+            Explore 30 Security Games
+          </a>
+        </div>
+      </div>
+    </section>
+  {% else %}
+    <section class="mb-4">
+      <div class="cq-card" style="background: linear-gradient(135deg, var(--cq-blue-soft) 0%, var(--cq-surface) 100%);">
+        <h2 class="h5 mb-2 text-dark fw-bold">Test Your Team Against Similar Vectors</h2>
+        <p class="cq-muted small mb-3">
+          Reinforce defensive habits with our interactive 2D simulation games and scenario labs.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-cq btn-cq-primary" href="{{ url_for('games.index') }}">
+            Play Cybersecurity Games &rarr;
+          </a>
+          <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('labs.index') }}">
+            Browse Hands-on Labs
+          </a>
         </div>
       </div>
     </section>
   {% endif %}
 
-  <section class="mb-4">
-    <div class="cq-card">
-      <h2 class="h5 mb-2">Related stories</h2>
-      {% if related %}
-        <ul class="list-unstyled mb-0">
+  <!-- Related Landmark Attacks -->
+  {% if related %}
+    <section class="mb-4">
+      <div class="cq-card">
+        <h2 class="h6 mb-3 fw-bold text-dark">Related Landmark Corporate Attacks (Past 1.5 Years)</h2>
+        <div class="row g-3">
           {% for item in related %}
-            <li class="py-2 border-bottom">
-              <a href="{{ url_for('news.detail', news_id=item.id) }}">{{ item.title }}</a>
-              {% if item.source %}<span class="cq-muted small">— {{ item.source.name }}</span>{% endif %}
-            </li>
+            <div class="col-12 col-md-6">
+              <div class="p-3 rounded border h-100 d-flex flex-column" style="background: var(--cq-bg-alt);">
+                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                  <span class="cq-badge cq-badge-blue" style="font-size: 0.68rem;">{{ item.category }}</span>
+                  {% if item.published_at %}
+                    <span class="cq-muted small" style="font-size: 0.72rem;">{{ item.published_at.strftime('%d %b %Y') }}</span>
+                  {% endif %}
+                </div>
+                <h3 class="h6 mb-2">
+                  <a href="{{ url_for('news.detail', news_id=item.id) }}" class="text-dark fw-bold">{{ item.title }}</a>
+                </h3>
+                <p class="small text-muted mb-2 line-clamp-2">
+                  {{ item.summary_en or item.what_happened_en|truncate(120) }}
+                </p>
+                <a href="{{ url_for('news.detail', news_id=item.id) }}" class="small fw-bold text-primary mt-auto">
+                  View Case Study &rarr;
+                </a>
+              </div>
+            </div>
           {% endfor %}
-        </ul>
-      {% else %}
-        <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
-      {% endif %}
-    </div>
-  </section>
+        </div>
+      </div>
+    </section>
+  {% endif %}
 
+  <!-- Honesty & 1.5-Year Data Policy Commitment -->
   <section class="mb-4">
-    <div class="cq-card">
-      <h2 class="h5 mb-2">Our honesty commitment</h2>
-      <p class="cq-muted mb-0">
-        This platform never invents news. We keep the original publication date and source, and we show
-        the story exactly as it was reported rather than rewriting it into something more dramatic.
+    <div class="cq-card p-3">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="text-muted">ℹ️</span>
+        <h2 class="h6 mb-0 text-muted fw-bold">Platform Integrity &amp; Strict 548-Day (1.5-Year) Retention Policy</h2>
+      </div>
+      <p class="cq-muted small mb-0">
+        Every incident in Cyber News Today is sourced from official regulatory bodies (CISA, SEC, ENISA, Reuters, KrebsOnSecurity) 
+        and fact-checked by cybersecurity architects. Outdated attacks older than 548 days are automatically purged to keep 
+        all training aligned with current threat actor TTPs.
       </p>
     </div>
   </section>

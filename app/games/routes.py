@@ -41,7 +41,9 @@ def index():
         else []
     )
     best_scores = {record.item_id: record for record in progress_records}
-    completed = {record.item_id for record in progress_records if record.status == "completed"}
+    completed = {
+        record.item_id for record in progress_records if record.status == "completed"
+    }
 
     return render_template(
         "games/index.html",
@@ -78,7 +80,8 @@ def play(slug: str):
                 "choices": [
                     {
                         "id": choice.id,
-                        "text": getattr(choice, f"text_{locale}", None) or choice.text_en,
+                        "text": getattr(choice, f"text_{locale}", None)
+                        or choice.text_en,
                     }
                     for choice in scenario.choices
                 ],

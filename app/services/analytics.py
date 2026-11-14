@@ -27,15 +27,17 @@ from app.models import (
 from app.models.user import ROLE_LEARNER, utcnow
 from app.services import gamification
 
-
 # ---------------------------------------------------------------------------
 # Learner analytics
 # ---------------------------------------------------------------------------
 
+
 def weekly_activity(user_id: int, days: int = 7) -> dict:
     start = date.today() - timedelta(days=days - 1)
     rows = (
-        db.session.query(func.date(LearningEvent.created_at), func.count(LearningEvent.id))
+        db.session.query(
+            func.date(LearningEvent.created_at), func.count(LearningEvent.id)
+        )
         .filter(LearningEvent.user_id == user_id, LearningEvent.created_at >= start)
         .group_by(func.date(LearningEvent.created_at))
         .all()
@@ -75,7 +77,9 @@ def improvement(user_id: int) -> dict:
     phases: dict[str, dict[str, list[int]]] = defaultdict(lambda: defaultdict(list))
     rows = (
         db.session.query(
-            AssessmentAttempt.topic, AssessmentAttempt.phase, AssessmentAttempt.percentage
+            AssessmentAttempt.topic,
+            AssessmentAttempt.phase,
+            AssessmentAttempt.percentage,
         )
         .filter(AssessmentAttempt.user_id == user_id)
         .all()
@@ -99,7 +103,10 @@ def improvement(user_id: int) -> dict:
                 else None,
             }
         )
-    return {"topics": sorted(result, key=lambda row: row["topic"]), "has_data": bool(result)}
+    return {
+        "topics": sorted(result, key=lambda row: row["topic"]),
+        "has_data": bool(result),
+    }
 
 
 def _avg(values):
@@ -183,7 +190,9 @@ def learner_overview(user: User) -> dict:
     )
     attempts = LabAttempt.query.filter_by(user_id=user.id).count()
     first_try = LabAttempt.query.filter(
-        LabAttempt.user_id == user.id, LabAttempt.retry_count == 0, LabAttempt.passed.is_(True)
+        LabAttempt.user_id == user.id,
+        LabAttempt.retry_count == 0,
+        LabAttempt.passed.is_(True),
     ).count()
     avg_score = (
         db.session.query(func.coalesce(func.avg(LabAttempt.percentage), 0))
@@ -202,8 +211,12 @@ def learner_overview(user: User) -> dict:
         "total_learning_seconds": int(total_time),
         "total_learning_minutes": int(total_time // 60),
         "lab_attempts": attempts,
-        "first_attempt_success_rate": int(first_try / attempts * 100) if attempts else 0,
-        "final_success_rate": int(stats["labs_completed"] / attempts * 100) if attempts else 0,
+        "first_attempt_success_rate": int(first_try / attempts * 100)
+        if attempts
+        else 0,
+        "final_success_rate": int(stats["labs_completed"] / attempts * 100)
+        if attempts
+        else 0,
         "average_score": int(round(avg_score)),
         "hints_used": int(hints),
         "weekly_activity": weekly_activity(user.id),
@@ -224,8 +237,18 @@ def learner_csv(user: User) -> str:
     writer.writerow(["User", user.display_name or user.username])
     writer.writerow(["Generated", utcnow().isoformat(timespec="seconds")])
     writer.writerow([])
-    writer.writerow(["Item type", "Item ID", "Status", "Best score", "Attempts",
-                     "Hints used", "Seconds spent", "Completed at"])
+    writer.writerow(
+        [
+            "Item type",
+            "Item ID",
+            "Status",
+            "Best score",
+            "Attempts",
+            "Hints used",
+            "Seconds spent",
+            "Completed at",
+        ]
+    )
     rows = (
         UserProgress.query.filter_by(user_id=user.id)
         .order_by(UserProgress.item_type, UserProgress.item_id)
@@ -241,7 +264,9 @@ def learner_csv(user: User) -> str:
                 row.attempts_count,
                 row.hints_used,
                 row.time_spent_seconds,
-                row.completed_at.isoformat(timespec="seconds") if row.completed_at else "",
+                row.completed_at.isoformat(timespec="seconds")
+                if row.completed_at
+                else "",
             ]
         )
     writer.writerow([])
@@ -254,6 +279,7 @@ def learner_csv(user: User) -> str:
 # ---------------------------------------------------------------------------
 # Administrator analytics
 # ---------------------------------------------------------------------------
+
 
 def admin_overview() -> dict:
     total_users = User.query.count()
@@ -277,10 +303,14 @@ def admin_overview() -> dict:
     videos_total = VideoAsset.query.count()
     videos_started = UserProgress.query.filter_by(item_type="video").count()
     comics_total = Comic.query.count()
-    comics_read = UserProgress.query.filter_by(item_type="comic", status="completed").count()
+    comics_read = UserProgress.query.filter_by(
+        item_type="comic", status="completed"
+    ).count()
 
     daily = (
-        db.session.query(func.date(LearningEvent.created_at), func.count(LearningEvent.id))
+        db.session.query(
+            func.date(LearningEvent.created_at), func.count(LearningEvent.id)
+        )
         .filter(LearningEvent.created_at >= utcnow() - timedelta(days=14))
         .group_by(func.date(LearningEvent.created_at))
         .order_by(func.date(LearningEvent.created_at))

@@ -1,7 +1,5 @@
 """Tests for public endpoints, health checks, metrics, and route aliases."""
 
-import pytest
-
 
 def test_public_health_and_metrics(client):
     """Verify /healthz, /readyz, and /metrics return 200 OK."""
@@ -31,4 +29,3 @@ def test_route_aliases_redirect(client):
         res = client.get(src, follow_redirects=False)
         assert res.status_code in (301, 302)
         assert dst in res.headers["Location"]
-

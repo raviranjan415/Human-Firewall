@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from app.models import AuditLog
-from .conftest import login, logout, ADMIN_USERNAME, ADMIN_PASSWORD, LEARNER_PASSWORD
+
+from .conftest import ADMIN_PASSWORD, ADMIN_USERNAME, LEARNER_PASSWORD, login, logout
 
 
 def test_devops_dashboard_rbac(client, learner, admin_user):

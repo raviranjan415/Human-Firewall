@@ -15,7 +15,9 @@ analytics_bp = Blueprint("analytics", __name__)
 @login_required
 def index():
     """Everything reported here is measured from this learner's own activity."""
-    return render_template("analytics/index.html", overview=analytics.learner_overview(current_user))
+    return render_template(
+        "analytics/index.html", overview=analytics.learner_overview(current_user)
+    )
 
 
 @analytics_bp.route("/export.csv")

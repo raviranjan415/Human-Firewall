@@ -4,6 +4,7 @@ and the official About page for Ravi Ranjan.
 """
 
 from app.models import VideoAsset
+
 from .conftest import login
 
 
@@ -59,8 +60,8 @@ def test_about_page_and_developer_attribution(client):
 
 def test_curated_lessons_integrity(app):
     """Verify that all 50 lessons produce synchronized video, comics, lab, reading and quiz."""
-    from app.services.lesson_sync import CURATED_LESSONS, get_synchronized_room_content
     from app.models import VideoAsset
+    from app.services.lesson_sync import CURATED_LESSONS, get_synchronized_room_content
 
     assert len(CURATED_LESSONS) == 50
 
@@ -72,17 +73,26 @@ def test_curated_lessons_integrity(app):
             data = get_synchronized_room_content(video, video.lesson)
             assert data["lesson_id"] == num
             assert "title_en" in data and "title_hi" in data
-            
+
             # 1. 30s Video Scenes: 4 scenes for EN and HI
             scenes = data.get("video_scenes", {})
             assert len(scenes.get("en", [])) == 4
             assert len(scenes.get("hi", [])) == 4
             for s in scenes["en"] + scenes["hi"]:
-                assert "start_s" in s and "title" in s and "badge" in s and "narration" in s
+                assert (
+                    "start_s" in s
+                    and "title" in s
+                    and "badge" in s
+                    and "narration" in s
+                )
 
             # 2. Incident Chat Comic & 3 Takeaways
             comic = data.get("comic", {})
-            assert "situation_en" in comic and "problem_en" in comic and "resolution_en" in comic
+            assert (
+                "situation_en" in comic
+                and "problem_en" in comic
+                and "resolution_en" in comic
+            )
             assert len(comic.get("takeaways_en", [])) == 3
 
             # 3. Practical Lab Artifact & Options
@@ -117,7 +127,7 @@ def test_lesson_synchronization_across_topics(app, client, learner):
         (1, ["Social Engineering", "Human Target", "Psychological"]),
         (6, ["Phishing", "Email", "Fake IT Portal"]),
         (16, ["Wire Transfer", "CEO", "Bank"]),
-        (22, ["Voice", "Deepfake", "Cloning"])
+        (22, ["Voice", "Deepfake", "Cloning"]),
     ]
 
     for lesson_num, expected_keywords in test_cases:
@@ -132,5 +142,3 @@ def test_lesson_synchronization_across_topics(app, client, learner):
         assert any(kw.lower() in html.lower() for kw in expected_keywords), (
             f"Lesson {lesson_num} does not contain any of {expected_keywords}"
         )
-
-

@@ -72,7 +72,7 @@ def ensure_default_sources() -> int:
 
 def _content_hash(title: str, url: str) -> str:
     normalized = re.sub(r"\s+", " ", (title or "").strip().lower())
-    return hashlib.sha256(f"{normalized}|{(url or '').strip()}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{normalized}|{(url or '').strip()}".encode()).hexdigest()
 
 
 def _clean(html: str | None) -> str:
@@ -108,7 +108,13 @@ def ingest_source(source: NewsSource, max_items: int | None = None) -> dict:
     import feedparser
 
     max_items = max_items or current_app.config.get("NEWS_MAX_ITEMS_PER_SOURCE", 15)
-    result = {"source": source.name, "fetched": 0, "new": 0, "skipped": 0, "error": None}
+    result = {
+        "source": source.name,
+        "fetched": 0,
+        "new": 0,
+        "skipped": 0,
+        "error": None,
+    }
 
     if source.rate_limit_seconds:
         last = source.last_checked_at
@@ -146,7 +152,9 @@ def ingest_source(source: NewsSource, max_items: int | None = None) -> dict:
             continue
 
         published = None
-        parsed = getattr(entry, "published_parsed", None) or getattr(entry, "updated_parsed", None)
+        parsed = getattr(entry, "published_parsed", None) or getattr(
+            entry, "updated_parsed", None
+        )
         if parsed:
             try:
                 published = datetime(*parsed[:6])
@@ -196,10 +204,14 @@ def approved_news(limit: int = 30, include_pending: bool = False) -> list[CyberN
     query = CyberNews.query
     if not include_pending:
         query = query.filter_by(review_state="approved")
-    return query.order_by(CyberNews.published_at.desc().nullslast(), CyberNews.fetched_at.desc()).limit(limit).all()
+    return (
+        query.order_by(
+            CyberNews.published_at.desc().nullslast(), CyberNews.fetched_at.desc()
+        )
+        .limit(limit)
+        .all()
+    )
 
 
 def last_checked() -> datetime | None:
-    return (
-        db.session.query(db.func.max(NewsSource.last_checked_at)).scalar()
-    )
+    return db.session.query(db.func.max(NewsSource.last_checked_at)).scalar()

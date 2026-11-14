@@ -18,8 +18,7 @@ from app.models import (
     UserAchievement,
     VideoAsset,
 )
-from app.services import analytics
-from app.services import gamification
+from app.services import analytics, gamification
 from app.services import labs as labs_service
 from app.services import progress as progress_service
 
@@ -45,11 +44,7 @@ def _recommended_next() -> dict | None:
     if game:
         return {"kind": "game", "game": game}
 
-    video = (
-        VideoAsset.query.join(VideoAsset.lesson)
-        .order_by(VideoAsset.id)
-        .first()
-    )
+    video = VideoAsset.query.join(VideoAsset.lesson).order_by(VideoAsset.id).first()
     if video:
         return {"kind": "video", "video": video}
     return None
@@ -95,7 +90,9 @@ def index():
         latest_incidents=latest_incidents,
         daily=_daily_challenge(),
         weekly={
-            "game": Game.query.filter_by(state="published").order_by(Game.order_index).first(),
+            "game": Game.query.filter_by(state="published")
+            .order_by(Game.order_index)
+            .first(),
         },
         recommended=_recommended_next(),
         mistakes=analytics.commonly_missed(current_user.id),
@@ -112,7 +109,10 @@ def challenges():
         daily=_daily_challenge(),
         labs=labs,
         games=games,
-        comics=Comic.query.filter_by(state="published").order_by(Comic.order_index).limit(3).all(),
+        comics=Comic.query.filter_by(state="published")
+        .order_by(Comic.order_index)
+        .limit(3)
+        .all(),
     )
 
 
@@ -136,9 +136,12 @@ def leaderboard():
 @login_required
 def achievements():
     earned_ids = {
-        row.achievement_id for row in UserAchievement.query.filter_by(user_id=current_user.id).all()
+        row.achievement_id
+        for row in UserAchievement.query.filter_by(user_id=current_user.id).all()
     }
-    all_achievements = Achievement.query.filter_by(is_active=True).order_by(Achievement.id).all()
+    all_achievements = (
+        Achievement.query.filter_by(is_active=True).order_by(Achievement.id).all()
+    )
     return render_template(
         "dashboard/achievements.html",
         achievements=all_achievements,
@@ -150,7 +153,9 @@ def achievements():
 @dashboard_bp.route("/notifications/read", methods=["POST"])
 @login_required
 def mark_notifications_read():
-    Notification.query.filter_by(user_id=current_user.id, is_read=False).update({"is_read": True})
+    Notification.query.filter_by(user_id=current_user.id, is_read=False).update(
+        {"is_read": True}
+    )
     db.session.commit()
     from flask import redirect, url_for
 

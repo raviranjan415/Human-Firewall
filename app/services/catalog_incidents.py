@@ -36,7 +36,11 @@ CATALOG_INCIDENTS = [
         "technical_detail_en": "Exploited CVE-2011-0609 via an embedded SWF file in an XLS attachment. Extracted master secret keys used to generate pseudo-random numbers in SecurID algorithms.",
         "sources": [
             ("RSA open letter to customers (2011)", "https://www.rsa.com", "RSA / EMC"),
-            ("CISA — guidance on mitigating social engineering", "https://www.cisa.gov", "CISA"),
+            (
+                "CISA — guidance on mitigating social engineering",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2011-04-01",
     },
@@ -72,8 +76,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "वित्तीय नेटवर्क को अलग रखना जरूरी है; हमलावर की एक स्पेलिंग गलती से करोड़ों बच सकते हैं; प्रिंटर कोई सुरक्षा नियंत्रण नहीं है; भुगतान में दोहरी मंजूरी अनिवार्य है; अंतरराष्ट्रीय स्तर पर पैसा वापस पाना कठिन होता है।",
         "technical_detail_en": "Used customized malware including evtdt.exe and msbtres.dll to patch SWIFT Alliance Access binaries in memory, bypassing local database consistency checks.",
         "sources": [
-            ("US Department of Justice Indictment (Lazarus Group)", "https://www.justice.gov", "US DOJ"),
-            ("SWIFT Customer Security Programme Framework", "https://www.swift.com", "SWIFT"),
+            (
+                "US Department of Justice Indictment (Lazarus Group)",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
+            (
+                "SWIFT Customer Security Programme Framework",
+                "https://www.swift.com",
+                "SWIFT",
+            ),
         ],
         "source_published_on": "2016-03-15",
     },
@@ -109,8 +121,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "आंतरिक टूल्स के लिए हार्डवेयर एमएफए जरूरी है; सपोर्ट स्टाफ के अधिकारों को सीमित रखें; फोन पर होने वाले हमलों से कर्मचारी सतर्क रहें; वीआईपी खातों के लिए कड़ी सुरक्षा आवश्यक है।",
         "technical_detail_en": "Targeted credentials via look-alike domains. Manipulated the internal customer tool 'agent tools' to redirect email ownership and generate password reset tokens.",
         "sources": [
-            ("Twitter Inc. Official Security Incident Update", "https://blog.twitter.com", "Twitter"),
-            ("New York State Department of Financial Services Report", "https://www.dfs.ny.gov", "NY DFS"),
+            (
+                "Twitter Inc. Official Security Incident Update",
+                "https://blog.twitter.com",
+                "Twitter",
+            ),
+            (
+                "New York State Department of Financial Services Report",
+                "https://www.dfs.ny.gov",
+                "NY DFS",
+            ),
         ],
         "source_published_on": "2020-07-30",
     },
@@ -145,8 +165,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "भूले हुए पुराने खाते हैकर्स के पसंदीदा दरवाजे होते हैं; वीपीएन पर बिना एमएफए के काम करना खतरनाक है; ऑपरेशनल सिस्टम को बिलिंग सिस्टम से स्वतंत्र होना चाहिए; पासवर्ड दोबारा इस्तेमाल न करें।",
         "technical_detail_en": "Infiltration achieved via a single batch of credentials found on Genesis Market. The VPN account was tied to an employee who had reused a password across external personal services.",
         "sources": [
-            ("CISA Alert AA21-131A (DarkSide Ransomware)", "https://www.cisa.gov", "CISA / FBI"),
-            ("Senate Homeland Security Testimony of Colonial Pipeline CEO", "https://www.hsgac.senate.gov", "US Senate"),
+            (
+                "CISA Alert AA21-131A (DarkSide Ransomware)",
+                "https://www.cisa.gov",
+                "CISA / FBI",
+            ),
+            (
+                "Senate Homeland Security Testimony of Colonial Pipeline CEO",
+                "https://www.hsgac.senate.gov",
+                "US Senate",
+            ),
         ],
         "source_published_on": "2021-05-19",
     },
@@ -182,7 +210,11 @@ CATALOG_INCIDENTS = [
         "technical_detail_en": "SUNBURST backdoor embedded in SolarWinds.Orion.Core.BusinessLayer.dll. Used TEARDROP and Raindrop in-memory loaders for targeted second-stage lateral movement.",
         "sources": [
             ("CISA Emergency Directive 21-01", "https://www.cisa.gov", "CISA"),
-            ("FireEye Threat Research: Highly Evasive Attacker Leverages SolarWinds", "https://www.mandiant.com", "Mandiant"),
+            (
+                "FireEye Threat Research: Highly Evasive Attacker Leverages SolarWinds",
+                "https://www.mandiant.com",
+                "Mandiant",
+            ),
         ],
         "source_published_on": "2020-12-13",
     },
@@ -217,8 +249,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "आईटी हेल्पडेस्क सुरक्षा का सबसे संवेदनशील दरवाजा है; लिंक्डइन की जानकारी से खतरनाक फर्जी कॉल बनती हैं; पहचान प्रबंधन (IdP) सुरक्षित रखें; बिना तकनीक के आधुनिक होटल भी नहीं चल सकते।",
         "technical_detail_en": "Scattered Spider / UNC3944 bypassed Okta MFA via help desk reset, escalated to Azure AD Global Admin, and executed Python scripts encrypting VMware ESXi environments.",
         "sources": [
-            ("SEC 8-K Current Report filed by MGM Resorts International", "https://www.sec.gov", "US SEC"),
-            ("FBI / CISA Joint Cybersecurity Advisory on Scattered Spider", "https://www.cisa.gov", "CISA / FBI"),
+            (
+                "SEC 8-K Current Report filed by MGM Resorts International",
+                "https://www.sec.gov",
+                "US SEC",
+            ),
+            (
+                "FBI / CISA Joint Cybersecurity Advisory on Scattered Spider",
+                "https://www.cisa.gov",
+                "CISA / FBI",
+            ),
         ],
         "source_published_on": "2023-10-05",
     },
@@ -253,8 +293,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "बार-बार नोटिफिकेशन भेजकर झुंझलाना एक खतरनाक मनोवैज्ञानिक हमला है; ठेके पर काम करने वाले कर्मचारी आसान शिकार होते हैं; नेटवर्क में पासवर्ड खुला न छोड़ें; व्हाट्सएप पर कंपनी के अधिकारी बनकर आने वाले संदेशों से बचें।",
         "technical_detail_en": "Stolen credentials purchased on dark web marketplace. Escalated privileges by locating PowerShell script containing plaintext credentials for Thycotic PAM, yielding keys to AWS, GSuite, and HackerOne portal.",
         "sources": [
-            ("Uber Security Incident Update (Official Release)", "https://www.uber.com", "Uber Newsroom"),
-            ("CISA Insights: Mitigating MFA Fatigue Attacks", "https://www.cisa.gov", "CISA"),
+            (
+                "Uber Security Incident Update (Official Release)",
+                "https://www.uber.com",
+                "Uber Newsroom",
+            ),
+            (
+                "CISA Insights: Mitigating MFA Fatigue Attacks",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2022-09-19",
     },
@@ -289,8 +337,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "वेंडर की कमजोरी आपकी कमजोरी बन जाती है; नेटवर्क विभाजन अत्यंत आवश्यक है; सुरक्षा अलर्ट को नजरअंदाज न करें; वेंडर्स से भी कड़े सुरक्षा नियमों का पालन करवाएं।",
         "technical_detail_en": "Initial compromise via Citadel Trojan delivered in email. Infiltrated POS terminals using Kaptoxa (BlackPOS) to scrape track 1 and track 2 card data directly from memory before encryption.",
         "sources": [
-            ("US Senate Committee on Commerce, Science, and Transportation Report", "https://www.commerce.senate.gov", "US Senate"),
-            ("Krebs on Security: Sources - Target Infiltration Via HVAC Company", "https://krebsonsecurity.com", "Brian Krebs"),
+            (
+                "US Senate Committee on Commerce, Science, and Transportation Report",
+                "https://www.commerce.senate.gov",
+                "US Senate",
+            ),
+            (
+                "Krebs on Security: Sources - Target Infiltration Via HVAC Company",
+                "https://krebsonsecurity.com",
+                "Brian Krebs",
+            ),
         ],
         "source_published_on": "2014-03-26",
     },
@@ -325,8 +381,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "जिस सर्वर की जानकारी नहीं है उसे सुरक्षित नहीं किया जा सकता; टूल्स के एक्सपायर सर्टिफिकेट सुरक्षा में अंधेरा पैदा करते हैं; सार्वजनिक वेबसाइटों को अपडेट रखना सबसे जरूरी है।",
         "technical_detail_en": "Exploitation of Jakarta Multipart parser vulnerability in Apache Struts (CVE-2017-5638). Attackers used OGNL expressions inside Content-Type HTTP headers to execute arbitrary operating system commands.",
         "sources": [
-            ("US Government Accountability Office (GAO) Report GAO-18-559", "https://www.gao.gov", "US GAO"),
-            ("Federal Trade Commission Equifax Settlement Agreement", "https://www.ftc.gov", "US FTC"),
+            (
+                "US Government Accountability Office (GAO) Report GAO-18-559",
+                "https://www.gao.gov",
+                "US GAO",
+            ),
+            (
+                "Federal Trade Commission Equifax Settlement Agreement",
+                "https://www.ftc.gov",
+                "US FTC",
+            ),
         ],
         "source_published_on": "2017-09-07",
     },
@@ -361,8 +425,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "स्वास्थ्य डेटा हैकर्स का पसंदीदा शिकार है; सतर्क कर्मचारी ही बड़े हमले पकड़ते हैं; डेटा एनक्रिप्शन अनिवार्य है; स्थायी एडमिन पासवर्ड खतरनाक होते हैं।",
         "technical_detail_en": "Attribution to Deep Panda / APT19. Deployed Derusbi and Sakula malware families. Used legitimate administrative tools (PowerShell and WMI) to query Oracle database warehouses.",
         "sources": [
-            ("US Department of Health and Human Services Resolution Agreement", "https://www.hhs.gov", "US HHS"),
-            ("California Department of Insurance Examination Report on Anthem", "https://www.insurance.ca.gov", "CDI"),
+            (
+                "US Department of Health and Human Services Resolution Agreement",
+                "https://www.hhs.gov",
+                "US HHS",
+            ),
+            (
+                "California Department of Insurance Examination Report on Anthem",
+                "https://www.insurance.ca.gov",
+                "CDI",
+            ),
         ],
         "source_published_on": "2015-02-05",
     },
@@ -397,8 +469,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "वाइपर वायरस कुछ ही घंटों में पूरे दफ्तर को पंगु बना सकता है; एक्सेल में पासवर्ड लिखना आत्मघाती है; बैकअप को हमेशा अलग रखें।",
         "technical_detail_en": "Destructive wiper known as Destover / Shamoon-variant. Overwrote Master Boot Record (MBR) and partition tables with static byte patterns, making recovery impossible.",
         "sources": [
-            ("FBI Official Statement on the Investigation into the Sony Pictures Cyberattack", "https://www.fbi.gov", "FBI"),
-            ("US Department of Justice Indictment of Park Jin Hyok (Lazarus)", "https://www.justice.gov", "US DOJ"),
+            (
+                "FBI Official Statement on the Investigation into the Sony Pictures Cyberattack",
+                "https://www.fbi.gov",
+                "FBI",
+            ),
+            (
+                "US Department of Justice Indictment of Park Jin Hyok (Lazarus)",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
         ],
         "source_published_on": "2014-12-19",
     },
@@ -433,8 +513,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "सहकारी बैंक हैकर्स के आसान निशाने होते हैं; पेमेंट स्विच को ऑफिस के सामान्य कंप्यूटरों से अलग रखना चाहिए; एक साथ असामान्य निकासी पर स्वतः रोक लगनी चाहिए।",
         "technical_detail_en": "Attackers deployed malware variants to emulate a payment switch authority (ISO 8583 message response 0210/0110). Stole card track data to create thousands of magnetic stripe clones.",
         "sources": [
-            ("Pune Cyber Crime Police Station Official Charge Sheet", "https://cybercrime.gov.in", "Pune Police"),
-            ("Reserve Bank of India Circular on Cyber Security Controls in Banks", "https://www.rbi.org.in", "RBI"),
+            (
+                "Pune Cyber Crime Police Station Official Charge Sheet",
+                "https://cybercrime.gov.in",
+                "Pune Police",
+            ),
+            (
+                "Reserve Bank of India Circular on Cyber Security Controls in Banks",
+                "https://www.rbi.org.in",
+                "RBI",
+            ),
         ],
         "source_published_on": "2018-08-14",
     },
@@ -469,8 +557,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "अस्पताल की सुरक्षा सीधे मरीजों की जान से जुड़ी है; डिजिटल सिस्टम ठप होने पर पेपर बैकअप तैयार रहना चाहिए; नेटवर्क को विभाजित रखना जीवन-रक्षक है।",
         "technical_detail_en": "Involved variant of Mimikatz for credential harvesting. Targeted VMware ESXi and Windows database servers hosting NIC's e-Hospital platform.",
         "sources": [
-            ("Delhi Police IFSO Special Cell Press Briefing", "https://delhipolice.gov.in", "Delhi Police"),
-            ("Ministry of Health and Family Welfare Statement in Parliament", "https://sansad.in", "Parliament of India"),
+            (
+                "Delhi Police IFSO Special Cell Press Briefing",
+                "https://delhipolice.gov.in",
+                "Delhi Police",
+            ),
+            (
+                "Ministry of Health and Family Welfare Statement in Parliament",
+                "https://sansad.in",
+                "Parliament of India",
+            ),
         ],
         "source_published_on": "2022-11-23",
     },
@@ -505,8 +601,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "एआई से पूरी फर्जी मीटिंग बनाई जा सकती है; वीडियो देखकर पहचान का जमाना खत्म हो चुका है; वित्तीय सुरक्षा के लिए डिजिटल नियमों का पालन अनिवार्य है।",
         "technical_detail_en": "Real-time generative lip-sync and diffusion avatars driven by script prompts, utilizing pre-recorded footage to simulate interactive head turns and realistic micro-expressions.",
         "sources": [
-            ("Hong Kong Police Force Official Press Conference (CSTCB)", "https://www.police.gov.hk", "HK Police"),
-            ("CISA Alert: Defending Against Deepfake and Synthetic Media Threats", "https://www.cisa.gov", "CISA / FBI / NSA"),
+            (
+                "Hong Kong Police Force Official Press Conference (CSTCB)",
+                "https://www.police.gov.hk",
+                "HK Police",
+            ),
+            (
+                "CISA Alert: Defending Against Deepfake and Synthetic Media Threats",
+                "https://www.cisa.gov",
+                "CISA / FBI / NSA",
+            ),
         ],
         "source_published_on": "2024-02-04",
     },
@@ -541,8 +645,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "एसएमएस ओटीपी आधुनिक फ़िशिंग को नहीं रोक सकता; लोग ईमेल से ज्यादा फोन के मैसेज पर भरोसा करते हैं इसलिए सतर्क रहें; हार्डवेयर की सबसे सुरक्षित उपाय है।",
         "technical_detail_en": "Threat actor group Roasted 0ktapus deployed automated phishlets mirroring Okta identity provider flows, automatically relaying stolen session cookies to bypass OTP challenges.",
         "sources": [
-            ("Twilio Security Incident Investigation Post-Mortem", "https://www.twilio.com", "Twilio"),
-            ("Group-IB Threat Intelligence Report on 0ktapus Campaign", "https://www.group-ib.com", "Group-IB"),
+            (
+                "Twilio Security Incident Investigation Post-Mortem",
+                "https://www.twilio.com",
+                "Twilio",
+            ),
+            (
+                "Group-IB Threat Intelligence Report on 0ktapus Campaign",
+                "https://www.group-ib.com",
+                "Group-IB",
+            ),
         ],
         "source_published_on": "2022-08-24",
     },
@@ -577,8 +689,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "हमलावर अक्सर छुट्टियों के दिन हमला करते हैं जब दफ्तर में लोग कम होते हैं; बिना कंप्यूटर लॉक किए भी डेटा चोरी करके फिरौती मांगी जा सकती है; सतर्कता ही बचाव है।",
         "technical_detail_en": "Exploitation of CVE-2023-34362. Injected LEMURLOOT webshell named 'human2.aspx' into web root, allowing arbitrary file download and Azure storage container credential theft.",
         "sources": [
-            ("CISA Cybersecurity Advisory AA23-158A: CL0P Ransomware Gang", "https://www.cisa.gov", "CISA / FBI"),
-            ("Progress Software Security Bulletin: MOVEit Transfer Vulnerability", "https://community.progress.com", "Progress Software"),
+            (
+                "CISA Cybersecurity Advisory AA23-158A: CL0P Ransomware Gang",
+                "https://www.cisa.gov",
+                "CISA / FBI",
+            ),
+            (
+                "Progress Software Security Bulletin: MOVEit Transfer Vulnerability",
+                "https://community.progress.com",
+                "Progress Software",
+            ),
         ],
         "source_published_on": "2023-06-07",
     },
@@ -613,8 +733,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "भौतिक अलगाव (Air-Gap) सबसे मजबूत सुरक्षा है — रिएक्टर इसलिए सुरक्षित रहा क्योंकि वह इंटरनेट से पूरी तरह कटा हुआ था; ऑफिस का नेटवर्क भी सतर्कता की मांग करता है।",
         "technical_detail_en": "Dtrack spyware framework. Capabilities included keystroke logging, browser history extraction, IP and network adapter enumeration, and file search routines.",
         "sources": [
-            ("Nuclear Power Corporation of India Limited (NPCIL) Official Press Release", "https://www.npcil.nic.in", "NPCIL"),
-            ("Lok Sabha Unstarred Question No. 1292 (Ministry of Atomic Energy)", "https://sansad.in", "Parliament of India"),
+            (
+                "Nuclear Power Corporation of India Limited (NPCIL) Official Press Release",
+                "https://www.npcil.nic.in",
+                "NPCIL",
+            ),
+            (
+                "Lok Sabha Unstarred Question No. 1292 (Ministry of Atomic Energy)",
+                "https://sansad.in",
+                "Parliament of India",
+            ),
         ],
         "source_published_on": "2019-10-30",
     },
@@ -649,8 +777,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "सॉफ्टवेयर आउटसोर्स हो सकता है लेकिन प्रतिष्ठा आपकी ही दांव पर होती है; कम से कम डेटा स्टोर करना ही सबसे बड़ा बचाव है।",
         "technical_detail_en": "Targeted APT attack (attributed to Chinese state-sponsored actors targeting airline reservation and travel manifest data). Used customized Cobalt Strike beacons for long-term intelligence collection.",
         "sources": [
-            ("Air India Official Customer Advisory Statement", "https://www.airindia.com", "Air India"),
-            ("SITA Passenger Service System Cyber Incident Disclosure", "https://www.sita.aero", "SITA"),
+            (
+                "Air India Official Customer Advisory Statement",
+                "https://www.airindia.com",
+                "Air India",
+            ),
+            (
+                "SITA Passenger Service System Cyber Incident Disclosure",
+                "https://www.sita.aero",
+                "SITA",
+            ),
         ],
         "source_published_on": "2021-05-21",
     },
@@ -685,8 +821,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "धोखाधड़ी के लिए किसी वायरस की जरूरत नहीं होती, केवल एक चालाकी भरा ईमेल काफी है; जल्दबाजी हमेशा सुरक्षा नियमों को तोड़ने के लिए बनाई जाती है।",
         "technical_detail_en": "Classic Business Email Compromise (BEC) social engineering attack leveraging look-alike executive display names and SMTP spoofing without malware payloads.",
         "sources": [
-            ("Toyota Boshoku Corporation Official Press Release", "https://www.toyota-boshoku.com", "Toyota Boshoku"),
-            ("FBI Public Service Announcement: Business Email Compromise", "https://www.ic3.gov", "FBI IC3"),
+            (
+                "Toyota Boshoku Corporation Official Press Release",
+                "https://www.toyota-boshoku.com",
+                "Toyota Boshoku",
+            ),
+            (
+                "FBI Public Service Announcement: Business Email Compromise",
+                "https://www.ic3.gov",
+                "FBI IC3",
+            ),
         ],
         "source_published_on": "2019-09-06",
     },
@@ -721,8 +865,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "एमएफए केवल मुख्य द्वार की रक्षा करता है — कुकी चोरी होने पर एमएफए बेकार हो जाता है; डेवलपर्स के कंप्यूटर सबसे बड़े निशाने होते हैं।",
         "technical_detail_en": "Info-stealer targeted SQLite database files storing Google Chrome and Mozilla Firefox session cookies, exfiltrating plaintext Okta authentication bearer tokens.",
         "sources": [
-            ("CircleCI Security Incident Post-Mortem and Investigation Report", "https://circleci.com", "CircleCI"),
-            ("CISA Alert on Protecting Against Infostealer Malware", "https://www.cisa.gov", "CISA"),
+            (
+                "CircleCI Security Incident Post-Mortem and Investigation Report",
+                "https://circleci.com",
+                "CircleCI",
+            ),
+            (
+                "CISA Alert on Protecting Against Infostealer Malware",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2023-01-13",
     },
@@ -757,8 +909,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "पासवर्ड दोहराने से केवल आपका ही नहीं, बल्कि आपसे जुड़े परिजनों का डेटा भी खतरे में पड़ता है; हर वेबसाइट पर अलग पासवर्ड रखें।",
         "technical_detail_en": "Automated credential stuffing utilizing proxy rotation tools. Exploited GraphQL endpoints within the DNA Relatives feature to enumerate recursive relationship nodes.",
         "sources": [
-            ("23andMe SEC Form 8-K Notice of Data Security Incident", "https://www.sec.gov", "US SEC"),
-            ("Office of the Privacy Commissioner of Canada Joint Investigation", "https://www.priv.gc.ca", "OPC Canada"),
+            (
+                "23andMe SEC Form 8-K Notice of Data Security Incident",
+                "https://www.sec.gov",
+                "US SEC",
+            ),
+            (
+                "Office of the Privacy Commissioner of Canada Joint Investigation",
+                "https://www.priv.gc.ca",
+                "OPC Canada",
+            ),
         ],
         "source_published_on": "2023-10-06",
     },
@@ -793,8 +953,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "एक कर्मचारी पर हमला 300 करोड़ लोगों का डेटा लीक कर सकता है; पुराना एनक्रिप्शन तुरंत बदलें।",
         "technical_detail_en": "Compromised Account Management Tool (AMT). Used proprietary internal cryptographic nonce generation to forge user authentication cookies (B and Y cookies).",
         "sources": [
-            ("US Department of Justice Indictment: Russian Intelligence Officers Charged", "https://www.justice.gov", "US DOJ"),
-            ("US SEC Yahoo Settlement and Disclosure Enforcement Order", "https://www.sec.gov", "US SEC"),
+            (
+                "US Department of Justice Indictment: Russian Intelligence Officers Charged",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
+            (
+                "US SEC Yahoo Settlement and Disclosure Enforcement Order",
+                "https://www.sec.gov",
+                "US SEC",
+            ),
         ],
         "source_published_on": "2016-09-22",
     },
@@ -829,8 +997,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "सस्ते स्मार्ट गैजेट्स पूरे इंटरनेट को गिरा सकते हैं; डिफॉल्ट पासवर्ड सबसे बड़ी कमजोरी है; डीएनएस सुरक्षा अनिवार्य है।",
         "technical_detail_en": "TCP SYN, ACK, and DNS query floods targeting port 53. Mirai scanner targeted port 23 (Telnet) and port 2323 using dictionary attacks against BusyBox embedded Linux distributions.",
         "sources": [
-            ("Dyn Security Analysis of the October 21 DDoS Attack", "https://www.oracle.com", "Oracle / Dyn"),
-            ("US Department of Justice Indictment: Mirai Botnet Authors Plead Guilty", "https://www.justice.gov", "US DOJ"),
+            (
+                "Dyn Security Analysis of the October 21 DDoS Attack",
+                "https://www.oracle.com",
+                "Oracle / Dyn",
+            ),
+            (
+                "US Department of Justice Indictment: Mirai Botnet Authors Plead Guilty",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
         ],
         "source_published_on": "2016-10-21",
     },
@@ -865,8 +1041,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "बिना पैच वाले कंप्यूटर आग की तरह फैलते हैं; बिना क्लिक किए भी वायरस फैल सकता है; अस्पतालों की सुरक्षा राष्ट्रीय सुरक्षा का हिस्सा है।",
         "technical_detail_en": "Exploitation of CVE-2017-0144 (EternalBlue). Hardcoded killswitch domain: www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com.",
         "sources": [
-            ("UK National Audit Office Investigation: WannaCry Cyber Attack and the NHS", "https://www.nao.org.uk", "UK NAO"),
-            ("US Department of Homeland Security US-CERT Alert TA17-132A", "https://www.cisa.gov", "CISA / US-CERT"),
+            (
+                "UK National Audit Office Investigation: WannaCry Cyber Attack and the NHS",
+                "https://www.nao.org.uk",
+                "UK NAO",
+            ),
+            (
+                "US Department of Homeland Security US-CERT Alert TA17-132A",
+                "https://www.cisa.gov",
+                "CISA / US-CERT",
+            ),
         ],
         "source_published_on": "2017-05-12",
     },
@@ -901,8 +1085,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "साइबर युद्ध में आम कंपनियों का भी भारी नुकसान होता है; कुछ वायरस केवल बर्बाद करने के लिए बनते हैं, फिरौती के लिए नहीं; ऑफलाइन बैकअप ही जीवनदाता है।",
         "technical_detail_en": "Petya variant using XOR encryption with intentionally discarded decryption key. Used PsExec, WMI, and EternalBlue for autonomous domain-wide traversal.",
         "sources": [
-            ("White House Statement on the NotPetya Cyberattack", "https://trumpwhitehouse.archives.gov", "US White House"),
-            ("Wired Magazine: The Untold Story of NotPetya, the Most Devastating Cyberattack in History", "https://www.wired.com", "Andy Greenberg / Wired"),
+            (
+                "White House Statement on the NotPetya Cyberattack",
+                "https://trumpwhitehouse.archives.gov",
+                "US White House",
+            ),
+            (
+                "Wired Magazine: The Untold Story of NotPetya, the Most Devastating Cyberattack in History",
+                "https://www.wired.com",
+                "Andy Greenberg / Wired",
+            ),
         ],
         "source_published_on": "2017-06-27",
     },
@@ -937,8 +1129,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "कंपनी खरीदने के साथ-साथ आप उनके अंदर छिपे हैकर्स को भी खरीद लेते हैं; पुरानी व्यवस्थाओं की जांच सबसे जरूरी है।",
         "technical_detail_en": "Attributed to Chinese state intelligence (APT). Used compromised user accounts, Mimikatz for credential dumping, and secure RAR archives with command-line password protection to exfiltrate tables.",
         "sources": [
-            ("UK Information Commissioner's Office (ICO) Marriott Penalty Notice", "https://ico.org.uk", "UK ICO"),
-            ("US SEC Form 8-K: Marriott International Security Incident Notice", "https://www.sec.gov", "US SEC"),
+            (
+                "UK Information Commissioner's Office (ICO) Marriott Penalty Notice",
+                "https://ico.org.uk",
+                "UK ICO",
+            ),
+            (
+                "US SEC Form 8-K: Marriott International Security Incident Notice",
+                "https://www.sec.gov",
+                "US SEC",
+            ),
         ],
         "source_published_on": "2018-11-30",
     },
@@ -973,8 +1173,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "क्लाउड सेटिंग्स में गलती सबसे बड़ा खतरा है; सर्वरों को भी बहुत ज्यादा आजादी नहीं देनी चाहिए; न्यूनतम अधिकार का नियम ही सर्वोत्तम है।",
         "technical_detail_en": "Exploitation of SSRF targeting AWS Instance Metadata Service (IMDSv1) at 169.254.169.254/latest/meta-data/iam/security-credentials/. Stole temporary STS credentials assigned to the WAF EC2 role.",
         "sources": [
-            ("US Department of Justice Indictment: Former Cloud Tech Employee Arrested", "https://www.justice.gov", "US DOJ"),
-            ("US Department of the Treasury OCC Consent Order against Capital One", "https://www.occ.gov", "US OCC"),
+            (
+                "US Department of Justice Indictment: Former Cloud Tech Employee Arrested",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
+            (
+                "US Department of the Treasury OCC Consent Order against Capital One",
+                "https://www.occ.gov",
+                "US OCC",
+            ),
         ],
         "source_published_on": "2019-07-29",
     },
@@ -1009,8 +1217,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "हैकर्स अब कर्मचारियों के घर के कंप्यूटरों को निशाना बनाते हैं; संवेदनशील काम केवल अधिकृत सुरक्षित लैपटॉप से ही होना चाहिए।",
         "technical_detail_en": "Exploited CVE-2020-5741 in Plex Media Server on the engineer's home network. Injected keylogger into corporate VPN session to obtain plaintext master password and decrypt AWS S3 backup buckets.",
         "sources": [
-            ("LastPass Security Incident Update and Technical Post-Mortem", "https://blog.lastpass.com", "LastPass"),
-            ("CISA Alert on Securing Privileged DevOps Infrastructure", "https://www.cisa.gov", "CISA"),
+            (
+                "LastPass Security Incident Update and Technical Post-Mortem",
+                "https://blog.lastpass.com",
+                "LastPass",
+            ),
+            (
+                "CISA Alert on Securing Privileged DevOps Infrastructure",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2023-03-01",
     },
@@ -1045,8 +1261,16 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "सपोर्ट टिकटों में पड़े पुराने लॉग्स भी बड़ा खतरा बन सकते हैं; डायग्नोस्टिक फाइलों को हमेशा साफ करके ही शेयर करें।",
         "technical_detail_en": "Extracted bearer tokens from unredacted 'Authorization: Bearer' and 'Cookie:' headers inside HAR archives. Replayed tokens to access corporate tenant admin apps without MFA prompts.",
         "sources": [
-            ("Okta Official Statement on Support Case Management System Incident", "https://sec.okta.com", "Okta Security"),
-            ("Cloudflare Incident Post-Mortem on Okta Compromise", "https://blog.cloudflare.com", "Cloudflare"),
+            (
+                "Okta Official Statement on Support Case Management System Incident",
+                "https://sec.okta.com",
+                "Okta Security",
+            ),
+            (
+                "Cloudflare Incident Post-Mortem on Okta Compromise",
+                "https://blog.cloudflare.com",
+                "Cloudflare",
+            ),
         ],
         "source_published_on": "2023-11-03",
     },
@@ -1081,10 +1305,17 @@ CATALOG_INCIDENTS = [
         "lessons_hi": "बिना एमएफए का एक अकेला पासवर्ड पूरे देश की स्वास्थ्य व्यवस्था को हिला सकता है; बैकअप और मजबूत सुरक्षा ही एकमात्र रास्ता है।",
         "technical_detail_en": "Initial compromise via Citrix gateway using leaked credentials. Exfiltrated 6TB using automated rclone scripts to Mega cloud storage before executing BlackCat (ALPHV) Rust-based encryptor.",
         "sources": [
-            ("UnitedHealth Group CEO Congressional Testimony (House Energy & Commerce)", "https://energycommerce.house.gov", "US Congress"),
-            ("HHS / CISA Joint Cybersecurity Advisory on ALPHV BlackCat", "https://www.cisa.gov", "CISA / HHS / FBI"),
+            (
+                "UnitedHealth Group CEO Congressional Testimony (House Energy & Commerce)",
+                "https://energycommerce.house.gov",
+                "US Congress",
+            ),
+            (
+                "HHS / CISA Joint Cybersecurity Advisory on ALPHV BlackCat",
+                "https://www.cisa.gov",
+                "CISA / HHS / FBI",
+            ),
         ],
         "source_published_on": "2024-02-29",
     },
 ]
-

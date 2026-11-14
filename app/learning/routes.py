@@ -125,6 +125,7 @@ def video_detail(video_id: int):
 
     # Retrieve 100% topic-synchronized room content for this video and lesson:
     from app.services.lesson_sync import get_synchronized_room_content
+
     sync_content = get_synchronized_room_content(video, video.lesson)
 
     # Find matching comic for progress tracking:
@@ -162,11 +163,15 @@ def video_detail(video_id: int):
         lab_json=json.dumps(sync_content["lab"]),
         video_scenes_json=json.dumps(sync_content["video_scenes"]),
         record=progress_service.get_progress(current_user.id, "video", video.id),
-        comic_record=progress_service.get_progress(current_user.id, "comic", comic.id) if comic else None,
+        comic_record=progress_service.get_progress(current_user.id, "comic", comic.id)
+        if comic
+        else None,
         questions=questions,
         questions_json=json.dumps(sync_content["questions"]),
         reading_material=sync_content["reading"],
-        options_by_question={q.id: _localized_options(q.options_json) for q in questions},
+        options_by_question={
+            q.id: _localized_options(q.options_json) for q in questions
+        },
     )
 
 

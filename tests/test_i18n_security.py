@@ -78,6 +78,7 @@ def test_pages_render_in_hindi_after_switching(client):
 # Security
 # ---------------------------------------------------------------------------
 
+
 def test_security_headers_are_present(client):
     response = client.get("/")
     assert response.headers["X-Content-Type-Options"] == "nosniff"

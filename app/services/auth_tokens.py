@@ -78,7 +78,9 @@ def create_password_reset_token(user: User) -> str:
     return raw_token
 
 
-def validate_password_reset_token(raw_token: str) -> tuple[bool, User | None, PasswordResetToken | None]:
+def validate_password_reset_token(
+    raw_token: str,
+) -> tuple[bool, User | None, PasswordResetToken | None]:
     """Check validity of a password reset token without consuming it."""
     clean = (raw_token or "").strip()
     if not clean:
@@ -96,7 +98,9 @@ def validate_password_reset_token(raw_token: str) -> tuple[bool, User | None, Pa
     return True, user, record
 
 
-def consume_password_reset_token(token_record: PasswordResetToken, new_password: str) -> bool:
+def consume_password_reset_token(
+    token_record: PasswordResetToken, new_password: str
+) -> bool:
     """Consume the password reset token and update the user's password."""
     if not token_record.is_valid:
         return False

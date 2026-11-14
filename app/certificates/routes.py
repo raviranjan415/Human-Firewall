@@ -8,7 +8,16 @@ from __future__ import annotations
 
 import io
 
-from flask import Blueprint, abort, flash, redirect, render_template, request, send_file, url_for
+from flask import (
+    Blueprint,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 from flask_login import current_user, login_required
 
 from app.models import Certificate
@@ -48,8 +57,9 @@ def issue(tier: str):
     else:
         remaining = result.get("remaining")
         flash(
-            f"Not eligible yet — {remaining} more labs to pass." if remaining else
-            "Not eligible yet.",
+            f"Not eligible yet — {remaining} more labs to pass."
+            if remaining
+            else "Not eligible yet.",
             "error",
         )
     return redirect(url_for("certificates.index"))

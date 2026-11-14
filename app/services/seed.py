@@ -33,16 +33,20 @@ from app.models import (
     VideoAsset,
     VideoLanguageTrack,
 )
-from app.models.user import ROLE_ADMIN, ROLE_INSTRUCTOR, ROLE_LEARNER, ROLE_ORG_ADMIN, Role
-
-
-from app.services.news_ingest import ensure_default_sources
-from app.services.seed_data import ACHIEVEMENTS
+from app.models.user import (
+    ROLE_ADMIN,
+    ROLE_INSTRUCTOR,
+    ROLE_LEARNER,
+    ROLE_ORG_ADMIN,
+    Role,
+)
+from app.services.catalog_comics import COMICS
+from app.services.catalog_games_30 import GAMES_30
+from app.services.catalog_incidents import CATALOG_INCIDENTS as INCIDENTS
 from app.services.catalog_labs import CATALOG_LABS as LABS_AUTHORED
 from app.services.catalog_videos import CATALOG_VIDEOS as VIDEO_LESSONS
-from app.services.catalog_comics import COMICS
-from app.services.catalog_incidents import CATALOG_INCIDENTS as INCIDENTS
-from app.services.catalog_games_30 import GAMES_30
+from app.services.news_ingest import ensure_default_sources
+from app.services.seed_data import ACHIEVEMENTS
 from app.services.seed_data_ext import (
     COMIC_PLACEHOLDER,
     GAMES,
@@ -54,7 +58,10 @@ ROLE_SPECS = [
     (ROLE_LEARNER, "Learns, plays games, completes labs and earns certificates"),
     (ROLE_INSTRUCTOR, "Reviews learner progress, assigns paths and reports"),
     (ROLE_ADMIN, "Manages users, content, analytics and platform configuration"),
-    (ROLE_ORG_ADMIN, "Manages organization workspace, eligible members, seats, and reports"),
+    (
+        ROLE_ORG_ADMIN,
+        "Manages organization workspace, eligible members, seats, and reports",
+    ),
 ]
 
 
@@ -95,6 +102,7 @@ def _get_or_create(model, defaults: dict | None = None, **filters):
 
 # ---------------------------------------------------------------------------
 
+
 def ensure_roles() -> list[str]:
     created = 0
     for name, description in ROLE_SPECS:
@@ -106,7 +114,18 @@ def ensure_roles() -> list[str]:
 
 def ensure_achievements() -> list[str]:
     created = 0
-    for code, name_en, name_hi, desc_en, desc_hi, icon, ctype, cvalue, extra, bonus in ACHIEVEMENTS:
+    for (
+        code,
+        name_en,
+        name_hi,
+        desc_en,
+        desc_hi,
+        icon,
+        ctype,
+        cvalue,
+        extra,
+        bonus,
+    ) in ACHIEVEMENTS:
         _, is_new = _get_or_create(
             Achievement,
             {
@@ -555,7 +574,9 @@ def ensure_incidents() -> list[str]:
         published = None
         if spec.get("source_published_on"):
             try:
-                published = datetime.strptime(spec["source_published_on"], "%Y-%m-%d").date()
+                published = datetime.strptime(
+                    spec["source_published_on"], "%Y-%m-%d"
+                ).date()
             except ValueError:
                 published = None
 
@@ -621,21 +642,35 @@ def ensure_incidents() -> list[str]:
 
 
 def ensure_news_sources() -> list[str]:
+    from app.services.news_service import ensure_cyber_news
     created = ensure_default_sources()
+    news_res = ensure_cyber_news()
     total = NewsSource.query.count()
-    return [f"News sources: {created} created, {total} configured"]
+    return [
+        f"News sources: {created} created, {total} configured",
+        f"Cyber News: {news_res['created']} created, {news_res['updated']} updated, {news_res['total_curated']} curated attacks active (1.5-year window)",
+    ]
 
 
 # ---------------------------------------------------------------------------
 # Accounts
 # ---------------------------------------------------------------------------
 
-def _create_user(username: str, email: str, password: str, role_name: str,
-                 display_name: str | None = None, locale: str = "en") -> User | None:
+
+def _create_user(
+    username: str,
+    email: str,
+    password: str,
+    role_name: str,
+    display_name: str | None = None,
+    locale: str = "en",
+) -> User | None:
     role = Role.query.filter_by(name=role_name).first()
     if role is None:
         return None
-    existing = User.query.filter((User.username == username) | (User.email == email)).first()
+    existing = User.query.filter(
+        (User.username == username) | (User.email == email)
+    ).first()
     if existing is not None:
         return None
     user = User(
@@ -673,10 +708,14 @@ def ensure_admin_account() -> list[str]:
         if role and existing.role_id != role.id:
             existing.role_id = role.id
             db.session.commit()
-            return [f"Admin account '{username}': existing user promoted to administrator"]
+            return [
+                f"Admin account '{username}': existing user promoted to administrator"
+            ]
         return [f"Admin account '{username}': already present"]
 
-    user = _create_user(username, email, password, ROLE_ADMIN, display_name="Platform Administrator")
+    user = _create_user(
+        username, email, password, ROLE_ADMIN, display_name="Platform Administrator"
+    )
     db.session.commit()
     if user is None:
         return ["Admin account: failed (administrator role missing)"]
@@ -686,26 +725,44 @@ def ensure_admin_account() -> list[str]:
 def ensure_demo_accounts() -> list[str]:
     password = current_app.config.get("DEMO_PASSWORD", "Demo@12345")
     created = []
-    if _create_user("learner", "learner@cyberquest.example", password, ROLE_LEARNER,
-                    display_name="Demo Learner", locale="en"):
+    if _create_user(
+        "learner",
+        "learner@cyberquest.example",
+        password,
+        ROLE_LEARNER,
+        display_name="Demo Learner",
+        locale="en",
+    ):
         created.append("learner")
-    if _create_user("learner_hi", "learner.hi@cyberquest.example", password, ROLE_LEARNER,
-                    display_name="डेमो विद्यार्थी", locale="hi"):
+    if _create_user(
+        "learner_hi",
+        "learner.hi@cyberquest.example",
+        password,
+        ROLE_LEARNER,
+        display_name="डेमो विद्यार्थी",
+        locale="hi",
+    ):
         created.append("learner_hi")
-    if _create_user("instructor", "instructor@cyberquest.example", password, ROLE_INSTRUCTOR,
-                    display_name="Demo Instructor"):
+    if _create_user(
+        "instructor",
+        "instructor@cyberquest.example",
+        password,
+        ROLE_INSTRUCTOR,
+        display_name="Demo Instructor",
+    ):
         created.append("instructor")
     db.session.commit()
     if not created:
         return ["Demo accounts: already present"]
     return [
-        "Demo accounts created (development only): " + ", ".join(created)
-        + f" — password from DEMO_PASSWORD"
+        "Demo accounts created (development only): "
+        + ", ".join(created)
+        + " — password from DEMO_PASSWORD"
     ]
 
 
 def ensure_sample_organizations() -> list[str]:
-    from app.models import EligibleMember, Organization, OrganizationMembership
+    from app.models import Organization
     from app.services.organizations import add_eligible_member, create_organization
 
     password = current_app.config.get("DEMO_PASSWORD", "Demo@12345")
@@ -737,11 +794,40 @@ def ensure_sample_organizations() -> list[str]:
         db.session.commit()
 
         # Seed eligible members
-        add_eligible_member(org, "REG-2026-001", "Aarav Sharma", "aarav@cybershield.example", "Computer Science", "Batch 2026")
-        add_eligible_member(org, "REG-2026-002", "Diya Patel", "diya@cybershield.example", "Cybersecurity", "Batch 2026")
-        add_eligible_member(org, "REG-2026-003", "Rohan Mehta", "rohan@cybershield.example", "Information Technology", "Batch 2026")
-        add_eligible_member(org, "REG-2026-004", "Ananya Sen", "ananya@cybershield.example", "Computer Science", "Batch 2026")
-        return [f"Sample organization 'CyberShield University' created (Code: {org.org_code}) with 4 eligible registry members"]
+        add_eligible_member(
+            org,
+            "REG-2026-001",
+            "Aarav Sharma",
+            "aarav@cybershield.example",
+            "Computer Science",
+            "Batch 2026",
+        )
+        add_eligible_member(
+            org,
+            "REG-2026-002",
+            "Diya Patel",
+            "diya@cybershield.example",
+            "Cybersecurity",
+            "Batch 2026",
+        )
+        add_eligible_member(
+            org,
+            "REG-2026-003",
+            "Rohan Mehta",
+            "rohan@cybershield.example",
+            "Information Technology",
+            "Batch 2026",
+        )
+        add_eligible_member(
+            org,
+            "REG-2026-004",
+            "Ananya Sen",
+            "ananya@cybershield.example",
+            "Computer Science",
+            "Batch 2026",
+        )
+        return [
+            f"Sample organization 'CyberShield University' created (Code: {org.org_code}) with 4 eligible registry members"
+        ]
 
     return [f"Sample organization '{org.name}': already present (Code: {org.org_code})"]
-

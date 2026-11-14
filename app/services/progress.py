@@ -9,8 +9,6 @@ Every completion funnels through :func:`complete_activity`, which:
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from flask import current_app
 
 from app.extensions import db
@@ -51,8 +49,13 @@ def start_activity(user: User, item_type: str, item_id: int) -> UserProgress:
     return record
 
 
-def update_position(user: User, item_type: str, item_id: int, position_seconds: int,
-                    duration_seconds: int | None = None) -> UserProgress:
+def update_position(
+    user: User,
+    item_type: str,
+    item_id: int,
+    position_seconds: int,
+    duration_seconds: int | None = None,
+) -> UserProgress:
     """Remember video playback position so learners can resume."""
     record = get_or_create_progress(user.id, item_type, item_id)
     record.last_position_seconds = max(0, int(position_seconds or 0))
@@ -90,7 +93,9 @@ def complete_activity(
         record.first_attempt_passed = True
     record.attempts_count = (record.attempts_count or 0) + 1
     record.hints_used = max(record.hints_used or 0, int(hints_used or 0))
-    record.time_spent_seconds = (record.time_spent_seconds or 0) + int(time_spent_seconds or 0)
+    record.time_spent_seconds = (record.time_spent_seconds or 0) + int(
+        time_spent_seconds or 0
+    )
     if record.completed_at is None:
         record.completed_at = utcnow()
 
@@ -101,22 +106,36 @@ def complete_activity(
 
     perfect_bonus = 0
     if score is not None and max_score and int(score) >= int(max_score):
-        perfect_bonus = int(current_app.config.get("XP_REWARDS", {}).get("perfect_bonus", 0))
+        perfect_bonus = int(
+            current_app.config.get("XP_REWARDS", {}).get("perfect_bonus", 0)
+        )
 
     reference = reference_id if reference_id is not None else f"{item_type}:{item_id}"
 
     earned = gamification.award_xp(
-        user, xp_amount or 0, reason=reason, reference_type=item_type, reference_id=reference
+        user,
+        xp_amount or 0,
+        reason=reason,
+        reference_type=item_type,
+        reference_id=reference,
     )
     bonus = gamification.award_xp(
-        user, perfect_bonus, reason="perfect_bonus",
-        reference_type=item_type, reference_id=reference,
+        user,
+        perfect_bonus,
+        reason="perfect_bonus",
+        reference_type=item_type,
+        reference_id=reference,
     )
 
     gamification.record_streak_activity(user, xp_earned=earned + bonus)
     gamification.log_event(
-        user.id, event_type, item_type, item_id,
-        duration_seconds=time_spent_seconds, success=True, score=score,
+        user.id,
+        event_type,
+        item_type,
+        item_id,
+        duration_seconds=time_spent_seconds,
+        success=True,
+        score=score,
     )
     new_achievements = gamification.evaluate_achievements(user)
 
@@ -148,13 +167,20 @@ def record_failure(
     record.attempts_count = (record.attempts_count or 0) + 1
     record.best_score = max(record.best_score or 0, int(score or 0))
     record.hints_used = max(record.hints_used or 0, int(hints_used or 0))
-    record.time_spent_seconds = (record.time_spent_seconds or 0) + int(time_spent_seconds or 0)
+    record.time_spent_seconds = (record.time_spent_seconds or 0) + int(
+        time_spent_seconds or 0
+    )
     if record.first_attempt_passed is None:
         record.first_attempt_passed = False
     record.progress_percent = int(min(99, max(record.progress_percent or 0, 25)))
     gamification.log_event(
-        user.id, "activity_failed", item_type, item_id,
-        duration_seconds=time_spent_seconds, success=False, score=score,
+        user.id,
+        "activity_failed",
+        item_type,
+        item_id,
+        duration_seconds=time_spent_seconds,
+        success=False,
+        score=score,
     )
     db.session.commit()
     return record

@@ -3,6 +3,9 @@
 
 {% block content %}
 <section class="cq-hero cq-fade-in mb-4">
+  <nav aria-label="Breadcrumb" class="mb-2">
+    <a href="{{ url_for('news.index') }}" class="btn btn-cq btn-cq-ghost btn-sm">&larr; Back to Cyber News Today</a>
+  </nav>
   <p class="cq-eyebrow">{{ t('nav.news') }}</p>
   <h1 class="cq-title-gradient display-6 mb-2">Where our news comes from</h1>
   <p class="cq-muted mb-0">

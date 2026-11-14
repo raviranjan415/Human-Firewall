@@ -49,6 +49,7 @@ def create_app(config_name: str | None = None) -> Flask:
 # Setup helpers
 # ---------------------------------------------------------------------------
 
+
 def _ensure_instance_folder(app: Flask) -> None:
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
 
@@ -154,7 +155,6 @@ def _register_template_helpers(app: Flask) -> None:
         return ctx
 
 
-
 def _register_security(app: Flask) -> None:
     @app.after_request
     def apply_security_headers(response):
@@ -200,7 +200,9 @@ def _register_error_handlers(app: Flask) -> None:
     @app.errorhandler(429)
     def too_many(error):
         if request.path.startswith("/api/"):
-            return jsonify({"error": "rate_limited", "message": str(error.description)}), 429
+            return jsonify(
+                {"error": "rate_limited", "message": str(error.description)}
+            ), 429
         return render_template("errors/429.html", error=error), 429
 
     @app.errorhandler(500)
@@ -208,7 +210,9 @@ def _register_error_handlers(app: Flask) -> None:
         db.session.rollback()
         app.logger.exception("Unhandled application error")
         if request.path.startswith("/api/"):
-            return jsonify({"error": "server_error", "message": "Something went wrong"}), 500
+            return jsonify(
+                {"error": "server_error", "message": "Something went wrong"}
+            ), 500
         # Never surface stack traces or internal details to end users.
         return render_template("errors/500.html"), 500
 
@@ -270,7 +274,9 @@ def _register_cli(app: Flask) -> None:
         ).first():
             click.echo("A user with that username or email already exists.")
             return
-        user = User(username=username, email=email, display_name=username, role_id=role.id)
+        user = User(
+            username=username, email=email, display_name=username, role_id=role.id
+        )
         user.set_password(password)
         db.session.add(user)
         db.session.commit()

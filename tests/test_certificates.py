@@ -50,7 +50,9 @@ def test_unknown_tier_is_never_eligible(app, learner):
     assert state["reason"] == "unknown_tier"
 
 
-def test_certificate_is_issued_only_once_the_backend_confirms_eligibility(app, learner, db):
+def test_certificate_is_issued_only_once_the_backend_confirms_eligibility(
+    app, learner, db
+):
     pass_n_labs(lab_ids_up_to(30), learner, db)
 
     result = certificates_service.issue_certificate(learner, "basic")
@@ -81,14 +83,18 @@ def test_issuing_a_certificate_pays_the_tier_xp_once(app, learner, db):
 def test_higher_tiers_need_more_labs(app, learner, db):
     pass_n_labs(lab_ids_up_to(30), learner, db)
     assert certificates_service.eligibility(learner, "basic")["eligible"] is True
-    assert certificates_service.eligibility(learner, "intermediate")["eligible"] is False
+    assert (
+        certificates_service.eligibility(learner, "intermediate")["eligible"] is False
+    )
     assert certificates_service.eligibility(learner, "advanced")["eligible"] is False
     assert certificates_service.eligibility(learner, "master")["eligible"] is False
 
 
 def test_verification_reveals_only_the_certificate_holder(app, learner, db):
     pass_n_labs(lab_ids_up_to(30), learner, db)
-    certificate = certificates_service.issue_certificate(learner, "basic")["certificate"]
+    certificate = certificates_service.issue_certificate(learner, "basic")[
+        "certificate"
+    ]
 
     info = certificates_service.verify(certificate.verification_code.lower())
     assert info is not None
@@ -101,7 +107,9 @@ def test_verification_reveals_only_the_certificate_holder(app, learner, db):
 
 def test_revoked_and_unknown_certificates_do_not_verify(app, learner, db):
     pass_n_labs(lab_ids_up_to(30), learner, db)
-    certificate = certificates_service.issue_certificate(learner, "basic")["certificate"]
+    certificate = certificates_service.issue_certificate(learner, "basic")[
+        "certificate"
+    ]
 
     assert certificates_service.verify("NOPE1234") is None
 
@@ -112,7 +120,9 @@ def test_revoked_and_unknown_certificates_do_not_verify(app, learner, db):
 
 def test_pdf_is_generated_with_a_qr_code(app, learner, db):
     pass_n_labs(lab_ids_up_to(30), learner, db)
-    certificate = certificates_service.issue_certificate(learner, "basic")["certificate"]
+    certificate = certificates_service.issue_certificate(learner, "basic")[
+        "certificate"
+    ]
 
     pdf = certificates_service.build_pdf(certificate)
     assert pdf.startswith(b"%PDF")
@@ -121,7 +131,9 @@ def test_pdf_is_generated_with_a_qr_code(app, learner, db):
 
 def test_verify_page_is_public(client, learner, db):
     pass_n_labs(lab_ids_up_to(30), learner, db)
-    certificate = certificates_service.issue_certificate(learner, "basic")["certificate"]
+    certificate = certificates_service.issue_certificate(learner, "basic")[
+        "certificate"
+    ]
 
     response = client.get(f"/certificates/verify/{certificate.verification_code}")
     assert response.status_code == 200
@@ -150,9 +162,13 @@ def test_issue_and_download_over_http(client, learner, db):
     assert download.data.startswith(b"%PDF")
 
 
-def test_a_learner_cannot_download_someone_elses_certificate(client, learner, instructor, db):
+def test_a_learner_cannot_download_someone_elses_certificate(
+    client, learner, instructor, db
+):
     pass_n_labs(lab_ids_up_to(30), learner, db)
-    certificate = certificates_service.issue_certificate(learner, "basic")["certificate"]
+    certificate = certificates_service.issue_certificate(learner, "basic")[
+        "certificate"
+    ]
 
     login(client, "instructor1")
     assert client.get(f"/certificates/{certificate.id}/download").status_code == 404
@@ -165,7 +181,10 @@ def test_certificate_page_requires_authentication(client):
 
 
 def test_certificate_tiers_are_ordered(app):
-    required = [CERTIFICATE_TIERS[t]["required_labs"] for t in ("basic", "intermediate", "advanced", "master")]
+    required = [
+        CERTIFICATE_TIERS[t]["required_labs"]
+        for t in ("basic", "intermediate", "advanced", "master")
+    ]
     assert required == sorted(required)
     assert required[-1] == 100
 

@@ -112,7 +112,9 @@ def test_login_failure_for_unknown_account_looks_identical(client, learner):
     for hint in (b"no such", b"not found", b"does not exist", b"unknown account"):
         assert hint not in unknown.data.lower()
     # The only difference between the two pages is the echoed identifier.
-    assert unknown.data.replace(b"ghost@example.com", b"") == known.data.replace(b"learner1", b"")
+    assert unknown.data.replace(b"ghost@example.com", b"") == known.data.replace(
+        b"learner1", b""
+    )
 
 
 def test_account_is_locked_after_repeated_failures(client, learner):

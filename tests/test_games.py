@@ -64,14 +64,18 @@ def test_scenario_is_graded_against_stored_data(client, learner):
     scenario = first_scenario(game)
     login(client, "learner1")
 
-    right = client.post(f"/api/games/{game.slug}/answer", json=correct_submission(scenario))
+    right = client.post(
+        f"/api/games/{game.slug}/answer", json=correct_submission(scenario)
+    )
     assert right.status_code == 200
     body = right.get_json()
     assert body["correct"] is True
     assert body["xp_value"] > 0
     assert body["explanation"]
 
-    wrong = client.post(f"/api/games/{game.slug}/answer", json=wrong_submission(scenario))
+    wrong = client.post(
+        f"/api/games/{game.slug}/answer", json=wrong_submission(scenario)
+    )
     assert wrong.get_json()["correct"] is False
     assert wrong.get_json()["xp_value"] == 0
 
@@ -135,7 +139,9 @@ def test_failing_a_game_awards_nothing_and_stays_replayable(client, learner, db)
 def test_unknown_game_returns_404(client, learner):
     login(client, "learner1")
     assert client.get("/games/not-a-real-game").status_code == 404
-    assert client.post("/api/games/not-a-real-game/complete", json={}).status_code == 404
+    assert (
+        client.post("/api/games/not-a-real-game/complete", json={}).status_code == 404
+    )
 
 
 def test_scenario_choices_are_immutable_content(app):
@@ -144,5 +150,7 @@ def test_scenario_choices_are_immutable_content(app):
         if not scenario.choices:
             continue
         correct = [c for c in scenario.choices if c.is_correct]
-        assert len(correct) == 1, f"scenario {scenario.id} has {len(correct)} correct choices"
+        assert len(correct) == 1, (
+            f"scenario {scenario.id} has {len(correct)} correct choices"
+        )
         assert all(isinstance(c, ScenarioChoice) for c in scenario.choices)

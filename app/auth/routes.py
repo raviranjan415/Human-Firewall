@@ -29,7 +29,12 @@ from app.auth.forms import (
     SettingsForm,
 )
 from app.extensions import db, limiter
-from app.models import Organization, OrganizationMembership, User, UserAchievement, UserPreference
+from app.models import (
+    OrganizationMembership,
+    User,
+    UserAchievement,
+    UserPreference,
+)
 from app.models.user import ROLE_LEARNER, Role, utcnow
 from app.services.auth_tokens import (
     consume_password_reset_token,
@@ -53,7 +58,9 @@ RESET_TOKEN_MAX_AGE = 30 * 60  # 30 minutes
 
 
 def _serializer() -> URLSafeTimedSerializer:
-    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt="password-reset")
+    return URLSafeTimedSerializer(
+        current_app.config["SECRET_KEY"], salt="password-reset"
+    )
 
 
 def _dashboard_redirect():
@@ -64,7 +71,9 @@ def _dashboard_redirect():
     if current_user.is_org_admin:
         active_org = current_user.active_organization
         if active_org:
-            return redirect(url_for("organization.workspace_overview", org_id=active_org.id))
+            return redirect(
+                url_for("organization.workspace_overview", org_id=active_org.id)
+            )
     return redirect(url_for("dashboard.index"))
 
 
@@ -85,7 +94,8 @@ def register():
         user = User(
             username=form.username.data.strip(),
             email=form.email.data.strip().lower(),
-            display_name=(form.display_name.data or "").strip() or form.username.data.strip(),
+            display_name=(form.display_name.data or "").strip()
+            or form.username.data.strip(),
             role_id=role.id,
             locale=session.get("locale", current_app.config["DEFAULT_LOCALE"]),
             email_verified=False,
@@ -99,7 +109,10 @@ def register():
         # Generate single-use email verification token
         verification_token = create_email_verification_token(user)
         if current_app.debug:
-            logger.info("Email verification link: %s", url_for("auth.verify_email", token=verification_token, _external=True))
+            logger.info(
+                "Email verification link: %s",
+                url_for("auth.verify_email", token=verification_token, _external=True),
+            )
 
         session.clear()
         login_user(user, remember=False)
@@ -237,18 +250,30 @@ def login():
     if form.validate_on_submit():
         identifier = (form.identifier.data or "").strip().lower()
         user = User.query.filter(
-            db.or_(db.func.lower(User.username) == identifier,
-                   db.func.lower(User.email) == identifier)
+            db.or_(
+                db.func.lower(User.username) == identifier,
+                db.func.lower(User.email) == identifier,
+            )
         ).first()
 
         if user and user.locked_until and user.locked_until > utcnow():
             flash("Account temporarily locked after repeated failed attempts.", "error")
-            return render_template("auth/login.html", form=form, login_context=login_context, prefill_code=prefill_code)
+            return render_template(
+                "auth/login.html",
+                form=form,
+                login_context=login_context,
+                prefill_code=prefill_code,
+            )
 
         if user and user.check_password(form.password.data):
             if not user.is_active:
                 flash("This account is disabled. Contact an administrator.", "error")
-                return render_template("auth/login.html", form=form, login_context=login_context, prefill_code=prefill_code)
+                return render_template(
+                    "auth/login.html",
+                    form=form,
+                    login_context=login_context,
+                    prefill_code=prefill_code,
+                )
 
             user.failed_login_count = 0
             user.locked_until = None
@@ -272,7 +297,12 @@ def login():
 
         flash("Invalid credentials. Please try again.", "error")
 
-    return render_template("auth/login.html", form=form, login_context=login_context, prefill_code=prefill_code)
+    return render_template(
+        "auth/login.html",
+        form=form,
+        login_context=login_context,
+        prefill_code=prefill_code,
+    )
 
 
 @auth_bp.route("/logout", methods=["POST", "GET"])
@@ -323,7 +353,10 @@ def reset_password(token: str):
             pass
 
     if not is_valid or not user:
-        flash("That reset link is not valid or has expired. Please request a new one.", "error")
+        flash(
+            "That reset link is not valid or has expired. Please request a new one.",
+            "error",
+        )
         return redirect(url_for("auth.forgot_password"))
 
     form = ResetPasswordForm()
@@ -399,7 +432,9 @@ def settings():
         form.timezone.data = current_user.timezone
 
     if form.validate_on_submit():
-        current_user.display_name = (form.display_name.data or "").strip() or current_user.username
+        current_user.display_name = (
+            form.display_name.data or ""
+        ).strip() or current_user.username
         current_user.timezone = (form.timezone.data or "Asia/Kolkata").strip()
         current_user.learning_mode = form.learning_mode.data
         current_user.locale = form.locale.data
@@ -417,4 +452,3 @@ def settings():
         return redirect(url_for("auth.settings"))
 
     return render_template("auth/settings.html", form=form)
-

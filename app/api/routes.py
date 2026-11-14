@@ -39,6 +39,7 @@ def _int(value, default: int = 0) -> int:
 # Learner summary
 # ---------------------------------------------------------------------------
 
+
 @api_bp.route("/me/summary")
 @login_required
 def me_summary():
@@ -50,6 +51,7 @@ def me_summary():
 # ---------------------------------------------------------------------------
 # Video lessons
 # ---------------------------------------------------------------------------
+
 
 @api_bp.route("/videos/<int:video_id>/progress", methods=["POST"])
 @login_required
@@ -100,6 +102,7 @@ def video_complete(video_id: int):
 # Comics
 # ---------------------------------------------------------------------------
 
+
 @api_bp.route("/comics/<int:comic_id>/complete", methods=["POST"])
 @login_required
 def comic_complete(comic_id: int):
@@ -124,6 +127,7 @@ def comic_complete(comic_id: int):
 # ---------------------------------------------------------------------------
 # Games
 # ---------------------------------------------------------------------------
+
 
 @api_bp.route("/games/<slug>/answer", methods=["POST"])
 @login_required
@@ -150,12 +154,18 @@ def game_answer(slug: str):
 
     # A "threat / safe" judgement scenario has no choices: the learner's
     # verdict is compared with the stored truth.
-    correct = choice.is_correct if choice else bool(data.get("is_threat")) == scenario.is_threat
+    correct = (
+        choice.is_correct
+        if choice
+        else bool(data.get("is_threat")) == scenario.is_threat
+    )
 
     def _localized(obj, field):
         if obj is None:
             return None
-        return getattr(obj, f"{field}_{locale}", None) or getattr(obj, f"{field}_en", None)
+        return getattr(obj, f"{field}_{locale}", None) or getattr(
+            obj, f"{field}_en", None
+        )
 
     return jsonify(
         {
@@ -213,15 +223,27 @@ def game_complete(slug: str):
         )
 
     progress_service.record_failure(
-        current_user, "game", game.id, score=score, max_score=total,
+        current_user,
+        "game",
+        game.id,
+        score=score,
+        max_score=total,
         time_spent_seconds=_int(data.get("time_spent")),
     )
-    return jsonify({"ok": True, "passed": False, "xp_awarded": 0, "total_xp": current_user.xp_total})
+    return jsonify(
+        {
+            "ok": True,
+            "passed": False,
+            "xp_awarded": 0,
+            "total_xp": current_user.xp_total,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # Practical labs
 # ---------------------------------------------------------------------------
+
 
 @api_bp.route("/labs/<int:lab_id>/submit", methods=["POST"])
 @login_required
@@ -239,7 +261,9 @@ def lab_submit(lab_id: int):
         hints_used=_int(data.get("hints_used")),
     )
     if not result.get("ok"):
-        return jsonify({"error": result.get("error"), "detail": result.get("detail")}), 409
+        return jsonify(
+            {"error": result.get("error"), "detail": result.get("detail")}
+        ), 409
 
     locale = current_locale()
     return jsonify(
@@ -256,3 +280,83 @@ def lab_submit(lab_id: int):
             "total_xp": current_user.xp_total,
         }
     )
+
+
+# ---------------------------------------------------------------------------
+# Cyber News & Threat Intelligence Feeds
+# ---------------------------------------------------------------------------
+
+
+@api_bp.route("/news/feed", methods=["GET"])
+def news_feed():
+    """Live API returning curated and ingested cyber news.
+    
+    Supports query parameters:
+      - category: filter by category (e.g. Ransomware, Social Engineering, Cloud & Identity)
+      - search: keyword search in title and summaries
+      - severity: filter by severity (Critical, High, Medium)
+      - limit: max results (default: 30, max: 100)
+      - offset: pagination offset (default: 0)
+    """
+    from app.services.news_service import get_news_feed
+
+    category = request.args.get("category")
+    search = request.args.get("search")
+    severity = request.args.get("severity")
+    limit = min(100, max(1, _int(request.args.get("limit")) or 30))
+    offset = max(0, _int(request.args.get("offset")) or 0)
+
+    stories, total_count = get_news_feed(
+        category=category,
+        search=search,
+        severity=severity,
+        limit=limit,
+        offset=offset,
+    )
+
+    return jsonify(
+        {
+            "ok": True,
+            "total": total_count,
+            "count": len(stories),
+            "limit": limit,
+            "offset": offset,
+            "retention_policy_days": 548,
+            "retention_window": "1.5 years (548 days)",
+            "stories": [s.to_dict() for s in stories],
+        }
+    )
+
+
+@api_bp.route("/news/<int:news_id>", methods=["GET"])
+def news_detail(news_id: int):
+    """Retrieve full multi-domain details for a single cyber news story."""
+    from app.models import CyberNews
+
+    story = CyberNews.query.filter_by(id=news_id, review_state="approved").first()
+    if story is None:
+        return jsonify({"error": "not_found"}), 404
+
+    return jsonify({"ok": True, "story": story.to_dict()})
+
+
+@api_bp.route("/news/sync", methods=["POST"])
+@login_required
+@limiter.limit("10 per hour")
+def news_sync_live():
+    """Trigger real-time RSS feed sync and auto-prune stories older than 1.5 years."""
+    from app.services.news_service import sync_live_feeds
+
+    stats = sync_live_feeds(max_items_per_source=15, auto_approve=True)
+    return jsonify({"ok": True, "sync_stats": stats})
+
+
+@api_bp.route("/news/prune", methods=["POST"])
+@login_required
+def news_prune_old():
+    """Enforce the 1.5-year retention limit by pruning older stories."""
+    from app.services.news_service import prune_expired_news
+
+    pruned = prune_expired_news(max_age_days=548)
+    return jsonify({"ok": True, "pruned_count": pruned, "retention_limit_days": 548})
+

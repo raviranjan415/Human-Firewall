@@ -92,7 +92,11 @@ def healthz():
         db_ok = True
     except Exception:  # pragma: no cover - monitoring path
         db_ok = False
-    return {"status": "ok" if db_ok else "degraded", "database": db_ok, "service": "human-firewall"}
+    return {
+        "status": "ok" if db_ok else "degraded",
+        "database": db_ok,
+        "service": "human-firewall",
+    }
 
 
 @public_bp.route("/readyz")
@@ -109,9 +113,10 @@ def readyz():
 @public_bp.route("/metrics")
 def metrics():
     """Prometheus exposition format endpoint."""
+    import psutil
     from flask import Response
     from sqlalchemy import text
-    import psutil
+
     from app.models import Game, Lab, User
 
     try:
@@ -151,4 +156,6 @@ def metrics():
         f"human_firewall_system_memory_percent {mem_usage}",
         "",
     ]
-    return Response("\n".join(lines), mimetype="text/plain; version=0.0.4; charset=utf-8")
+    return Response(
+        "\n".join(lines), mimetype="text/plain; version=0.0.4; charset=utf-8"
+    )

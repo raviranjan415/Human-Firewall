@@ -67,7 +67,11 @@ LABS_ROADMAP = [
     (51, "Investigate a suspicious QR-code campaign", "intermediate"),
     (52, "Examine a fake social media profile", "intermediate"),
     (53, "Identify risks in a simulated payment workflow", "intermediate"),
-    (54, "Investigate a malicious attachment scenario without executing it", "intermediate"),
+    (
+        54,
+        "Investigate a malicious attachment scenario without executing it",
+        "intermediate",
+    ),
     (55, "Verify a vendor's identity", "intermediate"),
     (56, "Identify physical-access control failures", "intermediate"),
     (57, "Analyze a simulated data-disclosure incident", "intermediate"),
@@ -182,9 +186,17 @@ VIDEO_LESSONS = [
         ),
         "transcript_en": "[00:00] Locked office building at night. [00:08] Delivery scene. [00:20] Definition card. [00:35] Three-step diagram. [00:55] Callback and question.",
         "questions": [
-            ("Social engineering mainly targets…", ["Weak software", "People and their decisions",
-                                                    "Network cables", "Printer firmware"], 1,
-             "It manipulates people into making an unsafe decision."),
+            (
+                "Social engineering mainly targets…",
+                [
+                    "Weak software",
+                    "People and their decisions",
+                    "Network cables",
+                    "Printer firmware",
+                ],
+                1,
+                "It manipulates people into making an unsafe decision.",
+            ),
         ],
     },
     {
@@ -209,8 +221,12 @@ VIDEO_LESSONS = [
         "narration_en": "The traits that make a good colleague make a good target: you help, you trust, you do not want to be rude, and you are usually in a hurry.",
         "transcript_en": "[00:00] Guard scene. [00:15] Pop-up scene. [00:30] CEO call scene. [00:45] Friend request scene. [01:05] Six levers diagram.",
         "questions": [
-            ("Which trait do attackers most often borrow?", ["Rudeness", "Helpfulness", "Laziness", "Anger"], 1,
-             "Willingness to help is the most frequently exploited trait."),
+            (
+                "Which trait do attackers most often borrow?",
+                ["Rudeness", "Helpfulness", "Laziness", "Anger"],
+                1,
+                "Willingness to help is the most frequently exploited trait.",
+            ),
         ],
     },
     {
@@ -232,9 +248,17 @@ VIDEO_LESSONS = [
         "narration_en": "Never verify a message using the contact details inside that same message.",
         "transcript_en": "[00:00] Perfect-looking message. [00:20] Data-breach reveal. [00:50] Rule card.",
         "questions": [
-            ("What proves a message is genuine?", ["A correct logo", "Your real order number",
-                                                   "Independent verification", "Polite tone"], 2,
-             "Only verification through a channel you already trust proves anything."),
+            (
+                "What proves a message is genuine?",
+                [
+                    "A correct logo",
+                    "Your real order number",
+                    "Independent verification",
+                    "Polite tone",
+                ],
+                2,
+                "Only verification through a channel you already trust proves anything.",
+            ),
         ],
     },
     {
@@ -256,9 +280,12 @@ VIDEO_LESSONS = [
         "narration_en": "Urgency is the single most reliable warning sign, because no legitimate organisation needs your password in ten minutes.",
         "transcript_en": "[00:00] Split screen. [00:25] Six technique cards. [01:00] Two-second rule.",
         "questions": [
-            ("The strongest general warning sign is…", ["Bad grammar", "Manufactured urgency",
-                                                        "Missing logo", "Long email"], 1,
-             "Urgency is engineered to stop you from checking."),
+            (
+                "The strongest general warning sign is…",
+                ["Bad grammar", "Manufactured urgency", "Missing logo", "Long email"],
+                1,
+                "Urgency is engineered to stop you from checking.",
+            ),
         ],
     },
     {
@@ -280,11 +307,17 @@ VIDEO_LESSONS = [
         "narration_en": "Pause, verify, report. Practise it until it is automatic.",
         "transcript_en": "[00:00] Suspicious message. [00:10] PAUSE prompt. [00:25] VERIFY step. [00:40] REPORT step. [00:55] End card.",
         "questions": [
-            ("After receiving a suspicious request you should…", ["Delete it silently",
-                                                                  "Reply asking who they are",
-                                                                  "Pause, verify independently, then report",
-                                                                  "Forward it to friends"], 2,
-             "Pause, verify through a trusted channel, then report."),
+            (
+                "After receiving a suspicious request you should…",
+                [
+                    "Delete it silently",
+                    "Reply asking who they are",
+                    "Pause, verify independently, then report",
+                    "Forward it to friends",
+                ],
+                2,
+                "Pause, verify through a trusted channel, then report.",
+            ),
         ],
     },
     {
@@ -306,9 +339,17 @@ VIDEO_LESSONS = [
         "narration_en": "Check the address, not the name. Hover the link, do not click it.",
         "transcript_en": "[00:00] X-ray reveal. [00:30] Sender layer. [00:50] Reply-to layer. [01:10] Link layer. [01:30] Attachment layer.",
         "questions": [
-            ("The part of a sender address that matters is…", ["The display name", "The part after @",
-                                                               "The signature", "The subject"], 1,
-             "The domain after @ is the only part an attacker cannot fake at will."),
+            (
+                "The part of a sender address that matters is…",
+                [
+                    "The display name",
+                    "The part after @",
+                    "The signature",
+                    "The subject",
+                ],
+                1,
+                "The domain after @ is the only part an attacker cannot fake at will.",
+            ),
         ],
     },
     {
@@ -330,9 +371,12 @@ VIDEO_LESSONS = [
         "narration_en": "Reading a link properly takes five seconds and prevents most credential theft.",
         "transcript_en": "[00:00] URL anatomy. [00:30] Four traps. [01:10] Rule card.",
         "questions": [
-            ("In http://bank.com.secure-login.net/pay, the real domain is…",
-             ["bank.com", "secure-login.net", "pay", "com.secure"], 1,
-             "The domain immediately before the first single slash is the real destination."),
+            (
+                "In http://bank.com.secure-login.net/pay, the real domain is…",
+                ["bank.com", "secure-login.net", "pay", "com.secure"],
+                1,
+                "The domain immediately before the first single slash is the real destination.",
+            ),
         ],
     },
     {
@@ -354,11 +398,17 @@ VIDEO_LESSONS = [
         "narration_en": "Always arrive at a login page from a bookmark or by typing the address, never from a message.",
         "transcript_en": "[00:00] Two pages. [00:25] Address bar zoom. [00:50] Rule card.",
         "questions": [
-            ("The safest way to reach a login page is…", ["From an email link",
-                                                           "From a search ad",
-                                                           "By typing the address or using a bookmark",
-                                                           "From a QR code"], 2,
-             "Type the address yourself or use a saved bookmark."),
+            (
+                "The safest way to reach a login page is…",
+                [
+                    "From an email link",
+                    "From a search ad",
+                    "By typing the address or using a bookmark",
+                    "From a QR code",
+                ],
+                2,
+                "Type the address yourself or use a saved bookmark.",
+            ),
         ],
     },
     {
@@ -380,10 +430,17 @@ VIDEO_LESSONS = [
         "narration_en": "Personalisation is not proof. It is research.",
         "transcript_en": "[00:00] Targeted message. [00:30] Research sources. [01:00] Defence: call a known number.",
         "questions": [
-            ("A message that mentions your real project proves…", ["It is genuine",
-                                                                   "The sender researched you",
-                                                                   "You were hacked", "Nothing at all"], 1,
-             "Personal details show research, not authenticity."),
+            (
+                "A message that mentions your real project proves…",
+                [
+                    "It is genuine",
+                    "The sender researched you",
+                    "You were hacked",
+                    "Nothing at all",
+                ],
+                1,
+                "Personal details show research, not authenticity.",
+            ),
         ],
     },
     {
@@ -405,9 +462,17 @@ VIDEO_LESSONS = [
         "narration_en": "Preview the link, never pay to receive money, and look for covered codes.",
         "transcript_en": "[00:00] Sticker peel reveal. [00:25] Preview rule. [00:45] UPI PIN rule.",
         "questions": [
-            ("You need a UPI PIN to…", ["Receive money", "Authorise a payment",
-                                        "Check your balance", "Block a card"], 1,
-             "A PIN authorises money leaving your account."),
+            (
+                "You need a UPI PIN to…",
+                [
+                    "Receive money",
+                    "Authorise a payment",
+                    "Check your balance",
+                    "Block a card",
+                ],
+                1,
+                "A PIN authorises money leaving your account.",
+            ),
         ],
     },
 ]
@@ -436,23 +501,37 @@ COMICS = [
         "decision_hi": "आरव देखता है कि ईमेल डोमेन कंपनी का आधिकारिक डोमेन नहीं है।",
         "resolution_en": "He checks the official careers page, finds no such opening, and reports it.",
         "resolution_hi": "वह आधिकारिक करियर पेज देखता है, ऐसी कोई भर्ती नहीं मिलती, और रिपोर्ट कर देता है।",
-        "lessons_en": ["Legitimate employers never charge you a fee.",
-                       "Verify the recruiter's domain, not their logo.",
-                       "Always confirm openings on the official careers page."],
-        "lessons_hi": ["असली नियोक्ता कभी फ़ीस नहीं लेते।",
-                       "लोगो नहीं, भर्तीकर्ता का डोमेन जाँचें।",
-                       "भर्ती की पुष्टि कंपनी के आधिकारिक करियर पेज पर करें।"],
+        "lessons_en": [
+            "Legitimate employers never charge you a fee.",
+            "Verify the recruiter's domain, not their logo.",
+            "Always confirm openings on the official careers page.",
+        ],
+        "lessons_hi": [
+            "असली नियोक्ता कभी फ़ीस नहीं लेते।",
+            "लोगो नहीं, भर्तीकर्ता का डोमेन जाँचें।",
+            "भर्ती की पुष्टि कंपनी के आधिकारिक करियर पेज पर करें।",
+        ],
         "panels": [
-            ("Aarav's phone lights up: 'Selected for internship — ₹45,000/month!'",
-             "आरव का फ़ोन बजता है: 'इंटर्नशिप के लिए चयनित — ₹45,000 प्रति माह!'"),
-            ("The recruiter adds: 'Pay ₹1,999 registration fee today to confirm your seat.'",
-             "भर्तीकर्ता कहता है: 'सीट पक्की करने के लिए आज ₹1,999 रजिस्ट्रेशन फ़ीस भरें।'"),
-            ("Aarav zooms in on the sender: hr@techmahindra-careers.online — that is not the company's domain.",
-             "आरव प्रेषक को ज़ूम करता है: hr@techmahindra-careers.online — यह कंपनी का डोमेन नहीं है।"),
-            ("He opens the company's official careers page. No such internship exists.",
-             "वह कंपनी का आधिकारिक करियर पेज खोलता है। ऐसी कोई इंटर्नशिप नहीं है।"),
-            ("Aarav blocks the number and reports the message. His friend is warned in time.",
-             "आरव नंबर ब्लॉक कर संदेश की रिपोर्ट करता है। उसका दोस्त समय रहते बच जाता है।"),
+            (
+                "Aarav's phone lights up: 'Selected for internship — ₹45,000/month!'",
+                "आरव का फ़ोन बजता है: 'इंटर्नशिप के लिए चयनित — ₹45,000 प्रति माह!'",
+            ),
+            (
+                "The recruiter adds: 'Pay ₹1,999 registration fee today to confirm your seat.'",
+                "भर्तीकर्ता कहता है: 'सीट पक्की करने के लिए आज ₹1,999 रजिस्ट्रेशन फ़ीस भरें।'",
+            ),
+            (
+                "Aarav zooms in on the sender: hr@techmahindra-careers.online — that is not the company's domain.",
+                "आरव प्रेषक को ज़ूम करता है: hr@techmahindra-careers.online — यह कंपनी का डोमेन नहीं है।",
+            ),
+            (
+                "He opens the company's official careers page. No such internship exists.",
+                "वह कंपनी का आधिकारिक करियर पेज खोलता है। ऐसी कोई इंटर्नशिप नहीं है।",
+            ),
+            (
+                "Aarav blocks the number and reports the message. His friend is warned in time.",
+                "आरव नंबर ब्लॉक कर संदेश की रिपोर्ट करता है। उसका दोस्त समय रहते बच जाता है।",
+            ),
         ],
         "related_lab_number": 9,
     },
@@ -466,14 +545,18 @@ COMICS = [
         "problem_en": "The payment page asks for full card details.",
         "decision_en": "She checks the tracking number on the official courier site instead.",
         "resolution_en": "No such parcel exists; she reports and blocks the number.",
-        "lessons_en": ["Tiny fees are bait for card details.",
-                       "Verify on the official app or website.",
-                       "Never reply to confirm your number is active."],
+        "lessons_en": [
+            "Tiny fees are bait for card details.",
+            "Verify on the official app or website.",
+            "Never reply to confirm your number is active.",
+        ],
         "panels": [
-            ("Meera is cooking when her phone buzzes with a delivery message.",
-             ""),
+            ("Meera is cooking when her phone buzzes with a delivery message.", ""),
             ("It says: 'Parcel held. Pay ₹25 within 12 hours.'", ""),
-            ("She opens the official courier app and searches the tracking number.", ""),
+            (
+                "She opens the official courier app and searches the tracking number.",
+                "",
+            ),
             ("'No shipment found.' The message was fake all along.", ""),
             ("She blocks the sender and tells her family group what to watch for.", ""),
         ],
@@ -489,14 +572,25 @@ COMICS = [
         "problem_en": "The agent sends a 'receive money' request instead of a refund.",
         "decision_en": "Rahul spots that receiving money never needs a PIN.",
         "resolution_en": "He declines, hangs up, and calls the bank's official number.",
-        "lessons_en": ["A refund never requires your PIN.",
-                       "Requests marked 'collect' take money out.",
-                       "Call the number printed on your card, not the one in the message."],
+        "lessons_en": [
+            "A refund never requires your PIN.",
+            "Requests marked 'collect' take money out.",
+            "Call the number printed on your card, not the one in the message.",
+        ],
         "panels": [
             ("Rahul's payment failed and he searches for customer care online.", ""),
-            ("He calls a number from an advertisement and reaches a 'support agent'.", ""),
-            ("The agent sends a UPI request: 'Approve this to receive your refund.'", ""),
-            ("Rahul notices the request is a collect request. Approving it would pay the scammer.", ""),
+            (
+                "He calls a number from an advertisement and reaches a 'support agent'.",
+                "",
+            ),
+            (
+                "The agent sends a UPI request: 'Approve this to receive your refund.'",
+                "",
+            ),
+            (
+                "Rahul notices the request is a collect request. Approving it would pay the scammer.",
+                "",
+            ),
             ("He hangs up and calls the bank's official helpline instead.", ""),
         ],
         "related_lab_number": 15,
@@ -511,14 +605,22 @@ COMICS = [
         "problem_en": "The reply-to address is different from the sender address.",
         "decision_en": "Priya calls the CFO's known number to confirm.",
         "resolution_en": "It was business email compromise; the payment is stopped in time.",
-        "lessons_en": ["Urgent payment requests must be verified by voice.",
-                       "Compare sender and reply-to addresses.",
-                       "Follow the two-person approval rule, even for executives."],
+        "lessons_en": [
+            "Urgent payment requests must be verified by voice.",
+            "Compare sender and reply-to addresses.",
+            "Follow the two-person approval rule, even for executives.",
+        ],
         "panels": [
-            ("Priya receives an urgent email from the 'CFO' about a confidential payment.", ""),
+            (
+                "Priya receives an urgent email from the 'CFO' about a confidential payment.",
+                "",
+            ),
             ("The amount is large and the deadline is 'within the hour'.", ""),
             ("She expands the reply-to address. It is a free webmail account.", ""),
-            ("She calls the CFO on the number saved in her phone. He never sent it.", ""),
+            (
+                "She calls the CFO on the number saved in her phone. He never sent it.",
+                "",
+            ),
             ("The finance team files the incident report. The fraud is contained.", ""),
         ],
         "related_lab_number": 36,
@@ -533,15 +635,23 @@ COMICS = [
         "problem_en": "Curiosity says plug it in; policy says otherwise.",
         "decision_en": "He hands it to the security desk without plugging it in.",
         "resolution_en": "The security team examines it in an isolated lab and finds it malicious.",
-        "lessons_en": ["Never plug in an unknown device.",
-                       "Hand found media to security.",
-                       "Curiosity is the attack vector here."],
+        "lessons_en": [
+            "Never plug in an unknown device.",
+            "Hand found media to security.",
+            "Curiosity is the attack vector here.",
+        ],
         "panels": [
             ("Sameer spots a shiny USB drive on the pavement near the entrance.", ""),
             ("A colleague says: 'Just check whose it is on your laptop.'", ""),
-            ("Sameer remembers the awareness poster: unknown drives can carry malware.", ""),
+            (
+                "Sameer remembers the awareness poster: unknown drives can carry malware.",
+                "",
+            ),
             ("He drops it in the security box without touching his computer.", ""),
-            ("Security later confirms the drive was a simulation of a real attack.", ""),
+            (
+                "Security later confirms the drive was a simulation of a real attack.",
+                "",
+            ),
         ],
         "related_lab_number": 29,
     },
@@ -555,11 +665,16 @@ COMICS = [
         "problem_en": "The voice is convincing but the request is unusual and rushed.",
         "decision_en": "She hangs up and calls her father directly.",
         "resolution_en": "It was a synthetic voice. Her father is fine and no money is sent.",
-        "lessons_en": ["A familiar voice is not proof of identity.",
-                       "Agree on a family verification phrase.",
-                       "Urgency plus money equals pause."],
+        "lessons_en": [
+            "A familiar voice is not proof of identity.",
+            "Agree on a family verification phrase.",
+            "Urgency plus money equals pause.",
+        ],
         "panels": [
-            ("Nisha answers a call. It is her father's voice, but he sounds panicked.", ""),
+            (
+                "Nisha answers a call. It is her father's voice, but he sounds panicked.",
+                "",
+            ),
             ("'I am in trouble, send money to this account right now.'", ""),
             ("Nisha notices the line quality and the strange urgency.", ""),
             ("She hangs up and dials her father's number directly.", ""),
@@ -577,11 +692,16 @@ COMICS = [
         "problem_en": "The profile uses the same photos but a slightly altered username.",
         "decision_en": "Kabir calls his friend offline to confirm.",
         "resolution_en": "The copy is reported and removed; a second classmate was almost caught.",
-        "lessons_en": ["Compare usernames letter by letter.",
-                       "Verify off-platform before sending money.",
-                       "Report cloned profiles to the platform."],
+        "lessons_en": [
+            "Compare usernames letter by letter.",
+            "Verify off-platform before sending money.",
+            "Report cloned profiles to the platform.",
+        ],
         "panels": [
-            ("A friend request arrives from someone who looks exactly like Kabir's friend.", ""),
+            (
+                "A friend request arrives from someone who looks exactly like Kabir's friend.",
+                "",
+            ),
             ("The account messages: 'I need ₹8,000 urgently, sending my QR code.'", ""),
             ("Kabir notices the username has an extra underscore.", ""),
             ("He calls his friend. The real friend never messaged him.", ""),
@@ -599,9 +719,11 @@ COMICS = [
         "problem_en": "She is asked to pay a processing fee to release the prize.",
         "decision_en": "She shares the message with her granddaughter instead of paying.",
         "resolution_en": "The family confirms the fraud and reports the number.",
-        "lessons_en": ["You cannot win a draw you never entered.",
-                       "Never pay to receive a prize.",
-                       "Talk to family before acting on surprising news."],
+        "lessons_en": [
+            "You cannot win a draw you never entered.",
+            "Never pay to receive a prize.",
+            "Talk to family before acting on surprising news.",
+        ],
         "panels": [
             ("Kamla's phone shows a message: 'You have won ₹25,00,000!'", ""),
             ("A caller explains that a ₹6,500 fee will release the prize.", ""),
@@ -621,9 +743,11 @@ COMICS = [
         "problem_en": "The attachment asks her to enable macros and sign in with her work email.",
         "decision_en": "She checks the domain, hovers over the link and refuses to sign in.",
         "resolution_en": "She reports the message and the mail gateway blocks the sender.",
-        "lessons_en": ["Hover before you click.",
-                       "No document needs your email password.",
-                       "Report, do not delete quietly."],
+        "lessons_en": [
+            "Hover before you click.",
+            "No document needs your email password.",
+            "Report, do not delete quietly.",
+        ],
         "panels": [
             ("An invitation email arrives with a colourful attachment.", ""),
             ("Opening it shows a fake sign-in screen asking for work credentials.", ""),
@@ -643,15 +767,23 @@ COMICS = [
         "problem_en": "The network mimics the airport's real network and intercepts his logins.",
         "decision_en": "He uses his phone hotspot for anything sensitive.",
         "resolution_en": "The fake network is reported; his company enables VPN-only access.",
-        "lessons_en": ["Confirm the exact network name with staff.",
-                       "Avoid logins on public Wi-Fi without a VPN.",
-                       "Use mobile data for sensitive work."],
+        "lessons_en": [
+            "Confirm the exact network name with staff.",
+            "Avoid logins on public Wi-Fi without a VPN.",
+            "Use mobile data for sensitive work.",
+        ],
         "panels": [
-            ("Arjun settles at the gate and sees two networks: 'Airport_Free' and 'Airport Free WiFi'.", ""),
+            (
+                "Arjun settles at the gate and sees two networks: 'Airport_Free' and 'Airport Free WiFi'.",
+                "",
+            ),
             ("He picks the one with the strongest signal and a login page.", ""),
             ("The page asks for his email password to 'activate' the internet.", ""),
             ("He disconnects and turns on his phone hotspot instead.", ""),
-            ("At the office, IT confirms the twin network was an evil-twin hotspot.", ""),
+            (
+                "At the office, IT confirms the twin network was an evil-twin hotspot.",
+                "",
+            ),
         ],
         "related_lab_number": 19,
     },
@@ -695,19 +827,34 @@ GAMES = [
                 "sender": "security@paypa1-alerts.com",
                 "subject": "Your account has been limited",
                 "body": "We detected unusual activity. Verify your identity within 24 hours or your funds will be frozen and your account closed.",
-                "meta": {"links": ["http://paypa1-alerts.com/verify"], "attachments": []},
+                "meta": {
+                    "links": ["http://paypa1-alerts.com/verify"],
+                    "attachments": [],
+                },
                 "is_threat": True,
                 "warning_signs_en": "Look-alike domain with a digit (paypa1), a threat of frozen funds, 24-hour deadline, and a link that is unencrypted (http).",
                 "warning_signs_hi": "डिजिट वाला मिलता-जुलता डोमेन (paypa1), पैसे रुकने की धमकी, 24 घंटे की सीमा, और असुरक्षित (http) लिंक।",
                 "explanation_en": "Payment platforms do not warn you to verify through a link in an email. Open the official app instead.",
                 "explanation_hi": "भुगतान कंपनियाँ ईमेल के लिंक से पुष्टि नहीं करातीं। आधिकारिक ऐप खोलें।",
                 "choices": [
-                    ("Click the link and verify quickly", False,
-                     "You would have handed your credentials to the attacker.", "आपने ठग को अपनी जानकारी दे दी होती।"),
-                    ("Report the message and open the official app instead", True,
-                     "Correct. Verify in a channel you already trust.", "सही। अपने भरोसेमंद माध्यम में पुष्टि करें।"),
-                    ("Reply asking them to confirm the account number", False,
-                     "Replying only confirms your address is live.", "जवाब देने से पता चल जाता है कि आपका पता चालू है।"),
+                    (
+                        "Click the link and verify quickly",
+                        False,
+                        "You would have handed your credentials to the attacker.",
+                        "आपने ठग को अपनी जानकारी दे दी होती।",
+                    ),
+                    (
+                        "Report the message and open the official app instead",
+                        True,
+                        "Correct. Verify in a channel you already trust.",
+                        "सही। अपने भरोसेमंद माध्यम में पुष्टि करें।",
+                    ),
+                    (
+                        "Reply asking them to confirm the account number",
+                        False,
+                        "Replying only confirms your address is live.",
+                        "जवाब देने से पता चल जाता है कि आपका पता चालू है।",
+                    ),
                 ],
             },
             {
@@ -722,12 +869,24 @@ GAMES = [
                 "explanation_en": "Check delivery status inside the shopping app you already use.",
                 "explanation_hi": "डिलीवरी की स्थिति पहले से इस्तेमाल किए जा रहे शॉपिंग ऐप में देखें।",
                 "choices": [
-                    ("Open the link to save the delivery", False,
-                     "The page exists only to capture your details.", "वह पेज सिर्फ़ आपकी जानकारी लेने के लिए है।"),
-                    ("Open the shopping app and check the order there", True,
-                     "Correct — the app is a trusted channel.", "सही — ऐप भरोसेमंद माध्यम है।"),
-                    ("Forward it to family as a warning", False,
-                     "Forwarding spreads the link. Report it instead.", "फ़ॉरवर्ड करने से लिंक फैलता है। रिपोर्ट करें।"),
+                    (
+                        "Open the link to save the delivery",
+                        False,
+                        "The page exists only to capture your details.",
+                        "वह पेज सिर्फ़ आपकी जानकारी लेने के लिए है।",
+                    ),
+                    (
+                        "Open the shopping app and check the order there",
+                        True,
+                        "Correct — the app is a trusted channel.",
+                        "सही — ऐप भरोसेमंद माध्यम है।",
+                    ),
+                    (
+                        "Forward it to family as a warning",
+                        False,
+                        "Forwarding spreads the link. Report it instead.",
+                        "फ़ॉरवर्ड करने से लिंक फैलता है। रिपोर्ट करें।",
+                    ),
                 ],
             },
             {
@@ -742,12 +901,24 @@ GAMES = [
                 "explanation_en": "Legitimate work never requires you to pay first.",
                 "explanation_hi": "असली काम में पहले पैसे देने नहीं पड़ते।",
                 "choices": [
-                    ("Pay ₹500 — it is refundable after all", False,
-                     "The refund never arrives; the first payment is the attack.", "वापसी कभी नहीं आती; पहली राशि ही ठगी है।"),
-                    ("Ignore, block and report the number", True,
-                     "Correct. Unrealistic earnings plus an entry fee is a scam pattern.", "सही। बड़ी कमाई और पहले फ़ीस — यह ठगी का पैटर्न है।"),
-                    ("Ask for the company's website first", False,
-                     "Engaging keeps the conversation alive and the pressure building.", "जवाब देने से ठग को और मौका मिलता है।"),
+                    (
+                        "Pay ₹500 — it is refundable after all",
+                        False,
+                        "The refund never arrives; the first payment is the attack.",
+                        "वापसी कभी नहीं आती; पहली राशि ही ठगी है।",
+                    ),
+                    (
+                        "Ignore, block and report the number",
+                        True,
+                        "Correct. Unrealistic earnings plus an entry fee is a scam pattern.",
+                        "सही। बड़ी कमाई और पहले फ़ीस — यह ठगी का पैटर्न है।",
+                    ),
+                    (
+                        "Ask for the company's website first",
+                        False,
+                        "Engaging keeps the conversation alive and the pressure building.",
+                        "जवाब देने से ठग को और मौका मिलता है।",
+                    ),
                 ],
             },
             {
@@ -762,12 +933,24 @@ GAMES = [
                 "explanation_en": "Even legitimate notices should be verified by opening the site yourself. If the change is not yours, rotate the key immediately.",
                 "explanation_hi": "असली सूचना भी खुद साइट खोलकर जाँचें। अगर बदलाव आपने नहीं किया, तुरंत बदलें।",
                 "choices": [
-                    ("Report it as phishing immediately", False,
-                     "Over-reporting genuine alerts tires your security team.", "असली सूचना को गलत रिपोर्ट करने से टीम थक जाती है।"),
-                    ("Ignore it — GitHub emails are never important", False,
-                     "Ignoring it wastes the early warning you just received.", "नज़रअंदाज़ करने से चेतावनी बेकार जाती है।"),
-                    ("Open the site yourself and check your security settings", True,
-                     "Correct — verify from the site, not from the email.", "सही — ईमेल से नहीं, साइट से जाँचें।"),
+                    (
+                        "Report it as phishing immediately",
+                        False,
+                        "Over-reporting genuine alerts tires your security team.",
+                        "असली सूचना को गलत रिपोर्ट करने से टीम थक जाती है।",
+                    ),
+                    (
+                        "Ignore it — GitHub emails are never important",
+                        False,
+                        "Ignoring it wastes the early warning you just received.",
+                        "नज़रअंदाज़ करने से चेतावनी बेकार जाती है।",
+                    ),
+                    (
+                        "Open the site yourself and check your security settings",
+                        True,
+                        "Correct — verify from the site, not from the email.",
+                        "सही — ईमेल से नहीं, साइट से जाँचें।",
+                    ),
                 ],
             },
             {
@@ -782,12 +965,24 @@ GAMES = [
                 "explanation_en": "Employers pay employees. A fee is the whole point of the scam.",
                 "explanation_hi": "नियोक्ता कर्मचारियों को पैसे देते हैं। फ़ीस लेना ही ठगी का उद्देश्य है।",
                 "choices": [
-                    ("Pay and confirm the slot", False,
-                     "The interview never happens.", "इंटरव्यू कभी नहीं होगा।"),
-                    ("Verify the opening on the official careers page", True,
-                     "Correct. Apply only through the company's own portal.", "सही। आवेदन कंपनी के अपने पोर्टल से करें।"),
-                    ("Share Aadhaar to speed up the process", False,
-                     "Identity documents enable fraud in your name.", "पहचान दस्तावेज़ आपके नाम पर ठगी का रास्ता खोलते हैं।"),
+                    (
+                        "Pay and confirm the slot",
+                        False,
+                        "The interview never happens.",
+                        "इंटरव्यू कभी नहीं होगा।",
+                    ),
+                    (
+                        "Verify the opening on the official careers page",
+                        True,
+                        "Correct. Apply only through the company's own portal.",
+                        "सही। आवेदन कंपनी के अपने पोर्टल से करें।",
+                    ),
+                    (
+                        "Share Aadhaar to speed up the process",
+                        False,
+                        "Identity documents enable fraud in your name.",
+                        "पहचान दस्तावेज़ आपके नाम पर ठगी का रास्ता खोलते हैं।",
+                    ),
                 ],
             },
             {
@@ -802,12 +997,24 @@ GAMES = [
                 "explanation_en": "Hang up and call the number printed on your card.",
                 "explanation_hi": "कॉल काटें और अपने कार्ड पर छपे नंबर पर बात करें।",
                 "choices": [
-                    ("Install the app to stop the fraud", False,
-                     "That gives the caller full control of your device.", "इससे कॉल करने वाले को आपके फ़ोन पर पूरा नियंत्रण मिल जाता है।"),
-                    ("Hang up and call the bank's official number", True,
-                     "Correct — verify on a channel you chose.", "सही — अपने चुने हुए माध्यम से पुष्टि करें।"),
-                    ("Share the code but not the password", False,
-                     "The code alone can complete the fraud.", "सिर्फ़ कोड से भी ठगी पूरी हो सकती है।"),
+                    (
+                        "Install the app to stop the fraud",
+                        False,
+                        "That gives the caller full control of your device.",
+                        "इससे कॉल करने वाले को आपके फ़ोन पर पूरा नियंत्रण मिल जाता है।",
+                    ),
+                    (
+                        "Hang up and call the bank's official number",
+                        True,
+                        "Correct — verify on a channel you chose.",
+                        "सही — अपने चुने हुए माध्यम से पुष्टि करें।",
+                    ),
+                    (
+                        "Share the code but not the password",
+                        False,
+                        "The code alone can complete the fraud.",
+                        "सिर्फ़ कोड से भी ठगी पूरी हो सकती है।",
+                    ),
                 ],
             },
             {
@@ -822,12 +1029,24 @@ GAMES = [
                 "explanation_en": "Open your real portal from a bookmark and check whether the document exists there.",
                 "explanation_hi": "अपना असली पोर्टल बुकमार्क से खोलें और देखें कि दस्तावेज़ वहाँ है या नहीं।",
                 "choices": [
-                    ("Sign in — the page looks identical", False,
-                     "Copying a page is trivial; the domain is not.", "पेज कॉपी करना आसान है; डोमेन नहीं।"),
-                    ("Sign in but change the password afterwards", False,
-                     "The credentials are stolen at the moment you type them.", "पासवर्ड लिखते ही वह चोरी हो जाता है।"),
-                    ("Close it and open the portal from your own bookmark", True,
-                     "Correct.", "सही।"),
+                    (
+                        "Sign in — the page looks identical",
+                        False,
+                        "Copying a page is trivial; the domain is not.",
+                        "पेज कॉपी करना आसान है; डोमेन नहीं।",
+                    ),
+                    (
+                        "Sign in but change the password afterwards",
+                        False,
+                        "The credentials are stolen at the moment you type them.",
+                        "पासवर्ड लिखते ही वह चोरी हो जाता है।",
+                    ),
+                    (
+                        "Close it and open the portal from your own bookmark",
+                        True,
+                        "Correct.",
+                        "सही।",
+                    ),
                 ],
             },
             {
@@ -842,12 +1061,24 @@ GAMES = [
                 "explanation_en": "A transaction alert that states facts and gives no link is normal. Keep it, and check your statement.",
                 "explanation_hi": "तथ्य बताने वाली और लिंक रहित सूचना सामान्य है। इसे रखें और स्टेटमेंट जाँचें।",
                 "choices": [
-                    ("Report it as fraud", False,
-                     "This is a normal alert with verifiable details.", "यह सामान्य सूचना है जिसकी जाँच हो सकती है।"),
-                    ("Keep it and confirm against your statement", True,
-                     "Correct — routine, low-risk handling.", "सही — सामान्य और सुरक्षित तरीका।"),
-                    ("Call the number in the message immediately", False,
-                     "Only call if you do not recognise the transaction — and use the number on your card.", "सिर्फ़ तब कॉल करें जब लेन-देन पहचान न हो — और कार्ड पर छपे नंबर पर।"),
+                    (
+                        "Report it as fraud",
+                        False,
+                        "This is a normal alert with verifiable details.",
+                        "यह सामान्य सूचना है जिसकी जाँच हो सकती है।",
+                    ),
+                    (
+                        "Keep it and confirm against your statement",
+                        True,
+                        "Correct — routine, low-risk handling.",
+                        "सही — सामान्य और सुरक्षित तरीका।",
+                    ),
+                    (
+                        "Call the number in the message immediately",
+                        False,
+                        "Only call if you do not recognise the transaction — and use the number on your card.",
+                        "सिर्फ़ तब कॉल करें जब लेन-देन पहचान न हो — और कार्ड पर छपे नंबर पर।",
+                    ),
                 ],
             },
             {
@@ -862,12 +1093,24 @@ GAMES = [
                 "explanation_en": "Verify by voice. Never forward a code.",
                 "explanation_hi": "आवाज़ में पुष्टि करें। कोड कभी न भेजें।",
                 "choices": [
-                    ("Send the code — it is my friend", False,
-                     "Compromised accounts impersonate real friends.", "हैक किए खाते असली दोस्तों का रूप लेते हैं।"),
-                    ("Call the friend directly and ask about it", True,
-                     "Correct — verify out of band.", "सही — दूसरे माध्यम से पुष्टि करें।"),
-                    ("Send only the number, not the code", False,
-                     "Contact lists are also sold to scammers.", "संपर्क सूची भी ठगों को बेची जाती है।"),
+                    (
+                        "Send the code — it is my friend",
+                        False,
+                        "Compromised accounts impersonate real friends.",
+                        "हैक किए खाते असली दोस्तों का रूप लेते हैं।",
+                    ),
+                    (
+                        "Call the friend directly and ask about it",
+                        True,
+                        "Correct — verify out of band.",
+                        "सही — दूसरे माध्यम से पुष्टि करें।",
+                    ),
+                    (
+                        "Send only the number, not the code",
+                        False,
+                        "Contact lists are also sold to scammers.",
+                        "संपर्क सूची भी ठगों को बेची जाती है।",
+                    ),
                 ],
             },
             {
@@ -882,12 +1125,24 @@ GAMES = [
                 "explanation_en": "Call the vendor on a number you already have and confirm before changing payment details.",
                 "explanation_hi": "भुगतान जानकारी बदलने से पहले अपने पास मौजूद पुराने नंबर पर सप्लायर से पुष्टि करें।",
                 "choices": [
-                    ("Update the payment details right away", False,
-                     "This is the classic invoice-redirection fraud.", "यह इनवॉइस डायवर्जन की प्रसिद्ध ठगी है।"),
-                    ("Call the vendor on a known number to confirm", True,
-                     "Correct. Any change of payment details needs voice verification.", "सही। भुगतान जानकारी में बदलाव पर आवाज़ से पुष्टि ज़रूरी है।"),
-                    ("Reply to the email and ask for confirmation", False,
-                     "You would be confirming with the attacker.", "आप ठग से ही पुष्टि कर रहे होंगे।"),
+                    (
+                        "Update the payment details right away",
+                        False,
+                        "This is the classic invoice-redirection fraud.",
+                        "यह इनवॉइस डायवर्जन की प्रसिद्ध ठगी है।",
+                    ),
+                    (
+                        "Call the vendor on a known number to confirm",
+                        True,
+                        "Correct. Any change of payment details needs voice verification.",
+                        "सही। भुगतान जानकारी में बदलाव पर आवाज़ से पुष्टि ज़रूरी है।",
+                    ),
+                    (
+                        "Reply to the email and ask for confirmation",
+                        False,
+                        "You would be confirming with the attacker.",
+                        "आप ठग से ही पुष्टि कर रहे होंगे।",
+                    ),
                 ],
             },
         ],
@@ -917,29 +1172,54 @@ GAMES = [
         "timed": False,
         "xp": 30,
         "scenarios": [
-            ("Your card is blocked. Call this number to reactivate and share the OTP.",
-             True, "Banks never ask for an OTP. This is vishing.", "बैंक OTP नहीं माँगते। यह वॉइस ठगी है।"),
-            ("A courier app notification shows your parcel is out for delivery today.",
-             False, "A notification inside the official app with no request for action is normal.",
-             "आधिकारिक ऐप की सूचना और किसी जानकारी की माँग नहीं — यह सामान्य है।"),
-            ("Your electricity bill is overdue; pay on this link in 30 minutes or power is cut.",
-             True, "Urgency plus a link, with no account number, is a scam pattern.",
-             "जल्दबाज़ी के साथ लिंक और खाता संख्या का अभाव — यह ठगी का पैटर्न है।"),
-            ("Your bank sends a monthly e-statement to your registered email, with no links.",
-             False, "An informational statement with no action request is legitimate.",
-             "बिना किसी कार्रवाई की माँग वाला सूचना संदेश असली होता है।"),
-            ("A customer-care agent asks you to install AnyDesk to process a refund.",
-             True, "Remote-access tools on a support call are a standard fraud.",
-             "सपोर्ट कॉल पर रिमोट-एक्सेस ऐप ठगी का आम तरीका है।"),
-            ("An order confirmation from the shopping app you just used, sent to your registered email.",
-             False, "You initiated the action yourself; the message matches your own transaction.",
-             "आपने खुद ऑर्डर किया है; संदेश आपके लेन-देन से मेल खाता है।"),
-            ("A recruiter offers double salary and asks for your bank passbook photo before joining.",
-             True, "Salary promises plus document requests before an offer is a fraud pattern.",
-             "ऑफ़र से पहले दस्तावेज़ माँगना और दोगुनी सैलरी का वादा ठगी है।"),
-            ("Your workplace IT team emails from the company domain asking you to change your password at the portal you already use.",
-             False, "The domain matches and the action happens in your own portal — verify the domain anyway before acting.",
-             "डोमेन सही है और काम अपने ही पोर्टल पर है — फिर भी डोमेन जाँच लें।"),
+            (
+                "Your card is blocked. Call this number to reactivate and share the OTP.",
+                True,
+                "Banks never ask for an OTP. This is vishing.",
+                "बैंक OTP नहीं माँगते। यह वॉइस ठगी है।",
+            ),
+            (
+                "A courier app notification shows your parcel is out for delivery today.",
+                False,
+                "A notification inside the official app with no request for action is normal.",
+                "आधिकारिक ऐप की सूचना और किसी जानकारी की माँग नहीं — यह सामान्य है।",
+            ),
+            (
+                "Your electricity bill is overdue; pay on this link in 30 minutes or power is cut.",
+                True,
+                "Urgency plus a link, with no account number, is a scam pattern.",
+                "जल्दबाज़ी के साथ लिंक और खाता संख्या का अभाव — यह ठगी का पैटर्न है।",
+            ),
+            (
+                "Your bank sends a monthly e-statement to your registered email, with no links.",
+                False,
+                "An informational statement with no action request is legitimate.",
+                "बिना किसी कार्रवाई की माँग वाला सूचना संदेश असली होता है।",
+            ),
+            (
+                "A customer-care agent asks you to install AnyDesk to process a refund.",
+                True,
+                "Remote-access tools on a support call are a standard fraud.",
+                "सपोर्ट कॉल पर रिमोट-एक्सेस ऐप ठगी का आम तरीका है।",
+            ),
+            (
+                "An order confirmation from the shopping app you just used, sent to your registered email.",
+                False,
+                "You initiated the action yourself; the message matches your own transaction.",
+                "आपने खुद ऑर्डर किया है; संदेश आपके लेन-देन से मेल खाता है।",
+            ),
+            (
+                "A recruiter offers double salary and asks for your bank passbook photo before joining.",
+                True,
+                "Salary promises plus document requests before an offer is a fraud pattern.",
+                "ऑफ़र से पहले दस्तावेज़ माँगना और दोगुनी सैलरी का वादा ठगी है।",
+            ),
+            (
+                "Your workplace IT team emails from the company domain asking you to change your password at the portal you already use.",
+                False,
+                "The domain matches and the action happens in your own portal — verify the domain anyway before acting.",
+                "डोमेन सही है और काम अपने ही पोर्टल पर है — फिर भी डोमेन जाँच लें।",
+            ),
         ],
     },
 ]
@@ -986,7 +1266,11 @@ INCIDENTS = [
         "technical_detail_en": "Public reporting described the email subject as an attractive recruitment-themed lure and the payload as a zero-day exploit in a spreadsheet component. RSA's letter confirmed that information related to SecurID was extracted.",
         "sources": [
             ("RSA open letter to customers (2011)", "https://www.rsa.com", "RSA / EMC"),
-            ("CISA — guidance on mitigating social engineering", "https://www.cisa.gov", "CISA"),
+            (
+                "CISA — guidance on mitigating social engineering",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2011-04-01",
     },
@@ -1023,8 +1307,16 @@ INCIDENTS = [
         "technical_detail_en": "Reported details include the use of SWIFT terminal credentials, custom malware for manipulating transaction records, and disabling of the confirmation printer. Some reported figures have varied across investigations.",
         "sources": [
             ("SWIFT — customer security programme", "https://www.swift.com", "SWIFT"),
-            ("FBI public statements on business email compromise and payment fraud", "https://www.fbi.gov", "FBI"),
-            ("Bangladesh Bank public statements", "https://www.bb.org.bd", "Bangladesh Bank"),
+            (
+                "FBI public statements on business email compromise and payment fraud",
+                "https://www.fbi.gov",
+                "FBI",
+            ),
+            (
+                "Bangladesh Bank public statements",
+                "https://www.bb.org.bd",
+                "Bangladesh Bank",
+            ),
         ],
         "source_published_on": "2016-03-01",
         "uncertainty_note_en": "Exact total losses and recovery amounts have been reported differently by different investigations; treat the figures as approximate.",
@@ -1061,7 +1353,11 @@ INCIDENTS = [
         "lessons_hi": "विक्रेता की पहुँच हमले का रास्ता है; भुगतान नेटवर्क अलग रखें; तीसरे पक्ष के लिए MFA ज़रूरी करें; ठेकेदार खातों पर नज़र रखें; आपूर्ति-श्रृंखला सुरक्षा के लिए नियम भी ज़रूरी हैं।",
         "technical_detail_en": "Investigations described point-of-sale malware and the use of a vendor portal as the entry path. Specific internal details have been disputed in litigation.",
         "sources": [
-            ("US Senate committee report on the Target breach", "https://www.hsgac.senate.gov", "US Senate"),
+            (
+                "US Senate committee report on the Target breach",
+                "https://www.hsgac.senate.gov",
+                "US Senate",
+            ),
             ("FBI cybercrime advisories", "https://www.ic3.gov", "FBI IC3"),
         ],
         "source_published_on": "2014-03-01",
@@ -1099,8 +1395,16 @@ INCIDENTS = [
         "lessons_hi": "वॉइस फ़िशिंग ईमेल फ़िल्टर से बच निकलती है; आंतरिक टूल के अपने नियंत्रण चाहिए; बड़ी कार्रवाई के लिए दो लोगों की मंज़ूरी; कर्मचारी जागरूकता में फ़ोन कॉल भी शामिल हो; तेज़ सूचना से नुकसान घटता है।",
         "technical_detail_en": "Twitter stated that the attackers targeted a small number of employees by phone and used credentials from a fake VPN page to reach internal account-management tools.",
         "sources": [
-            ("Twitter public statement on the incident", "https://blog.twitter.com", "Twitter"),
-            ("US Department of Justice press release on charges", "https://www.justice.gov", "US DOJ"),
+            (
+                "Twitter public statement on the incident",
+                "https://blog.twitter.com",
+                "Twitter",
+            ),
+            (
+                "US Department of Justice press release on charges",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
         ],
         "source_published_on": "2020-07-15",
     },
@@ -1136,7 +1440,11 @@ INCIDENTS = [
         "technical_detail_en": "Public reporting named the malicious component SUNBURST. Government statements attributed the campaign to Russian state-linked actors; the platform reports this attribution as a government finding.",
         "sources": [
             ("CISA emergency directive 21-01", "https://www.cisa.gov", "CISA"),
-            ("SolarWinds public security advisories", "https://www.solarwinds.com", "SolarWinds"),
+            (
+                "SolarWinds public security advisories",
+                "https://www.solarwinds.com",
+                "SolarWinds",
+            ),
             ("US Cyber Command / NSA statements", "https://www.nsa.gov", "NSA"),
         ],
         "source_published_on": "2020-12-13",
@@ -1172,8 +1480,16 @@ INCIDENTS = [
         "lessons_hi": "खातों की सूची रखें और अप्रयुक्त बंद करें; रिमोट एक्सेस पर MFA ज़रूरी करें; पासवर्ड दोहराएँ नहीं; साइबर घटना के समय परिचालन निर्णय की योजना बनाएँ; ज़रूरी डेटा का ऑफ़लाइन बैकअप रखें।",
         "technical_detail_en": "The initial access vector was reported as a compromised password for a legacy remote-access profile. The platform notes this as reported by the company and by government statements.",
         "sources": [
-            ("CISA and FBI joint advisory on the incident", "https://www.cisa.gov", "CISA"),
-            ("US Department of Justice statement on ransom recovery", "https://www.justice.gov", "US DOJ"),
+            (
+                "CISA and FBI joint advisory on the incident",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
+            (
+                "US Department of Justice statement on ransom recovery",
+                "https://www.justice.gov",
+                "US DOJ",
+            ),
         ],
         "source_published_on": "2021-05-07",
     },
@@ -1209,7 +1525,11 @@ INCIDENTS = [
         "technical_detail_en": "This description is based on the company's incident statement and the attacker's own public claims; some details come from third-party reporting and remain reported rather than independently verified.",
         "sources": [
             ("Uber security update statement", "https://www.uber.com", "Uber"),
-            ("CISA guidance on MFA fatigue and push bombing", "https://www.cisa.gov", "CISA"),
+            (
+                "CISA guidance on MFA fatigue and push bombing",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2022-09-16",
         "uncertainty_note_en": "Some technical detail comes from the attacker's public claims and should be treated as reported, not independently confirmed.",
@@ -1246,8 +1566,16 @@ INCIDENTS = [
         "lessons_hi": "फ़ोन पर पहचान बदलना मज़बूत तकनीकी नियंत्रणों को भी पार कर जाता है; पहचान तय प्रक्रिया से जाँचें; परिचालन नेटवर्क अलग रखें; बंद पड़ने की स्थिति का अभ्यास करें; संचार योजना तैयार रखें।",
         "technical_detail_en": "Details are drawn from company statements, law enforcement announcements and press reporting; some specifics remain reported rather than confirmed.",
         "sources": [
-            ("MGM Resorts public statement", "https://www.mgmresorts.com", "MGM Resorts"),
-            ("CISA guidance on help-desk social engineering", "https://www.cisa.gov", "CISA"),
+            (
+                "MGM Resorts public statement",
+                "https://www.mgmresorts.com",
+                "MGM Resorts",
+            ),
+            (
+                "CISA guidance on help-desk social engineering",
+                "https://www.cisa.gov",
+                "CISA",
+            ),
         ],
         "source_published_on": "2023-09-12",
         "uncertainty_note_en": "The precise sequence of attacker actions is described in press reporting and has not been fully confirmed by the company.",
@@ -1284,7 +1612,11 @@ INCIDENTS = [
         "lessons_hi": "पहचान सेवा प्रदाता बड़ा निशाना होते हैं; सहायता सिस्टम को भी उतनी ही सख्ती चाहिए; केस फ़ाइलों में टोकन न रखें; सहायता कर्मचारियों के लिए मज़बूत प्रमाणीकरण; तेज़ और सटीक सूचना से ग्राहक बचाव कर पाते हैं।",
         "technical_detail_en": "Okta's own advisories described access to support case files; the number of customers whose data was viewed and the subset with token exposure were both described as limited.",
         "sources": [
-            ("Okta security advisory on the support system incident", "https://sec.okta.com", "Okta"),
+            (
+                "Okta security advisory on the support system incident",
+                "https://sec.okta.com",
+                "Okta",
+            ),
             ("CISA advisory referencing the incident", "https://www.cisa.gov", "CISA"),
         ],
         "source_published_on": "2023-10-20",
@@ -1320,8 +1652,16 @@ INCIDENTS = [
         "lessons_hi": "रिमोट एक्सेस पर MFA वैकल्पिक नहीं; महत्वपूर्ण क्षेत्र में एक बिंदु का ठप होना व्यापक असर डालता है; विभाजन फैलाव रोकता है; आपात योजना में भुगतान प्रक्रिया भी शामिल हो; प्रभावित लोगों को सच बताएँ।",
         "technical_detail_en": "Entry via a compromised Citrix remote-access credential without MFA has been widely reported; treat the specific technical path as reported rather than company-confirmed.",
         "sources": [
-            ("Change Healthcare consumer notice", "https://www.changehealthcare.com", "Change Healthcare"),
-            ("US Department of Health and Human Services breach information", "https://www.hhs.gov", "HHS"),
+            (
+                "Change Healthcare consumer notice",
+                "https://www.changehealthcare.com",
+                "Change Healthcare",
+            ),
+            (
+                "US Department of Health and Human Services breach information",
+                "https://www.hhs.gov",
+                "HHS",
+            ),
         ],
         "source_published_on": "2024-02-21",
         "uncertainty_note_en": "The precise initial access path is drawn from press reporting and security-vendor analysis rather than a complete public technical report.",
@@ -1330,6 +1670,3 @@ INCIDENTS = [
 ]
 
 # Export expanded comprehensive catalogues
-from app.services.catalog_videos import CATALOG_VIDEOS as VIDEO_LESSONS  # 50 video lessons
-from app.services.catalog_comics import COMICS  # 100 comic stories
-from app.services.catalog_incidents import CATALOG_INCIDENTS as INCIDENTS  # 30 researched cases

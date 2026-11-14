@@ -23,7 +23,10 @@ class LearningPath(db.Model, TimestampMixin):
     state = db.Column(db.String(24), default="published", nullable=False)
 
     modules = db.relationship(
-        "Module", back_populates="path", order_by="Module.order_index", cascade="all, delete-orphan"
+        "Module",
+        back_populates="path",
+        order_by="Module.order_index",
+        cascade="all, delete-orphan",
     )
 
 
@@ -31,7 +34,11 @@ class Module(db.Model, TimestampMixin):
     __tablename__ = "modules"
 
     id = db.Column(db.Integer, primary_key=True)
-    path_id = db.Column(db.Integer, db.ForeignKey("learning_paths.id", ondelete="CASCADE"), nullable=False)
+    path_id = db.Column(
+        db.Integer,
+        db.ForeignKey("learning_paths.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     slug = db.Column(db.String(120), nullable=False)
     title_en = db.Column(db.String(200), nullable=False)
     title_hi = db.Column(db.String(200))
@@ -42,33 +49,48 @@ class Module(db.Model, TimestampMixin):
 
     path = db.relationship("LearningPath", back_populates="modules")
     lessons = db.relationship(
-        "Lesson", back_populates="module", order_by="Lesson.order_index", cascade="all, delete-orphan"
+        "Lesson",
+        back_populates="module",
+        order_by="Lesson.order_index",
+        cascade="all, delete-orphan",
     )
 
-    __table_args__ = (db.UniqueConstraint("path_id", "slug", name="uq_module_slug_per_path"),)
+    __table_args__ = (
+        db.UniqueConstraint("path_id", "slug", name="uq_module_slug_per_path"),
+    )
 
 
 class Lesson(db.Model, TimestampMixin):
     __tablename__ = "lessons"
 
     id = db.Column(db.Integer, primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey("modules.id", ondelete="CASCADE"), nullable=False)
+    module_id = db.Column(
+        db.Integer, db.ForeignKey("modules.id", ondelete="CASCADE"), nullable=False
+    )
     slug = db.Column(db.String(140), nullable=False)
     title_en = db.Column(db.String(220), nullable=False)
     title_hi = db.Column(db.String(220))
     summary_en = db.Column(db.Text)
     summary_hi = db.Column(db.Text)
     category = db.Column(db.String(80), index=True)
-    difficulty = db.Column(db.String(24), default="beginner", nullable=False, index=True)
+    difficulty = db.Column(
+        db.String(24), default="beginner", nullable=False, index=True
+    )
     duration_minutes = db.Column(db.Integer, default=5, nullable=False)
     order_index = db.Column(db.Integer, default=0, nullable=False)
     state = db.Column(db.String(24), default="published", nullable=False)
 
     module = db.relationship("Module", back_populates="lessons")
-    video_assets = db.relationship("VideoAsset", back_populates="lesson", cascade="all, delete-orphan")
-    questions = db.relationship("Question", back_populates="lesson", cascade="all, delete-orphan")
+    video_assets = db.relationship(
+        "VideoAsset", back_populates="lesson", cascade="all, delete-orphan"
+    )
+    questions = db.relationship(
+        "Question", back_populates="lesson", cascade="all, delete-orphan"
+    )
 
-    __table_args__ = (db.UniqueConstraint("module_id", "slug", name="uq_lesson_slug_per_module"),)
+    __table_args__ = (
+        db.UniqueConstraint("module_id", "slug", name="uq_lesson_slug_per_module"),
+    )
 
 
 class VideoAsset(db.Model, TimestampMixin):
@@ -78,7 +100,9 @@ class VideoAsset(db.Model, TimestampMixin):
     __tablename__ = "video_assets"
 
     id = db.Column(db.Integer, primary_key=True)
-    lesson_id = db.Column(db.Integer, db.ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False)
+    lesson_id = db.Column(
+        db.Integer, db.ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False
+    )
     title_en = db.Column(db.String(220), nullable=False)
     title_hi = db.Column(db.String(220))
     # Script, storyboard and narration are authored for every lesson even when
@@ -104,14 +128,20 @@ class VideoAsset(db.Model, TimestampMixin):
 
     @property
     def languages(self) -> list[str]:
-        return [lang.strip() for lang in (self.available_languages or "").split(",") if lang.strip()]
+        return [
+            lang.strip()
+            for lang in (self.available_languages or "").split(",")
+            if lang.strip()
+        ]
 
 
 class VideoLanguageTrack(db.Model):
     __tablename__ = "video_language_tracks"
 
     id = db.Column(db.Integer, primary_key=True)
-    video_id = db.Column(db.Integer, db.ForeignKey("video_assets.id", ondelete="CASCADE"), nullable=False)
+    video_id = db.Column(
+        db.Integer, db.ForeignKey("video_assets.id", ondelete="CASCADE"), nullable=False
+    )
     language = db.Column(db.String(8), nullable=False)
     media_url = db.Column(db.String(500))
     captions_url = db.Column(db.String(500))
@@ -119,7 +149,9 @@ class VideoLanguageTrack(db.Model):
 
     video = db.relationship("VideoAsset", back_populates="tracks")
 
-    __table_args__ = (db.UniqueConstraint("video_id", "language", name="uq_video_language"),)
+    __table_args__ = (
+        db.UniqueConstraint("video_id", "language", name="uq_video_language"),
+    )
 
 
 class Comic(db.Model, TimestampMixin):
@@ -152,7 +184,10 @@ class Comic(db.Model, TimestampMixin):
     state = db.Column(db.String(24), default="published", nullable=False)
 
     panels = db.relationship(
-        "ComicPanel", back_populates="comic", order_by="ComicPanel.order_index", cascade="all, delete-orphan"
+        "ComicPanel",
+        back_populates="comic",
+        order_by="ComicPanel.order_index",
+        cascade="all, delete-orphan",
     )
 
 
@@ -160,7 +195,9 @@ class ComicPanel(db.Model):
     __tablename__ = "comic_panels"
 
     id = db.Column(db.Integer, primary_key=True)
-    comic_id = db.Column(db.Integer, db.ForeignKey("comics.id", ondelete="CASCADE"), nullable=False)
+    comic_id = db.Column(
+        db.Integer, db.ForeignKey("comics.id", ondelete="CASCADE"), nullable=False
+    )
     order_index = db.Column(db.Integer, default=0, nullable=False)
     image_url = db.Column(db.String(500))
     caption_en = db.Column(db.Text)
@@ -192,7 +229,10 @@ class Game(db.Model, TimestampMixin):
     state = db.Column(db.String(24), default="published", nullable=False)
 
     scenarios = db.relationship(
-        "GameScenario", back_populates="game", order_by="GameScenario.order_index", cascade="all, delete-orphan"
+        "GameScenario",
+        back_populates="game",
+        order_by="GameScenario.order_index",
+        cascade="all, delete-orphan",
     )
 
 
@@ -200,9 +240,13 @@ class GameScenario(db.Model, TimestampMixin):
     __tablename__ = "game_scenarios"
 
     id = db.Column(db.Integer, primary_key=True)
-    game_id = db.Column(db.Integer, db.ForeignKey("games.id", ondelete="CASCADE"), nullable=False)
+    game_id = db.Column(
+        db.Integer, db.ForeignKey("games.id", ondelete="CASCADE"), nullable=False
+    )
     order_index = db.Column(db.Integer, default=0, nullable=False)
-    scenario_type = db.Column(db.String(40), default="email", nullable=False)  # email|sms|call|page|chat
+    scenario_type = db.Column(
+        db.String(40), default="email", nullable=False
+    )  # email|sms|call|page|chat
     sender = db.Column(db.String(200))
     subject_en = db.Column(db.String(300))
     subject_hi = db.Column(db.String(300))
@@ -219,7 +263,9 @@ class GameScenario(db.Model, TimestampMixin):
 
     game = db.relationship("Game", back_populates="scenarios")
     choices = db.relationship(
-        "ScenarioChoice", back_populates="scenario", order_by="ScenarioChoice.order_index",
+        "ScenarioChoice",
+        back_populates="scenario",
+        order_by="ScenarioChoice.order_index",
         cascade="all, delete-orphan",
     )
 
@@ -228,7 +274,11 @@ class ScenarioChoice(db.Model):
     __tablename__ = "scenario_choices"
 
     id = db.Column(db.Integer, primary_key=True)
-    scenario_id = db.Column(db.Integer, db.ForeignKey("game_scenarios.id", ondelete="CASCADE"), nullable=False)
+    scenario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("game_scenarios.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     order_index = db.Column(db.Integer, default=0, nullable=False)
     text_en = db.Column(db.String(300), nullable=False)
     text_hi = db.Column(db.String(300))

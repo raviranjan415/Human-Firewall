@@ -37,10 +37,10 @@ class Lab(db.Model, TimestampMixin):
     # Interactive task definition -----------------------------------------
     # task_type: "multi_select" | "single_choice" | "order" | "text_judgement"
     task_type = db.Column(db.String(32), default="single_choice", nullable=False)
-    options_json = db.Column(db.Text)          # JSON [{id, en, hi}]
-    validation_json = db.Column(db.Text)       # JSON {"correct": [...], "min_score": 70}
-    hints_json = db.Column(db.Text)            # JSON [{"en":..., "hi":...}]
-    payload_json = db.Column(db.Text)          # JSON artefact shown to the learner
+    options_json = db.Column(db.Text)  # JSON [{id, en, hi}]
+    validation_json = db.Column(db.Text)  # JSON {"correct": [...], "min_score": 70}
+    hints_json = db.Column(db.Text)  # JSON [{"en":..., "hi":...}]
+    payload_json = db.Column(db.Text)  # JSON artefact shown to the learner
 
     xp_reward = db.Column(db.Integer, default=30, nullable=False)
     pass_score = db.Column(db.Integer, default=70, nullable=False)
@@ -53,7 +53,9 @@ class Lab(db.Model, TimestampMixin):
         back_populates="lab",
         cascade="all, delete-orphan",
     )
-    attempts = db.relationship("LabAttempt", back_populates="lab", cascade="all, delete-orphan")
+    attempts = db.relationship(
+        "LabAttempt", back_populates="lab", cascade="all, delete-orphan"
+    )
 
     def prerequisite_ids(self) -> list[int]:
         return [p.requires_lab_id for p in self.prerequisites]
@@ -66,21 +68,40 @@ class LabPrerequisite(db.Model):
     __tablename__ = "lab_prerequisites"
 
     id = db.Column(db.Integer, primary_key=True)
-    lab_id = db.Column(db.Integer, db.ForeignKey("labs.id", ondelete="CASCADE"), nullable=False, index=True)
-    requires_lab_id = db.Column(db.Integer, db.ForeignKey("labs.id", ondelete="CASCADE"), nullable=False)
+    lab_id = db.Column(
+        db.Integer,
+        db.ForeignKey("labs.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    requires_lab_id = db.Column(
+        db.Integer, db.ForeignKey("labs.id", ondelete="CASCADE"), nullable=False
+    )
 
     lab = db.relationship("Lab", foreign_keys=[lab_id], back_populates="prerequisites")
     requires_lab = db.relationship("Lab", foreign_keys=[requires_lab_id])
 
-    __table_args__ = (db.UniqueConstraint("lab_id", "requires_lab_id", name="uq_lab_prerequisite"),)
+    __table_args__ = (
+        db.UniqueConstraint("lab_id", "requires_lab_id", name="uq_lab_prerequisite"),
+    )
 
 
 class LabAttempt(db.Model, TimestampMixin):
     __tablename__ = "lab_attempts"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    lab_id = db.Column(db.Integer, db.ForeignKey("labs.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    lab_id = db.Column(
+        db.Integer,
+        db.ForeignKey("labs.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
 
     started_at = db.Column(db.DateTime)
     completed_at = db.Column(db.DateTime)
@@ -100,6 +121,4 @@ class LabAttempt(db.Model, TimestampMixin):
     lab = db.relationship("Lab", back_populates="attempts")
     user = db.relationship("User")
 
-    __table_args__ = (
-        db.Index("ix_lab_attempt_user_lab", "user_id", "lab_id"),
-    )
+    __table_args__ = (db.Index("ix_lab_attempt_user_lab", "user_id", "lab_id"),)

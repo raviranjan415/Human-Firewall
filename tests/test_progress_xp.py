@@ -95,11 +95,18 @@ def test_comic_completion_awards_xp_once(client, learner, app, db):
     first = client.post(f"/api/comics/{comic.id}/complete", json={})
     assert first.status_code == 200
     assert first.get_json()["xp_awarded"] == app.config["XP_REWARDS"]["comic"]
-    assert client.post(f"/api/comics/{comic.id}/complete", json={}).get_json()["xp_awarded"] == 0
+    assert (
+        client.post(f"/api/comics/{comic.id}/complete", json={}).get_json()[
+            "xp_awarded"
+        ]
+        == 0
+    )
 
 
 def test_completion_records_a_streak_day(app, learner, db):
-    progress_service.complete_activity(learner, "comic", 424242, event_type="comic_read")
+    progress_service.complete_activity(
+        learner, "comic", 424242, event_type="comic_read"
+    )
 
     db.session.expire_all()
     refreshed = User.query.get(learner.id)
@@ -153,7 +160,9 @@ def test_achievements_are_awarded_only_once(app, learner, db):
     achievement = Achievement.query.filter_by(code="first_steps").first()
     assert achievement is not None
 
-    progress_service.complete_activity(learner, "comic", 909090, event_type="comic_read")
+    progress_service.complete_activity(
+        learner, "comic", 909090, event_type="comic_read"
+    )
     from app.models import Lab, LabAttempt
 
     lab = Lab.query.filter_by(number=1).first()
@@ -172,9 +181,12 @@ def test_achievements_are_awarded_only_once(app, learner, db):
 
     gamification.evaluate_achievements(learner)
     gamification.evaluate_achievements(learner)
-    assert UserAchievement.query.filter_by(
-        user_id=learner.id, achievement_id=achievement.id
-    ).count() == 1
+    assert (
+        UserAchievement.query.filter_by(
+            user_id=learner.id, achievement_id=achievement.id
+        ).count()
+        == 1
+    )
 
 
 def test_xp_breakdown_sums_the_ledger(app, learner, db):
@@ -213,9 +225,12 @@ def test_failed_attempts_are_logged_without_punishment(app, learner, db):
     progress_service.record_failure(learner, "lab", 1, score=20)
     db.session.expire_all()
 
-    assert LearningEvent.query.filter_by(
-        user_id=learner.id, event_type="activity_failed"
-    ).count() == 1
+    assert (
+        LearningEvent.query.filter_by(
+            user_id=learner.id, event_type="activity_failed"
+        ).count()
+        == 1
+    )
     assert XPTransaction.query.filter_by(user_id=learner.id).count() == 0
     record = UserProgress.query.filter_by(
         user_id=learner.id, item_type="lab", item_id=1

@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-import pytest
-from app.extensions import db
-from app.models import Game, GameScenario, ScenarioChoice, UserProgress, XPTransaction
+from app.models import Game
 from app.services.catalog_games_30 import GAMES_30
-from .conftest import login, LEARNER_PASSWORD
+
+from .conftest import LEARNER_PASSWORD, login
 
 
 def test_all_30_games_seeded(app):
     """Verify that all 30 specified cybersecurity awareness games exist in the database."""
     with app.app_context():
         from app.services.seed import ensure_games
+
         ensure_games()
 
         expected_slugs = [g["slug"] for g in GAMES_30]
@@ -29,13 +29,19 @@ def test_game_scenarios_and_choices_structure(app):
     """Verify that every game contains valid scenarios and choices or threat flags."""
     with app.app_context():
         from app.services.seed import ensure_games
+
         ensure_games()
 
         for spec in GAMES_30:
             game = Game.query.filter_by(slug=spec["slug"]).first()
             assert game is not None
             assert game.title_en
-            assert game.difficulty in ("beginner", "intermediate", "advanced", "capstone")
+            assert game.difficulty in (
+                "beginner",
+                "intermediate",
+                "advanced",
+                "capstone",
+            )
             assert len(game.scenarios) >= 1
 
             for scenario in game.scenarios:
@@ -43,13 +49,16 @@ def test_game_scenarios_and_choices_structure(app):
                 assert scenario.explanation_en
                 if scenario.choices:
                     correct_choices = [c for c in scenario.choices if c.is_correct]
-                    assert len(correct_choices) >= 1, f"Scenario {scenario.id} has no correct choice."
+                    assert len(correct_choices) >= 1, (
+                        f"Scenario {scenario.id} has no correct choice."
+                    )
 
 
 def test_game_answer_evaluation_api(client, learner, app):
     """Test server-side grading via /api/games/<slug>/answer."""
     with app.app_context():
         from app.services.seed import ensure_games
+
         ensure_games()
 
         game = Game.query.filter_by(slug="phishing-detective").first()
@@ -61,7 +70,7 @@ def test_game_answer_evaluation_api(client, learner, app):
 
     # 1. Correct submission
     res_correct = client.post(
-        f"/api/games/phishing-detective/answer",
+        "/api/games/phishing-detective/answer",
         json={"scenario_id": scenario.id, "choice_id": correct_choice.id},
     )
     assert res_correct.status_code == 200
@@ -73,7 +82,7 @@ def test_game_answer_evaluation_api(client, learner, app):
 
     # 2. Incorrect submission
     res_wrong = client.post(
-        f"/api/games/phishing-detective/answer",
+        "/api/games/phishing-detective/answer",
         json={"scenario_id": scenario.id, "choice_id": incorrect_choice.id},
     )
     assert res_wrong.status_code == 200
@@ -87,6 +96,7 @@ def test_game_completion_and_idempotent_rewards(client, learner, app):
     """Verify that completing a game records progress and awards XP exactly once."""
     with app.app_context():
         from app.services.seed import ensure_games
+
         ensure_games()
 
     login(client, "learner1", LEARNER_PASSWORD)
@@ -113,13 +123,16 @@ def test_game_completion_and_idempotent_rewards(client, learner, app):
     assert d2["ok"] is True
     assert d2["passed"] is True
     assert d2["first_completion"] is False
-    assert d2["xp_awarded"] == 0, "Replaying a completed game must award 0 duplicate XP."
+    assert d2["xp_awarded"] == 0, (
+        "Replaying a completed game must award 0 duplicate XP."
+    )
 
 
 def test_games_hub_view(client, learner, app):
     """Test games hub rendering and query performance."""
     with app.app_context():
         from app.services.seed import ensure_games
+
         ensure_games()
 
     login(client, "learner1", LEARNER_PASSWORD)

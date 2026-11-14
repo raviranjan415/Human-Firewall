@@ -30,7 +30,12 @@ from app.services import analytics
 admin_bp = Blueprint("admin", __name__)
 
 
-def _audit(action: str, target_type: str | None = None, target_id=None, detail: dict | None = None):
+def _audit(
+    action: str,
+    target_type: str | None = None,
+    target_id=None,
+    detail: dict | None = None,
+):
     db.session.add(
         AuditLog(
             actor_id=current_user.id if current_user.is_authenticated else None,
@@ -50,7 +55,9 @@ def index():
         "admin/index.html",
         overview=analytics.admin_overview(),
         hardest=analytics.hardest_labs(),
-        recent_audit=AuditLog.query.order_by(AuditLog.created_at.desc()).limit(10).all(),
+        recent_audit=AuditLog.query.order_by(AuditLog.created_at.desc())
+        .limit(10)
+        .all(),
         content_states={
             "labs_published": Lab.query.filter_by(state="published").count(),
             "labs_draft": Lab.query.filter_by(state="draft").count(),
@@ -97,8 +104,12 @@ def toggle_user(user_id: int):
     user.is_active = not user.is_active
     _audit("user_active_toggled", "user", user.id, {"is_active": user.is_active})
     db.session.commit()
-    flash(f"{user.name} is now {'active' if user.is_active else 'disabled'}.", "success")
-    return redirect(url_for("admin.users", q=request.args.get("q"), role=request.args.get("role")))
+    flash(
+        f"{user.name} is now {'active' if user.is_active else 'disabled'}.", "success"
+    )
+    return redirect(
+        url_for("admin.users", q=request.args.get("q"), role=request.args.get("role"))
+    )
 
 
 @admin_bp.route("/content")
@@ -175,7 +186,9 @@ def review_news(news_id: int):
     _audit("news_reviewed", "cyber_news", story.id, {"decision": decision})
     db.session.commit()
     flash(f"Story marked {decision}.", "success")
-    return redirect(url_for("admin.news_queue", state=request.args.get("state", "pending")))
+    return redirect(
+        url_for("admin.news_queue", state=request.args.get("state", "pending"))
+    )
 
 
 @admin_bp.route("/audit")
@@ -215,10 +228,26 @@ def trigger_drift_check():
     drift_script = base_dir / "puppet" / "scripts" / "drift_demo.py"
 
     try:
-        proc = subprocess.run([sys.executable, str(drift_script)], capture_output=True, text=True, timeout=15)
-        _audit("puppet_drift_check_triggered", "devops", None, {"returncode": proc.returncode})
+        
+        proc = subprocess.run(
+    [sys.executable, str(drift_script)],
+    check=False,
+    capture_output=True,
+    text=True,
+    timeout=15
+)
+
+        _audit(
+            "puppet_drift_check_triggered",
+            "devops",
+            None,
+            {"returncode": proc.returncode},
+        )
         db.session.commit()
-        flash("Puppet configuration drift check executed successfully. System state restored to 100% compliance.", "success")
+        flash(
+            "Puppet configuration drift check executed successfully. System state restored to 100% compliance.",
+            "success",
+        )
     except Exception as exc:
         flash(f"Failed to execute drift check: {exc}", "error")
 
@@ -236,10 +265,23 @@ def trigger_pipeline_check():
     orch_script = base_dir / "scripts" / "devops_orchestrator.py"
 
     try:
-        proc = subprocess.run([sys.executable, str(orch_script)], capture_output=True, text=True, timeout=20)
-        _audit("devops_pipeline_check_triggered", "devops", None, {"returncode": proc.returncode})
+        proc = subprocess.run(
+            [sys.executable, str(orch_script)],
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+        _audit(
+            "devops_pipeline_check_triggered",
+            "devops",
+            None,
+            {"returncode": proc.returncode},
+        )
         db.session.commit()
-        flash("Full DevOps continuous delivery pipeline verified successfully (Terraform -> Ansible -> Puppet -> SRE Health).", "success")
+        flash(
+            "Full DevOps continuous delivery pipeline verified successfully (Terraform -> Ansible -> Puppet -> SRE Health).",
+            "success",
+        )
     except Exception as exc:
         flash(f"Failed to run pipeline verification: {exc}", "error")
 

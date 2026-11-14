@@ -35,10 +35,16 @@ def eligibility(user: User, tier: str) -> dict:
             "remaining": required - len(passed),
         }
 
-    existing = Certificate.query.filter_by(user_id=user.id, tier=tier, revoked=False).first()
+    existing = Certificate.query.filter_by(
+        user_id=user.id, tier=tier, revoked=False
+    ).first()
     if existing:
-        return {"eligible": False, "reason": "already_issued", "tier": tier,
-                "certificate": existing}
+        return {
+            "eligible": False,
+            "reason": "already_issued",
+            "tier": tier,
+            "certificate": existing,
+        }
 
     return {
         "eligible": True,
@@ -61,7 +67,9 @@ def _generate_code() -> str:
     return secrets.token_hex(4).upper()
 
 
-def issue_certificate(user: User, tier: str, score_percentage: int | None = None) -> dict:
+def issue_certificate(
+    user: User, tier: str, score_percentage: int | None = None
+) -> dict:
     """Issue a certificate inside a single transaction.
 
     The ``uq_certificate_tier_per_user`` constraint guarantees a learner can
@@ -99,8 +107,13 @@ def issue_certificate(user: User, tier: str, score_percentage: int | None = None
         reference_type="certificate",
         reference_id=certificate.certificate_uid,
     )
-    gamification.log_event(user.id, "certificate_issued", "certificate", certificate.id,
-                           payload={"tier": tier})
+    gamification.log_event(
+        user.id,
+        "certificate_issued",
+        "certificate",
+        certificate.id,
+        payload={"tier": tier},
+    )
     db.session.commit()
     gamification.evaluate_achievements(user)
     db.session.commit()
@@ -109,13 +122,17 @@ def issue_certificate(user: User, tier: str, score_percentage: int | None = None
 
 def verify(code: str) -> dict | None:
     """Public verification: reveals only the minimum necessary information."""
-    certificate = Certificate.query.filter_by(verification_code=(code or "").strip().upper()).first()
+    certificate = Certificate.query.filter_by(
+        verification_code=(code or "").strip().upper()
+    ).first()
     if certificate is None or certificate.revoked:
         return None
     return {
         "learner_name": certificate.learner_name,
         "tier": certificate.tier,
-        "tier_name": CERTIFICATE_TIERS.get(certificate.tier, {}).get("name", certificate.tier),
+        "tier_name": CERTIFICATE_TIERS.get(certificate.tier, {}).get(
+            "name", certificate.tier
+        ),
         "issued_at": certificate.issued_at,
         "certificate_uid": certificate.certificate_uid,
         "labs_completed": certificate.labs_completed,
@@ -127,20 +144,21 @@ def build_pdf(certificate: Certificate) -> bytes:
     """Render a PDF certificate with a verification QR code."""
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.units import mm
+    from reportlab.lib.utils import ImageReader
     from reportlab.pdfgen import canvas as pdf_canvas
 
-    from reportlab.lib.utils import ImageReader
-
-    tier_name = CERTIFICATE_TIERS.get(certificate.tier, {}).get("name", certificate.tier.title())
+    tier_name = CERTIFICATE_TIERS.get(certificate.tier, {}).get(
+        "name", certificate.tier.title()
+    )
 
     try:
         verification_url = url_for(
-            "certificates.verify_page", code=certificate.verification_code, _external=True
+            "certificates.verify_page",
+            code=certificate.verification_code,
+            _external=True,
         )
     except Exception:  # pragma: no cover - outside request context
-        verification_url = (
-            f"https://humanfirewall.example/certificates/verify/{certificate.verification_code}"
-        )
+        verification_url = f"https://humanfirewall.example/certificates/verify/{certificate.verification_code}"
 
     buffer = io.BytesIO()
     page = pdf_canvas.Canvas(buffer, pagesize=landscape(A4))
@@ -164,7 +182,11 @@ def build_pdf(certificate: Certificate) -> bytes:
     page.drawCentredString(width / 2, height - 45 * mm, "Human Firewall")
     page.setFillColorRGB(0.85, 0.9, 1.0)
     page.setFont("Helvetica", 13)
-    page.drawCentredString(width / 2, height - 55 * mm, "Defensive Cybersecurity Awareness & Gamified Learning")
+    page.drawCentredString(
+        width / 2,
+        height - 55 * mm,
+        "Defensive Cybersecurity Awareness & Gamified Learning",
+    )
 
     page.setFillColorRGB(1, 1, 1)
     page.setFont("Helvetica-Bold", 19)
@@ -192,13 +214,15 @@ def build_pdf(certificate: Certificate) -> bytes:
     page.setFont("Helvetica", 10)
     page.setFillColorRGB(0.72, 0.78, 0.9)
     page.drawString(
-        25 * mm, 30 * mm,
+        25 * mm,
+        30 * mm,
         f"Certificate ID: {certificate.certificate_uid}    "
         f"Issued: {certificate.issued_at.strftime('%d %b %Y')}    "
         f"Verification code: {certificate.verification_code}",
     )
     page.drawString(
-        25 * mm, 25 * mm,
+        25 * mm,
+        25 * mm,
         "Platform training record — not an accredited professional certification.",
     )
 

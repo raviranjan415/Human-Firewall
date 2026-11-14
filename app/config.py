@@ -99,7 +99,9 @@ class BaseConfig:
 
     # --- News ingestion ---------------------------------------------------
     NEWS_INGEST_ENABLED = _as_bool(os.environ.get("NEWS_INGEST_ENABLED"), True)
-    NEWS_INGEST_INTERVAL_HOURS = _as_int(os.environ.get("NEWS_INGEST_INTERVAL_HOURS"), 6)
+    NEWS_INGEST_INTERVAL_HOURS = _as_int(
+        os.environ.get("NEWS_INGEST_INTERVAL_HOURS"), 6
+    )
     NEWS_MAX_ITEMS_PER_SOURCE = _as_int(os.environ.get("NEWS_MAX_ITEMS_PER_SOURCE"), 15)
 
     # --- i18n -------------------------------------------------------------

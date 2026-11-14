@@ -41,9 +41,9 @@ class HistoricalIncident(db.Model, TimestampMixin):
     remediation_hi = db.Column(db.Text)
     precautions_en = db.Column(db.Text)
     precautions_hi = db.Column(db.Text)
-    lessons_en = db.Column(db.Text)      # JSON list of 5 lesson strings
+    lessons_en = db.Column(db.Text)  # JSON list of 5 lesson strings
     lessons_hi = db.Column(db.Text)
-    technical_detail_en = db.Column(db.Text)   # expandable "advanced" section
+    technical_detail_en = db.Column(db.Text)  # expandable "advanced" section
     technical_detail_hi = db.Column(db.Text)
 
     confidence = db.Column(db.String(24), default="confirmed", nullable=False)
@@ -64,7 +64,9 @@ class IncidentSource(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     incident_id = db.Column(
-        db.Integer, db.ForeignKey("historical_incidents.id", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey("historical_incidents.id", ondelete="CASCADE"),
+        nullable=False,
     )
     label = db.Column(db.String(200), nullable=False)
     url = db.Column(db.String(600), nullable=False)
@@ -93,7 +95,9 @@ class CyberNews(db.Model, TimestampMixin):
     __tablename__ = "cyber_news"
 
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer, db.ForeignKey("news_sources.id", ondelete="SET NULL"))
+    source_id = db.Column(
+        db.Integer, db.ForeignKey("news_sources.id", ondelete="SET NULL")
+    )
     title = db.Column(db.String(400), nullable=False)
     url = db.Column(db.String(700), nullable=False)
     content_hash = db.Column(db.String(64), unique=True, nullable=False, index=True)
@@ -114,18 +118,65 @@ class CyberNews(db.Model, TimestampMixin):
     related_lab_id = db.Column(db.Integer, db.ForeignKey("labs.id"))
 
     # review_state: pending | approved | rejected
-    review_state = db.Column(db.String(24), default="pending", nullable=False, index=True)
+    review_state = db.Column(
+        db.String(24), default="pending", nullable=False, index=True
+    )
     reviewed_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     is_breaking = db.Column(db.Boolean, default=False, nullable=False)
 
     source = db.relationship("NewsSource")
+
+    @property
+    def meta(self) -> dict:
+        import json
+        if not self.prevention_checklist_json:
+            return {}
+        try:
+            return json.loads(self.prevention_checklist_json)
+        except Exception:
+            return {}
+
+    @property
+    def category(self) -> str:
+        return self.meta.get("category", "Cyber Attack")
+
+    @property
+    def severity(self) -> str:
+        return self.meta.get("severity", "High")
+
+    @property
+    def financial_impact(self) -> str:
+        return self.meta.get("financial_impact", "")
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "title": self.title,
+            "url": self.url,
+            "source": self.source.name if self.source else "Cyber Intelligence",
+            "published_at": self.published_at.isoformat() if self.published_at else None,
+            "category": self.category,
+            "severity": self.severity,
+            "financial_impact": self.financial_impact,
+            "summary": self.summary_en or self.what_happened_en or "",
+            "what_happened": self.what_happened_en or "",
+            "who_is_affected": self.who_is_affected_en or "",
+            "why_it_matters": self.why_it_matters_en or "",
+            "what_to_do": self.what_to_do_en or "",
+            "technical_analysis": self.meta.get("technical_analysis", {}),
+            "behavioral_analysis": self.meta.get("behavioral_analysis", {}),
+            "key_takeaways": self.meta.get("key_takeaways", []),
+            "is_breaking": self.is_breaking,
+        }
 
 
 class CommunityPost(db.Model, TimestampMixin):
     __tablename__ = "community_posts"
 
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    author_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     group_name = db.Column(db.String(120))
     topic = db.Column(db.String(160), index=True)
     body = db.Column(db.Text, nullable=False)
@@ -138,7 +189,9 @@ class ModerationReport(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     reporter_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
-    post_id = db.Column(db.Integer, db.ForeignKey("community_posts.id", ondelete="CASCADE"))
+    post_id = db.Column(
+        db.Integer, db.ForeignKey("community_posts.id", ondelete="CASCADE")
+    )
     reason = db.Column(db.String(300), nullable=False)
     status = db.Column(db.String(24), default="open", nullable=False, index=True)
     handled_by_id = db.Column(db.Integer, db.ForeignKey("users.id"))

@@ -58,12 +58,19 @@ def index():
         sectors=_distinct(HistoricalIncident.sector),
         categories=_distinct(HistoricalIncident.category),
         confidence_levels=CONFIDENCE_ORDER,
-        selected={"q": search, "sector": sector, "category": category, "confidence": confidence},
+        selected={
+            "q": search,
+            "sector": sector,
+            "category": category,
+            "confidence": confidence,
+        },
     )
 
 
 @incidents_bp.route("/<slug>")
 @login_required
 def detail(slug: str):
-    incident = HistoricalIncident.query.filter_by(slug=slug, state="published").first_or_404()
+    incident = HistoricalIncident.query.filter_by(
+        slug=slug, state="published"
+    ).first_or_404()
     return render_template("incidents/detail.html", incident=incident)

@@ -34,7 +34,12 @@ def _localized_list(raw: str | None) -> list:
     for item in data:
         if isinstance(item, dict):
             if "en" in item or "hi" in item:
-                resolved.append({"id": item.get("id"), "text": item.get(locale) or item.get("en") or ""})
+                resolved.append(
+                    {
+                        "id": item.get("id"),
+                        "text": item.get(locale) or item.get("en") or "",
+                    }
+                )
             else:
                 resolved.append(item)
         else:

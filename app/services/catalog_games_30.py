@@ -44,10 +44,25 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Artificial urgency, external lookalike domain, threatening financial consequence.",
                 "warning_signs_hi": "कृत्रिम तात्कालिकता, बाहरी नकली डोमेन, वित्तीय रोक की धमकी।",
                 "choices": [
-                    ("Click the link to verify banking info right away", False, "Never enter banking details on unverified third-party links.", "सत्यापित न किए गए लिंक पर कभी भी बैंकिंग विवरण दर्ज न करें।"),
-                    ("Report as phishing and confirm with HR via official internal portal", True, "Excellent! Reporting and verifying via official channels protects payroll.", "बहुत बढ़िया! आधिकारिक माध्यमों से रिपोर्ट करना सबसे सुरक्षित है।"),
-                    ("Reply with your bank account number and IFSC", False, "Severe security risk: Never send financial credentials in plain text.", "गंभीर जोखिम: कभी भी सादे पाठ में वित्तीय क्रेडेंशियल न भेजें।")
-                ]
+                    (
+                        "Click the link to verify banking info right away",
+                        False,
+                        "Never enter banking details on unverified third-party links.",
+                        "सत्यापित न किए गए लिंक पर कभी भी बैंकिंग विवरण दर्ज न करें।",
+                    ),
+                    (
+                        "Report as phishing and confirm with HR via official internal portal",
+                        True,
+                        "Excellent! Reporting and verifying via official channels protects payroll.",
+                        "बहुत बढ़िया! आधिकारिक माध्यमों से रिपोर्ट करना सबसे सुरक्षित है।",
+                    ),
+                    (
+                        "Reply with your bank account number and IFSC",
+                        False,
+                        "Severe security risk: Never send financial credentials in plain text.",
+                        "गंभीर जोखिम: कभी भी सादे पाठ में वित्तीय क्रेडेंशियल न भेजें।",
+                    ),
+                ],
             },
             {
                 "type": "email",
@@ -60,10 +75,25 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "None. Informational announcement with no credential harvesting.",
                 "warning_signs_hi": "कोई नहीं। बिना किसी क्रेडेंशियल अनुरोध के सूचनात्मक घोषणा।",
                 "choices": [
-                    ("Flag as a malicious attack and panic", False, "Not every maintenance email is an attack.", "हर रखरखाव ईमेल हमला नहीं होता।"),
-                    ("Verify internally and acknowledge routine schedule", True, "Correct: This is a legitimate internal advisory.", "सही: यह एक वैध आंतरिक सलाह है।"),
-                    ("Send your VPN credentials to the sender", False, "Never volunteer passwords to any notice.", "किसी भी नोटिस पर पासवर्ड न दें।")
-                ]
+                    (
+                        "Flag as a malicious attack and panic",
+                        False,
+                        "Not every maintenance email is an attack.",
+                        "हर रखरखाव ईमेल हमला नहीं होता।",
+                    ),
+                    (
+                        "Verify internally and acknowledge routine schedule",
+                        True,
+                        "Correct: This is a legitimate internal advisory.",
+                        "सही: यह एक वैध आंतरिक सलाह है।",
+                    ),
+                    (
+                        "Send your VPN credentials to the sender",
+                        False,
+                        "Never volunteer passwords to any notice.",
+                        "किसी भी नोटिस पर पासवर्ड न दें।",
+                    ),
+                ],
             },
             {
                 "type": "email",
@@ -76,12 +106,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Isolation request ('cannot pick up phone'), secretive instructions, gift card demand.",
                 "warning_signs_hi": "फ़ोन न उठाने का बहाना, गुप्त रखने का निर्देश, गिफ्ट कार्ड की मांग।",
                 "choices": [
-                    ("Run to the nearest store to buy the cards quickly", False, "You would lose money to a scammer.", "आप धोखेबाज के हाथों पैसे गंवा देंगे।"),
-                    ("Report to Infosec immediately and call CEO through corporate directory", True, "Spot on! Out-of-band verification exposes executive impersonation.", "बिल्कुल सही! स्वतंत्र पुष्टि करने से धोखाधड़ी उजागर होती है।"),
-                    ("Ask the sender which store has the best discount", False, "This validates your email to the attacker.", "यह हमलावर को पुष्टि करता है कि आप झांसे में आ रहे हैं।")
-                ]
-            }
-        ]
+                    (
+                        "Run to the nearest store to buy the cards quickly",
+                        False,
+                        "You would lose money to a scammer.",
+                        "आप धोखेबाज के हाथों पैसे गंवा देंगे।",
+                    ),
+                    (
+                        "Report to Infosec immediately and call CEO through corporate directory",
+                        True,
+                        "Spot on! Out-of-band verification exposes executive impersonation.",
+                        "बिल्कुल सही! स्वतंत्र पुष्टि करने से धोखाधड़ी उजागर होती है।",
+                    ),
+                    (
+                        "Ask the sender which store has the best discount",
+                        False,
+                        "This validates your email to the attacker.",
+                        "यह हमलावर को पुष्टि करता है कि आप झांसे में आ रहे हैं।",
+                    ),
+                ],
+            },
+        ],
     },
     {
         "slug": "smishing-showdown",
@@ -110,10 +155,25 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Shortened bit.ly URL, unsolicited package notice, credit card fee requirement.",
                 "warning_signs_hi": "शॉर्ट यूआरएल, अवांछित पार्सल सूचना, कार्ड शुल्क की मांग।",
                 "choices": [
-                    ("Open link and pay $1.49 immediately", False, "The attacker will steal your full credit card number and CVV.", "हमलावर आपका क्रेडिट कार्ड नंबर और सीवीवी चुरा लेगा।"),
-                    ("Delete SMS and check tracking only on official postal website", True, "Correct! Legitimate carriers do not withhold packages over tiny bit.ly fees.", "सही! आधिकारिक ट्रैकिंग वेबसाइट पर सीधे जांचना ही सही तरीका है।"),
-                    ("Text back with your full residential address and SSN", False, "Never reply with personal identifiers.", "व्यक्तिगत जानकारी कभी भी एसएमएस में न भेजें।")
-                ]
+                    (
+                        "Open link and pay $1.49 immediately",
+                        False,
+                        "The attacker will steal your full credit card number and CVV.",
+                        "हमलावर आपका क्रेडिट कार्ड नंबर और सीवीवी चुरा लेगा।",
+                    ),
+                    (
+                        "Delete SMS and check tracking only on official postal website",
+                        True,
+                        "Correct! Legitimate carriers do not withhold packages over tiny bit.ly fees.",
+                        "सही! आधिकारिक ट्रैकिंग वेबसाइट पर सीधे जांचना ही सही तरीका है।",
+                    ),
+                    (
+                        "Text back with your full residential address and SSN",
+                        False,
+                        "Never reply with personal identifiers.",
+                        "व्यक्तिगत जानकारी कभी भी एसएमएस में न भेजें।",
+                    ),
+                ],
             },
             {
                 "type": "sms",
@@ -126,12 +186,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "HTTP instead of HTTPS, non-bank domain (.in redirect), account blockage threat.",
                 "warning_signs_hi": "एचटीटीपी लिंक, गैर-बैंकिंग डोमेन, खाता ब्लॉक करने की धमकी।",
                 "choices": [
-                    ("Click the link to prevent account blockage", False, "Traps you into a fake credential harvesting portal.", "यह आपको नकली बैंकिंग पोर्टल पर फंसा देगा।"),
-                    ("Forward message to 1930 / bank cyber fraud cell and ignore link", True, "Perfect! Reporting to the cyber fraud helpline protects others as well.", "शानदार! साइबर अपराध सेल में शिकायत करना सही कदम है।"),
-                    ("Call the sender phone number to give your OTP", False, "Never share OTPs with unverified phone callers.", "अज्ञात कॉलर को कभी ओटीपी न दें।")
-                ]
-            }
-        ]
+                    (
+                        "Click the link to prevent account blockage",
+                        False,
+                        "Traps you into a fake credential harvesting portal.",
+                        "यह आपको नकली बैंकिंग पोर्टल पर फंसा देगा।",
+                    ),
+                    (
+                        "Forward message to 1930 / bank cyber fraud cell and ignore link",
+                        True,
+                        "Perfect! Reporting to the cyber fraud helpline protects others as well.",
+                        "शानदार! साइबर अपराध सेल में शिकायत करना सही कदम है।",
+                    ),
+                    (
+                        "Call the sender phone number to give your OTP",
+                        False,
+                        "Never share OTPs with unverified phone callers.",
+                        "अज्ञात कॉलर को कभी ओटीपी न दें।",
+                    ),
+                ],
+            },
+        ],
     },
     {
         "slug": "vishing-challenge",
@@ -160,12 +235,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Caller creates panic, demands third-party remote desktop software, bypasses official ticketing.",
                 "warning_signs_hi": "घबराहट पैदा करना, रिमोट सॉफ्टवेयर की मांग, आधिकारिक टिकटिंग से बचना।",
                 "choices": [
-                    ("Launch AnyDesk and read out the connection pin", False, "Grants the attacker unfiltered remote control of your computer.", "हमलावर को आपके पूरे सिस्टम का रिमोट कंट्रोल मिल जाएगा।"),
-                    ("Politely decline, hang up, and call internal IT on their known corporate extension", True, "Excellent! Always verify caller identity out-of-band via verified internal numbers.", "उत्कृष्ट! हमेशा आधिकारिक आंतरिक नंबर पर वापस कॉल करके पुष्टि करें।"),
-                    ("Give them your workstation Windows login password instead", False, "Catastrophic security failure: never disclose passwords on calls.", "गंभीर भूल: कभी भी फोन पर पासवर्ड न बताएं।")
-                ]
+                    (
+                        "Launch AnyDesk and read out the connection pin",
+                        False,
+                        "Grants the attacker unfiltered remote control of your computer.",
+                        "हमलावर को आपके पूरे सिस्टम का रिमोट कंट्रोल मिल जाएगा।",
+                    ),
+                    (
+                        "Politely decline, hang up, and call internal IT on their known corporate extension",
+                        True,
+                        "Excellent! Always verify caller identity out-of-band via verified internal numbers.",
+                        "उत्कृष्ट! हमेशा आधिकारिक आंतरिक नंबर पर वापस कॉल करके पुष्टि करें।",
+                    ),
+                    (
+                        "Give them your workstation Windows login password instead",
+                        False,
+                        "Catastrophic security failure: never disclose passwords on calls.",
+                        "गंभीर भूल: कभी भी फोन पर पासवर्ड न बताएं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "impersonation-trap",
@@ -194,12 +284,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Typosquatted domain (c1oud), sudden changes to bank remittance instructions.",
                 "warning_signs_hi": "नकली डोमेन (c1oud), अचानक बैंक खाता बदलने का निर्देश।",
                 "choices": [
-                    ("Update the account and release the $48,200 wire immediately", False, "Funds would be permanently wired to an offshore criminal syndicate.", "धन स्थायी रूप से अपराधियों के खाते में चला जाएगा।"),
-                    ("Hold the payment, call the vendor's registered procurement liaison, and report typosquatting", True, "Flawless! Strict verification of bank changes prevents wire fraud.", "बिल्कुल सही! स्वतंत्र फोन सत्यापन से वित्तीय धोखाधड़ी रुकती है।"),
-                    ("Reply to the email asking if the new bank is safe", False, "The attacker controls the mailbox and will gladly reply 'yes'.", "हमलावर खुद ही उत्तर देकर कहेगा कि सब ठीक है।")
-                ]
+                    (
+                        "Update the account and release the $48,200 wire immediately",
+                        False,
+                        "Funds would be permanently wired to an offshore criminal syndicate.",
+                        "धन स्थायी रूप से अपराधियों के खाते में चला जाएगा।",
+                    ),
+                    (
+                        "Hold the payment, call the vendor's registered procurement liaison, and report typosquatting",
+                        True,
+                        "Flawless! Strict verification of bank changes prevents wire fraud.",
+                        "बिल्कुल सही! स्वतंत्र फोन सत्यापन से वित्तीय धोखाधड़ी रुकती है।",
+                    ),
+                    (
+                        "Reply to the email asking if the new bank is safe",
+                        False,
+                        "The attacker controls the mailbox and will gladly reply 'yes'.",
+                        "हमलावर खुद ही उत्तर देकर कहेगा कि सब ठीक है।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "bait-or-truth",
@@ -228,12 +333,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Request to disable antivirus, pirated commercial software, unverified Russian domain.",
                 "warning_signs_hi": "एंटीवायरस बंद करने का अनुरोध, पायरेटेड सॉफ्टवेयर, संदिग्ध डोमेन।",
                 "choices": [
-                    ("Disable antivirus and run setup.exe as Administrator", False, "Your entire system and network credentials will be compromised.", "आपका सिस्टम और क्रेडेंशियल पूरी तरह से हैक हो जाएंगे।"),
-                    ("Close tab immediately and obtain tools through authorized procurement", True, "Spot on! Commercial software must always come from licensed vendors.", "सही! सॉफ्टवेयर केवल अधिकृत और लाइसेंसीकृत स्रोत से ही लेना चाहिए।"),
-                    ("Upload the keygen to your company Google Drive to share with coworkers", False, "Spreads the infection across company assets.", "यह कंपनी के नेटवर्क में संक्रमण फैला देगा।")
-                ]
+                    (
+                        "Disable antivirus and run setup.exe as Administrator",
+                        False,
+                        "Your entire system and network credentials will be compromised.",
+                        "आपका सिस्टम और क्रेडेंशियल पूरी तरह से हैक हो जाएंगे।",
+                    ),
+                    (
+                        "Close tab immediately and obtain tools through authorized procurement",
+                        True,
+                        "Spot on! Commercial software must always come from licensed vendors.",
+                        "सही! सॉफ्टवेयर केवल अधिकृत और लाइसेंसीकृत स्रोत से ही लेना चाहिए।",
+                    ),
+                    (
+                        "Upload the keygen to your company Google Drive to share with coworkers",
+                        False,
+                        "Spreads the infection across company assets.",
+                        "यह कंपनी के नेटवर्क में संक्रमण फैला देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "deepfake-detective",
@@ -262,14 +382,28 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Metallic acoustic distortion, avoidance of Slack/email, secret emergency wire request.",
                 "warning_signs_hi": "आवाज में धातु जैसी विकृति, आधिकारिक चैनलों से बचना, गुप्त धन अंतरण की मांग।",
                 "choices": [
-                    ("Authorize the wire immediately based on the familiar voice", False, "Classic executive deepfake scam that has stolen millions.", "यह डीपफेक स्कैम है जिससे करोड़ों का नुकसान हो सकता है।"),
-                    ("Demand challenge-response code or verify in person via secondary executive line", True, "Masterful! Verifying with pre-established verification protocols stops AI vishing.", "उत्कृष्ट! पूर्व-निर्धारित सत्यापन प्रोटोकॉल से एआई धोखाधड़ी रुकती है।"),
-                    ("Post the audio to public social media to ask if it's real", False, "Leaks sensitive company discussions publicly.", "कंपनी की गोपनीय चर्चा को सार्वजनिक कर देगा।")
-                ]
+                    (
+                        "Authorize the wire immediately based on the familiar voice",
+                        False,
+                        "Classic executive deepfake scam that has stolen millions.",
+                        "यह डीपफेक स्कैम है जिससे करोड़ों का नुकसान हो सकता है।",
+                    ),
+                    (
+                        "Demand challenge-response code or verify in person via secondary executive line",
+                        True,
+                        "Masterful! Verifying with pre-established verification protocols stops AI vishing.",
+                        "उत्कृष्ट! पूर्व-निर्धारित सत्यापन प्रोटोकॉल से एआई धोखाधड़ी रुकती है।",
+                    ),
+                    (
+                        "Post the audio to public social media to ask if it's real",
+                        False,
+                        "Leaks sensitive company discussions publicly.",
+                        "कंपनी की गोपनीय चर्चा को सार्वजनिक कर देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
-
     # =========================================================================
     # CATEGORY B — IDENTITY AND PASSWORD SECURITY
     # =========================================================================
@@ -300,13 +434,33 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Avoid predictable substitutions like @ for a, or standard words + year.",
                 "warning_signs_hi": "अनुमानित अक्षरों जैसे @ या वर्ष जोड़ने से बचें।",
                 "choices": [
-                    ("Option A: 'Password@2024!'", False, "Standard dictionary word + year cracked in under 3 seconds.", "डिक्शनरी शब्द और वर्ष 3 सेकंड में क्रैक हो जाते हैं।"),
-                    ("Option B: 'P@$$w0rd'", False, "Leetspeak substitution is indexed in every password cracking dictionary.", "यह लीटस्पीक हर हैकिंग डिक्शनरी में मौजूद है।"),
-                    ("Option C: 'correct-horse-battery-staple-ocean'", True, "Correct! Long multi-word passphrases provide supreme entropy.", "बिल्कुल सही! लंबे बहु-शब्द वाक्यांश उच्चतम सुरक्षा देते हैं।"),
-                    ("Option D: 'Admin1234'", False, "Extremely weak; cracked instantly by automated bots.", "अत्यंत कमजोर; बॉट इसे तुरंत क्रैक कर देते हैं।")
-                ]
+                    (
+                        "Option A: 'Password@2024!'",
+                        False,
+                        "Standard dictionary word + year cracked in under 3 seconds.",
+                        "डिक्शनरी शब्द और वर्ष 3 सेकंड में क्रैक हो जाते हैं।",
+                    ),
+                    (
+                        "Option B: 'P@$$w0rd'",
+                        False,
+                        "Leetspeak substitution is indexed in every password cracking dictionary.",
+                        "यह लीटस्पीक हर हैकिंग डिक्शनरी में मौजूद है।",
+                    ),
+                    (
+                        "Option C: 'correct-horse-battery-staple-ocean'",
+                        True,
+                        "Correct! Long multi-word passphrases provide supreme entropy.",
+                        "बिल्कुल सही! लंबे बहु-शब्द वाक्यांश उच्चतम सुरक्षा देते हैं।",
+                    ),
+                    (
+                        "Option D: 'Admin1234'",
+                        False,
+                        "Extremely weak; cracked instantly by automated bots.",
+                        "अत्यंत कमजोर; बॉट इसे तुरंत क्रैक कर देते हैं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "mfa-guardian",
@@ -335,12 +489,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Late-night unsolicited prompts, foreign geographic location, WhatsApp message coercion.",
                 "warning_signs_hi": "असमय नोटिफिकेशन, विदेशी स्थान, व्हाट्सएप पर दबाव।",
                 "choices": [
-                    ("Click Approve just to silence the phone and go back to sleep", False, "Catastrophic! The attacker gains full access to your corporate account.", "घातक भूल! हमलावर को आपके खाते का पूरा नियंत्रण मिल जाएगा।"),
-                    ("Click Deny, report fraud to SecOps immediately, and change your password", True, "Flawless! Denying the prompt and immediately rotating your password terminates the threat.", "उत्कृष्ट! अस्वीकार करके तुरंत पासवर्ड बदलना ही सही उपाय है।"),
-                    ("Turn phone on airplane mode and ignore forever", False, "The attacker still has your valid password and will keep trying.", "हमलावर के पास आपका पासवर्ड बना रहेगा।")
-                ]
+                    (
+                        "Click Approve just to silence the phone and go back to sleep",
+                        False,
+                        "Catastrophic! The attacker gains full access to your corporate account.",
+                        "घातक भूल! हमलावर को आपके खाते का पूरा नियंत्रण मिल जाएगा।",
+                    ),
+                    (
+                        "Click Deny, report fraud to SecOps immediately, and change your password",
+                        True,
+                        "Flawless! Denying the prompt and immediately rotating your password terminates the threat.",
+                        "उत्कृष्ट! अस्वीकार करके तुरंत पासवर्ड बदलना ही सही उपाय है।",
+                    ),
+                    (
+                        "Turn phone on airplane mode and ignore forever",
+                        False,
+                        "The attacker still has your valid password and will keep trying.",
+                        "हमलावर के पास आपका पासवर्ड बना रहेगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "account-recovery-rescue",
@@ -369,12 +538,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Public personal facts are easily discovered by OSINT investigators.",
                 "warning_signs_hi": "सार्वजनिक व्यक्तिगत जानकारी आसानी से खोजी जा सकती है।",
                 "choices": [
-                    ("Use your real dog's name that you post about on Instagram weekly", False, "OSINT tools will scrape your dog's name in seconds.", "हैकर इंस्टाग्राम से आपके पालतू का नाम तुरंत खोज लेंगे।"),
-                    ("Use a synthetic, randomized password-manager generated passphrase", True, "Spot on! Treating recovery questions as secondary passwords guarantees safety.", "सही! रिकवरी प्रश्नों को भी यादृच्छिक पासवर्ड की तरह मानें।"),
-                    ("Share the answers on Facebook so your family can recover your account", False, "Allows anyone on the internet to take over your account.", "इंटरनेट पर कोई भी आपके खाते पर कब्जा कर लेगा।")
-                ]
+                    (
+                        "Use your real dog's name that you post about on Instagram weekly",
+                        False,
+                        "OSINT tools will scrape your dog's name in seconds.",
+                        "हैकर इंस्टाग्राम से आपके पालतू का नाम तुरंत खोज लेंगे।",
+                    ),
+                    (
+                        "Use a synthetic, randomized password-manager generated passphrase",
+                        True,
+                        "Spot on! Treating recovery questions as secondary passwords guarantees safety.",
+                        "सही! रिकवरी प्रश्नों को भी यादृच्छिक पासवर्ड की तरह मानें।",
+                    ),
+                    (
+                        "Share the answers on Facebook so your family can recover your account",
+                        False,
+                        "Allows anyone on the internet to take over your account.",
+                        "इंटरनेट पर कोई भी आपके खाते पर कब्जा कर लेगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "credential-leak-detective",
@@ -403,12 +587,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Notice from a verified leak detection monitor.",
                 "warning_signs_hi": "सत्यापित डेटा लीक सूचना।",
                 "choices": [
-                    ("Ignore it because the leak came from an external webinar site", False, "If you reused the password anywhere, attackers are already testing it.", "यदि आपने पासवर्ड दोबारा इस्तेमाल किया है तो हमलावर उसे आजमा रहे हैं।"),
-                    ("Immediately rotate credentials everywhere, revoke existing sessions, and notify SecOps", True, "Exceptional! Fast remediation contains credential stuffing campaigns.", "उत्कृष्ट! तुरंत पासवर्ड बदलकर सक्रिय सत्र समाप्त करना सही है।"),
-                    ("Change your email address to avoid getting breach emails", False, "Does not fix the underlying credential compromise.", "यह मूल सुरक्षा समस्या को हल नहीं करता।")
-                ]
+                    (
+                        "Ignore it because the leak came from an external webinar site",
+                        False,
+                        "If you reused the password anywhere, attackers are already testing it.",
+                        "यदि आपने पासवर्ड दोबारा इस्तेमाल किया है तो हमलावर उसे आजमा रहे हैं।",
+                    ),
+                    (
+                        "Immediately rotate credentials everywhere, revoke existing sessions, and notify SecOps",
+                        True,
+                        "Exceptional! Fast remediation contains credential stuffing campaigns.",
+                        "उत्कृष्ट! तुरंत पासवर्ड बदलकर सक्रिय सत्र समाप्त करना सही है।",
+                    ),
+                    (
+                        "Change your email address to avoid getting breach emails",
+                        False,
+                        "Does not fix the underlying credential compromise.",
+                        "यह मूल सुरक्षा समस्या को हल नहीं करता।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "access-control-master",
@@ -437,14 +636,28 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Excessive administrative privilege request for low-tier operational tasks.",
                 "warning_signs_hi": "सामान्य कार्य के लिए अत्यधिक व्यवस्थापकीय अधिकारों की मांग।",
                 "choices": [
-                    ("Approve the request to avoid blocking project timelines", False, "Massive security violation risking full domain compromise.", "गंभीर उल्लंघन जिससे पूरा डोमेन खतरे में पड़ जाएगा।"),
-                    ("Reject Domain Admin and provision scoped IAM role limited to specific marketing asset path", True, "Correct! Least privilege restricts blast radius if the contractor account is breached.", "सही! सीमित अनुमतियां देने से सुरक्षा बनी रहती है।"),
-                    ("Give them the root AWS credentials directly via Slack", False, "Severe violation of corporate security policies.", "कंपनी सुरक्षा नीतियों का घोर उल्लंघन।")
-                ]
+                    (
+                        "Approve the request to avoid blocking project timelines",
+                        False,
+                        "Massive security violation risking full domain compromise.",
+                        "गंभीर उल्लंघन जिससे पूरा डोमेन खतरे में पड़ जाएगा।",
+                    ),
+                    (
+                        "Reject Domain Admin and provision scoped IAM role limited to specific marketing asset path",
+                        True,
+                        "Correct! Least privilege restricts blast radius if the contractor account is breached.",
+                        "सही! सीमित अनुमतियां देने से सुरक्षा बनी रहती है।",
+                    ),
+                    (
+                        "Give them the root AWS credentials directly via Slack",
+                        False,
+                        "Severe violation of corporate security policies.",
+                        "कंपनी सुरक्षा नीतियों का घोर उल्लंघन।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
-
     # =========================================================================
     # CATEGORY C — NETWORK AND WEB SECURITY
     # =========================================================================
@@ -475,12 +688,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Open, unauthenticated networks promising free high-speed access.",
                 "warning_signs_hi": "बिना पासवर्ड के मुफ्त इंटरनेट देने वाले खुले नेटवर्क।",
                 "choices": [
-                    ("Connect to 'Free_Airport_HighSpeed_Internet_No_Password' and check bank balances", False, "Attackers can intercept your plaintext traffic via Man-in-the-Middle (MitM).", "हमलावर आपके डेटा को बीच में ही चुरा सकते हैं।"),
-                    ("Use mobile hotspot or connect via encrypted enterprise network with corporate VPN active", True, "Spot on! Personal cellular tethering and VPN protect against MitM eavesdropping.", "सही! मोबाइल हॉटस्पॉट या कॉर्पोरेट वीपीएन ही सबसे सुरक्षित विकल्प है।"),
-                    ("Disable all firewall rules to speed up the public connection", False, "Leaves your operating system completely exposed to network worms.", "आपके कंप्यूटर को सीधे नेटवर्क हमलों के लिए खोल देता है।")
-                ]
+                    (
+                        "Connect to 'Free_Airport_HighSpeed_Internet_No_Password' and check bank balances",
+                        False,
+                        "Attackers can intercept your plaintext traffic via Man-in-the-Middle (MitM).",
+                        "हमलावर आपके डेटा को बीच में ही चुरा सकते हैं।",
+                    ),
+                    (
+                        "Use mobile hotspot or connect via encrypted enterprise network with corporate VPN active",
+                        True,
+                        "Spot on! Personal cellular tethering and VPN protect against MitM eavesdropping.",
+                        "सही! मोबाइल हॉटस्पॉट या कॉर्पोरेट वीपीएन ही सबसे सुरक्षित विकल्प है।",
+                    ),
+                    (
+                        "Disable all firewall rules to speed up the public connection",
+                        False,
+                        "Leaves your operating system completely exposed to network worms.",
+                        "आपके कंप्यूटर को सीधे नेटवर्क हमलों के लिए खोल देता है।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "url-inspector",
@@ -509,12 +737,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Reputable brand name used as a subdomain on an unrelated commercial TLD (.biz).",
                 "warning_signs_hi": "किसी प्रसिद्ध ब्रांड के नाम को सबडोमेन बनाकर नकली डोमेन में जोड़ना।",
                 "choices": [
-                    ("microsoft.com", False, "Incorrect! microsoft.com is only a subdomain prefix here.", "गलत! यहाँ microsoft.com सिर्फ एक सबडोमेन है।"),
-                    ("account-update-secops.biz", True, "Brilliant! You correctly identified the true root domain before the path slash.", "शानदार! आपने स्लैश से पहले असली रूट डोमेन को सही पहचाना।"),
-                    ("oauth/v2/authorize", False, "That is the resource path, not the host domain.", "यह रिसोर्स पाथ है, होस्ट डोमेन नहीं।")
-                ]
+                    (
+                        "microsoft.com",
+                        False,
+                        "Incorrect! microsoft.com is only a subdomain prefix here.",
+                        "गलत! यहाँ microsoft.com सिर्फ एक सबडोमेन है।",
+                    ),
+                    (
+                        "account-update-secops.biz",
+                        True,
+                        "Brilliant! You correctly identified the true root domain before the path slash.",
+                        "शानदार! आपने स्लैश से पहले असली रूट डोमेन को सही पहचाना।",
+                    ),
+                    (
+                        "oauth/v2/authorize",
+                        False,
+                        "That is the resource path, not the host domain.",
+                        "यह रिसोर्स पाथ है, होस्ट डोमेन नहीं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "browser-security-quest",
@@ -543,12 +786,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Excessive permissions for a basic utility (clipboard access, all websites).",
                 "warning_signs_hi": "एक छोटे टूल के लिए क्लिपबोर्ड और सभी वेबसाइटों के डेटा की मांग।",
                 "choices": [
-                    ("Click 'Add Extension' because it has a 5-star graphic", False, "Fake reviews are commonly bought by malicious extension publishers.", "नकली 5-स्टार समीक्षाएं खरीदकर दुर्भावनापूर्ण एक्सटेंशन फैलाए जाते हैं।"),
-                    ("Deny and uninstall; permissions present an unacceptable data-theft hazard", True, "Spot on! Never grant universal web and clipboard access to untrusted extensions.", "सही! अज्ञात एक्सटेंशन को सभी वेबसाइटों और क्लिपबोर्ड की अनुमति न दें।"),
-                    ("Install it only on your work computer", False, "Compromises corporate proprietary assets.", "कॉर्पोरेट डेटा को खतरे में डाल देगा।")
-                ]
+                    (
+                        "Click 'Add Extension' because it has a 5-star graphic",
+                        False,
+                        "Fake reviews are commonly bought by malicious extension publishers.",
+                        "नकली 5-स्टार समीक्षाएं खरीदकर दुर्भावनापूर्ण एक्सटेंशन फैलाए जाते हैं।",
+                    ),
+                    (
+                        "Deny and uninstall; permissions present an unacceptable data-theft hazard",
+                        True,
+                        "Spot on! Never grant universal web and clipboard access to untrusted extensions.",
+                        "सही! अज्ञात एक्सटेंशन को सभी वेबसाइटों और क्लिपबोर्ड की अनुमति न दें।",
+                    ),
+                    (
+                        "Install it only on your work computer",
+                        False,
+                        "Compromises corporate proprietary assets.",
+                        "कॉर्पोरेट डेटा को खतरे में डाल देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "sql-injection-shield",
@@ -570,19 +828,34 @@ GAMES_30: list[dict] = [
                 "type": "terminal",
                 "sender": "Web Application Firewall (WAF) Log",
                 "subject": "Suspicious Login Form Payload Detected",
-                "body": "POST /api/login HTTP/1.1\nHost: portal.company.com\nContent-Type: application/json\n\n{\"username\": \"admin' OR '1'='1' -- \", \"password\": \"anything\"}\nWhat is the objective of this payload?",
+                "body": 'POST /api/login HTTP/1.1\nHost: portal.company.com\nContent-Type: application/json\n\n{"username": "admin\' OR \'1\'=\'1\' -- ", "password": "anything"}\nWhat is the objective of this payload?',
                 "is_threat": True,
                 "explanation_en": "This is classic SQL Injection. The input forces the query's WHERE clause to evaluate to TRUE for every row, bypassing password verification to authenticate as the first returned user (admin).",
                 "explanation_hi": "यह एक क्लासिक एसक्यूएल इंजेक्शन है जो पासवर्ड जांच को बायपास करके व्यवस्थापक के रूप में लॉगिन करने का प्रयास करता है।",
                 "warning_signs_en": "Single quote escaping, boolean tautology ('1'='1'), and SQL comment characters (--).",
                 "warning_signs_hi": "सिंगल कोट, हमेशा सत्य रहने वाली शर्त ('1'='1'), और एसक्यूएल टिप्पणी (--)।",
                 "choices": [
-                    ("Normal user attempting to recover their forgotten password", False, "This is an active database manipulation payload.", "यह एक सक्रिय डेटाबेस हेरफेर पेलोड है।"),
-                    ("SQL Injection attack attempting to bypass authentication via boolean tautology", True, "Accurate! Prepared statements neutralize this attack completely.", "बिल्कुल सही! प्रिपेयर्ड स्टेटमेंट्स इस हमले को पूरी तरह विफल कर देते हैं।"),
-                    ("A Cross-Site Scripting (XSS) payload stealing cookies", False, "Incorrect syntax; this is SQL manipulation, not client-side JavaScript.", "यह जावास्क्रिप्ट नहीं, बल्कि एसक्यूएल डेटाबेस हेरफेर है।")
-                ]
+                    (
+                        "Normal user attempting to recover their forgotten password",
+                        False,
+                        "This is an active database manipulation payload.",
+                        "यह एक सक्रिय डेटाबेस हेरफेर पेलोड है।",
+                    ),
+                    (
+                        "SQL Injection attack attempting to bypass authentication via boolean tautology",
+                        True,
+                        "Accurate! Prepared statements neutralize this attack completely.",
+                        "बिल्कुल सही! प्रिपेयर्ड स्टेटमेंट्स इस हमले को पूरी तरह विफल कर देते हैं।",
+                    ),
+                    (
+                        "A Cross-Site Scripting (XSS) payload stealing cookies",
+                        False,
+                        "Incorrect syntax; this is SQL manipulation, not client-side JavaScript.",
+                        "यह जावास्क्रिप्ट नहीं, बल्कि एसक्यूएल डेटाबेस हेरफेर है।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "xss-defender",
@@ -611,12 +884,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Inline script tags containing document.cookie exfiltration commands.",
                 "warning_signs_hi": "डॉक्यूमेंट कुकी चुराने वाले इनलाइन स्क्रिप्ट टैग।",
                 "choices": [
-                    ("The comment will render as harmless blue bold text", False, "The script tag executes silently in the background.", "स्क्रिप्ट बैकग्राउंड में चुपचाप निष्पादित हो जाती है।"),
-                    ("Stored XSS attack: viewers' active session cookies will be exfiltrated", True, "Correct! HTML entity encoding and HttpOnly cookie flags neutralize this threat.", "सही! एचटीएमएल एन्कोडिंग और HttpOnly कुकी से यह हमला रुकता है।"),
-                    ("It will shut down the server's database immediately", False, "XSS targets the client's browser, not the backend database engine.", "एक्सएसएस क्लाइंट के ब्राउज़र को निशाना बनाता है, बैकएंड डेटाबेस को नहीं।")
-                ]
+                    (
+                        "The comment will render as harmless blue bold text",
+                        False,
+                        "The script tag executes silently in the background.",
+                        "स्क्रिप्ट बैकग्राउंड में चुपचाप निष्पादित हो जाती है।",
+                    ),
+                    (
+                        "Stored XSS attack: viewers' active session cookies will be exfiltrated",
+                        True,
+                        "Correct! HTML entity encoding and HttpOnly cookie flags neutralize this threat.",
+                        "सही! एचटीएमएल एन्कोडिंग और HttpOnly कुकी से यह हमला रुकता है।",
+                    ),
+                    (
+                        "It will shut down the server's database immediately",
+                        False,
+                        "XSS targets the client's browser, not the backend database engine.",
+                        "एक्सएसएस क्लाइंट के ब्राउज़र को निशाना बनाता है, बैकएंड डेटाबेस को नहीं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "network-guardian",
@@ -645,14 +933,28 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Rapid sequential port probing from an unvetted external IP.",
                 "warning_signs_hi": "अज्ञात बाहरी आईपी से बहुत तेजी से क्रमिक पोर्ट स्कैनिंग।",
                 "choices": [
-                    ("A benign customer refreshing their web browser multiple times", False, "Browsers do not connect to 1,024 sequential ports.", "ब्राउज़र कभी भी 1024 अलग-अलग पोर्ट्स पर कनेक्ट नहीं होते।"),
-                    ("Adversary port scan reconnaissance; block IP at perimeter firewall", True, "Spot on! Dropping the scanning IP at the edge firewall halts reconnaissance.", "सही! पेरिमीटर फ़ायरवॉल पर ऐसी आईपी ब्लॉक करना सही रणनीति है।"),
-                    ("Open all firewall ports to let the traffic pass freely", False, "Invites total network compromise.", "पूरे नेटवर्क को खतरे में डाल देगा।")
-                ]
+                    (
+                        "A benign customer refreshing their web browser multiple times",
+                        False,
+                        "Browsers do not connect to 1,024 sequential ports.",
+                        "ब्राउज़र कभी भी 1024 अलग-अलग पोर्ट्स पर कनेक्ट नहीं होते।",
+                    ),
+                    (
+                        "Adversary port scan reconnaissance; block IP at perimeter firewall",
+                        True,
+                        "Spot on! Dropping the scanning IP at the edge firewall halts reconnaissance.",
+                        "सही! पेरिमीटर फ़ायरवॉल पर ऐसी आईपी ब्लॉक करना सही रणनीति है।",
+                    ),
+                    (
+                        "Open all firewall ports to let the traffic pass freely",
+                        False,
+                        "Invites total network compromise.",
+                        "पूरे नेटवर्क को खतरे में डाल देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
-
     # =========================================================================
     # CATEGORY D — MALWARE AND INCIDENT RESPONSE
     # =========================================================================
@@ -683,12 +985,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Double file extension, executable format (.exe) disguised as an invoice.",
                 "warning_signs_hi": "डबल फाइल एक्सटेंशन, इनवॉइस के रूप में छिपा हुआ .exe प्रोग्राम।",
                 "choices": [
-                    ("Double-click to open and review the invoice", False, "Executes the malware payload with your user privileges.", "यह आपके कंप्यूटर पर सीधे मैलवेयर चला देगा।"),
-                    ("Do not open; report the email to Infosec for quarantine and blocklist", True, "Flawless! Double extensions are a classic malware deployment technique.", "उत्कृष्ट! दोहरे एक्सटेंशन वाली फाइलों को तुरंत ब्लॉक और रिपोर्ट करना चाहिए।"),
-                    ("Rename it to .docx and then open it", False, "The malicious binary code remains dangerous.", "फाइल का नाम बदलने से उसका वायरस खत्म नहीं होता।")
-                ]
+                    (
+                        "Double-click to open and review the invoice",
+                        False,
+                        "Executes the malware payload with your user privileges.",
+                        "यह आपके कंप्यूटर पर सीधे मैलवेयर चला देगा।",
+                    ),
+                    (
+                        "Do not open; report the email to Infosec for quarantine and blocklist",
+                        True,
+                        "Flawless! Double extensions are a classic malware deployment technique.",
+                        "उत्कृष्ट! दोहरे एक्सटेंशन वाली फाइलों को तुरंत ब्लॉक और रिपोर्ट करना चाहिए।",
+                    ),
+                    (
+                        "Rename it to .docx and then open it",
+                        False,
+                        "The malicious binary code remains dangerous.",
+                        "फाइल का नाम बदलने से उसका वायरस खत्म नहीं होता।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "ransomware-rescue",
@@ -717,12 +1034,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Active file renaming, ransom splash screen, network share corruption.",
                 "warning_signs_hi": "फाइलों का लॉक होना, फिरौती की मांग, नेटवर्क फाइलों का खराब होना।",
                 "choices": [
-                    ("Immediately disconnect Ethernet cable and disable Wi-Fi to stop network spread", True, "Spot on! Halting lateral movement is the top containment priority.", "बिल्कुल सही! नेटवर्क केबल निकालना और अन्य सिस्टम को बचाना पहला कर्तव्य है।"),
-                    ("Pay the 2 Bitcoin immediately with your personal credit card", False, "Never pay ransoms; it funds criminal cartels and guarantees no recovery.", "फिरौती कभी न दें; इसकी कोई गारंटी नहीं होती कि डेटा वापस मिलेगा।"),
-                    ("Restart the computer ten times hoping the files revert", False, "Rebooting can destroy volatile memory evidence and resume encryption.", "कंप्यूटर रीस्टार्ट करने से डिजिटल सबूत नष्ट हो सकते हैं।")
-                ]
+                    (
+                        "Immediately disconnect Ethernet cable and disable Wi-Fi to stop network spread",
+                        True,
+                        "Spot on! Halting lateral movement is the top containment priority.",
+                        "बिल्कुल सही! नेटवर्क केबल निकालना और अन्य सिस्टम को बचाना पहला कर्तव्य है।",
+                    ),
+                    (
+                        "Pay the 2 Bitcoin immediately with your personal credit card",
+                        False,
+                        "Never pay ransoms; it funds criminal cartels and guarantees no recovery.",
+                        "फिरौती कभी न दें; इसकी कोई गारंटी नहीं होती कि डेटा वापस मिलेगा।",
+                    ),
+                    (
+                        "Restart the computer ten times hoping the files revert",
+                        False,
+                        "Rebooting can destroy volatile memory evidence and resume encryption.",
+                        "कंप्यूटर रीस्टार्ट करने से डिजिटल सबूत नष्ट हो सकते हैं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "usb-danger-zone",
@@ -751,12 +1083,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Tempting confidential label, unattended hardware placed in high-traffic area.",
                 "warning_signs_hi": "आकर्षक या गोपनीय लेबल, सार्वजनिक स्थान पर जानबूझकर छोड़ी गई ड्राइव।",
                 "choices": [
-                    ("Plug it into your workstation to see whose salary it is", False, "Triggers instant keystroke injection and backdoor installation.", "कंप्यूटर में लगाते ही वायरस तुरंत सक्रिय हो जाएगा।"),
-                    ("Do not insert; deliver directly to Corporate Physical Security / IT SecOps", True, "Excellent! Untrusted removable media must never touch corporate hardware.", "उत्कृष्ट! ऐसी ड्राइव को कभी न लगाएं और सीधे सुरक्षा टीम को सौंपें।"),
-                    ("Take it home to plug into your personal gaming PC instead", False, "Transfers the threat to your home network.", "आपके घर के कंप्यूटर को भी संक्रमित कर देगा।")
-                ]
+                    (
+                        "Plug it into your workstation to see whose salary it is",
+                        False,
+                        "Triggers instant keystroke injection and backdoor installation.",
+                        "कंप्यूटर में लगाते ही वायरस तुरंत सक्रिय हो जाएगा।",
+                    ),
+                    (
+                        "Do not insert; deliver directly to Corporate Physical Security / IT SecOps",
+                        True,
+                        "Excellent! Untrusted removable media must never touch corporate hardware.",
+                        "उत्कृष्ट! ऐसी ड्राइव को कभी न लगाएं और सीधे सुरक्षा टीम को सौंपें।",
+                    ),
+                    (
+                        "Take it home to plug into your personal gaming PC instead",
+                        False,
+                        "Transfers the threat to your home network.",
+                        "आपके घर के कंप्यूटर को भी संक्रमित कर देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "incident-commander",
@@ -785,12 +1132,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Never recover systems before eradication, or infection will recur.",
                 "warning_signs_hi": "मैलवेयर हटाए बिना सिस्टम रीस्टोर करने से संक्रमण वापस आ जाएगा।",
                 "choices": [
-                    ("Sequence: 2 -> 1 -> 3 -> 4", True, "Perfect! Containment precedes eradication, followed by recovery and review.", "बिल्कुल सही! अलगाव, उन्मूलन, पुनर्प्राप्ति और समीक्षा का सही क्रम।"),
-                    ("Sequence: 3 -> 1 -> 2 -> 4", False, "Restoring before isolating allows the attacker to corrupt your backups.", "अलग किए बिना बैकअप रीस्टोर करने से बैकअप भी खराब हो जाएगा।"),
-                    ("Sequence: 4 -> 3 -> 2 -> 1", False, "You cannot hold a lessons learned debrief while the attack is active.", "हमले के बीच में समीक्षा बैठक नहीं की जा सकती।")
-                ]
+                    (
+                        "Sequence: 2 -> 1 -> 3 -> 4",
+                        True,
+                        "Perfect! Containment precedes eradication, followed by recovery and review.",
+                        "बिल्कुल सही! अलगाव, उन्मूलन, पुनर्प्राप्ति और समीक्षा का सही क्रम।",
+                    ),
+                    (
+                        "Sequence: 3 -> 1 -> 2 -> 4",
+                        False,
+                        "Restoring before isolating allows the attacker to corrupt your backups.",
+                        "अलग किए बिना बैकअप रीस्टोर करने से बैकअप भी खराब हो जाएगा।",
+                    ),
+                    (
+                        "Sequence: 4 -> 3 -> 2 -> 1",
+                        False,
+                        "You cannot hold a lessons learned debrief while the attack is active.",
+                        "हमले के बीच में समीक्षा बैठक नहीं की जा सकती।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "digital-evidence-detective",
@@ -819,12 +1181,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Order of Volatility: CPU registers/cache > RAM > Network state > Disk > Archival media.",
                 "warning_signs_hi": "अस्थिरता का क्रम: रैम और सक्रिय प्रक्रियाएं डिस्क डेटा से पहले मिटती हैं।",
                 "choices": [
-                    ("Immediately pull the power cord from the wall", False, "Destroys all volatile RAM data, encryption keys, and active network sockets.", "रैम डेटा, एनक्रिप्शन कीज़ और नेटवर्क साक्ष्य हमेशा के लिए नष्ट हो जाएंगे।"),
-                    ("Capture live RAM using dedicated forensic hardware/tool before disconnecting host", True, "Masterful! Adhering to the Order of Volatility preserves court-admissible evidence.", "उत्कृष्ट! अस्थिरता के नियम का पालन करके ही कानूनी साक्ष्य सुरक्षित रहते हैं।"),
-                    ("Open files in Notepad to see what the attacker wrote", False, "Modifies file access timestamps and taints the forensic integrity.", "फाइलें खोलने से टाइमस्टैम्प बदल जाते हैं और साक्ष्य अमान्य हो जाते हैं।")
-                ]
+                    (
+                        "Immediately pull the power cord from the wall",
+                        False,
+                        "Destroys all volatile RAM data, encryption keys, and active network sockets.",
+                        "रैम डेटा, एनक्रिप्शन कीज़ और नेटवर्क साक्ष्य हमेशा के लिए नष्ट हो जाएंगे।",
+                    ),
+                    (
+                        "Capture live RAM using dedicated forensic hardware/tool before disconnecting host",
+                        True,
+                        "Masterful! Adhering to the Order of Volatility preserves court-admissible evidence.",
+                        "उत्कृष्ट! अस्थिरता के नियम का पालन करके ही कानूनी साक्ष्य सुरक्षित रहते हैं।",
+                    ),
+                    (
+                        "Open files in Notepad to see what the attacker wrote",
+                        False,
+                        "Modifies file access timestamps and taints the forensic integrity.",
+                        "फाइलें खोलने से टाइमस्टैम्प बदल जाते हैं और साक्ष्य अमान्य हो जाते हैं।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "soc-alert-triage",
@@ -853,14 +1230,28 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Off-hours data transfer, netcat/gzip pipeline, Tor exit node destination.",
                 "warning_signs_hi": "असमय डेटा ट्रांसफर, अनधिकृत डेटा चोरी, टॉर नोड कनेक्शन।",
                 "choices": [
-                    ("Mark as False Positive and silence alert for 30 days", False, "Catastrophic! Your entire database has just been exfiltrated.", "घातक भूल! आपकी पूरी डेटाबेस चोरी हो रही है।"),
-                    ("Classify as P1 Critical Incident: sever outbound connection immediately and invoke incident team", True, "Flawless! High-severity data exfiltration requires instant containment.", "बिल्कुल सही! डेटा चोरी रोकने के लिए तुरंत कनेक्शन काटना आवश्यक है।"),
-                    ("Wait until Monday morning to ask the database administrator", False, "Gives attackers days of head start.", "हमलावर को पूरा डेटा चुराने का समय मिल जाएगा।")
-                ]
+                    (
+                        "Mark as False Positive and silence alert for 30 days",
+                        False,
+                        "Catastrophic! Your entire database has just been exfiltrated.",
+                        "घातक भूल! आपकी पूरी डेटाबेस चोरी हो रही है।",
+                    ),
+                    (
+                        "Classify as P1 Critical Incident: sever outbound connection immediately and invoke incident team",
+                        True,
+                        "Flawless! High-severity data exfiltration requires instant containment.",
+                        "बिल्कुल सही! डेटा चोरी रोकने के लिए तुरंत कनेक्शन काटना आवश्यक है।",
+                    ),
+                    (
+                        "Wait until Monday morning to ask the database administrator",
+                        False,
+                        "Gives attackers days of head start.",
+                        "हमलावर को पूरा डेटा चुराने का समय मिल जाएगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
-
     # =========================================================================
     # CATEGORY E — PRIVACY AND SECURITY OPERATIONS
     # =========================================================================
@@ -891,12 +1282,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Unredacted PII export, sharing with non-cleared third parties.",
                 "warning_signs_hi": "असुरक्षित व्यक्तिगत डेटा, गैर-सत्यापित बाहरी एजेंसी से साझा करना।",
                 "choices": [
-                    ("Email them the full unencrypted SQL dump", False, "Direct violation of GDPR and DPDP punishable by severe fines.", "कानून का खुला उल्लंघन जिस पर भारी जुर्माना लग सकता है।"),
-                    ("Refuse unredacted export; provide anonymized, synthetic test data with zero PII", True, "Spot on! Data minimization and synthetic testing protect consumer privacy.", "सही! परीक्षण के लिए केवल अनाम और कृत्रिम डेटा ही देना चाहिए।"),
-                    ("Post the database to a public GitHub repository for easy downloading", False, "Makes all customer credentials public to the entire world.", "सभी ग्राहकों का डेटा पूरी दुनिया के लिए सार्वजनिक हो जाएगा।")
-                ]
+                    (
+                        "Email them the full unencrypted SQL dump",
+                        False,
+                        "Direct violation of GDPR and DPDP punishable by severe fines.",
+                        "कानून का खुला उल्लंघन जिस पर भारी जुर्माना लग सकता है।",
+                    ),
+                    (
+                        "Refuse unredacted export; provide anonymized, synthetic test data with zero PII",
+                        True,
+                        "Spot on! Data minimization and synthetic testing protect consumer privacy.",
+                        "सही! परीक्षण के लिए केवल अनाम और कृत्रिम डेटा ही देना चाहिए।",
+                    ),
+                    (
+                        "Post the database to a public GitHub repository for easy downloading",
+                        False,
+                        "Makes all customer credentials public to the entire world.",
+                        "सभी ग्राहकों का डेटा पूरी दुनिया के लिए सार्वजनिक हो जाएगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "backup-recovery-mission",
@@ -925,12 +1331,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Online backups without immutability or air-gapping are easily wiped by attackers.",
                 "warning_signs_hi": "ऑनलाइन बैकअप को हैकर्स आसानी से डिलीट कर सकते हैं।",
                 "choices": [
-                    ("Architecture A (Same C: drive)", False, "When the machine is encrypted, the backup is encrypted simultaneously.", "जब मशीन लॉक होगी, तो बैकअप भी साथ ही लॉक हो जाएगा।"),
-                    ("Architecture B (3-2-1 rule with offsite immutable storage)", True, "Flawless! Immutable air-gapped copies guarantee operational recovery.", "उत्कृष्ट! 3-2-1 नियम और ऑफलाइन स्टोरेज ही असली सुरक्षा है।"),
-                    ("Architecture C (Single Dropbox folder)", False, "Easily overwritten or deleted via ransomware sync.", "सिंक होते ही रैनसमवेयर ड्रॉपबॉक्स फाइलें भी खराब कर देगा।")
-                ]
+                    (
+                        "Architecture A (Same C: drive)",
+                        False,
+                        "When the machine is encrypted, the backup is encrypted simultaneously.",
+                        "जब मशीन लॉक होगी, तो बैकअप भी साथ ही लॉक हो जाएगा।",
+                    ),
+                    (
+                        "Architecture B (3-2-1 rule with offsite immutable storage)",
+                        True,
+                        "Flawless! Immutable air-gapped copies guarantee operational recovery.",
+                        "उत्कृष्ट! 3-2-1 नियम और ऑफलाइन स्टोरेज ही असली सुरक्षा है।",
+                    ),
+                    (
+                        "Architecture C (Single Dropbox folder)",
+                        False,
+                        "Easily overwritten or deleted via ransomware sync.",
+                        "सिंक होते ही रैनसमवेयर ड्रॉपबॉक्स फाइलें भी खराब कर देगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "cloud-misconfiguration-hunt",
@@ -959,12 +1380,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Database ports exposed to 0.0.0.0/0 rather than internal application VPC subnets.",
                 "warning_signs_hi": "डेटाबेस को केवल आंतरिक नेटवर्क के बजाय पूरे इंटरनेट के लिए खोलना।",
                 "choices": [
-                    ("No risk; PostgreSQL always requires a password", False, "Passwards can be brute-forced or bypassed via zero-day vulnerabilities.", "पासवर्ड का अनुमान लगाया जा सकता है या कमियों से बायपास किया जा सकता है।"),
-                    ("Restrict ingress strictly to internal App Server subnet security group", True, "Spot on! Database tiers must never be directly accessible from the public internet.", "सही! डेटाबेस केवल आंतरिक ऐप सर्वर से ही कनेक्ट होना चाहिए।"),
-                    ("Change the port number to 5433 to completely hide the database", False, "Security through obscurity fails against basic port scanners.", "केवल पोर्ट नंबर बदलने से सुरक्षा नहीं मिलती।")
-                ]
+                    (
+                        "No risk; PostgreSQL always requires a password",
+                        False,
+                        "Passwards can be brute-forced or bypassed via zero-day vulnerabilities.",
+                        "पासवर्ड का अनुमान लगाया जा सकता है या कमियों से बायपास किया जा सकता है।",
+                    ),
+                    (
+                        "Restrict ingress strictly to internal App Server subnet security group",
+                        True,
+                        "Spot on! Database tiers must never be directly accessible from the public internet.",
+                        "सही! डेटाबेस केवल आंतरिक ऐप सर्वर से ही कनेक्ट होना चाहिए।",
+                    ),
+                    (
+                        "Change the port number to 5433 to completely hide the database",
+                        False,
+                        "Security through obscurity fails against basic port scanners.",
+                        "केवल पोर्ट नंबर बदलने से सुरक्षा नहीं मिलती।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "insider-threat-investigation",
@@ -993,12 +1429,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Resignation status, off-hours access, massive repository cloning to removable media.",
                 "warning_signs_hi": "इस्तीफे के बाद असमय बड़े पैमाने पर डेटा डाउनलोड करना।",
                 "choices": [
-                    ("Ignore it because they might need the code for their new job", False, "Direct theft of corporate trade secrets and intellectual property.", "कंपनी के गोपनीय कोड और व्यापारिक रहस्यों की खुली चोरी।"),
-                    ("Revoke all IAM/VPN credentials immediately and initiate corporate legal/HR hold", True, "Flawless! Fast credential revocation prevents further intellectual property loss.", "उत्कृष्ट! तुरंत एक्सेस बंद करके कानूनी प्रक्रिया शुरू करना सही कदम है।"),
-                    ("Send a polite Slack message asking if they had fun downloading", False, "Gives the individual time to destroy evidence or exfiltrate more.", "व्यक्ति को साक्ष्य मिटाने का मौका मिल जाएगा।")
-                ]
+                    (
+                        "Ignore it because they might need the code for their new job",
+                        False,
+                        "Direct theft of corporate trade secrets and intellectual property.",
+                        "कंपनी के गोपनीय कोड और व्यापारिक रहस्यों की खुली चोरी।",
+                    ),
+                    (
+                        "Revoke all IAM/VPN credentials immediately and initiate corporate legal/HR hold",
+                        True,
+                        "Flawless! Fast credential revocation prevents further intellectual property loss.",
+                        "उत्कृष्ट! तुरंत एक्सेस बंद करके कानूनी प्रक्रिया शुरू करना सही कदम है।",
+                    ),
+                    (
+                        "Send a polite Slack message asking if they had fun downloading",
+                        False,
+                        "Gives the individual time to destroy evidence or exfiltrate more.",
+                        "व्यक्ति को साक्ष्य मिटाने का मौका मिल जाएगा।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "secure-coding-challenge",
@@ -1027,12 +1478,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Hardcoded AWS secret keys, database passwords in plaintext, DEBUG enabled.",
                 "warning_signs_hi": "कोड में सीधे पासवर्ड लिखना, डीबग मोड खुला रखना।",
                 "choices": [
-                    ("Code looks clean and ready for production deployment", False, "Severely insecure; committing credentials to git invites immediate breach.", "अत्यंत असुरक्षित; गिट में पासवर्ड जाने से तुरंत हैकिंग हो सकती है।"),
-                    ("Move secrets to environment variables/vault and disable DEBUG mode in production", True, "Spot on! The 12-Factor App methodology mandates externalized configuration.", "सही! पासवर्ड को एनवायरनमेंट वेरिएबल्स में रखें और डीबग मोड बंद करें।"),
-                    ("Add a code comment saying 'Please do not read this password'", False, "Comments are visible to anyone with repository access.", "टिप्पणी लिखने से सुरक्षा नहीं मिलती।")
-                ]
+                    (
+                        "Code looks clean and ready for production deployment",
+                        False,
+                        "Severely insecure; committing credentials to git invites immediate breach.",
+                        "अत्यंत असुरक्षित; गिट में पासवर्ड जाने से तुरंत हैकिंग हो सकती है।",
+                    ),
+                    (
+                        "Move secrets to environment variables/vault and disable DEBUG mode in production",
+                        True,
+                        "Spot on! The 12-Factor App methodology mandates externalized configuration.",
+                        "सही! पासवर्ड को एनवायरनमेंट वेरिएबल्स में रखें और डीबग मोड बंद करें।",
+                    ),
+                    (
+                        "Add a code comment saying 'Please do not read this password'",
+                        False,
+                        "Comments are visible to anyone with repository access.",
+                        "टिप्पणी लिखने से सुरक्षा नहीं मिलती।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "cybersecurity-escape-room",
@@ -1061,12 +1527,27 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Base64 piped into execution shell indicates obfuscated destructive payload.",
                 "warning_signs_hi": "बेस64 कोड को सीधे शेल में चलाना दुर्भावनापूर्ण इरादे का संकेत है।",
                 "choices": [
-                    ("It safely prints system hardware specs to screen", False, "Incorrect! This is a devastating destructive command.", "गलत! यह सिस्टम का सारा डेटा मिटाने वाला आदेश है।"),
-                    ("Destructive wiper command attempting to delete all filesystem files", True, "Brilliant! Decoding obfuscated commands exposes adversary objectives.", "शानदार! एन्कोडेड कोड का विश्लेषण करके आपने विनाशकारी हमले को पहचाना।"),
-                    ("It updates the system timezone to UTC", False, "Completely incorrect interpretation.", "पूरी तरह गलत समझ।")
-                ]
+                    (
+                        "It safely prints system hardware specs to screen",
+                        False,
+                        "Incorrect! This is a devastating destructive command.",
+                        "गलत! यह सिस्टम का सारा डेटा मिटाने वाला आदेश है।",
+                    ),
+                    (
+                        "Destructive wiper command attempting to delete all filesystem files",
+                        True,
+                        "Brilliant! Decoding obfuscated commands exposes adversary objectives.",
+                        "शानदार! एन्कोडेड कोड का विश्लेषण करके आपने विनाशकारी हमले को पहचाना।",
+                    ),
+                    (
+                        "It updates the system timezone to UTC",
+                        False,
+                        "Completely incorrect interpretation.",
+                        "पूरी तरह गलत समझ।",
+                    ),
+                ],
             }
-        ]
+        ],
     },
     {
         "slug": "ultimate-human-firewall",
@@ -1095,18 +1576,34 @@ GAMES_30: list[dict] = [
                 "warning_signs_en": "Coordinated multi-channel social engineering barrage (Email + Voice + MFA Push).",
                 "warning_signs_hi": "एक साथ कई माध्यमों (ईमेल, फोन, एमएफए) से किया गया संगठित हमला।",
                 "choices": [
-                    ("Panic, approve the MFA prompt, and click the email to read the invoice", False, "Total system failure; the attacker wins.", "पूरी सुरक्षा विफल; हमलावर सफल हो जाएगा।"),
-                    ("Deny MFA, hang up phone, do not click email, and alert SecOps immediately", True, "Victory! You have demonstrated the gold standard of Human Firewall cyber defense.", "अद्भुत विजय! आपने साबित कर दिया कि आप एक सच्चे ह्यूमन फ़ायरवॉल हैं।"),
-                    ("Turn off all computers in the building and run away", False, "Uncontrolled panic without reporting leaves the threat unresolved.", "बिना सूचना दिए भागने से समस्या हल नहीं होती।")
-                ]
+                    (
+                        "Panic, approve the MFA prompt, and click the email to read the invoice",
+                        False,
+                        "Total system failure; the attacker wins.",
+                        "पूरी सुरक्षा विफल; हमलावर सफल हो जाएगा।",
+                    ),
+                    (
+                        "Deny MFA, hang up phone, do not click email, and alert SecOps immediately",
+                        True,
+                        "Victory! You have demonstrated the gold standard of Human Firewall cyber defense.",
+                        "अद्भुत विजय! आपने साबित कर दिया कि आप एक सच्चे ह्यूमन फ़ायरवॉल हैं।",
+                    ),
+                    (
+                        "Turn off all computers in the building and run away",
+                        False,
+                        "Uncontrolled panic without reporting leaves the threat unresolved.",
+                        "बिना सूचना दिए भागने से समस्या हल नहीं होती।",
+                    ),
+                ],
             }
-        ]
-    }
+        ],
+    },
 ]
 
 # Enrich games with progressive multi-level scenarios (Beginner, Intermediate, Advanced)
 try:
     from app.services.catalog_games_progressive import PROGRESSIVE_SCENARIOS
+
     for _game in GAMES_30:
         _slug = _game.get("slug")
         if _slug in PROGRESSIVE_SCENARIOS:
@@ -1114,5 +1611,3 @@ try:
                 _game["scenarios"].append(_extra)
 except ImportError:
     pass
-
-

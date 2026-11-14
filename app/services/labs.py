@@ -10,9 +10,10 @@ import json
 from datetime import datetime
 
 from app.extensions import db
-from app.models import Lab, LabAttempt, LabPrerequisite, User
+from app.models import Lab, LabAttempt, User
 from app.models.user import utcnow
-from app.services import gamification, progress as progress_service
+from app.services import gamification
+from app.services import progress as progress_service
 
 LEVEL_THRESHOLDS = {
     # level -> minimum number of passed labs required to unlock the level
@@ -135,6 +136,7 @@ def level_summary(user: User) -> list[dict]:
 # Validation
 # ---------------------------------------------------------------------------
 
+
 def evaluate_submission(lab: Lab, submitted) -> tuple[int, str, str, dict]:
     """Score a submission.
 
@@ -150,7 +152,12 @@ def evaluate_submission(lab: Lab, submitted) -> tuple[int, str, str, dict]:
         percentage = 100 if given == str(expected) else 0
         detail = {"expected": expected, "given": given}
         if percentage >= benchmark:
-            return percentage, "Correct — you identified the key risk.", "सही — आपने मुख्य जोखिम पहचान लिया।", detail
+            return (
+                percentage,
+                "Correct — you identified the key risk.",
+                "सही — आपने मुख्य जोखिम पहचान लिया।",
+                detail,
+            )
         return (
             percentage,
             "Not quite. Re-read the warning signs and try again — mistakes are part of learning here.",
@@ -160,7 +167,11 @@ def evaluate_submission(lab: Lab, submitted) -> tuple[int, str, str, dict]:
 
     if lab.task_type == "multi_select":
         expected_set = {str(item) for item in correct}
-        given_list = submitted if isinstance(submitted, list) else ([submitted] if submitted else [])
+        given_list = (
+            submitted
+            if isinstance(submitted, list)
+            else ([submitted] if submitted else [])
+        )
         given_set = {str(item) for item in given_list}
 
         hits = len(expected_set & given_set)
@@ -200,7 +211,9 @@ def evaluate_submission(lab: Lab, submitted) -> tuple[int, str, str, dict]:
         expected_order = [str(item) for item in correct]
         given_order = [str(item) for item in (submitted or [])]
         positional = sum(
-            1 for i, item in enumerate(given_order) if i < len(expected_order) and item == expected_order[i]
+            1
+            for i, item in enumerate(given_order)
+            if i < len(expected_order) and item == expected_order[i]
         )
         percentage = int(round(positional / max(1, len(expected_order)) * 100))
         detail = {"expected": expected_order, "given": given_order}
@@ -219,10 +232,17 @@ def evaluate_submission(lab: Lab, submitted) -> tuple[int, str, str, dict]:
         keywords = [str(word).lower() for word in config.get("keywords", [])]
         text = str(submitted or "").lower()
         hits = [word for word in keywords if word in text]
-        percentage = int(round(len(hits) / max(1, len(keywords)) * 100)) if keywords else 0
+        percentage = (
+            int(round(len(hits) / max(1, len(keywords)) * 100)) if keywords else 0
+        )
         detail = {"matched": hits, "expected_keywords": keywords}
         if percentage >= benchmark:
-            return percentage, "Good reasoning — you covered the essential steps.", "अच्छी सोच — ज़रूरी कदम शामिल हैं।", detail
+            return (
+                percentage,
+                "Good reasoning — you covered the essential steps.",
+                "अच्छी सोच — ज़रूरी कदम शामिल हैं।",
+                detail,
+            )
         return (
             percentage,
             "Mention the verification and reporting steps to complete your answer.",
@@ -248,11 +268,15 @@ def submit_lab(
     percentage, feedback_en, feedback_hi, detail = evaluate_submission(lab, submitted)
     passed = percentage >= (lab.pass_score or 70)
 
-    attempt = LabAttempt.query.filter_by(user_id=user.id, lab_id=lab.id).order_by(
-        LabAttempt.created_at.desc()
-    ).first()
+    attempt = (
+        LabAttempt.query.filter_by(user_id=user.id, lab_id=lab.id)
+        .order_by(LabAttempt.created_at.desc())
+        .first()
+    )
     if attempt is None:
-        attempt = LabAttempt(user_id=user.id, lab_id=lab.id, started_at=started_at or utcnow())
+        attempt = LabAttempt(
+            user_id=user.id, lab_id=lab.id, started_at=started_at or utcnow()
+        )
         db.session.add(attempt)
         attempt.retry_count = 0
     else:
@@ -286,8 +310,6 @@ def submit_lab(
     }
 
     if passed:
-        from flask import current_app
-
         reward = lab.xp_reward or gamification.xp_reward_for(lab.level)
         settlement = progress_service.complete_activity(
             user,
@@ -304,7 +326,9 @@ def submit_lab(
         result["achievements"] = settlement["achievements"]
         result["next_lab_id"] = _next_lab_id(lab)
     else:
-        progress_service.record_failure(user, "lab", lab.id, score=percentage, hints_used=hints_used)
+        progress_service.record_failure(
+            user, "lab", lab.id, score=percentage, hints_used=hints_used
+        )
 
     return result
 

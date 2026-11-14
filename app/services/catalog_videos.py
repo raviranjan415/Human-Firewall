@@ -46,9 +46,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Locked office building. [00:15] Delivery person scene. [00:30] Psychology diagram. [00:50] Key takeaway.",
         "transcript_hi": "[00:00] बंद दफ्तर का दृश्य। [00:15] डिलीवरी वाला दृश्य। [00:30] मनोवैज्ञानिक विश्लेषण। [00:50] मुख्य सुरक्षा सीख।",
         "questions": [
-            ("Social engineering primarily exploits which vulnerability?",
-             ["Outdated router firmware", "Human emotions and helpfulness", "Unpatched operating systems", "Weak Wi-Fi encryption"],
-             1, "Social engineering manipulates human psychology, trust, and helpfulness rather than software flaws."),
+            (
+                "Social engineering primarily exploits which vulnerability?",
+                [
+                    "Outdated router firmware",
+                    "Human emotions and helpfulness",
+                    "Unpatched operating systems",
+                    "Weak Wi-Fi encryption",
+                ],
+                1,
+                "Social engineering manipulates human psychology, trust, and helpfulness rather than software flaws.",
+            ),
         ],
     },
     {
@@ -76,9 +84,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Four real-life scenes. [00:20] The six psychological levers. [00:45] How to pause before clicking.",
         "transcript_hi": "[00:00] चार दैनिक जीवन के उदाहरण। [00:20] छह मनोवैज्ञानिक ट्रिगर। [00:45] क्लिक करने से पहले रुकने की आदत।",
         "questions": [
-            ("Which factor makes humans an attractive target for cyber attackers?",
-             ["Computers have emotions", "Technical firewalls are cheaper to breach", "Humans can be hurried and emotionally pressured", "Humans have no passwords"],
-             2, "Attackers target humans because social manipulation circumvents multimillion-dollar technical firewalls."),
+            (
+                "Which factor makes humans an attractive target for cyber attackers?",
+                [
+                    "Computers have emotions",
+                    "Technical firewalls are cheaper to breach",
+                    "Humans can be hurried and emotionally pressured",
+                    "Humans have no passwords",
+                ],
+                2,
+                "Attackers target humans because social manipulation circumvents multimillion-dollar technical firewalls.",
+            ),
         ],
     },
     {
@@ -105,9 +121,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The news headline. [00:20] Direct vs indirect costs. [00:40] Why prevention is personal.",
         "transcript_hi": "[00:00] समाचार की सुर्खियां। [00:20] प्रत्यक्ष बनाम अप्रत्यक्ष नुकसान। [00:40] बचाव ही सबसे बड़ा उपाय।",
         "questions": [
-            ("Beyond direct financial theft, what is often the most damaging consequence of a breach?",
-             ["A slow internet connection", "Loss of customer trust and regulatory penalties", "Having to restart laptops", "Replacing office furniture"],
-             1, "Reputational loss and heavy regulatory fines often exceed the direct monetary theft."),
+            (
+                "Beyond direct financial theft, what is often the most damaging consequence of a breach?",
+                [
+                    "A slow internet connection",
+                    "Loss of customer trust and regulatory penalties",
+                    "Having to restart laptops",
+                    "Replacing office furniture",
+                ],
+                1,
+                "Reputational loss and heavy regulatory fines often exceed the direct monetary theft.",
+            ),
         ],
     },
     {
@@ -134,9 +158,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Filter vs human intuition. [00:25] Spotting out-of-character requests. [00:50] The 3-second pause.",
         "transcript_hi": "[00:00] फिल्टर बनाम मानवीय समझ। [00:25] असामान्य अनुरोधों की पहचान। [00:50] 3 सेकंड रुकने का नियम।",
         "questions": [
-            ("What defines the 'Human Firewall' mindset?",
-             ["Refusing to ever open email", "Pausing to verify unexpected or urgent requests", "Allowing IT to handle 100% of safety", "Sharing passwords with teammates"],
-             1, "A Human Firewall pauses to verify unusual or high-pressure requests through independent channels."),
+            (
+                "What defines the 'Human Firewall' mindset?",
+                [
+                    "Refusing to ever open email",
+                    "Pausing to verify unexpected or urgent requests",
+                    "Allowing IT to handle 100% of safety",
+                    "Sharing passwords with teammates",
+                ],
+                1,
+                "A Human Firewall pauses to verify unusual or high-pressure requests through independent channels.",
+            ),
         ],
     },
     {
@@ -162,12 +194,14 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The 5 core triggers. [00:25] Real-world message examples. [00:45] Disarming the emotional hijack.",
         "transcript_hi": "[00:00] 5 मुख्य मनोवैज्ञानिक ट्रिगर। [00:25] वास्तविक संदेशों के उदाहरण। [00:45] भावनात्मक दबाव से बचाव।",
         "questions": [
-            ("If a message demands immediate action under threat of penalty, what trigger is being used?",
-             ["Familiarity", "Urgency and Fear", "Politeness", "Transparency"],
-             1, "Urgency and fear are combined to bypass logical thinking and force rushed compliance."),
+            (
+                "If a message demands immediate action under threat of penalty, what trigger is being used?",
+                ["Familiarity", "Urgency and Fear", "Politeness", "Transparency"],
+                1,
+                "Urgency and fear are combined to bypass logical thinking and force rushed compliance.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 2: phishing (Lessons 6 - 10)
     # -------------------------------------------------------------------------
@@ -195,9 +229,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Email breakdown. [00:20] Display name spoofing. [00:40] Inspecting hyperlinks safely.",
         "transcript_hi": "[00:00] ईमेल के पुर्जे। [00:20] नाम की नकल। [00:40] बिना क्लिक किए लिंक की जांच।",
         "questions": [
-            ("What is the safest way to see where an email hyperlink truly leads?",
-             ["Click on it in an incognito tab", "Hover your cursor over the link to preview the URL without clicking", "Forward it to a friend", "Reply to the sender"],
-             1, "Hovering over the link (or long-pressing on mobile) displays the true destination URL without executing dangerous code."),
+            (
+                "What is the safest way to see where an email hyperlink truly leads?",
+                [
+                    "Click on it in an incognito tab",
+                    "Hover your cursor over the link to preview the URL without clicking",
+                    "Forward it to a friend",
+                    "Reply to the sender",
+                ],
+                1,
+                "Hovering over the link (or long-pressing on mobile) displays the true destination URL without executing dangerous code.",
+            ),
         ],
     },
     {
@@ -222,9 +264,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Reconnaissance phase. [00:25] The tailored lure. [00:50] Out-of-band verification protocol.",
         "transcript_hi": "[00:00] हमलावर की जासूसी। [00:25] व्यक्तिगत संदेश। [00:50] स्वतंत्र फोन कॉल से पुष्टि।",
         "questions": [
-            ("How does spear phishing differ from ordinary bulk phishing?",
-             ["It only happens on weekends", "It is customized with researched personal/work details about the target", "It never contains links", "It is sent via postal mail"],
-             1, "Spear phishing is highly targeted and personalized using researched information about the victim."),
+            (
+                "How does spear phishing differ from ordinary bulk phishing?",
+                [
+                    "It only happens on weekends",
+                    "It is customized with researched personal/work details about the target",
+                    "It never contains links",
+                    "It is sent via postal mail",
+                ],
+                1,
+                "Spear phishing is highly targeted and personalized using researched information about the victim.",
+            ),
         ],
     },
     {
@@ -251,9 +301,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Clone page demonstration. [00:25] Examining the exact domain name. [00:45] Password managers as defense.",
         "transcript_hi": "[00:00] क्लोन वेबसाइट का सच। [00:25] डोमेन स्पेलिंग की सूक्ष्म जांच। [00:45] पासवर्ड मैनेजर की सुरक्षा।",
         "questions": [
-            ("Does an HTTPS padlock icon guarantee that a website is legitimate and safe?",
-             ["Yes, fake sites cannot obtain SSL certificates", "No, attackers can easily obtain free SSL certificates for phishing domains", "Yes, banks own the padlock symbol", "Only on Google Chrome"],
-             1, "HTTPS only encrypts the traffic in transit; malicious websites frequently use free SSL certificates."),
+            (
+                "Does an HTTPS padlock icon guarantee that a website is legitimate and safe?",
+                [
+                    "Yes, fake sites cannot obtain SSL certificates",
+                    "No, attackers can easily obtain free SSL certificates for phishing domains",
+                    "Yes, banks own the padlock symbol",
+                    "Only on Google Chrome",
+                ],
+                1,
+                "HTTPS only encrypts the traffic in transit; malicious websites frequently use free SSL certificates.",
+            ),
         ],
     },
     {
@@ -280,9 +338,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The lure file. [00:20] The yellow macro warning trap. [00:45] File extension tricks (.pdf.exe).",
         "transcript_hi": "[00:00] लालच भरी फाइल। [00:20] मैक्रो चेतावनी का जाल। [00:45] फाइल एक्सटेंशन के धोखे।",
         "questions": [
-            ("If an emailed document asks you to 'Enable Content/Macros' to view text, you should:",
-             ["Click enable immediately", "Close the document and report it to IT security", "Email it to your personal account", "Print it without reading"],
-             1, "Requiring macros to view text is a classic trick used by malware loaders."),
+            (
+                "If an emailed document asks you to 'Enable Content/Macros' to view text, you should:",
+                [
+                    "Click enable immediately",
+                    "Close the document and report it to IT security",
+                    "Email it to your personal account",
+                    "Print it without reading",
+                ],
+                1,
+                "Requiring macros to view text is a classic trick used by malware loaders.",
+            ),
         ],
     },
     {
@@ -307,12 +373,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The parking meter scam. [00:20] Email quishing bypassing corporate gateways. [00:45] Safe scanning tips.",
         "transcript_hi": "[00:00] पार्किंग का क्यूआर घोटाला। [00:20] ईमेल में क्यूआर से फिल्टर को चकमा देना। [00:45] सुरक्षित स्कैनिंग नियम।",
         "questions": [
-            ("Why do cybercriminals use QR codes instead of regular text hyperlinks in phishing emails?",
-             ["QR codes load faster", "QR codes often bypass automated email text filters and force victims onto unmanaged mobile devices", "QR codes are immune to antivirus", "QR codes cannot be tracked"],
-             1, "QR images hide the URL from traditional email gateway inspection engines and shift the victim to mobile devices."),
+            (
+                "Why do cybercriminals use QR codes instead of regular text hyperlinks in phishing emails?",
+                [
+                    "QR codes load faster",
+                    "QR codes often bypass automated email text filters and force victims onto unmanaged mobile devices",
+                    "QR codes are immune to antivirus",
+                    "QR codes cannot be tracked",
+                ],
+                1,
+                "QR images hide the URL from traditional email gateway inspection engines and shift the victim to mobile devices.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 3: messaging (Lessons 11 - 15)
     # -------------------------------------------------------------------------
@@ -338,9 +411,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The delivery SMS notification. [00:20] Deobfuscating short links. [00:40] Official tracking apps.",
         "transcript_hi": "[00:00] पार्सल डिलीवरी का फर्जी एसएमएस। [00:20] छोटे लिंक का सच। [00:40] आधिकारिक ऐप से ट्रैकिंग।",
         "questions": [
-            ("What should you do if an SMS claims your bank account or parcel is blocked and provides a shortened link?",
-             ["Click the link immediately to prevent delays", "Open the official bank/courier app or website independently to check", "Forward the SMS to family", "Text back with your name"],
-             1, "Never click links in urgent SMS messages; verify directly using official apps or independently looked-up websites."),
+            (
+                "What should you do if an SMS claims your bank account or parcel is blocked and provides a shortened link?",
+                [
+                    "Click the link immediately to prevent delays",
+                    "Open the official bank/courier app or website independently to check",
+                    "Forward the SMS to family",
+                    "Text back with your name",
+                ],
+                1,
+                "Never click links in urgent SMS messages; verify directly using official apps or independently looked-up websites.",
+            ),
         ],
     },
     {
@@ -365,9 +446,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Clone account creation. [00:25] The emergency money script. [00:45] Reporting and warning mutuals.",
         "transcript_hi": "[00:00] क्लोन अकाउंट कैसे बनता है। [00:25] इमरजेंसी में पैसे मांगने की चाल। [00:45] रिपोर्ट करना और दोस्तों को सचेत करना।",
         "questions": [
-            ("A social media friend messages from a 'new secondary account' asking for urgent financial help. Your first step is:",
-             ["Send money via UPI right away", "Call them directly on their known phone number to verify their identity", "Ignore it forever", "Ask for their password"],
-             1, "Always verify identity through a known, trusted voice phone call before transferring funds."),
+            (
+                "A social media friend messages from a 'new secondary account' asking for urgent financial help. Your first step is:",
+                [
+                    "Send money via UPI right away",
+                    "Call them directly on their known phone number to verify their identity",
+                    "Ignore it forever",
+                    "Ask for their password",
+                ],
+                1,
+                "Always verify identity through a known, trusted voice phone call before transferring funds.",
+            ),
         ],
     },
     {
@@ -393,9 +482,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The hostage/bail scam script. [00:25] Why attackers insist you stay on the line. [00:45] Verification protocols.",
         "transcript_hi": "[00:00] फर्जी गिरफ्तारी की स्क्रिप्ट। [00:25] ठग फोन काटने क्यों नहीं देते। [00:45] सुरक्षित पुष्टि का तरीका।",
         "questions": [
-            ("Why do emergency scammers insist that you 'stay on the phone and tell nobody'?",
-             ["To save battery", "To prevent you from contacting your loved one or seeking third-party advice", "Because long calls are free", "They want to practice talking"],
-             1, "Isolating you on the phone prevents you from independently checking on your family member."),
+            (
+                "Why do emergency scammers insist that you 'stay on the phone and tell nobody'?",
+                [
+                    "To save battery",
+                    "To prevent you from contacting your loved one or seeking third-party advice",
+                    "Because long calls are free",
+                    "They want to practice talking",
+                ],
+                1,
+                "Isolating you on the phone prevents you from independently checking on your family member.",
+            ),
         ],
     },
     {
@@ -424,9 +521,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The task scam lifecycle. [00:25] The bait payments. [00:45] Spotting legitimate recruitment channels.",
         "transcript_hi": "[00:00] टास्क घोटाले का चक्र। [00:25] विश्वास जगाने के छोटे भुगतान। [00:45] असली भर्ती प्रक्रियाओं की पहचान।",
         "questions": [
-            ("A recruiter offers a high-paying remote job but requires an upfront ₹2,500 'laptop security deposit'. This is:",
-             ["Standard industry practice", "A recruitment scam designed to steal your money", "A government tax", "A refundable bonus"],
-             1, "Legitimate employers never charge candidates upfront fees for equipment, registration, or onboarding."),
+            (
+                "A recruiter offers a high-paying remote job but requires an upfront ₹2,500 'laptop security deposit'. This is:",
+                [
+                    "Standard industry practice",
+                    "A recruitment scam designed to steal your money",
+                    "A government tax",
+                    "A refundable bonus",
+                ],
+                1,
+                "Legitimate employers never charge candidates upfront fees for equipment, registration, or onboarding.",
+            ),
         ],
     },
     {
@@ -451,12 +556,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The freelance bait lure. [00:20] How encrypted archives evade scanners. [00:45] Safe sandbox inspection.",
         "transcript_hi": "[00:00] प्रोजेक्ट का झांसा। [00:20] पासवर्ड से एंटीवायरस को मात देना। [00:45] सुरक्षित सैंडबॉक्स जांच।",
         "questions": [
-            ("Why do cybercriminals send malware in password-protected zip archives?",
-             ["It saves internet bandwidth", "The password encryption prevents email security scanners from inspecting the malware inside", "ZIP files are approved by Microsoft", "To make it look professional"],
-             1, "Password protection encrypts archive contents, preventing automated perimeter security tools from scanning the payload."),
+            (
+                "Why do cybercriminals send malware in password-protected zip archives?",
+                [
+                    "It saves internet bandwidth",
+                    "The password encryption prevents email security scanners from inspecting the malware inside",
+                    "ZIP files are approved by Microsoft",
+                    "To make it look professional",
+                ],
+                1,
+                "Password protection encrypts archive contents, preventing automated perimeter security tools from scanning the payload.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 4: financial (Lessons 16 - 20)
     # -------------------------------------------------------------------------
@@ -484,9 +596,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The urgent CEO email. [00:25] The psychology of organizational hierarchy. [00:50] The dual-authorization rule.",
         "transcript_hi": "[00:00] सीईओ का फर्जी ईमेल। [00:25] पद के डर का मनोवैज्ञानिक फायदा। [00:50] दोहरे सत्यापन का अनिवार्य नियम।",
         "questions": [
-            ("If an email ostensibly from your CEO orders an immediate wire transfer and forbids phone verification, you should:",
-             ["Wire the money immediately to avoid being fired", "Follow standard corporate verification protocol and verify through a pre-agreed secondary channel", "Reply to the email asking if it's real", "Forward it to all colleagues"],
-             1, "Always follow dual-authorization controls; genuine executives respect and enforce financial defense protocols."),
+            (
+                "If an email ostensibly from your CEO orders an immediate wire transfer and forbids phone verification, you should:",
+                [
+                    "Wire the money immediately to avoid being fired",
+                    "Follow standard corporate verification protocol and verify through a pre-agreed secondary channel",
+                    "Reply to the email asking if it's real",
+                    "Forward it to all colleagues",
+                ],
+                1,
+                "Always follow dual-authorization controls; genuine executives respect and enforce financial defense protocols.",
+            ),
         ],
     },
     {
@@ -513,9 +633,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The marketplace buyer call. [00:20] The reverse payment trick. [00:40] The universal UPI rule.",
         "transcript_hi": "[00:00] फर्जी खरीदार की कॉल। [00:20] रिवर्स पेमेंट का झांसा। [00:40] यूपीआई का बुनियादी नियम।",
         "questions": [
-            ("When does a UPI user need to enter their secret PIN?",
-             ["When receiving money from a stranger", "Only when sending money or checking bank balance", "When claiming a cash refund", "When scanning any QR code"],
-             1, "Your UPI PIN is strictly for authorizing debits from your account; you never enter it to receive funds."),
+            (
+                "When does a UPI user need to enter their secret PIN?",
+                [
+                    "When receiving money from a stranger",
+                    "Only when sending money or checking bank balance",
+                    "When claiming a cash refund",
+                    "When scanning any QR code",
+                ],
+                1,
+                "Your UPI PIN is strictly for authorizing debits from your account; you never enter it to receive funds.",
+            ),
         ],
     },
     {
@@ -542,9 +670,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Vendor email compromise. [00:25] The altered bank details notice. [00:45] The mandatory callback policy.",
         "transcript_hi": "[00:00] वेंडर के ईमेल में सेंध। [00:25] बैंक खाता बदलने की सूचना। [00:45] आधिकारिक फोन कॉल से सत्यापन।",
         "questions": [
-            ("A recognized supplier emails requesting their payment be sent to a new bank account. The proper response is:",
-             ["Update the account number in your payroll system immediately", "Call the supplier's verified accounting contact on an existing phone record to confirm", "Email them back asking for their credit card", "Ignore the bill entirely"],
-             1, "Never update banking details without verbal confirmation via independently verified, pre-existing contact channels."),
+            (
+                "A recognized supplier emails requesting their payment be sent to a new bank account. The proper response is:",
+                [
+                    "Update the account number in your payroll system immediately",
+                    "Call the supplier's verified accounting contact on an existing phone record to confirm",
+                    "Email them back asking for their credit card",
+                    "Ignore the bill entirely",
+                ],
+                1,
+                "Never update banking details without verbal confirmation via independently verified, pre-existing contact channels.",
+            ),
         ],
     },
     {
@@ -570,9 +706,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The fake trading simulator. [00:25] Fabricated profits on screen. [00:45] The withdrawal extortion trap.",
         "transcript_hi": "[00:00] फर्जी ट्रेडिंग का जाल। [00:25] स्क्रीन पर दिखाया गया नकली मुनाफा। [00:45] निकासी के नाम पर ब्लैकमेल।",
         "questions": [
-            ("A new contact invites you to an exclusive crypto app promising guaranteed 15% daily profits. This is:",
-             ["A revolutionary financial technology", "A fraudulent Ponzi/investment scam", "A government-backed program", "A normal stock market return"],
-             1, "Guaranteed astronomical returns are the hallmark indicator of fraudulent investment scams."),
+            (
+                "A new contact invites you to an exclusive crypto app promising guaranteed 15% daily profits. This is:",
+                [
+                    "A revolutionary financial technology",
+                    "A fraudulent Ponzi/investment scam",
+                    "A government-backed program",
+                    "A normal stock market return",
+                ],
+                1,
+                "Guaranteed astronomical returns are the hallmark indicator of fraudulent investment scams.",
+            ),
         ],
     },
     {
@@ -597,12 +741,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The tax refund SMS. [00:20] Replica government portals. [00:45] Official government refund mechanisms.",
         "transcript_hi": "[00:00] टैक्स रिफंड का फर्जी एसएमएस। [00:20] सरकारी पोर्टल की नकल। [00:45] रिफंड पाने का असली आधिकारिक तरीका।",
         "questions": [
-            ("How does the government Income Tax department process refunds?",
-             ["By sending SMS links asking for net banking passwords", "Directly into verified bank accounts through official automated banking channels", "Via WhatsApp calls", "Through cryptocurrency"],
-             1, "Tax authorities disburse refunds directly into pre-validated bank accounts without requesting login credentials via text links."),
+            (
+                "How does the government Income Tax department process refunds?",
+                [
+                    "By sending SMS links asking for net banking passwords",
+                    "Directly into verified bank accounts through official automated banking channels",
+                    "Via WhatsApp calls",
+                    "Through cryptocurrency",
+                ],
+                1,
+                "Tax authorities disburse refunds directly into pre-validated bank accounts without requesting login credentials via text links.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 5: voice (Lessons 21 - 25)
     # -------------------------------------------------------------------------
@@ -630,9 +781,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The panic phone call. [00:25] Why caller ID numbers can be easily spoofed. [00:45] Hanging up and dialing the official card helpline.",
         "transcript_hi": "[00:00] डराने वाली फोन कॉल। [00:25] कॉलर आईडी नंबर बदलने की तकनीक। [00:45] फोन काटकर कार्ड के पीछे लिखे नंबर पर कॉल करना।",
         "questions": [
-            ("A caller claiming to be from your bank asks for the 6-digit OTP sent to your phone. You should:",
-             ["Give it to them so they can stop the hacker", "Immediately refuse, hang up, and call the official bank number printed on your card", "Tell them your ATM PIN instead", "Put them on hold for an hour"],
-             1, "No genuine bank employee will ever ask for your OTP or password over the phone."),
+            (
+                "A caller claiming to be from your bank asks for the 6-digit OTP sent to your phone. You should:",
+                [
+                    "Give it to them so they can stop the hacker",
+                    "Immediately refuse, hang up, and call the official bank number printed on your card",
+                    "Tell them your ATM PIN instead",
+                    "Put them on hold for an hour",
+                ],
+                1,
+                "No genuine bank employee will ever ask for your OTP or password over the phone.",
+            ),
         ],
     },
     {
@@ -659,9 +818,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] How voice cloning models work. [00:25] The distressed relative scenario. [00:50] The family verbal password safeguard.",
         "transcript_hi": "[00:00] वॉइस क्लोनिंग कैसे काम करती है। [00:25] संकट में परिजन का नाटक। [00:50] पारिवारिक सीक्रेट पासवर्ड का नियम।",
         "questions": [
-            ("What is an effective non-technical safeguard against AI voice-cloning family emergency scams?",
-             ["Agreeing on a secret family safety word in advance that only genuine family members know", "Listening carefully for robotic static", "Refusing to ever speak to family on the phone", "Only using landlines"],
-             1, "A pre-established secret family passphrase disarms even the most convincing AI voice replicas."),
+            (
+                "What is an effective non-technical safeguard against AI voice-cloning family emergency scams?",
+                [
+                    "Agreeing on a secret family safety word in advance that only genuine family members know",
+                    "Listening carefully for robotic static",
+                    "Refusing to ever speak to family on the phone",
+                    "Only using landlines",
+                ],
+                1,
+                "A pre-established secret family passphrase disarms even the most convincing AI voice replicas.",
+            ),
         ],
     },
     {
@@ -688,9 +855,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The full-screen pop-up trick. [00:20] How remote desktop tools give full control. [00:45] Pressing Esc or terminating the browser.",
         "transcript_hi": "[00:00] फुल स्क्रीन पॉप-अप का धोखा। [00:20] रिमोट सॉफ्टवेयर का खतरा। [00:45] ब्राउज़र बंद करने का सही तरीका।",
         "questions": [
-            ("A loud siren sounds and your web browser locks with a message saying 'Microsoft detected 5 viruses, call this number'. You should:",
-             ["Call the number immediately", "Force close the browser using Task Manager (or Alt+F4) and run legitimate built-in antivirus", "Install AnyDesk as requested", "Send credit card details"],
-             1, "Browser alert pop-ups are fake scareware; force-closing the browser safely dismisses them."),
+            (
+                "A loud siren sounds and your web browser locks with a message saying 'Microsoft detected 5 viruses, call this number'. You should:",
+                [
+                    "Call the number immediately",
+                    "Force close the browser using Task Manager (or Alt+F4) and run legitimate built-in antivirus",
+                    "Install AnyDesk as requested",
+                    "Send credit card details",
+                ],
+                1,
+                "Browser alert pop-ups are fake scareware; force-closing the browser safely dismisses them.",
+            ),
         ],
     },
     {
@@ -718,9 +893,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The fake police station backdrop. [00:25] The myth of 'Digital Arrest'. [00:50] Dialing 1930 / cybercrime.gov.in immediately.",
         "transcript_hi": "[00:00] फर्जी थाने का सेटअप। [00:25] 'डिजिटल अरेस्ट' का सच। [00:50] तुरंत 1930 हेल्पलाइन पर शिकायत दर्ज करना।",
         "questions": [
-            ("Does any legitimate law enforcement or judicial agency have the authority to place citizens under 'Digital Arrest' via video call?",
-             ["Yes, in international cases", "No, 'Digital Arrest' is a fraudulent extortion scam with zero legal validity", "Only the CBI can do it", "Yes, on WhatsApp"],
-             1, "Legitimate law enforcement never conducts arrests, interrogations, or asset seizures over video calls."),
+            (
+                "Does any legitimate law enforcement or judicial agency have the authority to place citizens under 'Digital Arrest' via video call?",
+                [
+                    "Yes, in international cases",
+                    "No, 'Digital Arrest' is a fraudulent extortion scam with zero legal validity",
+                    "Only the CBI can do it",
+                    "Yes, on WhatsApp",
+                ],
+                1,
+                "Legitimate law enforcement never conducts arrests, interrogations, or asset seizures over video calls.",
+            ),
         ],
     },
     {
@@ -746,12 +929,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The mechanics of caller ID spoofing. [00:20] Inbound vs outbound call trust. [00:45] The hang-up and callback rule.",
         "transcript_hi": "[00:00] कॉलर आईडी स्पूफिंग की तकनीक। [00:20] इनकमिंग कॉल पर अविश्वास। [00:45] फोन काटकर खुद डायल करने का नियम।",
         "questions": [
-            ("Can telephone caller ID numbers be faked or spoofed by criminals?",
-             ["No, phone networks strictly prevent spoofing", "Yes, VoIP technology makes it easy to broadcast any fake caller ID number", "Only during thunderstorms", "Only outside business hours"],
-             1, "Caller ID spoofing is widespread; incoming numbers should never be taken as proof of identity."),
+            (
+                "Can telephone caller ID numbers be faked or spoofed by criminals?",
+                [
+                    "No, phone networks strictly prevent spoofing",
+                    "Yes, VoIP technology makes it easy to broadcast any fake caller ID number",
+                    "Only during thunderstorms",
+                    "Only outside business hours",
+                ],
+                1,
+                "Caller ID spoofing is widespread; incoming numbers should never be taken as proof of identity.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 6: physical (Lessons 26 - 30)
     # -------------------------------------------------------------------------
@@ -777,9 +967,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The tailgating scenario. [00:20] The polite security response. [00:45] Visitor badge sign-in protocols.",
         "transcript_hi": "[00:00] बिना कार्ड प्रवेश का उदाहरण। [00:20] विनम्रता से मना करने का तरीका। [00:45] आगंतुकों के लिए रिसेप्शन का नियम।",
         "questions": [
-            ("What is the polite and correct response if an unfamiliar person asks you to hold a badge-access door open?",
-             ["Hold the door and smile", "Direct them politely to the reception desk to badge in or receive a visitor pass", "Give them your badge to swipe", "Protest loudly"],
-             1, "Politely directing individuals to badge in or check in at the reception desk maintains physical perimeter security."),
+            (
+                "What is the polite and correct response if an unfamiliar person asks you to hold a badge-access door open?",
+                [
+                    "Hold the door and smile",
+                    "Direct them politely to the reception desk to badge in or receive a visitor pass",
+                    "Give them your badge to swipe",
+                    "Protest loudly",
+                ],
+                1,
+                "Politely directing individuals to badge in or check in at the reception desk maintains physical perimeter security.",
+            ),
         ],
     },
     {
@@ -806,9 +1004,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The parking lot bait. [00:20] How BadUSB / Rubber Ducky attacks work. [00:45] Submitting found media to IT.",
         "transcript_hi": "[00:00] पार्किंग में फेंका गया जाल। [00:20] बैड-यूएसबी कैसे काम करती है। [00:45] मिली हुई ड्राइव को आईटी में जमा करना।",
         "questions": [
-            ("You find a USB thumb drive in your company's cafeteria labeled 'Confidential Payroll'. You should:",
-             ["Plug it in to see who owns it", "Hand it over directly to your IT/Security department without plugging it in", "Take it home for personal use", "Format it on your phone"],
-             1, "Never connect untrusted media; deliver found hardware directly to IT security teams for safe inspection."),
+            (
+                "You find a USB thumb drive in your company's cafeteria labeled 'Confidential Payroll'. You should:",
+                [
+                    "Plug it in to see who owns it",
+                    "Hand it over directly to your IT/Security department without plugging it in",
+                    "Take it home for personal use",
+                    "Format it on your phone",
+                ],
+                1,
+                "Never connect untrusted media; deliver found hardware directly to IT security teams for safe inspection.",
+            ),
         ],
     },
     {
@@ -834,9 +1040,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The crowded cafe scenario. [00:20] Privacy screen filters in action. [00:40] Shielding keyboards when entering passwords.",
         "transcript_hi": "[00:00] भीड़भाड़ वाले स्थान। [00:20] प्राइवेसी फिल्टर का महत्व। [00:40] पासवर्ड डालते समय हाथ से ढंकना।",
         "questions": [
-            ("What is an effective way to prevent shoulder surfing while working on a laptop in public?",
-             ["Increase screen brightness to 100%", "Attach a polarized privacy filter screen and position your back toward a wall", "Work in a dark room", "Turn off Wi-Fi"],
-             1, "Privacy filters restrict the viewing angle to directly in front of the screen, obscuring visibility from the sides."),
+            (
+                "What is an effective way to prevent shoulder surfing while working on a laptop in public?",
+                [
+                    "Increase screen brightness to 100%",
+                    "Attach a polarized privacy filter screen and position your back toward a wall",
+                    "Work in a dark room",
+                    "Turn off Wi-Fi",
+                ],
+                1,
+                "Privacy filters restrict the viewing angle to directly in front of the screen, obscuring visibility from the sides.",
+            ),
         ],
     },
     {
@@ -861,9 +1075,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The maintenance worker pretext. [00:25] Escort policies for sensitive areas. [00:50] The vendor sign-in log.",
         "transcript_hi": "[00:00] सर्विस एजेंट का बहाना। [00:25] संवेदनशील कमरों में साथ रहने का नियम। [00:50] वेंडर रजिस्टर में एंट्री।",
         "questions": [
-            ("An unexpected technician arrives to repair the network closet. Your first action should be:",
-             ["Unlock the closet and leave them alone", "Verify their appointment with your internal facilities or IT team before granting access", "Ask for a selfie", "Help them carry cables"],
-             1, "Unscheduled contractors must be confirmed with responsible internal coordinators before accessing sensitive infrastructure."),
+            (
+                "An unexpected technician arrives to repair the network closet. Your first action should be:",
+                [
+                    "Unlock the closet and leave them alone",
+                    "Verify their appointment with your internal facilities or IT team before granting access",
+                    "Ask for a selfie",
+                    "Help them carry cables",
+                ],
+                1,
+                "Unscheduled contractors must be confirmed with responsible internal coordinators before accessing sensitive infrastructure.",
+            ),
         ],
     },
     {
@@ -888,12 +1110,14 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The post-it note risk. [00:20] The Win+L habit. [00:40] Clean whiteboard discipline.",
         "transcript_hi": "[00:00] पासवर्ड पर्चियों का खतरा। [00:20] Win+L से स्क्रीन लॉक की आदत। [00:40] बोर्ड साफ करने का नियम।",
         "questions": [
-            ("What is the quickest keyboard shortcut to lock a Windows computer when stepping away from your desk?",
-             ["Ctrl + C", "Windows Key + L", "Alt + F4", "Ctrl + Alt + Del"],
-             1, "Pressing Win+L instantly locks your session, preventing unauthorized physical access to your workstation."),
+            (
+                "What is the quickest keyboard shortcut to lock a Windows computer when stepping away from your desk?",
+                ["Ctrl + C", "Windows Key + L", "Alt + F4", "Ctrl + Alt + Del"],
+                1,
+                "Pressing Win+L instantly locks your session, preventing unauthorized physical access to your workstation.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 7: workplace (Lessons 31 - 35)
     # -------------------------------------------------------------------------
@@ -920,9 +1144,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Brute force speeds today. [00:25] The passphrase advantage. [00:50] The role of password managers.",
         "transcript_hi": "[00:00] पासवर्ड क्रैकिंग की गति। [00:25] पासफ्रेज के फायदे। [00:50] पासवर्ड मैनेजर का उपयोग।",
         "questions": [
-            ("Which password strategy offers the greatest resistance to modern brute-force cracking?",
-             ["A 7-character word with one number", "A long multi-word passphrase of 16+ characters", "Your dog's name backwards", "The same strong password on all accounts"],
-             1, "Length is the primary exponential factor in cryptographic entropy against brute-force attacks."),
+            (
+                "Which password strategy offers the greatest resistance to modern brute-force cracking?",
+                [
+                    "A 7-character word with one number",
+                    "A long multi-word passphrase of 16+ characters",
+                    "Your dog's name backwards",
+                    "The same strong password on all accounts",
+                ],
+                1,
+                "Length is the primary exponential factor in cryptographic entropy against brute-force attacks.",
+            ),
         ],
     },
     {
@@ -949,9 +1181,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The prompt bombing scenario. [00:25] Why attackers rely on frustration. [00:50] Number matching MFA defenses.",
         "transcript_hi": "[00:00] बार-बार नोटिफिकेशन का हमला। [00:25] झुंझलाहट का फायदा उठाना। [00:50] नंबर मिलान वाले सुरक्षित एमएफए।",
         "questions": [
-            ("You wake up to dozens of login approval pushes on your authenticator app that you didn't initiate. What should you do?",
-             ["Approve one so the notifications stop", "Deny the prompt, mark it as fraudulent, and change your password immediately", "Turn off your phone and go back to sleep", "Delete the app"],
-             1, "Spam prompts indicate your credentials are compromised; deny the attempt and change your password right away."),
+            (
+                "You wake up to dozens of login approval pushes on your authenticator app that you didn't initiate. What should you do?",
+                [
+                    "Approve one so the notifications stop",
+                    "Deny the prompt, mark it as fraudulent, and change your password immediately",
+                    "Turn off your phone and go back to sleep",
+                    "Delete the app",
+                ],
+                1,
+                "Spam prompts indicate your credentials are compromised; deny the attempt and change your password right away.",
+            ),
         ],
     },
     {
@@ -976,9 +1216,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The lost tablet risk. [00:25] Full-disk encryption. [00:50] Corporate profiles and segregation.",
         "transcript_hi": "[00:00] खोए डिवाइस का जोखिम। [00:25] फुल-डिस्क एन्क्रिप्शन। [00:50] व्यक्तिगत और आधिकारिक डेटा का विभाजन।",
         "questions": [
-            ("What is the primary risk of using an unencrypted personal phone for corporate email and chats?",
-             ["The phone battery drains faster", "If the device is lost or stolen, company data can be extracted directly without entering passwords", "Apps become slower", "The camera stops working"],
-             1, "Unencrypted mobile storage allows unauthorized parties to extract raw data if the physical device is misplaced."),
+            (
+                "What is the primary risk of using an unencrypted personal phone for corporate email and chats?",
+                [
+                    "The phone battery drains faster",
+                    "If the device is lost or stolen, company data can be extracted directly without entering passwords",
+                    "Apps become slower",
+                    "The camera stops working",
+                ],
+                1,
+                "Unencrypted mobile storage allows unauthorized parties to extract raw data if the physical device is misplaced.",
+            ),
         ],
     },
     {
@@ -1003,9 +1251,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The innocent shortcut mistake. [00:25] Data privacy regulations. [00:45] Secure authorized processing.",
         "transcript_hi": "[00:00] शॉर्टकट अपनाने की गलती। [00:25] डेटा सुरक्षा कानून के नियम। [00:45] अधिकृत टूल्स से सुरक्षित काम।",
         "questions": [
-            ("Is it permissible to email a customer database spreadsheet to your personal email to finish work from home?",
-             ["Yes, as long as you delete it later", "No, exfiltrating customer PII to personal accounts violates security policy and data privacy laws", "Only on weekends", "Yes, if the file is zipped"],
-             1, "Transmitting protected customer information to personal accounts circumvents enterprise security monitoring and breaks privacy laws."),
+            (
+                "Is it permissible to email a customer database spreadsheet to your personal email to finish work from home?",
+                [
+                    "Yes, as long as you delete it later",
+                    "No, exfiltrating customer PII to personal accounts violates security policy and data privacy laws",
+                    "Only on weekends",
+                    "Yes, if the file is zipped",
+                ],
+                1,
+                "Transmitting protected customer information to personal accounts circumvents enterprise security monitoring and breaks privacy laws.",
+            ),
         ],
     },
     {
@@ -1030,12 +1286,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The convenience of public AI. [00:25] How training pipelines retain data. [00:50] Enterprise AI safeguards.",
         "transcript_hi": "[00:00] एआई टूल्स की सुविधा। [00:25] डेटा स्टोर होने का खतरा। [00:50] सुरक्षित एंटरप्राइज एआई का चुनाव।",
         "questions": [
-            ("What is the primary cybersecurity risk of pasting unredacted company financial reports into a public AI chatbot?",
-             ["It uses up your computer memory", "The confidential data may be retained and used for future model training, leaking trade secrets", "The chatbot will reject the text", "It changes font styles"],
-             1, "Public consumer AI services often retain user prompts for continuous model training, risking intellectual property leakage."),
+            (
+                "What is the primary cybersecurity risk of pasting unredacted company financial reports into a public AI chatbot?",
+                [
+                    "It uses up your computer memory",
+                    "The confidential data may be retained and used for future model training, leaking trade secrets",
+                    "The chatbot will reject the text",
+                    "It changes font styles",
+                ],
+                1,
+                "Public consumer AI services often retain user prompts for continuous model training, risking intellectual property leakage.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 8: personal (Lessons 36 - 40)
     # -------------------------------------------------------------------------
@@ -1061,9 +1324,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The default credentials vulnerability. [00:25] Segregating IoT devices on a guest Wi-Fi. [00:45] Updating router firmware.",
         "transcript_hi": "[00:00] डिफॉल्ट पासवर्ड की कमजोरी। [00:25] स्मार्ट टीवी के लिए गेस्ट वाई-फाई। [00:45] राउटर अपडेट करने का तरीका।",
         "questions": [
-            ("Why is leaving the default administrative password on your home Wi-Fi router hazardous?",
-             ["It slows down your download speed", "Attackers can easily log in, hijack your DNS settings, and monitor all connected household traffic", "It voids the warranty", "The router turns off automatically"],
-             1, "Factory default credentials allow remote or local attackers to reconfigure the router and reroute traffic to malicious servers."),
+            (
+                "Why is leaving the default administrative password on your home Wi-Fi router hazardous?",
+                [
+                    "It slows down your download speed",
+                    "Attackers can easily log in, hijack your DNS settings, and monitor all connected household traffic",
+                    "It voids the warranty",
+                    "The router turns off automatically",
+                ],
+                1,
+                "Factory default credentials allow remote or local attackers to reconfigure the router and reroute traffic to malicious servers.",
+            ),
         ],
     },
     {
@@ -1088,9 +1359,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The rogue access point. [00:20] Man-in-the-middle interception. [00:45] Why VPNs encrypt the tunnel.",
         "transcript_hi": "[00:00] फर्जी वाई-फाई हॉटस्पॉट। [00:20] बीच में डेटा की चोरी। [00:45] वीपीएन से डेटा सुरक्षित करना।",
         "questions": [
-            ("When connecting to an open public Wi-Fi network at an airport or coffee shop, what is the best security practice?",
-             ["Disable your firewall", "Use a reputable Virtual Private Network (VPN) and avoid conducting banking or typing passwords", "Turn on file sharing", "Clear your browser cache"],
-             1, "VPNs establish an encrypted tunnel that shields your network traffic from interception on untrusted public networks."),
+            (
+                "When connecting to an open public Wi-Fi network at an airport or coffee shop, what is the best security practice?",
+                [
+                    "Disable your firewall",
+                    "Use a reputable Virtual Private Network (VPN) and avoid conducting banking or typing passwords",
+                    "Turn on file sharing",
+                    "Clear your browser cache",
+                ],
+                1,
+                "VPNs establish an encrypted tunnel that shields your network traffic from interception on untrusted public networks.",
+            ),
         ],
     },
     {
@@ -1115,9 +1394,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Identity fraud discovery. [00:25] Masked Aadhaar explained. [00:50] Locking biometrics via UIDAI.",
         "transcript_hi": "[00:00] फर्जी लोन की समस्या। [00:25] मास्क्ड आधार क्या है। [00:50] आधार बायोमेट्रिक्स लॉक करने का तरीका।",
         "questions": [
-            ("What feature provided by UIDAI prevents unauthorized financial authentication against your Aadhaar card?",
-             ["Changing your phone wallpaper", "Biometric Lock feature via UIDAI portal or mAadhaar app", "Throwing away the physical card", "Calling the police"],
-             1, "Locking your Aadhaar biometrics prevents anyone from authenticating loans or accounts even if they possess your card details."),
+            (
+                "What feature provided by UIDAI prevents unauthorized financial authentication against your Aadhaar card?",
+                [
+                    "Changing your phone wallpaper",
+                    "Biometric Lock feature via UIDAI portal or mAadhaar app",
+                    "Throwing away the physical card",
+                    "Calling the police",
+                ],
+                1,
+                "Locking your Aadhaar biometrics prevents anyone from authenticating loans or accounts even if they possess your card details.",
+            ),
         ],
     },
     {
@@ -1142,9 +1429,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The electricity bill scam. [00:25] The vulnerable demographics. [00:45] The 'Check Before Clicking' household pledge.",
         "transcript_hi": "[00:00] बिजली बिल का फर्जी मैसेज। [00:25] बुजुर्गों को निशाना बनाना। [00:45] घर में सुरक्षा का खुला माहौल।",
         "questions": [
-            ("An elderly family member receives a text threatening power disconnection within two hours unless they call a mobile number. You should:",
-             ["Tell them to pay immediately", "Verify their real electricity bill status on the official utility provider portal and report the scam number", "Ignore the electricity company forever", "Forward the message"],
-             1, "Power utilities never use personal mobile numbers for disconnection threats; always verify via official utility portals."),
+            (
+                "An elderly family member receives a text threatening power disconnection within two hours unless they call a mobile number. You should:",
+                [
+                    "Tell them to pay immediately",
+                    "Verify their real electricity bill status on the official utility provider portal and report the scam number",
+                    "Ignore the electricity company forever",
+                    "Forward the message",
+                ],
+                1,
+                "Power utilities never use personal mobile numbers for disconnection threats; always verify via official utility portals.",
+            ),
         ],
     },
     {
@@ -1169,12 +1464,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The modded APK trap. [00:20] Malicious accessibility services abuse. [00:45] Auditing app permissions in settings.",
         "transcript_hi": "[00:00] फ्री ऐप का लालच। [00:20] एसएमएस परमिशन से ओटीपी की चोरी। [00:45] फोन सेटिंग्स में परमिशन जांचना।",
         "questions": [
-            ("A simple calculator app downloaded from the web requests permission to read your contacts and SMS messages. You should:",
-             ["Grant permissions because calculators need math", "Deny permissions, uninstall the app immediately, and use verified official apps", "Turn on airplane mode", "Buy a new phone"],
-             1, "Utility apps requesting access to sensitive SMS or contact data are often spyware or trojans."),
+            (
+                "A simple calculator app downloaded from the web requests permission to read your contacts and SMS messages. You should:",
+                [
+                    "Grant permissions because calculators need math",
+                    "Deny permissions, uninstall the app immediately, and use verified official apps",
+                    "Turn on airplane mode",
+                    "Buy a new phone",
+                ],
+                1,
+                "Utility apps requesting access to sensitive SMS or contact data are often spyware or trojans.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 9: incident (Lessons 41 - 45)
     # -------------------------------------------------------------------------
@@ -1205,9 +1507,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The panic moment. [00:20] Network isolation without power down. [00:45] Contacting incident response.",
         "transcript_hi": "[00:00] घबराहट का क्षण। [00:20] कंप्यूटर को नेटवर्क से अलग करना। [00:45] सुरक्षा टीम को तुरंत अलर्ट करना।",
         "questions": [
-            ("If you suspect you entered your credentials on a phishing page, what is the best immediate response?",
-             ["Pretend it didn't happen and shut down your laptop for a week", "Disconnect network connectivity and immediately notify IT Security while resetting password from another device", "Delete your browser history", "Format your hard drive"],
-             1, "Quick isolation and transparent notification allow security teams to invalidate active session tokens before lateral movement."),
+            (
+                "If you suspect you entered your credentials on a phishing page, what is the best immediate response?",
+                [
+                    "Pretend it didn't happen and shut down your laptop for a week",
+                    "Disconnect network connectivity and immediately notify IT Security while resetting password from another device",
+                    "Delete your browser history",
+                    "Format your hard drive",
+                ],
+                1,
+                "Quick isolation and transparent notification allow security teams to invalidate active session tokens before lateral movement.",
+            ),
         ],
     },
     {
@@ -1232,9 +1542,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Fear vs transparency. [00:25] The compounding cost of delay. [00:50] Building a blameless reporting environment.",
         "transcript_hi": "[00:00] डर बनाम पारदर्शिता। [00:25] देरी का भारी नुकसान। [00:50] बिना डर के काम करने का माहौल।",
         "questions": [
-            ("Why is a 'blameless security culture' critical for enterprise safety?",
-             ["It means employees don't have to follow rules", "Employees report phishing accidents immediately rather than concealing them out of fear", "It eliminates the need for IT", "It lowers software costs"],
-             1, "When employees know they won't be punished for honest mistakes, incidents are reported and contained exponentially faster."),
+            (
+                "Why is a 'blameless security culture' critical for enterprise safety?",
+                [
+                    "It means employees don't have to follow rules",
+                    "Employees report phishing accidents immediately rather than concealing them out of fear",
+                    "It eliminates the need for IT",
+                    "It lowers software costs",
+                ],
+                1,
+                "When employees know they won't be punished for honest mistakes, incidents are reported and contained exponentially faster.",
+            ),
         ],
     },
     {
@@ -1259,9 +1577,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Why screenshots alone are incomplete. [00:25] Exporting .eml or raw headers. [00:50] Sending samples safely to security.",
         "transcript_hi": "[00:00] सिर्फ स्क्रीनशॉट काफी क्यों नहीं है। [00:25] असली हेडर कॉपी करना। [00:50] सुरक्षा टीम को सही जानकारी भेजना।",
         "questions": [
-            ("What information do raw email headers provide that a regular screenshot lacks?",
-             ["The sender's profile picture", "Complete server routing hops, originating IP addresses, and cryptographic SPF/DKIM verification results", "The color of the button", "The battery level"],
-             1, "Raw headers contain verifiable technical telemetry detailing the true mail path and authentication status."),
+            (
+                "What information do raw email headers provide that a regular screenshot lacks?",
+                [
+                    "The sender's profile picture",
+                    "Complete server routing hops, originating IP addresses, and cryptographic SPF/DKIM verification results",
+                    "The color of the button",
+                    "The battery level",
+                ],
+                1,
+                "Raw headers contain verifiable technical telemetry detailing the true mail path and authentication status.",
+            ),
         ],
     },
     {
@@ -1288,9 +1614,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] Lateral movement explained. [00:20] Physical vs software isolation. [00:45] Why powering off can harm forensic recovery.",
         "transcript_hi": "[00:00] नेटवर्क में वायरस का फैलना। [00:20] नेटवर्क केबल अलग करना। [00:45] शटडाउन न करने की वैज्ञानिक वजह।",
         "questions": [
-            ("Why should you unplug the network cable rather than simply holding down the power button when ransomware appears?",
-             ["Power buttons are dirty", "Severing network access halts lateral encryption, while keeping power on preserves volatile RAM memory for forensic investigation", "Computers break if turned off", "To keep fans running"],
-             1, "Network disconnection halts spread immediately, while leaving power on preserves volatile digital evidence in RAM."),
+            (
+                "Why should you unplug the network cable rather than simply holding down the power button when ransomware appears?",
+                [
+                    "Power buttons are dirty",
+                    "Severing network access halts lateral encryption, while keeping power on preserves volatile RAM memory for forensic investigation",
+                    "Computers break if turned off",
+                    "To keep fans running",
+                ],
+                1,
+                "Network disconnection halts spread immediately, while leaving power on preserves volatile digital evidence in RAM.",
+            ),
         ],
     },
     {
@@ -1317,12 +1651,19 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The post-mortem objective. [00:25] Root cause analysis techniques. [00:50] Updating controls and awareness playbooks.",
         "transcript_hi": "[00:00] समीक्षा बैठक का उद्देश्य। [00:25] असली जड़ की पहचान। [00:50] सुरक्षा नियमों में सुधार।",
         "questions": [
-            ("What is the primary objective of an incident post-mortem meeting?",
-             ["To assign blame and penalize the responsible team", "To identify systemic root causes and update technical controls and training so the breach cannot recur", "To draft a press release denying everything", "To close the IT department"],
-             1, "Post-mortems focus on continuous learning, closing systemic vulnerabilities, and fortifying defenses against future attempts."),
+            (
+                "What is the primary objective of an incident post-mortem meeting?",
+                [
+                    "To assign blame and penalize the responsible team",
+                    "To identify systemic root causes and update technical controls and training so the breach cannot recur",
+                    "To draft a press release denying everything",
+                    "To close the IT department",
+                ],
+                1,
+                "Post-mortems focus on continuous learning, closing systemic vulnerabilities, and fortifying defenses against future attempts.",
+            ),
         ],
     },
-
     # -------------------------------------------------------------------------
     # Module 10: advanced (Lessons 46 - 50)
     # -------------------------------------------------------------------------
@@ -1350,9 +1691,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The castle and the side gate. [00:25] The Target breach case study. [00:50] Zero trust vendor segmentation.",
         "transcript_hi": "[00:00] मुख्य द्वार बनाम चोर दरवाजा। [00:25] प्रसिद्ध टारगेट स्टोर की केस स्टडी। [00:50] वेंडर्स के लिए जीरो ट्रस्ट नियम।",
         "questions": [
-            ("Why do sophisticated attackers frequently compromise small third-party contractors rather than attacking Fortune 500 companies directly?",
-             ["Small contractors have more money", "Contractors often have legitimate network access into large enterprises but weaker security defenses", "Small contractors use faster servers", "Attackers prefer smaller logos"],
-             1, "Third-party vendors often possess privileged access into client networks while lacking enterprise-grade defense infrastructure."),
+            (
+                "Why do sophisticated attackers frequently compromise small third-party contractors rather than attacking Fortune 500 companies directly?",
+                [
+                    "Small contractors have more money",
+                    "Contractors often have legitimate network access into large enterprises but weaker security defenses",
+                    "Small contractors use faster servers",
+                    "Attackers prefer smaller logos",
+                ],
+                1,
+                "Third-party vendors often possess privileged access into client networks while lacking enterprise-grade defense infrastructure.",
+            ),
         ],
     },
     {
@@ -1378,9 +1727,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The retail store social engineering. [00:25] The 'No Service' indicator. [00:50] Migrating from SMS OTPs to authenticator apps.",
         "transcript_hi": "[00:00] स्टोर पर फर्जी दस्तावेज का खेल। [00:25] 'No Service' का खतरा। [00:50] एसएमएस के बजाय ऐप आधारित प्रमाणीकरण का उपयोग।",
         "questions": [
-            ("What is the most secure replacement for SMS-based two-factor authentication to protect against SIM-swapping?",
-             ["Email OTPs", "Time-based hardware security keys (FIDO2/YubiKey) or authenticator apps (TOTP)", "Sending letters via post", "Writing PIN on a paper"],
-             1, "Hardware security keys and authenticator apps cannot be intercepted via cellular SIM swapping attacks."),
+            (
+                "What is the most secure replacement for SMS-based two-factor authentication to protect against SIM-swapping?",
+                [
+                    "Email OTPs",
+                    "Time-based hardware security keys (FIDO2/YubiKey) or authenticator apps (TOTP)",
+                    "Sending letters via post",
+                    "Writing PIN on a paper",
+                ],
+                1,
+                "Hardware security keys and authenticator apps cannot be intercepted via cellular SIM swapping attacks.",
+            ),
         ],
     },
     {
@@ -1405,9 +1762,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The watering hole predator analogy. [00:25] Drive-by download exploits. [00:50] Browser isolation and patching.",
         "transcript_hi": "[00:00] तालाब वाले शिकारी का उदाहरण। [00:25] वेबसाइट से सीधे डाउनलोड होने वाला वायरस। [00:50] ब्राउज़र अपडेट रखने की महत्ता।",
         "questions": [
-            ("What defines a 'Watering Hole' cyber attack?",
-             ["Dumping computers in lakes", "Compromising legitimate websites frequently visited by target industry members to infect visitors", "Attacking water treatment facilities only", "Phishing via marine biology forums"],
-             1, "Watering hole attacks infect trusted third-party websites frequently visited by a target organization or community."),
+            (
+                "What defines a 'Watering Hole' cyber attack?",
+                [
+                    "Dumping computers in lakes",
+                    "Compromising legitimate websites frequently visited by target industry members to infect visitors",
+                    "Attacking water treatment facilities only",
+                    "Phishing via marine biology forums",
+                ],
+                1,
+                "Watering hole attacks infect trusted third-party websites frequently visited by a target organization or community.",
+            ),
         ],
     },
     {
@@ -1433,9 +1798,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The departing employee scenario. [00:25] Behavioral anomaly detection. [00:50] The principle of least privilege.",
         "transcript_hi": "[00:00] नौकरी छोड़ने वाले कर्मचारी का केस। [00:25] असामान्य व्यवहार का विश्लेषण। [00:50] न्यूनतम अधिकार का सिद्धांत।",
         "questions": [
-            ("Which administrative practice best mitigates the damage an insider threat can inflict?",
-             ["Giving all staff global administrator access", "Enforcing the Principle of Least Privilege so users only access data strictly needed for their role", "Allowing unlimited USB copying", "Never terminating accounts"],
-             1, "The Principle of Least Privilege limits access strictly to the resources required for an employee's specific daily role."),
+            (
+                "Which administrative practice best mitigates the damage an insider threat can inflict?",
+                [
+                    "Giving all staff global administrator access",
+                    "Enforcing the Principle of Least Privilege so users only access data strictly needed for their role",
+                    "Allowing unlimited USB copying",
+                    "Never terminating accounts",
+                ],
+                1,
+                "The Principle of Least Privilege limits access strictly to the resources required for an employee's specific daily role.",
+            ),
         ],
     },
     {
@@ -1461,9 +1834,17 @@ CATALOG_VIDEOS = [
         "transcript_en": "[00:00] The demise of the perimeter moat. [00:25] The three pillars of Zero Trust. [00:50] Applying Zero Trust in daily habits.",
         "transcript_hi": "[00:00] पुराने सुरक्षा मॉडल का अंत। [00:25] जीरो ट्रस्ट के तीन मजबूत स्तंभ। [00:50] दैनिक आदतों में जीरो ट्रस्ट सोच।",
         "questions": [
-            ("What is the core foundational maxim of Zero Trust architecture?",
-             ["Trust everyone inside the office LAN", "Never trust, always verify every user and device continuously", "Passwords should never be changed", "Firewalls are obsolete"],
-             1, "'Never Trust, Always Verify' requires continuous authentication and authorization regardless of location or network."),
+            (
+                "What is the core foundational maxim of Zero Trust architecture?",
+                [
+                    "Trust everyone inside the office LAN",
+                    "Never trust, always verify every user and device continuously",
+                    "Passwords should never be changed",
+                    "Firewalls are obsolete",
+                ],
+                1,
+                "'Never Trust, Always Verify' requires continuous authentication and authorization regardless of location or network.",
+            ),
         ],
     },
 ]

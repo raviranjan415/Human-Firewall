@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import datetime
 import json
-import os
 from pathlib import Path
 from typing import Any
 
@@ -50,7 +49,11 @@ def get_terraform_telemetry() -> dict[str, Any]:
                 {"replica_id": 2, "private_ip": "10.0.10.12", "status": "running"},
                 {"replica_id": 3, "private_ip": "10.0.10.13", "status": "running"},
             ],
-            "database": {"private_ip": "10.0.10.50", "engine": "postgresql-16", "status": "running"},
+            "database": {
+                "private_ip": "10.0.10.50",
+                "engine": "postgresql-16",
+                "status": "running",
+            },
         },
         "errors": [],
     }
@@ -67,7 +70,17 @@ def get_ansible_telemetry() -> dict[str, Any]:
         "status": "success",
         "playbook": "site.yml",
         "total_hosts": 5,
-        "roles_executed": ["common", "security", "users", "firewall", "database", "docker", "application", "monitoring", "nginx"],
+        "roles_executed": [
+            "common",
+            "security",
+            "users",
+            "firewall",
+            "database",
+            "docker",
+            "application",
+            "monitoring",
+            "nginx",
+        ],
         "stats": {
             "human-firewall-lb-01": {"ok": 12, "changed": 3, "failed": 0},
             "human-firewall-replica-01": {"ok": 18, "changed": 4, "failed": 0},
@@ -113,8 +126,10 @@ def get_application_telemetry() -> dict[str, Any]:
     try:
         db.session.execute(text("SELECT 1"))
         db_ok = True
-        db_latency_ms = round((datetime.datetime.now() - start).total_seconds() * 1000, 2)
-    except Exception as exc:
+        db_latency_ms = round(
+            (datetime.datetime.now() - start).total_seconds() * 1000, 2
+        )
+    except Exception:
         db_ok = False
         db_latency_ms = -1
 
@@ -140,16 +155,33 @@ def get_application_telemetry() -> dict[str, Any]:
             "managed_replicas": 3,
         },
         "replicas": [
-            {"id": "app_replica_1", "port": 5000, "status": "healthy", "worker_count": 4},
-            {"id": "app_replica_2", "port": 5000, "status": "healthy", "worker_count": 4},
-            {"id": "app_replica_3", "port": 5000, "status": "healthy", "worker_count": 4},
+            {
+                "id": "app_replica_1",
+                "port": 5000,
+                "status": "healthy",
+                "worker_count": 4,
+            },
+            {
+                "id": "app_replica_2",
+                "port": 5000,
+                "status": "healthy",
+                "worker_count": 4,
+            },
+            {
+                "id": "app_replica_3",
+                "port": 5000,
+                "status": "healthy",
+                "worker_count": 4,
+            },
         ],
     }
 
 
 def get_all_devops_telemetry() -> dict[str, Any]:
     """Aggregate all 4 DevOps pillars into a single view."""
-    pipeline_report = _read_json_file(BASE_DIR / "instance" / "devops_reports" / "latest_pipeline_run.json")
+    pipeline_report = _read_json_file(
+        BASE_DIR / "instance" / "devops_reports" / "latest_pipeline_run.json"
+    )
 
     return {
         "terraform": get_terraform_telemetry(),
@@ -158,4 +190,3 @@ def get_all_devops_telemetry() -> dict[str, Any]:
         "application": get_application_telemetry(),
         "pipeline": pipeline_report,
     }
-

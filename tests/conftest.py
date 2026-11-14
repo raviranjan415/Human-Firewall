@@ -18,35 +18,35 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app import create_app  # noqa: E402
-from app.extensions import db as _db  # noqa: E402
-from app.models import (  # noqa: E402
+from app import create_app
+from app.extensions import db as _db
+from app.models import (
+    AccountRecoveryCode,
     AuditLog,
     Certificate,
     CyberNews,
+    EligibleMember,
+    EmailVerificationToken,
     LabAttempt,
+    LearningAssignment,
     LearningEvent,
     Notification,
+    Organization,
+    OrganizationMembership,
+    OrganizationSubscription,
+    OrgInvitation,
+    PasswordResetToken,
     Role,
     StreakDay,
+    SubscriptionInvoice,
     User,
     UserAchievement,
     UserPreference,
     UserProgress,
     XPTransaction,
-    AccountRecoveryCode,
-    EligibleMember,
-    EmailVerificationToken,
-    LearningAssignment,
-    OrgInvitation,
-    Organization,
-    OrganizationMembership,
-    OrganizationSubscription,
-    PasswordResetToken,
-    SubscriptionInvoice,
 )
-from app.models.user import ROLE_INSTRUCTOR, ROLE_LEARNER  # noqa: E402
-from app.services.seed import run_seed  # noqa: E402
+from app.models.user import ROLE_INSTRUCTOR, ROLE_LEARNER
+from app.services.seed import run_seed
 
 # TestingConfig supplies these.
 ADMIN_USERNAME = "admin"
@@ -108,7 +108,9 @@ def clean_learner_data(app):
     g.pop("_login_user", None)
 
     _db.session.rollback()
-    keep_ids = [row.id for row in User.query.filter(User.username.in_(BASELINE_USERNAMES)).all()]
+    keep_ids = [
+        row.id for row in User.query.filter(User.username.in_(BASELINE_USERNAMES)).all()
+    ]
     for model in USER_DATA_MODELS:
         model.query.delete(synchronize_session=False)
     UserPreference.query.filter(~UserPreference.user_id.in_(keep_ids)).delete(

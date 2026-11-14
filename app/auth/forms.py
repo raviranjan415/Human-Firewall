@@ -23,7 +23,11 @@ PASSWORD_MESSAGE = (
 
 def password_strength(form, field):
     value = field.data or ""
-    if len(value) < 10 or not re.search(r"[A-Za-z]", value) or not re.search(r"\d", value):
+    if (
+        len(value) < 10
+        or not re.search(r"[A-Za-z]", value)
+        or not re.search(r"\d", value)
+    ):
         raise ValidationError(PASSWORD_MESSAGE)
 
 
@@ -33,15 +37,27 @@ class RegistrationForm(FlaskForm):
         validators=[
             DataRequired(),
             Length(min=3, max=64),
-            Regexp(r"^[A-Za-z0-9_.-]+$", message="Use letters, numbers, dot, dash or underscore."),
+            Regexp(
+                r"^[A-Za-z0-9_.-]+$",
+                message="Use letters, numbers, dot, dash or underscore.",
+            ),
         ],
     )
-    email = StringField("auth.email", validators=[DataRequired(), Email(), Length(max=255)])
-    display_name = StringField("auth.display_name", validators=[Optional(), Length(max=120)])
-    password = PasswordField("auth.password", validators=[DataRequired(), password_strength])
+    email = StringField(
+        "auth.email", validators=[DataRequired(), Email(), Length(max=255)]
+    )
+    display_name = StringField(
+        "auth.display_name", validators=[Optional(), Length(max=120)]
+    )
+    password = PasswordField(
+        "auth.password", validators=[DataRequired(), password_strength]
+    )
     confirm_password = PasswordField(
         "auth.confirm_password",
-        validators=[DataRequired(), EqualTo("password", message="Passwords must match.")],
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match."),
+        ],
     )
     accept_terms = BooleanField("auth.accept_terms", validators=[DataRequired()])
     submit = SubmitField("nav.register")
@@ -58,23 +74,41 @@ class RegistrationForm(FlaskForm):
 class OrgEnrollmentForm(FlaskForm):
     """Organization student or employee registration and enrollment form."""
 
-    display_name = StringField("auth.display_name", validators=[Optional(), Length(max=120)])
+    display_name = StringField(
+        "auth.display_name", validators=[Optional(), Length(max=120)]
+    )
     username = StringField(
         "auth.username",
         validators=[
             DataRequired(),
             Length(min=3, max=64),
-            Regexp(r"^[A-Za-z0-9_.-]+$", message="Use letters, numbers, dot, dash or underscore."),
+            Regexp(
+                r"^[A-Za-z0-9_.-]+$",
+                message="Use letters, numbers, dot, dash or underscore.",
+            ),
         ],
     )
-    email = StringField("auth.email", validators=[DataRequired(), Email(), Length(max=255)])
-    org_code = StringField("Organization Code", validators=[DataRequired(), Length(max=32)])
-    registration_id = StringField("Registration ID / Employee ID", validators=[DataRequired(), Length(max=120)])
-    passcode = PasswordField("Enrollment Passcode (if required)", validators=[Optional(), Length(max=120)])
-    password = PasswordField("auth.password", validators=[DataRequired(), password_strength])
+    email = StringField(
+        "auth.email", validators=[DataRequired(), Email(), Length(max=255)]
+    )
+    org_code = StringField(
+        "Organization Code", validators=[DataRequired(), Length(max=32)]
+    )
+    registration_id = StringField(
+        "Registration ID / Employee ID", validators=[DataRequired(), Length(max=120)]
+    )
+    passcode = PasswordField(
+        "Enrollment Passcode (if required)", validators=[Optional(), Length(max=120)]
+    )
+    password = PasswordField(
+        "auth.password", validators=[DataRequired(), password_strength]
+    )
     confirm_password = PasswordField(
         "auth.confirm_password",
-        validators=[DataRequired(), EqualTo("password", message="Passwords must match.")],
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match."),
+        ],
     )
     accept_terms = BooleanField("auth.accept_terms", validators=[DataRequired()])
     submit = SubmitField("Join Organization Workspace")
@@ -85,26 +119,41 @@ class OrgEnrollmentForm(FlaskForm):
 
     def validate_email(self, field):
         if User.query.filter(func_lower(User.email) == field.data.lower()).first():
-            raise ValidationError("An account with that email already exists. Sign in to link your organization.")
+            raise ValidationError(
+                "An account with that email already exists. Sign in to link your organization."
+            )
 
 
 class JoinOrgForm(FlaskForm):
     """Logged-in personal learners linking an authorized organization workspace."""
 
-    org_code = StringField("Organization Code", validators=[DataRequired(), Length(max=32)])
-    registration_id = StringField("Registration ID / Employee ID", validators=[DataRequired(), Length(max=120)])
-    passcode = PasswordField("Enrollment Passcode (if required)", validators=[Optional(), Length(max=120)])
+    org_code = StringField(
+        "Organization Code", validators=[DataRequired(), Length(max=32)]
+    )
+    registration_id = StringField(
+        "Registration ID / Employee ID", validators=[DataRequired(), Length(max=120)]
+    )
+    passcode = PasswordField(
+        "Enrollment Passcode (if required)", validators=[Optional(), Length(max=120)]
+    )
     submit = SubmitField("Verify Eligibility & Join Workspace")
 
 
 class RecoveryRedeemForm(FlaskForm):
     """Redeem HR-assisted recovery code to set a new password."""
 
-    recovery_code = StringField("HR Recovery Code", validators=[DataRequired(), Length(max=64)])
-    password = PasswordField("New Password", validators=[DataRequired(), password_strength])
+    recovery_code = StringField(
+        "HR Recovery Code", validators=[DataRequired(), Length(max=64)]
+    )
+    password = PasswordField(
+        "New Password", validators=[DataRequired(), password_strength]
+    )
     confirm_password = PasswordField(
         "Confirm New Password",
-        validators=[DataRequired(), EqualTo("password", message="Passwords must match.")],
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match."),
+        ],
     )
     submit = SubmitField("Set New Password & Sign In")
 
@@ -117,7 +166,9 @@ def func_lower(column):
 
 class LoginForm(FlaskForm):
     # Accepts either a username or an email address.
-    identifier = StringField("auth.username", validators=[DataRequired(), Length(max=255)])
+    identifier = StringField(
+        "auth.username", validators=[DataRequired(), Length(max=255)]
+    )
     password = PasswordField("auth.password", validators=[DataRequired()])
     remember = BooleanField("auth.remember")
     submit = SubmitField("nav.login")
@@ -129,21 +180,32 @@ class ResetRequestForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField("auth.reset_new", validators=[DataRequired(), password_strength])
+    password = PasswordField(
+        "auth.reset_new", validators=[DataRequired(), password_strength]
+    )
     confirm_password = PasswordField(
         "auth.confirm_password",
-        validators=[DataRequired(), EqualTo("password", message="Passwords must match.")],
+        validators=[
+            DataRequired(),
+            EqualTo("password", message="Passwords must match."),
+        ],
     )
     submit = SubmitField("auth.reset_new")
 
 
 class SettingsForm(FlaskForm):
-    display_name = StringField("auth.display_name", validators=[Optional(), Length(max=120)])
+    display_name = StringField(
+        "auth.display_name", validators=[Optional(), Length(max=120)]
+    )
     locale = SelectField("nav.language", choices=[("en", "English"), ("hi", "हिन्दी")])
     timezone = StringField("timezone", validators=[Optional(), Length(max=64)])
     learning_mode = SelectField(
         "learning_mode",
-        choices=[("explorer", "Explorer"), ("challenge", "Challenge"), ("professional", "Professional")],
+        choices=[
+            ("explorer", "Explorer"),
+            ("challenge", "Challenge"),
+            ("professional", "Professional"),
+        ],
     )
     text_size = SelectField(
         "text_size",
@@ -154,4 +216,3 @@ class SettingsForm(FlaskForm):
     email_notifications = BooleanField("email_notifications")
     public_leaderboard = BooleanField("public_leaderboard")
     submit = SubmitField("nav.settings")
-

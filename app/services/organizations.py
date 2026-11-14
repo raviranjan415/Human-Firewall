@@ -20,26 +20,20 @@ from app.models import (
     AccountRecoveryCode,
     AuditLog,
     EligibleMember,
-    OrgInvitation,
     Organization,
     OrganizationMembership,
     OrganizationSubscription,
-    SubscriptionInvoice,
+    OrgInvitation,
     User,
 )
 from app.models.organization import (
-    ENROLLMENT_STATUSES,
     ORG_ROLE_ADMIN,
     ORG_ROLE_MEMBER,
-    ORG_ROLE_TP_COORDINATOR,
     ORGANIZATION_PLANS,
     PLAN_STARTER,
     STATUS_ACTIVE,
-    STATUS_AWAITING_VERIFICATION,
     STATUS_ELIGIBLE,
-    STATUS_INVITATION_SENT,
     STATUS_PENDING_APPROVAL,
-    STATUS_REGISTRATION_STARTED,
     STATUS_REVOKED,
     STATUS_SUSPENDED,
     generate_org_code,
@@ -53,6 +47,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Organization creation & settings
 # ---------------------------------------------------------------------------
+
 
 def create_organization(
     name: str,
@@ -68,6 +63,7 @@ def create_organization(
     name_clean = name.strip()
     if not slug:
         import re
+
         slug = re.sub(r"[^a-z0-9]+", "-", name_clean.lower()).strip("-")
 
     # Ensure unique slug
@@ -150,7 +146,14 @@ def rotate_organization_code(org: Organization, actor: User | None = None) -> st
 # Eligible-Member Registry & CSV Import
 # ---------------------------------------------------------------------------
 
-CSV_TEMPLATE_HEADERS = ["registration_id", "full_name", "email", "department", "cohort", "training_group"]
+CSV_TEMPLATE_HEADERS = [
+    "registration_id",
+    "full_name",
+    "email",
+    "department",
+    "cohort",
+    "training_group",
+]
 
 
 def generate_csv_template() -> str:
@@ -158,8 +161,26 @@ def generate_csv_template() -> str:
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(CSV_TEMPLATE_HEADERS)
-    writer.writerow(["REG-2026-001", "Aarav Sharma", "aarav@campus.edu", "Computer Science", "2026", "Batch A"])
-    writer.writerow(["EMP-44892", "Sarah Connor", "sarah.c@company.corp", "Security Ops", "Engineering", "Cohort Q1"])
+    writer.writerow(
+        [
+            "REG-2026-001",
+            "Aarav Sharma",
+            "aarav@campus.edu",
+            "Computer Science",
+            "2026",
+            "Batch A",
+        ]
+    )
+    writer.writerow(
+        [
+            "EMP-44892",
+            "Sarah Connor",
+            "sarah.c@company.corp",
+            "Security Ops",
+            "Engineering",
+            "Cohort Q1",
+        ]
+    )
     return output.getvalue()
 
 
@@ -181,18 +202,56 @@ def import_eligible_members_csv(
 
     # Normalize header mapping
     header_clean = [h.strip().lower().replace(" ", "_") for h in header]
-    id_col = next((i for i, h in enumerate(header_clean) if h in ("registration_id", "employee_id", "id", "reg_id", "emp_id")), None)
+    id_col = next(
+        (
+            i
+            for i, h in enumerate(header_clean)
+            if h in ("registration_id", "employee_id", "id", "reg_id", "emp_id")
+        ),
+        None,
+    )
     if id_col is None:
         return {
             "success": False,
             "error": "Missing required header: 'registration_id' or 'employee_id'.",
         }
 
-    name_col = next((i for i, h in enumerate(header_clean) if h in ("full_name", "name", "student_name", "employee_name")), None)
-    email_col = next((i for i, h in enumerate(header_clean) if h in ("email", "approved_email", "email_address")), None)
-    dept_col = next((i for i, h in enumerate(header_clean) if h in ("department", "dept", "branch")), None)
-    cohort_col = next((i for i, h in enumerate(header_clean) if h in ("cohort", "batch", "class", "year")), None)
-    group_col = next((i for i, h in enumerate(header_clean) if h in ("training_group", "group")), None)
+    name_col = next(
+        (
+            i
+            for i, h in enumerate(header_clean)
+            if h in ("full_name", "name", "student_name", "employee_name")
+        ),
+        None,
+    )
+    email_col = next(
+        (
+            i
+            for i, h in enumerate(header_clean)
+            if h in ("email", "approved_email", "email_address")
+        ),
+        None,
+    )
+    dept_col = next(
+        (
+            i
+            for i, h in enumerate(header_clean)
+            if h in ("department", "dept", "branch")
+        ),
+        None,
+    )
+    cohort_col = next(
+        (
+            i
+            for i, h in enumerate(header_clean)
+            if h in ("cohort", "batch", "class", "year")
+        ),
+        None,
+    )
+    group_col = next(
+        (i for i, h in enumerate(header_clean) if h in ("training_group", "group")),
+        None,
+    )
 
     created_count = 0
     updated_count = 0
@@ -205,20 +264,48 @@ def import_eligible_members_csv(
 
         raw_id = row[id_col].strip() if id_col < len(row) else ""
         if not raw_id:
-            rejected_rows.append({"line": line_num, "reason": "Missing Registration ID / Employee ID."})
+            rejected_rows.append(
+                {"line": line_num, "reason": "Missing Registration ID / Employee ID."}
+            )
             continue
 
         id_key = raw_id.upper()
         if id_key in seen_in_batch:
-            rejected_rows.append({"line": line_num, "identifier": raw_id, "reason": "Duplicate identifier in uploaded file."})
+            rejected_rows.append(
+                {
+                    "line": line_num,
+                    "identifier": raw_id,
+                    "reason": "Duplicate identifier in uploaded file.",
+                }
+            )
             continue
         seen_in_batch.add(id_key)
 
-        name = row[name_col].strip() if (name_col is not None and name_col < len(row)) else None
-        email = row[email_col].strip().lower() if (email_col is not None and email_col < len(row)) else None
-        dept = row[dept_col].strip() if (dept_col is not None and dept_col < len(row)) else None
-        cohort = row[cohort_col].strip() if (cohort_col is not None and cohort_col < len(row)) else None
-        group = row[group_col].strip() if (group_col is not None and group_col < len(row)) else None
+        name = (
+            row[name_col].strip()
+            if (name_col is not None and name_col < len(row))
+            else None
+        )
+        email = (
+            row[email_col].strip().lower()
+            if (email_col is not None and email_col < len(row))
+            else None
+        )
+        dept = (
+            row[dept_col].strip()
+            if (dept_col is not None and dept_col < len(row))
+            else None
+        )
+        cohort = (
+            row[cohort_col].strip()
+            if (cohort_col is not None and cohort_col < len(row))
+            else None
+        )
+        group = (
+            row[group_col].strip()
+            if (group_col is not None and group_col < len(row))
+            else None
+        )
 
         # Check existing within this tenant workspace
         existing = EligibleMember.query.filter_by(
@@ -228,7 +315,13 @@ def import_eligible_members_csv(
         if existing:
             if existing.status == STATUS_ACTIVE:
                 # Do not overwrite active, claimed learner data
-                rejected_rows.append({"line": line_num, "identifier": raw_id, "reason": "Identifier is already registered and active."})
+                rejected_rows.append(
+                    {
+                        "line": line_num,
+                        "identifier": raw_id,
+                        "reason": "Identifier is already registered and active.",
+                    }
+                )
                 continue
             # Update metadata
             if name:
@@ -261,7 +354,7 @@ def import_eligible_members_csv(
     except Exception as exc:
         db.session.rollback()
         logger.exception("CSV import database transaction failed")
-        return {"success": False, "error": f"Database error during import: {str(exc)}"}
+        return {"success": False, "error": f"Database error during import: {exc!s}"}
 
     if actor:
         db.session.add(
@@ -302,7 +395,10 @@ def add_eligible_member(
         organization_id=org.id, identifier=raw_id
     ).first()
     if existing:
-        return None, f"Identifier '{raw_id}' is already present in this organization registry."
+        return (
+            None,
+            f"Identifier '{raw_id}' is already present in this organization registry.",
+        )
 
     member = EligibleMember(
         organization_id=org.id,
@@ -322,6 +418,7 @@ def add_eligible_member(
 # ---------------------------------------------------------------------------
 # Automated Enrollment Engine (5-step verification)
 # ---------------------------------------------------------------------------
+
 
 def verify_and_enroll_member(
     org_code: str,
@@ -344,7 +441,10 @@ def verify_and_enroll_member(
     # Step 1: Find organization
     org = Organization.query.filter_by(org_code=clean_code).first()
     if not org:
-        return {"success": False, "error": "Invalid Organization Code. Please verify with your institution."}
+        return {
+            "success": False,
+            "error": "Invalid Organization Code. Please verify with your institution.",
+        }
 
     # Step 2: Check organization eligibility & seat limits
     can_enroll, err = org.can_enroll()
@@ -363,7 +463,10 @@ def verify_and_enroll_member(
             organization_id=org.id, token_hash=inv_hash
         ).first()
         if not invitation or not invitation.is_valid:
-            return {"success": False, "error": "Invitation link is invalid or has expired."}
+            return {
+                "success": False,
+                "error": "Invitation link is invalid or has expired.",
+            }
 
     # Step 4: Check Eligible Member Registry
     eligible = EligibleMember.query.filter_by(
@@ -378,7 +481,10 @@ def verify_and_enroll_member(
         }
 
     if eligible.status in (STATUS_SUSPENDED, STATUS_REVOKED):
-        return {"success": False, "error": "This identifier is currently deactivated or suspended."}
+        return {
+            "success": False,
+            "error": "This identifier is currently deactivated or suspended.",
+        }
 
     if eligible.claimed_by_user_id and eligible.claimed_by_user_id != user.id:
         return {
@@ -387,7 +493,10 @@ def verify_and_enroll_member(
         }
 
     # Check domain or approved email restrictions if configured
-    if eligible.approved_email and eligible.approved_email.lower() != user.email.lower():
+    if (
+        eligible.approved_email
+        and eligible.approved_email.lower() != user.email.lower()
+    ):
         return {
             "success": False,
             "error": "Your account email address does not match the approved institutional email on file for this identifier.",
@@ -518,6 +627,7 @@ def establish_membership(
 # Invitations
 # ---------------------------------------------------------------------------
 
+
 def create_organization_invitation(
     org: Organization,
     created_by: User,
@@ -548,7 +658,9 @@ def create_organization_invitation(
 
 def revoke_invitation(org: Organization, invitation_id: int, actor: User) -> bool:
     """Revoke an invitation token."""
-    inv = OrgInvitation.query.filter_by(id=invitation_id, organization_id=org.id).first()
+    inv = OrgInvitation.query.filter_by(
+        id=invitation_id, organization_id=org.id
+    ).first()
     if not inv:
         return False
     inv.revoked = True
@@ -560,6 +672,7 @@ def revoke_invitation(org: Organization, invitation_id: int, actor: User) -> boo
 # HR-Assisted Account Recovery
 # ---------------------------------------------------------------------------
 
+
 def initiate_hr_account_recovery(
     org: Organization,
     target_user: User,
@@ -570,7 +683,10 @@ def initiate_hr_account_recovery(
     Never exposes existing passwords. Valid for 24 hours or single use.
     """
     if not actor.is_org_admin_for(org.id):
-        return None, "Unauthorized: you do not have permission to recover accounts in this workspace."
+        return (
+            None,
+            "Unauthorized: you do not have permission to recover accounts in this workspace.",
+        )
 
     membership = target_user.get_membership(org.id)
     if not membership or membership.status != STATUS_ACTIVE:
@@ -631,12 +747,16 @@ def redeem_recovery_code(raw_code: str, new_password: str) -> tuple[bool, str]:
         )
     )
     db.session.commit()
-    return True, f"Password successfully reset for {user.username}. You may now sign in."
+    return (
+        True,
+        f"Password successfully reset for {user.username}. You may now sign in.",
+    )
 
 
 # ---------------------------------------------------------------------------
 # Training Assignments
 # ---------------------------------------------------------------------------
+
 
 def assign_training(
     org: Organization,
@@ -692,9 +812,10 @@ def assign_training(
 # Organization Reports & Analytics
 # ---------------------------------------------------------------------------
 
+
 def get_organization_dashboard_metrics(org: Organization) -> dict:
     """Compute verified, live metrics for HR / T&P dashboard (no fabricated data)."""
-    from app.models import Certificate, LabAttempt, LearningAssignment, UserProgress
+    from app.models import Certificate, LabAttempt, LearningAssignment
 
     total_eligible = EligibleMember.query.filter_by(organization_id=org.id).count()
     active_members = OrganizationMembership.query.filter_by(
@@ -708,7 +829,8 @@ def get_organization_dashboard_metrics(org: Organization) -> dict:
     ).count()
 
     member_user_ids = [
-        m.user_id for m in OrganizationMembership.query.filter_by(
+        m.user_id
+        for m in OrganizationMembership.query.filter_by(
             organization_id=org.id, status=STATUS_ACTIVE
         ).all()
     ]
@@ -727,18 +849,25 @@ def get_organization_dashboard_metrics(org: Organization) -> dict:
     if member_user_ids:
         labs_passed = (
             db.session.query(func.count(LabAttempt.id))
-            .filter(LabAttempt.user_id.in_(member_user_ids), LabAttempt.passed.is_(True))
-            .scalar() or 0
+            .filter(
+                LabAttempt.user_id.in_(member_user_ids), LabAttempt.passed.is_(True)
+            )
+            .scalar()
+            or 0
         )
         certs_issued = (
             db.session.query(func.count(Certificate.id))
-            .filter(Certificate.user_id.in_(member_user_ids), Certificate.revoked.is_(False))
-            .scalar() or 0
+            .filter(
+                Certificate.user_id.in_(member_user_ids), Certificate.revoked.is_(False)
+            )
+            .scalar()
+            or 0
         )
         avg_lab_score = (
             db.session.query(func.avg(LabAttempt.percentage))
             .filter(LabAttempt.user_id.in_(member_user_ids))
-            .scalar() or 0
+            .scalar()
+            or 0
         )
     else:
         labs_passed = 0
@@ -770,47 +899,55 @@ def generate_organization_csv_report(org: Organization) -> str:
 
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow([
-        "Registration ID / Employee ID",
-        "Username",
-        "Display Name",
-        "Email",
-        "Department",
-        "Cohort",
-        "Membership Status",
-        "Joined Date",
-        "XP Total",
-        "Level",
-        "Streak Days",
-        "Labs Passed",
-        "Certificates Earned",
-    ])
+    writer.writerow(
+        [
+            "Registration ID / Employee ID",
+            "Username",
+            "Display Name",
+            "Email",
+            "Department",
+            "Cohort",
+            "Membership Status",
+            "Joined Date",
+            "XP Total",
+            "Level",
+            "Streak Days",
+            "Labs Passed",
+            "Certificates Earned",
+        ]
+    )
 
-    memberships = OrganizationMembership.query.filter_by(
-        organization_id=org.id
-    ).order_by(OrganizationMembership.joined_at.desc()).all()
+    memberships = (
+        OrganizationMembership.query.filter_by(organization_id=org.id)
+        .order_by(OrganizationMembership.joined_at.desc())
+        .all()
+    )
 
     for m in memberships:
         user = m.user
         if not user:
             continue
         labs_count = LabAttempt.query.filter_by(user_id=user.id, passed=True).count()
-        certs_count = Certificate.query.filter_by(user_id=user.id, revoked=False).count()
+        certs_count = Certificate.query.filter_by(
+            user_id=user.id, revoked=False
+        ).count()
 
-        writer.writerow([
-            m.registration_id or "N/A",
-            user.username,
-            user.name,
-            user.email,
-            m.department or "N/A",
-            m.cohort or "N/A",
-            m.status,
-            m.joined_at.strftime("%Y-%m-%d"),
-            user.xp_total or 0,
-            user.level or 1,
-            user.current_streak or 0,
-            labs_count,
-            certs_count,
-        ])
+        writer.writerow(
+            [
+                m.registration_id or "N/A",
+                user.username,
+                user.name,
+                user.email,
+                m.department or "N/A",
+                m.cohort or "N/A",
+                m.status,
+                m.joined_at.strftime("%Y-%m-%d"),
+                user.xp_total or 0,
+                user.level or 1,
+                user.current_streak or 0,
+                labs_count,
+                certs_count,
+            ]
+        )
 
     return output.getvalue()
