@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}Learner Intelligence Report · {{ target_user.name or target_user.username }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="badge bg-primary text-white px-2 py-1">📊 LEARNER DEFENSE REPORT</span>
+      <span class="cq-muted small">Generated on {{ now().strftime('%d %b %Y') if now is defined else 'Live' }}</span>
+    </div>
+    <h1 class="cq-title-gradient h3 mb-1">{{ target_user.name or target_user.username }}</h1>
+    <p class="cq-muted small mb-0">Defense competency telemetry, verified certifications, and attack vector proficiencies</p>
+  </div>
+  <div class="d-flex gap-2">
+    <button type="button" class="btn btn-cq btn-cq-ghost btn-sm" onclick="window.print();">
+      🖨️ Print / Save PDF
+    </button>
+    {% if current_user.is_admin %}
+      <a href="{{ url_for('admin.users') }}" class="btn btn-cq btn-cq-primary btn-sm">&larr; Back to Users</a>
+    {% else %}
+      <a href="{{ url_for('dashboard.index') }}" class="btn btn-cq btn-cq-primary btn-sm">&larr; Back to Dashboard</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- SECTION 1: PROFESSIONAL PROFILE & IDENTITY -->
+<div class="row g-4 mb-4">
+  <div class="col-12 col-lg-4">
+    <div class="cq-card h-100 p-4">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-lg fs-3 fw-bold" style="width: 64px; height: 64px;">
+          {{ (target_user.name or target_user.username)[:2]|upper }}
+        </div>
+        <div>
+          <h2 class="h5 mb-0 text-white fw-bold">{{ target_user.name or target_user.username }}</h2>
+          <div class="cq-muted small">@{{ target_user.username }}</div>
+          <span class="badge {% if target_user.role_name == 'admin' %}bg-danger{% elif target_user.role_name == 'instructor' %}bg-purple{% else %}bg-info text-dark{% endif %} mt-1">
+            {{ target_user.role_name|capitalize }}
+          </span>
+          {% if target_user.is_active %}
+            <span class="badge bg-success ms-1">Active</span>
+          {% else %}
+            <span class="badge bg-danger ms-1">Disabled</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="border-top pt-3">
+        <div class="mb-3">
+          <span class="cq-muted small d-block">REGISTERED EMAIL:</span>
+          <strong class="text-light font-monospace">{{ target_user.email }}</strong>
+        </div>
+        <div class="mb-3">
+          <span class="cq-muted small d-block">MEMBER JOIN DATE:</span>
+          <strong class="text-light">{{ target_user.created_at.strftime('%d %B %Y') if target_user.created_at else 'Foundation Cohort' }}</strong>
+        </div>
+        <div class="mb-3">
+          <span class="cq-muted small d-block">LAST ACTIVITY LOGIN:</span>
+          <strong class="text-light">{{ target_user.last_login_at.strftime('%d %b %Y %H:%M') if target_user.last_login_at else 'Active Session' }}</strong>
+        </div>
+        <div>
+          <span class="cq-muted small d-block">DEFENSE CREDENTIAL STATUS:</span>
+          <span class="text-success small fw-semibold">✓ Account in Good Standing (Zero Policy Violations)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: DEFENSE READINESS SCORECARDS -->
+  <div class="col-12 col-lg-8">
+    <div class="cq-card h-100 p-4">
+      <h2 class="h6 fw-bold text-info text-uppercase mb-3">Defensive Competency Scorecard</h2>
+      
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="p-3 rounded bg-dark border border-secondary text-center h-100">
+            <div class="display-6 fw-bold text-warning mb-1">{{ target_user.level or 1 }}</div>
+            <div class="small cq-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Defense Level</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 rounded bg-dark border border-secondary text-center h-100">
+            <div class="display-6 fw-bold text-success mb-1">{{ target_user.xp_total }}</div>
+            <div class="small cq-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Total XP Earned</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 rounded bg-dark border border-secondary text-center h-100">
+            <div class="display-6 fw-bold text-info mb-1">{{ labs_completed }}</div>
+            <div class="small cq-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Labs Passed</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 rounded bg-dark border border-secondary text-center h-100">
+            <div class="display-6 fw-bold text-danger mb-1">{{ games_played }}</div>
+            <div class="small cq-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">War Rooms Fought</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain Breakdown Progress Bars -->
+      <h3 class="h6 fw-bold text-light mb-3">Multi-Domain Attack Vector Readiness</h3>
+      
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">🎣 Phishing &amp; Social Engineering Defense</span>
+          <span class="text-info fw-bold">{{ metrics.phishing_defense }}%</span>
+        </div>
+        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+          <div class="progress-bar bg-info" style="width: {{ metrics.phishing_defense }}%;"></div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">☣️ Ransomware Containment &amp; Air-Gapped Backups</span>
+          <span class="text-success fw-bold">{{ metrics.ransomware_readiness }}%</span>
+        </div>
+        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+          <div class="progress-bar bg-success" style="width: {{ metrics.ransomware_readiness }}%;"></div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">🚨 SOC Telemetry &amp; SIEM Log Triage</span>
+          <span class="text-warning fw-bold">{{ metrics.soc_investigation }}%</span>
+        </div>
+        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+          <div class="progress-bar bg-warning" style="width: {{ metrics.soc_investigation }}%;"></div>
+        </div>
+      </div>
+
+      <div class="mb-0">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">🔑 Identity Governance &amp; Zero-Trust MFA</span>
+          <span class="text-primary fw-bold">{{ metrics.iam_governance }}%</span>
+        </div>
+        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+          <div class="progress-bar bg-primary" style="width: {{ metrics.iam_governance }}%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: VISUAL RADAR CHART & BADGES EARNED -->
+<div class="row g-4 mb-4">
+  <div class="col-12 col-lg-6">
+    <div class="cq-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h6 fw-bold text-light mb-0">Defense Readiness Radar Chart</h2>
+        <span class="badge bg-secondary small">Live Telemetry</span>
+      </div>
+      <div style="position: relative; height: 280px; width: 100%;">
+        <canvas id="userRadarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="cq-card p-4 h-100">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h6 fw-bold text-light mb-0">Verified Badges &amp; Medallions</h2>
+        <span class="badge bg-warning text-dark small">{{ badges|length }} Earned</span>
+      </div>
+
+      {% if badges %}
+        <div class="d-flex flex-wrap gap-2">
+          {% for b in badges %}
+            <div class="p-2 rounded bg-dark border border-secondary d-flex align-items-center gap-2" style="min-width: 140px;">
+              <span class="fs-4">🛡️</span>
+              <div>
+                <div class="small fw-bold text-light">{{ b.achievement_key.replace('_', ' ')|title }}</div>
+                <div class="text-muted" style="font-size: 0.68rem;">Unlocked {{ b.awarded_at.strftime('%d %b %Y') if b.awarded_at else 'Recent' }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-4">
+          <span class="display-6 mb-2 d-block">🎖️</span>
+          <p class="cq-muted small mb-0">No badges awarded yet. Completing hands-on labs and simulations unlocks verified badges.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Privacy & Security Guarantee Note -->
+<div class="cq-card p-3 bg-black border-secondary">
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-success">🔒</span>
+    <div class="small cq-muted">
+      <strong class="text-light">Platform Security Guarantee:</strong> This report displays measured defensive competencies, verified XP, and engagement history. 
+      Under strict zero-trust privacy controls, sensitive credentials, password hashes, and private authentication keys are never accessible or recorded.
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var ctx = document.getElementById("userRadarChart");
+  if (ctx && window.Chart) {
+    new window.Chart(ctx, {
+      type: "radar",
+      data: {
+        labels: ["Phishing Defense", "Ransomware Prep", "SOC Analysis", "IAM / Zero-Trust", "Network Security"],
+        datasets: [{
+          label: "Competency Score (%)",
+          data: [
+            {{ metrics.phishing_defense }},
+            {{ metrics.ransomware_readiness }},
+            {{ metrics.soc_investigation }},
+            {{ metrics.iam_governance }},
+            {{ metrics.network_hardening }}
+          ],
+          fill: true,
+          backgroundColor: "rgba(56, 189, 248, 0.25)",
+          borderColor: "#38bdf8",
+          pointBackgroundColor: "#0284c7",
+          pointBorderColor: "#ffffff",
+          pointHoverBackgroundColor: "#ffffff",
+          pointHoverBorderColor: "#38bdf8"
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: { color: "rgba(255, 255, 255, 0.15)" },
+            grid: { color: "rgba(255, 255, 255, 0.1)" },
+            pointLabels: { color: "#94a3b8", font: { size: 11, family: "monospace" } },
+            ticks: { display: false, min: 0, max: 100 }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

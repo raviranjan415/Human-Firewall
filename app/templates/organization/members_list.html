@@ -62,7 +62,11 @@
           {% for m in memberships %}
             <tr>
               <td>
-                <div class="fw-bold text-white">{{ m.user.name }}</div>
+                <div class="fw-bold">
+                  <a href="{{ url_for('analytics.user_report', user_id=m.user.id) }}" class="text-info text-decoration-none fw-bold" title="View Member Defense Report">
+                    {{ m.user.name or m.user.username }}
+                  </a>
+                </div>
                 <div class="cq-muted small">{{ m.user.email }}</div>
                 <div class="cq-muted small">Level {{ m.user.level }} · {{ m.user.xp_total }} XP</div>
               </td>

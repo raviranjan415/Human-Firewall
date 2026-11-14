@@ -15,83 +15,144 @@
   <a class="cq-skip" href="#main">{{ t('nav.menu') }}</a>
 
   <nav class="navbar navbar-expand-lg cq-navbar" aria-label="{{ t('nav.menu') }}">
-    <div class="container-xxl">
-      <a class="navbar-brand cq-brand d-flex align-items-center gap-2" href="{{ url_for('public.landing') }}">
-        <img src="{{ url_for('static', filename='images/human-firewall-mark.svg') }}" alt="Human Firewall" width="34" height="34" class="cq-brand-logo">
-        <span class="d-flex flex-column leading-none">
-          <span class="fw-bold fs-5" style="letter-spacing: 0.5px; color: #0f172a;">HUMAN <span style="color: #2563eb;">FIREWALL</span></span>
-          <small class="cq-muted" style="font-size: 0.65rem; letter-spacing: 0.8px;">{{ t('brand.tagline') }}</small>
+    <div class="container-fluid px-lg-4">
+      <a class="navbar-brand cq-brand d-flex align-items-center gap-2" href="{{ url_for('dashboard.index') if current_user.is_authenticated else url_for('public.landing') }}" style="flex-shrink: 0;">
+        <img src="{{ url_for('static', filename='images/human-firewall-mark.svg') }}" alt="Human Firewall" width="32" height="32" class="cq-brand-logo">
+        <span class="d-flex flex-column" style="line-height: 1.1;">
+          <span class="fw-bold" style="letter-spacing: 0.5px; font-size: 1.05rem; color: #0f172a;">HUMAN <span style="color: #2563eb;">FIREWALL</span></span>
+          <small class="cq-muted" style="font-size: 0.62rem; letter-spacing: 0.8px; text-transform: uppercase;">Cybersecurity Awareness</small>
         </span>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cqNav"
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#cqNav"
               aria-controls="cqNav" aria-expanded="false" aria-label="{{ t('nav.menu') }}">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="cqNav">
-        <ul class="navbar-nav cq-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav cq-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
           {% if current_user.is_authenticated %}
+            <!-- Dashboard -->
             <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/dashboard') %}active{% endif %}"
-                 href="{{ url_for('dashboard.index') }}">{{ t('nav.dashboard') }}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/games') %}active{% endif %}"
-                 href="{{ url_for('games.index') }}">
-                🎮 {{ t('nav.games') }}
+              <a class="nav-link {% if request_path.startswith('/dashboard') and not (request_path.startswith('/dashboard/leaderboard') or request_path.startswith('/dashboard/achievements') or request_path.startswith('/dashboard/challenges')) %}active{% endif %}"
+                 href="{{ url_for('dashboard.index') }}">
+                Dashboard
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/learning') %}active{% endif %}"
-                 href="{{ url_for('learning.index') }}">
-                🛡️ Defense Rooms
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/labs') %}active{% endif %}"
-                 href="{{ url_for('labs.index') }}">{{ t('nav.labs') }}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/what-happened') %}active{% endif %}"
-                 href="{{ url_for('incidents.index') }}">{{ t('nav.incidents') }}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/cyber-news') %}active{% endif %}"
-                 href="{{ url_for('news.index') }}">{{ t('nav.news') }}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if request_path.startswith('/about') %}active{% endif %}"
-                 href="{{ url_for('public.about') }}">ℹ️ About</a>
-            </li>
+
+            <!-- Hands-On Simulations & Labs Dropdown -->
+            {% set is_sims_active = request_path.startswith('/games') or request_path.startswith('/labs') or request_path.startswith('/learning') %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                 aria-expanded="false">🏆 {{ t('nav.leaderboard') }}</a>
-              <ul class="dropdown-menu cq-dropdown">
-                <li><a class="dropdown-item" href="{{ url_for('dashboard.leaderboard') }}">{{ t('nav.leaderboard') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('dashboard.achievements') }}">{{ t('nav.achievements') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('dashboard.challenges') }}">{{ t('nav.challenges') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('certificates.index') }}">{{ t('nav.certificates') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('analytics.index') }}">{{ t('nav.analytics') }}</a></li>
+              <a class="nav-link dropdown-toggle {% if is_sims_active %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Simulations &amp; Labs
+              </a>
+              <ul class="dropdown-menu cq-dropdown shadow-sm">
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/games') %}active{% endif %}" href="{{ url_for('games.index') }}">
+                    <span class="fs-6">🎮</span>
+                    <div>
+                      <div class="fw-semibold">30 Cyber Games</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">Incident command, triage &amp; war rooms</small>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/labs') %}active{% endif %}" href="{{ url_for('labs.index') }}">
+                    <span class="fs-6">🧪</span>
+                    <div>
+                      <div class="fw-semibold">Practical Labs</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">Interactive terminals &amp; live packet workbench</small>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/learning') and not request_path.startswith('/learning/comics') %}active{% endif %}" href="{{ url_for('learning.index') }}">
+                    <span class="fs-6">🛡️</span>
+                    <div>
+                      <div class="fw-semibold">Defense Rooms</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">Interactive video masterclasses</small>
+                    </div>
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/learning/comics') %}active{% endif %}" href="{{ url_for('learning.comics') }}">
+                    <span class="fs-6">📚</span>
+                    <div>
+                      <div class="fw-semibold">Incident Comics</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">Real-life visual breach storyboards</small>
+                    </div>
+                  </a>
+                </li>
               </ul>
             </li>
 
-            <!-- Organization Workspace Link -->
+            <!-- Threat Intelligence Dropdown -->
+            {% set is_intel_active = request_path.startswith('/cyber-news') or request_path.startswith('/what-happened') %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {% if is_intel_active %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Threat Intelligence
+              </a>
+              <ul class="dropdown-menu cq-dropdown shadow-sm">
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/cyber-news') %}active{% endif %}" href="{{ url_for('news.index') }}">
+                    <span class="fs-6">📰</span>
+                    <div>
+                      <div class="fw-semibold">Cyber News Today</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">Live feeds &amp; 1.5-year landmark archive</small>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item {% if request_path.startswith('/what-happened') %}active{% endif %}" href="{{ url_for('incidents.index') }}">
+                    <span class="fs-6">📁</span>
+                    <div>
+                      <div class="fw-semibold">Landmark Case Studies</div>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">"What Happened?" root cause breakdowns</small>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Leaderboards & Performance Dropdown -->
+            {% set is_ranks_active = request_path.startswith('/dashboard/leaderboard') or request_path.startswith('/dashboard/achievements') or request_path.startswith('/certificates') or request_path.startswith('/analytics') %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {% if is_ranks_active %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Rankings &amp; Badges
+              </a>
+              <ul class="dropdown-menu cq-dropdown shadow-sm">
+                <li><a class="dropdown-item" href="{{ url_for('dashboard.leaderboard') }}">🏆 Global Leaderboard</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('dashboard.achievements') }}">🎖️ Achievements &amp; Badges</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('certificates.index') }}">📜 Verified Certificates</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('analytics.index') }}">📊 Performance Analytics</a></li>
+              </ul>
+            </li>
+
+            <!-- About -->
+            <li class="nav-item">
+              <a class="nav-link {% if request_path.startswith('/about') %}active{% endif %}" href="{{ url_for('public.about') }}">
+                About
+              </a>
+            </li>
+
+            <!-- Organization Workspace Link (if enrolled) -->
             {% if active_org %}
               <li class="nav-item">
                 <a class="nav-link {% if request_path.startswith('/org') %}active{% endif %}"
-                   href="{{ url_for('organization.workspace_overview', org_id=active_org.id) }}">
+                   href="{{ url_for('organization.workspace_overview', org_id=active_org.id) }}"
+                   style="color: var(--cq-cyan);">
                   🏢 {{ active_org.name }}
                 </a>
               </li>
             {% endif %}
 
-            <!-- HR / T&P Dashboard for Authorized Admins -->
+            <!-- HR Portal for Org Admins -->
             {% if active_org and current_user.is_org_admin_for(active_org.id) %}
               <li class="nav-item">
                 <a class="nav-link text-primary fw-semibold"
                    href="{{ url_for('organization.workspace_dashboard', org_id=active_org.id) }}">
-                  📊 HR Dashboard
+                  📊 HR Portal
                 </a>
               </li>
             {% endif %}
@@ -102,56 +163,66 @@
             </li>
             <li class="nav-item">
               <a class="nav-link {% if request_path.startswith('/about') %}active{% endif %}"
-                 href="{{ url_for('public.about') }}">ℹ️ About</a>
+                 href="{{ url_for('public.about') }}">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('organization.enterprise_plans') }}">{{ t('nav.enterprise') }}</a>
+              <a class="nav-link" href="{{ url_for('organization.enterprise_plans') }}">Enterprise &amp; Universities</a>
             </li>
           {% endif %}
         </ul>
 
-        <ul class="navbar-nav cq-nav align-items-lg-center">
-          <!-- Enterprise link for public/logged in -->
+        <!-- Right Side: Locale & User Profile -->
+        <ul class="navbar-nav cq-nav align-items-lg-center gap-2">
           {% if not current_user.is_authenticated %}
-            <li class="nav-item me-lg-2">
-              <a class="btn btn-outline-info btn-sm" href="{{ url_for('organization.enterprise_plans') }}">
-                Organizations &amp; HR
+            <li class="nav-item">
+              <a class="btn btn-outline-primary btn-sm px-3" href="{{ url_for('organization.enterprise_plans') }}">
+                Organizations
               </a>
             </li>
           {% endif %}
 
+          <!-- Language Selector -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-               aria-expanded="false">{{ t('nav.language') }}</a>
-            <ul class="dropdown-menu dropdown-menu-end cq-dropdown">
+            <a class="nav-link dropdown-toggle py-1 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Language selection">
+              🌐 {{ 'EN' if current_locale() == 'en' else 'हिन्दी' }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end cq-dropdown shadow-sm" style="min-width: 10rem;">
               {% for locale in available_locales() %}
                 <li>
-                  <a class="dropdown-item" href="{{ url_for('public.set_language', code=locale.code) }}">
-                    {{ locale.label }}{% if locale.code == current_locale() %} ✓{% endif %}
+                  <a class="dropdown-item {% if locale.code == current_locale() %}active{% endif %}" href="{{ url_for('public.set_language', code=locale.code) }}">
+                    {{ locale.label }} {% if locale.code == current_locale() %}✓{% endif %}
                   </a>
                 </li>
               {% endfor %}
             </ul>
           </li>
 
+          <!-- Logged in User Profile Dropdown -->
           {% if current_user.is_authenticated %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
-                 data-bs-toggle="dropdown" aria-expanded="false">
-                <span>{{ current_user.name }}</span>
+              <a class="cq-user-chip dropdown-toggle text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="cq-user-avatar">
+                  {{ (current_user.display_name or current_user.username)[0]|upper }}
+                </span>
+                <span class="d-none d-sm-inline">{{ current_user.display_name or current_user.username }}</span>
                 {% if unread_notifications %}
-                  <span class="cq-badge cq-badge-cyan">{{ unread_notifications|length }}</span>
+                  <span class="badge bg-danger rounded-pill" style="font-size: 0.65rem;">{{ unread_notifications|length }}</span>
                 {% endif %}
               </a>
-              <ul class="dropdown-menu dropdown-menu-end cq-dropdown" style="min-width: 18rem;">
-                <li class="px-3 py-2">
-                  <div class="fw-bold">{{ t('dash.level') }} {{ current_user.level }}</div>
-                  <div class="cq-muted small">{{ current_user.xp_total }} XP · {{ t('dash.streak') }} {{ current_user.current_streak }}</div>
+              <ul class="dropdown-menu dropdown-menu-end cq-dropdown shadow-sm" style="min-width: 18rem;">
+                <li class="px-3 py-2 bg-light rounded-top border-bottom">
+                  <div class="fw-bold text-dark">{{ current_user.display_name or current_user.username }}</div>
+                  <div class="small text-muted">{{ current_user.email }}</div>
+                  <div class="d-flex align-items-center gap-2 mt-2">
+                    <span class="badge bg-primary">Level {{ current_user.level }}</span>
+                    <span class="small fw-semibold text-secondary">{{ current_user.xp_total }} XP</span>
+                    <span class="small text-warning ms-auto">🔥 {{ current_user.current_streak }}d streak</span>
+                  </div>
                   {% if active_org %}
-                    <div class="badge bg-secondary mt-1">Workspace: {{ active_org.name }}</div>
+                    <div class="badge bg-secondary mt-2 w-100 text-truncate">Workspace: {{ active_org.name }}</div>
                   {% endif %}
                 </li>
-                <li><hr class="dropdown-divider"></li>
+                <li><hr class="dropdown-divider my-1"></li>
                 {% for note in unread_notifications %}
                   <li class="px-3 py-1 small">{{ note.title_en if current_locale() == 'en' else (note.title_hi or note.title_en) }}</li>
                 {% endfor %}
@@ -159,14 +230,20 @@
                   <li>
                     <form method="post" action="{{ url_for('dashboard.mark_notifications_read') }}" class="px-3 py-1">
                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                      <button type="submit" class="btn btn-sm btn-cq btn-cq-ghost w-100">{{ t('get.close') }}</button>
+                      <button type="submit" class="btn btn-sm btn-cq btn-cq-ghost w-100 py-1" style="font-size: 0.78rem;">Mark as read</button>
                     </form>
                   </li>
-                  <li><hr class="dropdown-divider"></li>
+                  <li><hr class="dropdown-divider my-1"></li>
                 {% endif %}
-                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">{{ t('nav.profile') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('auth.join_org') }}">🏢 Join an Organization</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('auth.settings') }}">{{ t('nav.settings') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">👤 Profile &amp; Stats</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.join_org') }}">🏢 Join Workspace</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.settings') }}">⚙️ Account Settings</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">🔑 Change Password</a></li>
+                {% if current_user.is_admin %}
+                  <li><hr class="dropdown-divider my-1"></li>
+                  <li><a class="dropdown-item text-primary fw-semibold" href="{{ url_for('admin.devops_dashboard') }}">🛠️ DevOps Management</a></li>
+                  <li><a class="dropdown-item text-primary fw-semibold" href="{{ url_for('admin.index') }}">🛡️ Platform Admin</a></li>
+                {% endif %}
 
                 {% if joined_orgs|length > 1 %}
                   <li><hr class="dropdown-divider"></li>

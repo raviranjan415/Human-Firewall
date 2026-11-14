@@ -83,15 +83,23 @@
             {{ t_content(game, 'instructions') or 'Master realistic security defense challenges and protect human identities.' }}
           </p>
 
-          <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+          <div class="d-flex flex-wrap gap-1 align-items-center mb-3">
             <span class="badge bg-{% if game.difficulty == 'beginner' %}success{% elif game.difficulty == 'intermediate' %}primary{% elif game.difficulty == 'advanced' %}warning text-dark{% else %}danger{% endif %} text-uppercase" style="font-size: 0.68rem;">
               {{ game.difficulty }}
             </span>
             <span class="badge bg-light text-dark border" style="font-size: 0.68rem;">
               ⚡ {{ game.xp_reward }} XP
             </span>
-            <span class="small cq-muted ms-auto">
-              {{ game.scenarios|length }} scenario{% if game.scenarios|length != 1 %}s{% endif %}
+            <span class="badge bg-dark text-info border border-secondary" style="font-size: 0.68rem;">
+              {% if cat == 'malware' %}☣️ Ransomware War Room
+              {% elif cat == 'identity' %}🔑 IAM &amp; Zero-Trust
+              {% elif cat == 'network' %}🌐 WAF &amp; Perimeter
+              {% elif cat == 'privacy' %}🚨 SOC SIEM Command
+              {% else %}🛡️ Mail Gateway Inspector
+              {% endif %}
+            </span>
+            <span class="small cq-muted ms-auto" style="font-size: 0.72rem;">
+              {{ game.scenarios|length }} incident{% if game.scenarios|length != 1 %}s{% endif %}
             </span>
           </div>
 

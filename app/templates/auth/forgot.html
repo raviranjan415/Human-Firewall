@@ -6,20 +6,21 @@
     <div class="cq-card cq-fade-in">
       <h1 class="h3 mb-4">{{ t('auth.reset_request') }}</h1>
 
-      {% if reset_link %}
-        <div class="cq-alert cq-alert-info mb-3" role="alert">
-          <p class="mb-2 fw-bold">Your password reset link is ready.</p>
-          <p class="mb-2"><a href="{{ reset_link }}">{{ reset_link }}</a></p>
-          <p class="small mb-0">
-            Please note: no e-mail is actually sent in this deployment. This link is
-            shown on screen only because debug mode is enabled, so you can continue
-            testing the reset flow.
+      {% if email_dispatched %}
+        <div class="cq-alert cq-alert-success mb-3 p-3 rounded" role="alert" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4);">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="fs-5">📧</span>
+            <strong class="text-success">Password Reset Instructions Sent</strong>
+          </div>
+          <p class="small mb-0 text-light">
+            If your email is registered in our platform, a secure single-use password reset link has been dispatched to your inbox.
+            Please check your email within the next 30 minutes to complete the reset.
           </p>
         </div>
       {% else %}
-        <div class="cq-alert cq-alert-info mb-3" role="alert">
-          If that account exists, reset instructions have been created.
-        </div>
+        <p class="cq-muted small mb-3">
+          Enter your registered account email address. We will send you a secure verification link to reset your password.
+        </p>
       {% endif %}
 
       <form method="post" action="{{ url_for('auth.forgot_password') }}" novalidate>

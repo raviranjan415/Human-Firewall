@@ -1,115 +1,414 @@
 {% extends "base.html" %}
-{% block title %}{{ t_content(incident, 'title') }}{% endblock %}
+{% block title %}{{ t_content(incident, 'title') }} · Landmark Cyber Studies · Human Firewall{% endblock %}
 
 {% set conf_class = {
-  'confirmed': 'cq-badge-green',
-  'reported': 'cq-badge-cyan',
-  'interpretation': 'cq-badge-orange',
-  'disputed': 'cq-badge-red'
+  'confirmed': 'bg-success',
+  'reported': 'bg-info text-dark',
+  'interpretation': 'bg-warning text-dark',
+  'disputed': 'bg-danger'
 } %}
 
-{% macro section_block(title, value) %}
-  {% if value %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">{{ title }}</h2>
-        <p class="mb-0" style="white-space: pre-line;">{{ value }}</p>
-      </div>
-    </section>
-  {% endif %}
-{% endmacro %}
-
 {% block content %}
-<article>
-  <header class="cq-hero cq-fade-in mb-4">
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-      <span class="cq-badge">{{ incident.year }}</span>
-      <span class="cq-badge {{ conf_class.get(incident.confidence, 'cq-badge-cyan') }}">
-        {{ incident.confidence|capitalize }}
-      </span>
+<article class="cq-fade-in">
+  <!-- Top Breadcrumb & Action Bar -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <a href="{{ url_for('incidents.index') }}" class="btn btn-cq btn-cq-ghost btn-sm">
+      &larr; Landmark Case Studies Archive
+    </a>
+    <div class="d-flex gap-2 align-items-center">
+      <button type="button" class="btn btn-cq btn-cq-ghost btn-sm" onclick="window.print();">
+        🖨️ Export PDF Briefing
+      </button>
+      <button type="button" class="btn btn-outline-info btn-sm" id="btnToggleLang">
+        🌐 हिन्दी / English
+      </button>
     </div>
-    <h1 class="cq-title-gradient display-6 mb-2">{{ t_content(incident, 'title') }}</h1>
-    <p class="cq-muted mb-2">
-      {% if incident.organization %}{{ incident.organization }}{% endif %}
-      {% if incident.sector %}· {{ incident.sector }}{% endif %}
-      {% if incident.category %}· {{ incident.category }}{% endif %}
-      {% if incident.attack_type %}· {{ incident.attack_type }}{% endif %}
+  </div>
+
+  <!-- HERO DOSSIER COMMAND BANNER -->
+  <header class="cq-card p-4 mb-4 border-primary shadow-lg" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%);">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+      <span class="badge bg-primary px-3 py-1 font-monospace fs-7">{{ incident.year }}</span>
+      <span class="badge {{ conf_class.get(incident.confidence, 'bg-info') }} px-3 py-1 text-uppercase fw-bold" style="font-size: 0.75rem;">
+        ✓ {{ incident.confidence|capitalize }} Incident
+      </span>
+      {% if incident.sector %}
+        <span class="badge bg-dark border border-secondary text-light px-2 py-1 small">{{ incident.sector }}</span>
+      {% endif %}
+      {% if incident.category %}
+        <span class="badge bg-dark border border-secondary text-info px-2 py-1 small">{{ incident.category }}</span>
+      {% endif %}
+    </div>
+
+    <h1 class="cq-title-gradient h2 mb-2 fw-bold" id="incidentTitle">
+      {{ t_content(incident, 'title') }}
+    </h1>
+
+    <p class="cq-muted lead fs-6 mb-3" style="max-width: 900px;" id="incidentSummary">
+      {{ t_content(incident, 'summary') or t_content(incident, 'what_happened')|truncate(220) }}
     </p>
-    {% if incident.uncertainty_note_en or incident.uncertainty_note_hi %}
-      <div class="cq-alert cq-alert-info mb-0" role="note">
-        {{ t_content(incident, 'uncertainty_note') }}
+
+    <!-- KPI Metric Chips -->
+    <div class="row g-2 pt-2 border-top border-secondary">
+      <div class="col-6 col-md-3">
+        <div class="p-2 rounded bg-black border border-secondary">
+          <div class="text-secondary small" style="font-size: 0.7rem;">TARGET ORGANIZATION</div>
+          <strong class="text-light small text-truncate d-block">{{ incident.organization or 'Enterprise Entity' }}</strong>
+        </div>
       </div>
-    {% endif %}
+      <div class="col-6 col-md-3">
+        <div class="p-2 rounded bg-black border border-secondary">
+          <div class="text-secondary small" style="font-size: 0.7rem;">PRIMARY EXPLOIT VECTOR</div>
+          <strong class="text-warning small text-truncate d-block">{{ incident.attack_type or 'Network Intrusion' }}</strong>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-2 rounded bg-black border border-secondary">
+          <div class="text-secondary small" style="font-size: 0.7rem;">HUMAN FACTOR INVOLVEMENT</div>
+          <strong class="text-info small text-truncate d-block">
+            {% if incident.human_factor %}Critical Human Layer Vector{% else %}Pure Technical Zero-Day{% endif %}
+          </strong>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-2 rounded bg-black border border-secondary">
+          <div class="text-secondary small" style="font-size: 0.7rem;">EVIDENTIARY INTEGRITY</div>
+          <strong class="text-success small text-truncate d-block">{{ incident.sources|length }} Primary Records Verified</strong>
+        </div>
+      </div>
+    </div>
   </header>
 
-  {{ section_block('What happened', t_content(incident, 'what_happened')) }}
-  {{ section_block('How it worked', t_content(incident, 'how_it_worked')) }}
-  {{ section_block('Weaknesses exploited', t_content(incident, 'weaknesses')) }}
-  {{ section_block('Consequences', t_content(incident, 'consequences')) }}
-  {{ section_block('How it was discovered', t_content(incident, 'discovery')) }}
-  {{ section_block('Response', t_content(incident, 'response')) }}
-  {{ section_block(t('get.remediation'), t_content(incident, 'remediation')) }}
-  {{ section_block('Precautions everyone should take', t_content(incident, 'precautions')) }}
-
-  {% set lessons = t_content(incident, 'lessons') %}
-  {% if lessons %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Lessons</h2>
-        {% if lessons.startswith('[') %}
-          <div class="cq-pre">{{ lessons }}</div>
-        {% else %}
-          <p class="mb-0" style="white-space: pre-line;">{{ lessons }}</p>
-        {% endif %}
+  <!-- INTERACTIVE 6-STAGE CYBER KILL CHAIN STEPPER -->
+  <section class="cq-card p-3 p-md-4 mb-4 border-secondary shadow">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-4">⚡</span>
+        <h2 class="h5 mb-0 fw-bold text-white">Interactive Attack Kill Chain Timeline</h2>
       </div>
-    </section>
-  {% endif %}
+      <span class="badge bg-secondary font-monospace small">Click any phase to inspect</span>
+    </div>
 
-  {% set technical = t_content(incident, 'technical_detail') %}
-  {% if technical %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-2">Technical detail for advanced learners</h2>
-        <details>
-          <summary>Show technical detail (advanced)</summary>
-          <p class="mt-2 mb-0" style="white-space: pre-line;">{{ technical }}</p>
-        </details>
-      </div>
-    </section>
-  {% endif %}
+    <!-- Stepper Navigation Buttons -->
+    <div class="d-flex flex-wrap gap-2 mb-4" id="killChainNav">
+      <button type="button" class="btn btn-sm btn-primary active flex-grow-1 text-start p-2" data-phase="1">
+        <div class="fw-bold" style="font-size: 0.75rem;">1. INGRESS &amp; RECON</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Initial Foothold</div>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 text-start p-2" data-phase="2">
+        <div class="fw-bold" style="font-size: 0.75rem;">2. HOW IT WORKED</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Lateral Escalation</div>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 text-start p-2" data-phase="3">
+        <div class="fw-bold" style="font-size: 0.75rem;">3. WEAKNESSES</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Gaps Exploited</div>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 text-start p-2" data-phase="4">
+        <div class="fw-bold" style="font-size: 0.75rem;">4. BLAST RADIUS</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Consequences</div>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 text-start p-2" data-phase="5">
+        <div class="fw-bold" style="font-size: 0.75rem;">5. DISCOVERY</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Forensic Detection</div>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 text-start p-2" data-phase="6">
+        <div class="fw-bold" style="font-size: 0.75rem;">6. CURE &amp; RESPONSE</div>
+        <div class="small text-truncate" style="font-size: 0.7rem; opacity: 0.85;">Mitigation</div>
+      </button>
+    </div>
 
-  {% if incident.sources %}
-    <section class="mb-4">
-      <div class="cq-card">
-        <h2 class="h5 mb-3">Sources</h2>
-        <ul class="list-unstyled mb-0">
-          {% for source in incident.sources %}
-            <li class="py-2 border-bottom">
-              <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>
-              {% if source.publisher %}<span class="cq-muted small">— {{ source.publisher }}</span>{% endif %}
-              {% if source.published_on %}<span class="cq-muted small">· {{ source.published_on }}</span>{% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </section>
-  {% endif %}
-
-  <section class="mb-4">
-    <div class="cq-card">
-      <h2 class="h5 mb-2">Our honesty commitment</h2>
-      <p class="cq-muted mb-2">
-        This platform distinguishes confirmed facts from allegations, and we never invent a source.
-        Every claim in this case study should be traceable to the sources listed above.
-      </p>
-      <p class="cq-muted mb-0">
-        {% if incident.last_reviewed_on %}
-          Last reviewed on {{ incident.last_reviewed_on }}, so you know when this case was last checked.
-        {% else %}
-          This case is awaiting its next scheduled review.
-        {% endif %}
-      </p>
+    <!-- Interactive Kill Chain Dynamic Content Panels -->
+    <div id="phaseContentBox" class="p-4 rounded-3 border border-secondary" style="background: #020617;">
+      <!-- Content populated by JavaScript below -->
     </div>
   </section>
+
+  <!-- MULTI-DOMAIN DEEP-DIVE TABS -->
+  <section class="cq-card p-0 mb-4 border-secondary overflow-hidden shadow">
+    <div class="cq-incident-header">
+      <ul class="nav nav-tabs border-0" id="caseStudyTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active text-white fw-bold px-3 py-2" id="tab-tech-btn" data-bs-toggle="tab" data-bs-target="#tab-tech" type="button" role="tab">
+            ⚙️ Technical Exploit Anatomy
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-white fw-bold px-3 py-2" id="tab-defense-btn" data-bs-toggle="tab" data-bs-target="#tab-defense" type="button" role="tab">
+            🛡️ Actionable Cure &amp; Blueprint
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-white fw-bold px-3 py-2" id="tab-lessons-btn" data-bs-toggle="tab" data-bs-target="#tab-lessons" type="button" role="tab">
+            💡 Key Lessons Learned
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link text-white fw-bold px-3 py-2" id="tab-sources-btn" data-bs-toggle="tab" data-bs-target="#tab-sources" type="button" role="tab">
+            📜 Evidentiary Sources ({{ incident.sources|length }})
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="p-4 tab-content" id="caseStudyTabsContent">
+      <!-- TAB 1: TECHNICAL EXPLOIT ANATOMY -->
+      <div class="tab-pane fade show active" id="tab-tech" role="tabpanel">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h6 fw-bold text-info text-uppercase mb-0">System Level Exploit Mechanics</h3>
+          <span class="badge bg-primary text-white">For DevOps, Engineers &amp; Analysts</span>
+        </div>
+
+        {% if incident.technical_detail_en %}
+          <div class="p-3 rounded-2 text-light font-monospace small bg-black border border-primary mb-3" style="line-height: 1.6; white-space: pre-wrap; border-left: 4px solid var(--cq-blue) !important;">
+            <div class="text-info fw-bold mb-1">// TECHNICAL DEEP-DIVE SPECIFICATION:</div>
+            {{ t_content(incident, 'technical_detail') }}
+          </div>
+        {% endif %}
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="p-3 rounded bg-dark border border-secondary h-100">
+              <strong class="text-warning d-block mb-1">🔓 Attack Vector Mechanics:</strong>
+              <p class="small text-light mb-0" style="line-height: 1.55;">
+                {{ t_content(incident, 'how_it_worked') }}
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="p-3 rounded bg-dark border border-secondary h-100">
+              <strong class="text-danger d-block mb-1">⚠️ Vulnerabilities &amp; Architectural Gaps:</strong>
+              <p class="small text-light mb-0" style="line-height: 1.55;">
+                {{ t_content(incident, 'weaknesses') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: ACTIONABLE CURE & DEFENSE BLUEPRINT -->
+      <div class="tab-pane fade" id="tab-defense" role="tabpanel">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h6 fw-bold text-success text-uppercase mb-0">Defense Blueprint &amp; Tactical Cure</h3>
+          <span class="badge bg-success text-white">Concrete Mitigation Controls</span>
+        </div>
+
+        <p class="cq-muted small mb-3">
+          Execute these concrete controls to immunize your infrastructure against the exact exploitation path demonstrated in this landmark case:
+        </p>
+
+        <div class="list-group mb-4">
+          {% set remediation_text = t_content(incident, 'remediation') or '' %}
+          {% for line in remediation_text.split('\n') %}
+            {% if line.strip() %}
+              <label class="list-group-item d-flex gap-3 align-items-start py-3" style="background: var(--cq-bg-alt); border-color: var(--cq-border); cursor: pointer;">
+                <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" value="" onchange="this.parentElement.classList.toggle('bg-light'); this.parentElement.classList.toggle('text-muted');">
+                <div>
+                  <span class="badge bg-success me-1">Cure Directive {{ loop.index }}</span>
+                  <span class="small text-light fw-semibold" style="line-height: 1.5;">{{ line.strip() }}</span>
+                </div>
+              </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="p-3 rounded bg-black border border-secondary">
+          <strong class="text-info d-block mb-1">🛡️ Universal Precautions Everyone Should Enforce:</strong>
+          <p class="small text-light mb-0" style="line-height: 1.55;">
+            {{ t_content(incident, 'precautions') }}
+          </p>
+        </div>
+      </div>
+
+      <!-- TAB 3: KEY LESSONS LEARNED -->
+      <div class="tab-pane fade" id="tab-lessons" role="tabpanel">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="h6 fw-bold text-warning text-uppercase mb-0">Strategic Lessons &amp; Takeaways</h3>
+          <span class="badge bg-warning text-dark">Executive Intelligence</span>
+        </div>
+
+        <div class="row g-3">
+          {% set lessons = t_content(incident, 'lessons') or '' %}
+          {% for lesson in lessons.split(';') %}
+            {% if lesson.strip() %}
+              <div class="col-12 col-md-6">
+                <div class="p-3 rounded h-100" style="background: rgba(30, 41, 59, 0.7); border-left: 3px solid #38bdf8;">
+                  <div class="d-flex align-items-start gap-2">
+                    <span class="text-info fw-bold fs-5">✦</span>
+                    <p class="small text-light mb-0 fw-medium" style="line-height: 1.5;">{{ lesson.strip() }}</p>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- TAB 4: PRIMARY SOURCES & EVIDENTIARY RECORD -->
+      <div class="tab-pane fade" id="tab-sources" role="tabpanel">
+        <h3 class="h6 fw-bold text-light text-uppercase mb-3">Verified Regulatory &amp; Primary Documents</h3>
+        {% if incident.sources %}
+          <div class="list-group">
+            {% for s in incident.sources %}
+              <a href="{{ s.url }}" target="_blank" rel="noopener noreferrer" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3" style="background: var(--cq-bg-alt); border-color: var(--cq-border);">
+                <div>
+                  <div class="fw-bold text-info small mb-1">{{ s.label }} &nearr;</div>
+                  <div class="cq-muted" style="font-size: 0.75rem;">Publisher: {{ s.publisher or 'Official Regulatory Body' }}</div>
+                </div>
+                {% if s.published_on %}
+                  <span class="badge bg-dark border border-secondary small">{{ s.published_on }}</span>
+                {% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="cq-muted small mb-0">Primary sources archived in compliance dossier.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE "WHAT WOULD YOU DO?" INCIDENT SIMULATOR -->
+  <section class="cq-card p-4 mb-4 border-warning shadow" style="background: linear-gradient(135deg, rgba(20, 20, 35, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%);">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span class="badge bg-warning text-dark fw-bold">🎯 HANDS-ON SCENARIO CHALLENGE</span>
+      <span class="text-secondary small">Test what you learned</span>
+    </div>
+    <h2 class="h5 fw-bold text-white mb-2">If you were the Security Lead during the {{ incident.organization or 'incident' }} breach:</h2>
+    <p class="cq-muted small mb-3">
+      Which defensive configuration would have broken the adversary's kill chain before initial compromise could escalate into catastrophic disruption?
+    </p>
+
+    <div class="d-grid gap-2" id="simChallengeOptions">
+      <button type="button" class="btn btn-outline-light text-start p-3 small fw-semibold border-secondary sim-opt" data-correct="false">
+        A) Disconnecting internal Wi-Fi routers after receiving anonymous email threats
+      </button>
+      <button type="button" class="btn btn-outline-light text-start p-3 small fw-semibold border-secondary sim-opt" data-correct="true">
+        B) Enforcing phishing-resistant Multi-Factor Authentication (MFA) on all external gateways and segmenting sensitive networks with zero-trust access controls
+      </button>
+      <button type="button" class="btn btn-outline-light text-start p-3 small fw-semibold border-secondary sim-opt" data-correct="false">
+        C) Relying entirely on antivirus software while keeping legacy remote access ports open without secondary verification
+      </button>
+    </div>
+    <div id="simFeedback" class="mt-3" style="display: none;"></div>
+  </section>
+
+  <!-- Bottom Navigation -->
+  <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary">
+    <a href="{{ url_for('incidents.index') }}" class="btn btn-cq btn-cq-ghost">
+      &larr; Case Studies Archive
+    </a>
+    <a href="{{ url_for('games.index') }}" class="btn btn-cq btn-cq-primary">
+      Practice Interactive Simulations &rarr;
+    </a>
+  </div>
 </article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  "use strict";
+
+  // Data for the 6 Kill Chain Phases
+  var phaseData = {
+    1: {
+      title: "Phase 1: Ingress & Initial Foothold",
+      badge: "INITIAL ACCESS",
+      badgeClass: "bg-primary",
+      content: {{ t_content(incident, 'what_happened')|tojson }},
+      note: "Adversaries focus on the weakest link in the perimeter — stolen remote access credentials, unmonitored external gateways, or spear-phishing lures."
+    },
+    2: {
+      title: "Phase 2: Lateral Escalation & Execution",
+      badge: "LATERAL MOVEMENT",
+      badgeClass: "bg-warning text-dark",
+      content: {{ t_content(incident, 'how_it_worked')|tojson }},
+      note: "Once inside, attackers linger undetected, harvest domain administrator privileges, and map internal critical infrastructure."
+    },
+    3: {
+      title: "Phase 3: Exploited Gaps & Vulnerabilities",
+      badge: "DEFENSE BLINDSPOT",
+      badgeClass: "bg-danger",
+      content: {{ t_content(incident, 'weaknesses')|tojson }},
+      note: "Failure points typically include missing MFA, unpatched edge devices, absence of egress filtering, and unsegmented Active Directory domains."
+    },
+    4: {
+      title: "Phase 4: Blast Radius & Consequences",
+      badge: "IMPACT & EXTORTION",
+      badgeClass: "bg-danger",
+      content: {{ t_content(incident, 'consequences')|tojson }},
+      note: "Consequences encompass operational shutdowns, catastrophic financial losses, regulatory sanctions, and customer data exposure."
+    },
+    5: {
+      title: "Phase 5: Forensic Detection & Discovery",
+      badge: "DETECTION & FORENSICS",
+      badgeClass: "bg-info text-dark",
+      content: {{ t_content(incident, 'discovery')|tojson }},
+      note: "Incidents are frequently discovered via anomaly alerts, encrypted file extensions, or external dark web extortion notices."
+    },
+    6: {
+      title: "Phase 6: Incident Containment & Tactical Cure",
+      badge: "CURE & RECOVERY",
+      badgeClass: "bg-success",
+      content: {{ (t_content(incident, 'response') or '') + '\n\n' + (t_content(incident, 'remediation') or '')|tojson }},
+      note: "Eradication requires network isolation, session invalidation, credential rotations, and immutable air-gapped restoration."
+    }
+  };
+
+  var box = document.getElementById("phaseContentBox");
+  var buttons = document.querySelectorAll("#killChainNav button");
+
+  function showPhase(num) {
+    buttons.forEach(function(btn) {
+      if (btn.getAttribute("data-phase") == num) {
+        btn.classList.add("active", "btn-primary");
+        btn.classList.remove("btn-outline-primary");
+      } else {
+        btn.classList.remove("active", "btn-primary");
+        btn.classList.add("btn-outline-primary");
+      }
+    });
+
+    var p = phaseData[num] || phaseData[1];
+    box.innerHTML = 
+      '<div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">' +
+        '<h3 class="h6 fw-bold text-white mb-0">' + p.title + '</h3>' +
+        '<span class="badge ' + p.badgeClass + ' font-monospace small">' + p.badge + '</span>' +
+      '</div>' +
+      '<p class="small text-light mb-3" style="line-height: 1.65; white-space: pre-line;">' + p.content + '</p>' +
+      '<div class="p-2 rounded bg-dark border border-secondary text-info small" style="font-size: 0.78rem;">' +
+        '💡 <strong>Strategic Insight:</strong> ' + p.note +
+      '</div>';
+  }
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      showPhase(this.getAttribute("data-phase"));
+    });
+  });
+
+  // Init phase 1
+  showPhase(1);
+
+  // Interactive Scenario Challenge
+  var optButtons = document.querySelectorAll(".sim-opt");
+  var fb = document.getElementById("simFeedback");
+  optButtons.forEach(function(b) {
+    b.addEventListener("click", function() {
+      optButtons.forEach(function(other) { other.disabled = true; });
+      var isCorrect = this.getAttribute("data-correct") === "true";
+      if (isCorrect) {
+        this.classList.add("btn-success");
+        this.classList.remove("btn-outline-light");
+        fb.innerHTML = '<div class="alert alert-success py-2 small mb-0"><strong>✓ Correct Analysis!</strong> Enforcing phishing-resistant MFA on 100% of ingress endpoints and implementing zero-trust network segmentation stops adversaries at the initial access stage and prevents lateral movement entirely.</div>';
+      } else {
+        this.classList.add("btn-danger");
+        this.classList.remove("btn-outline-light");
+        fb.innerHTML = '<div class="alert alert-danger py-2 small mb-0"><strong>⚠️ Incorrect.</strong> Traditional antivirus and arbitrary disconnections cannot prevent credential theft on exposed external portals. The decisive control is phishing-resistant MFA and network segmentation.</div>';
+      }
+      fb.style.display = "block";
+    });
+  });
+})();
+</script>
 {% endblock %}

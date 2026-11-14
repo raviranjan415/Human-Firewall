@@ -31,88 +31,189 @@
   <p class="mb-0">{{ t_content(lab, 'scenario') }}</p>
 </section>
 
-{% if payload %}
-  <section class="cq-card mb-3" aria-labelledby="evidence-heading">
-    <h2 class="h5 mb-3" id="evidence-heading">Evidence to inspect</h2>
-    {% if payload is mapping %}
-      {% if payload.get('kind') == 'email' %}
-        <div class="cq-scenario">
-          <div class="cq-scenario-head cq-emailmeta">
-            <div><span class="cq-muted">From:</span> {{ payload.get('from') }}</div>
-            {% if payload.get('reply_to') %}
-              <div><span class="cq-muted">Reply-to:</span> {{ payload.get('reply_to') }}</div>
-            {% endif %}
-            {% if payload.get('subject') %}
-              <div><span class="cq-muted">Subject:</span> {{ payload.get('subject') }}</div>
-            {% endif %}
-          </div>
-          <pre class="cq-pre">{{ payload.get('body') }}</pre>
-        </div>
-      {% elif payload.get('items') %}
-        <div class="cq-card">
-          <ul class="mb-0 list-unstyled d-flex flex-column gap-2">
-            {% for item in payload.get('items') %}
-              <li><pre class="cq-pre">{{ item }}</pre></li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% elif payload.get('body') %}
-        <div class="cq-scenario">
-          {% if payload.get('sender') or payload.get('from') %}
-            <div class="cq-scenario-head cq-emailmeta">
-              <div><span class="cq-muted">From:</span> {{ payload.get('sender') or payload.get('from') }}</div>
-            </div>
-          {% endif %}
-          <pre class="cq-pre">{{ payload.get('body') }}</pre>
-        </div>
-      {% else %}
-        <pre class="cq-pre">{{ payload|tojson(indent=2) }}</pre>
-      {% endif %}
-    {% elif payload is string %}
-      <pre class="cq-pre">{{ payload }}</pre>
-    {% elif payload is sequence %}
-      <ul class="mb-0">
-        {% for item in payload %}
-          <li>{{ item }}</li>
-        {% endfor %}
+<!-- Hands-On Interactive Security Workbench -->
+<section class="cq-card mb-4 p-0 overflow-hidden shadow-lg border-primary">
+  <div class="bg-dark text-light p-3 d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom border-secondary">
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-danger animate-pulse">● LIVE SANDBOX CONTAINER</span>
+      <strong class="font-monospace text-info small">TARGET: 10.0.10.45 [ISOLATED WORKBENCH]</strong>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <ul class="nav nav-pills nav-fill small" id="workbenchTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active py-1 px-3 text-light" id="tab-terminal-btn" data-bs-toggle="pill" data-bs-target="#tab-terminal" type="button" role="tab">
+            🖥️ Terminal Console
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link py-1 px-3 text-light" id="tab-packets-btn" data-bs-toggle="pill" data-bs-target="#tab-packets" type="button" role="tab">
+            📊 Packet Stream
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link py-1 px-3 text-light" id="tab-evidence-btn" data-bs-toggle="pill" data-bs-target="#tab-evidence" type="button" role="tab">
+            🔍 Evidence Raw
+          </button>
+        </li>
       </ul>
-    {% else %}
-      <pre class="cq-pre">{{ payload|tojson(indent=2) }}</pre>
-    {% endif %}
-  </section>
-{% endif %}
+    </div>
+  </div>
 
-<section class="cq-card mb-3" aria-labelledby="task-heading">
-  <h2 class="h5 mb-2" id="task-heading">{{ t('get.your_task') }}</h2>
-  <p class="cq-muted mb-3">{{ t_content(lab, 'task') }}</p>
+  <div class="tab-content bg-black" id="workbenchTabContent">
+    <!-- Tab 1: Interactive Security Terminal -->
+    <div class="tab-pane fade show active p-3" id="tab-terminal" role="tabpanel">
+      <!-- Quick Action Commands -->
+      <div class="d-flex flex-wrap gap-2 mb-2 pb-2 border-bottom border-secondary">
+        <span class="small text-secondary align-self-center">Quick Scans:</span>
+        <button type="button" class="btn btn-outline-info btn-sm font-monospace py-0 px-2 fs-7" onclick="runLabCmd('nmap')">
+          nmap -sV -p 80,443,22 target.local
+        </button>
+        <button type="button" class="btn btn-outline-warning btn-sm font-monospace py-0 px-2 fs-7" onclick="runLabCmd('auth_log')">
+          grep -i "fail" /var/log/auth.log
+        </button>
+        <button type="button" class="btn btn-outline-success btn-sm font-monospace py-0 px-2 fs-7" onclick="runLabCmd('headers')">
+          curl -Iv https://target.local
+        </button>
+        <button type="button" class="btn btn-outline-light btn-sm font-monospace py-0 px-2 fs-7" onclick="runLabCmd('dns')">
+          dig TXT target.local +short
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm font-monospace py-0 px-2 fs-7" onclick="runLabCmd('firewall')">
+          iptables -L -n -v
+        </button>
+      </div>
+
+      <!-- Terminal Screen Area -->
+      <div id="terminalScreen" class="font-monospace text-light p-3 rounded" style="background: #080c14; min-height: 220px; max-height: 320px; overflow-y: auto; font-size: 0.84rem; line-height: 1.5; border: 1px solid #1e293b;">
+        <div class="text-secondary mb-1">Human Firewall Interactive Diagnostic Workbench v2.4</div>
+        <div class="text-secondary mb-2">Connected to lab container #{{ lab.number }}. Type 'help' or click quick buttons above.</div>
+        <div class="text-success">[READY] Isolated environment initialized. Target service responsive at 10.0.10.45.</div>
+        <div id="terminalOutput"></div>
+      </div>
+
+      <!-- Terminal Input Line -->
+      <div class="d-flex align-items-center gap-2 mt-2">
+        <span class="font-monospace text-success fw-bold">analyst@sandbox:~$</span>
+        <input type="text" id="terminalInput" class="form-control form-control-sm bg-dark text-light font-monospace border-secondary" placeholder="Type command (e.g. nmap, curl, grep, help) and press Enter..." onkeydown="if(event.key==='Enter') executeTerminalInput();">
+        <button type="button" class="btn btn-primary btn-sm px-3 font-monospace" onclick="executeTerminalInput()">Exec &crarr;</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Wireshark Packet Stream -->
+    <div class="tab-pane fade p-3" id="tab-packets" role="tabpanel">
+      <div class="table-responsive" style="max-height: 260px; overflow-y: auto;">
+        <table class="table table-dark table-hover table-sm small font-monospace mb-0">
+          <thead>
+            <tr class="text-secondary">
+              <th>No.</th><th>Time</th><th>Source</th><th>Destination</th><th>Protocol</th><th>Length</th><th>Info</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td>0.0001</td><td>192.168.1.105</td><td>10.0.10.45</td><td><span class="badge bg-primary">TCP</span></td><td>74</td><td>49152 &rarr; 443 [SYN] Seq=0 Win=64240</td>
+            </tr>
+            <tr>
+              <td>2</td><td>0.0014</td><td>10.0.10.45</td><td>192.168.1.105</td><td><span class="badge bg-primary">TCP</span></td><td>74</td><td>443 &rarr; 49152 [SYN, ACK] Seq=0 Ack=1</td>
+            </tr>
+            <tr class="table-danger text-light">
+              <td>3</td><td>0.0245</td><td>192.168.1.105</td><td>10.0.10.45</td><td><span class="badge bg-danger">HTTP</span></td><td>412</td><td>POST /api/v1/authenticate (Payload contains suspicious pattern)</td>
+            </tr>
+            <tr>
+              <td>4</td><td>0.0261</td><td>10.0.10.45</td><td>192.168.1.105</td><td><span class="badge bg-warning text-dark">HTTP</span></td><td>289</td><td>HTTP/1.1 401 Unauthorized (Invalid credentials)</td>
+            </tr>
+            <tr class="table-warning text-dark">
+              <td>5</td><td>0.0410</td><td>192.168.1.105</td><td>10.0.10.45</td><td><span class="badge bg-danger">HTTP</span></td><td>520</td><td>POST /api/v1/authenticate [BURST ATTEMPT #14 - Brute Force]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="p-2 rounded bg-dark border border-secondary mt-2 small text-secondary">
+        <strong class="text-info">Dissected Payload Hex:</strong> <span class="font-monospace text-light">50 4f 53 54 20 2f 61 70 69 2f 61 75 74 68 20 48 54 54 50 2f 31 2e 31 0d 0a ...</span>
+      </div>
+    </div>
+
+    <!-- Tab 3: Raw Evidence Artifact -->
+    <div class="tab-pane fade p-3" id="tab-evidence" role="tabpanel">
+      {% if payload %}
+        {% if payload is mapping %}
+          {% if payload.get('kind') == 'email' %}
+            <div class="cq-scenario">
+              <div class="cq-scenario-head cq-emailmeta text-light">
+                <div><span class="text-secondary">From:</span> {{ payload.get('from') }}</div>
+                {% if payload.get('reply_to') %}
+                  <div><span class="text-secondary">Reply-to:</span> {{ payload.get('reply_to') }}</div>
+                {% endif %}
+                {% if payload.get('subject') %}
+                  <div><span class="text-secondary">Subject:</span> {{ payload.get('subject') }}</div>
+                {% endif %}
+              </div>
+              <pre class="cq-pre bg-dark text-light border-secondary">{{ payload.get('body') }}</pre>
+            </div>
+          {% elif payload.get('items') %}
+            <ul class="mb-0 list-unstyled d-flex flex-column gap-2">
+              {% for item in payload.get('items') %}
+                <li><pre class="cq-pre bg-dark text-light border-secondary">{{ item }}</pre></li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <pre class="cq-pre bg-dark text-light border-secondary">{{ payload|tojson(indent=2) }}</pre>
+          {% endif %}
+        {% else %}
+          <pre class="cq-pre bg-dark text-light border-secondary">{{ payload }}</pre>
+        {% endif %}
+      {% else %}
+        <p class="text-secondary mb-0">Diagnostic telemetry captured in the interactive terminal and packet stream tabs.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Tactical Defensive Remediation Panel -->
+<section class="cq-card mb-4 border-success shadow-sm" aria-labelledby="task-heading">
+  <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+    <div>
+      <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 mb-1">HANDS-ON TACTICAL DIRECTIVE</span>
+      <h2 class="h5 mb-0 fw-bold text-dark" id="task-heading">{{ t('get.your_task') }}</h2>
+    </div>
+    <span class="small text-muted">Submit your remediation command below</span>
+  </div>
+  
+  <p class="text-dark mb-3" style="font-size: 0.95rem; line-height: 1.55;">
+    {{ t_content(lab, 'task') }}
+  </p>
 
   <form id="lab-form" onsubmit="return false;">
     {% if lab.task_type == 'single_choice' %}
-      <fieldset>
+      <fieldset class="d-flex flex-column gap-2 mb-3">
         <legend class="visually-hidden">{{ t('get.your_task') }}</legend>
         {% for option in options %}
-          <label class="cq-choice">
-            <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="answer" value="{{ option.id }}">
-            <span>{{ option.text }}</span>
+          <label class="cq-choice p-3 rounded-3 border d-flex align-items-start gap-3 hoverable" style="cursor: pointer; transition: all 0.15s ease;">
+            <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="answer" value="{{ option.id }}" onchange="highlightChoice(this);">
+            <div>
+              <span class="badge bg-secondary font-monospace mb-1" style="font-size: 0.72rem;">DIR-0{{ loop.index }}</span>
+              <div class="fw-semibold text-dark">{{ option.text }}</div>
+            </div>
           </label>
         {% endfor %}
       </fieldset>
     {% elif lab.task_type == 'multi_select' %}
-      <fieldset>
+      <fieldset class="d-flex flex-column gap-2 mb-3">
         <legend class="visually-hidden">{{ t('get.your_task') }}</legend>
         {% for option in options %}
-          <label class="cq-choice">
-            <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" name="answer" value="{{ option.id }}">
-            <span>{{ option.text }}</span>
+          <label class="cq-choice p-3 rounded-3 border d-flex align-items-start gap-3 hoverable" style="cursor: pointer;">
+            <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" name="answer" value="{{ option.id }}" onchange="highlightChoice(this);">
+            <div>
+              <span class="badge bg-secondary font-monospace mb-1" style="font-size: 0.72rem;">SEC-0{{ loop.index }}</span>
+              <div class="fw-semibold text-dark">{{ option.text }}</div>
+            </div>
           </label>
         {% endfor %}
       </fieldset>
     {% elif lab.task_type == 'order' %}
-      <ol id="order-list" class="list-unstyled mb-2">
+      <ol id="order-list" class="list-unstyled mb-2 d-flex flex-column gap-2">
         {% for option in options %}
-          <li class="cq-choice justify-content-between" data-order-id="{{ option.id }}">
-            <span>{{ option.text }}</span>
-            <span class="btn-group btn-group-sm flex-shrink-0">
+          <li class="cq-choice p-3 rounded-3 border justify-content-between align-items-center" data-order-id="{{ option.id }}">
+            <span class="fw-semibold text-dark">{{ option.text }}</span>
+            <span class="btn-group btn-group-sm flex-shrink-0 ms-2">
               <button type="button" class="btn btn-cq btn-cq-ghost" data-move="up" aria-label="{{ t('get.previous') }}">&uarr;</button>
               <button type="button" class="btn btn-cq btn-cq-ghost" data-move="down" aria-label="{{ t('get.next') }}">&darr;</button>
             </span>
@@ -121,8 +222,8 @@
       </ol>
       <input type="hidden" id="answer-order" name="answer">
     {% elif lab.task_type == 'text_judgement' %}
-      <label class="form-label" for="answer-text">{{ t('get.your_task') }}</label>
-      <textarea id="answer-text" name="answer" class="form-control" rows="6"></textarea>
+      <label class="form-label fw-bold text-dark" for="answer-text">Remediation Script / Forensic Analysis Report:</label>
+      <textarea id="answer-text" name="answer" class="form-control font-monospace mb-3" rows="6" placeholder="// Enter your investigative findings, IoC indicators, and tactical patch recommendation..."></textarea>
     {% else %}
       <p class="cq-muted mb-0">{{ t('get.no_results') }}</p>
     {% endif %}
@@ -222,6 +323,118 @@
   }
 }|tojson }}</script>
 <script>
+// Interactive Laboratory Terminal Simulator
+window.highlightChoice = function(input) {
+  document.querySelectorAll('.cq-choice').forEach(function(el) {
+    el.classList.remove('border-primary', 'bg-light');
+  });
+  if (input && input.checked) {
+    input.closest('.cq-choice').classList.add('border-primary', 'bg-light');
+  }
+};
+
+window.runLabCmd = function(type) {
+  var output = document.getElementById('terminalOutput');
+  if (!output) return;
+
+  var line = document.createElement('div');
+  line.className = 'mt-2 pt-2 border-top border-secondary border-opacity-25';
+
+  if (type === 'nmap') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ nmap -sV -p 80,443,22 target.local</div>' +
+      '<div class="text-secondary small">Starting Nmap 7.94 ( https://nmap.org ) at 2026-11-14 19:50 UTC</div>' +
+      '<div class="text-light">Nmap scan report for target.local (10.0.10.45)</div>' +
+      '<div class="text-light">Host is up (0.00042s latency).</div>' +
+      '<div class="text-warning">PORT   STATE SERVICE VERSION</div>' +
+      '<div class="text-light">22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu (Protocol 2.0)</div>' +
+      '<div class="text-light">80/tcp open  http    Nginx 1.24.0 (Reverse Proxy upstream)</div>' +
+      '<div class="text-light">443/tcp open ssl/http Nginx 1.24.0 [TLSv1.3 Active]</div>' +
+      '<div class="text-success small mt-1">[+] Service detection complete: 3 services active.</div>';
+  } else if (type === 'auth_log') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ grep -i "fail" /var/log/auth.log | tail -n 4</div>' +
+      '<div class="text-danger">Nov 14 19:42:10 target sshd[8412]: Failed password for invalid user admin from 192.168.1.105 port 49152 ssh2</div>' +
+      '<div class="text-danger">Nov 14 19:42:12 target sshd[8414]: Failed password for invalid user root from 192.168.1.105 port 49154 ssh2</div>' +
+      '<div class="text-danger">Nov 14 19:42:15 target sshd[8416]: Failed password for root from 192.168.1.105 port 49158 ssh2</div>' +
+      '<div class="text-warning small mt-1">[!] PATTERN IDENTIFIED: Sustained credential-stuffing / brute-force burst from 192.168.1.105</div>';
+  } else if (type === 'headers') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ curl -Iv https://target.local</div>' +
+      '<div class="text-secondary small">* Connected to target.local (10.0.10.45) port 443</div>' +
+      '<div class="text-light">&lt; HTTP/2 200 OK</div>' +
+      '<div class="text-light">&lt; server: nginx</div>' +
+      '<div class="text-light">&lt; content-type: text/html; charset=UTF-8</div>' +
+      '<div class="text-warning">&lt; set-cookie: session_id=exp_78a19bc; Path=/; HttpOnly</div>' +
+      '<div class="text-danger">&lt; X-Frame-Options: [MISSING]</div>' +
+      '<div class="text-danger">&lt; Content-Security-Policy: [MISSING]</div>' +
+      '<div class="text-info small mt-1">[*] Header audit complete: Missing anti-clickjacking and CSP security headers.</div>';
+  } else if (type === 'dns') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ dig TXT target.local +short</div>' +
+      '<div class="text-warning">"v=spf1 include:_spf.google.com ip4:198.51.100.10 ~all"</div>' +
+      '<div class="text-secondary small mt-1">SPF record inspected: SoftFail (~all) allows untrusted IP relay spoofing if DMARC is not strictly enforced.</div>';
+  } else if (type === 'firewall') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ iptables -L -n -v --line-numbers</div>' +
+      '<div class="text-light">Chain INPUT (policy DROP 12 packets, 720 bytes)</div>' +
+      '<div class="text-light">num   pkts bytes target prot opt in  out  source        destination</div>' +
+      '<div class="text-light">1     480  28K   ACCEPT tcp  --  *   *    10.0.10.0/24  0.0.0.0/0    tcp dpt:443</div>' +
+      '<div class="text-light">2     120  7200  ACCEPT tcp  --  *   *    10.0.10.0/24  0.0.0.0/0    tcp dpt:22</div>' +
+      '<div class="text-success small mt-1">[+] Kernel Netfilter state: Default ingress DROP policy enforced.</div>';
+  }
+
+  output.appendChild(line);
+  var screen = document.getElementById('terminalScreen');
+  if (screen) screen.scrollTop = screen.scrollHeight;
+};
+
+window.executeTerminalInput = function() {
+  var input = document.getElementById('terminalInput');
+  if (!input || !input.value.trim()) return;
+
+  var cmd = input.value.trim().toLowerCase();
+  var output = document.getElementById('terminalOutput');
+  input.value = '';
+
+  var line = document.createElement('div');
+  line.className = 'mt-2 pt-2 border-top border-secondary border-opacity-25';
+
+  if (cmd === 'help') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ help</div>' +
+      '<div class="text-light">Available commands:</div>' +
+      '<div class="text-warning">nmap, grep, curl, dig, iptables, status, whois, clear</div>';
+  } else if (cmd === 'clear') {
+    output.innerHTML = '';
+    return;
+  } else if (cmd.indexOf('nmap') !== -1) {
+    window.runLabCmd('nmap');
+    return;
+  } else if (cmd.indexOf('grep') !== -1 || cmd.indexOf('log') !== -1) {
+    window.runLabCmd('auth_log');
+    return;
+  } else if (cmd.indexOf('curl') !== -1) {
+    window.runLabCmd('headers');
+    return;
+  } else if (cmd.indexOf('dig') !== -1) {
+    window.runLabCmd('dns');
+    return;
+  } else if (cmd.indexOf('iptables') !== -1 || cmd.indexOf('firewall') !== -1) {
+    window.runLabCmd('firewall');
+    return;
+  } else {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ ' + cmd + '</div>' +
+      '<div class="text-secondary small">Executing in container sandbox #{{ lab.number }}...</div>' +
+      '<div class="text-success">[OK] Diagnostic probe completed. Review findings in the directive panel below.</div>';
+  }
+
+  output.appendChild(line);
+  var screen = document.getElementById('terminalScreen');
+  if (screen) screen.scrollTop = screen.scrollHeight;
+};
+
 (function () {
   "use strict";
 
@@ -363,7 +576,119 @@
         }
         renderResult(res.body || {});
       })
-      .catch(function () {
+      .catch// Interactive Laboratory Terminal Simulator
+window.highlightChoice = function(input) {
+  document.querySelectorAll('.cq-choice').forEach(function(el) {
+    el.classList.remove('border-primary', 'bg-light');
+  });
+  if (input && input.checked) {
+    input.closest('.cq-choice').classList.add('border-primary', 'bg-light');
+  }
+};
+
+window.runLabCmd = function(type) {
+  var output = document.getElementById('terminalOutput');
+  if (!output) return;
+
+  var line = document.createElement('div');
+  line.className = 'mt-2 pt-2 border-top border-secondary border-opacity-25';
+
+  if (type === 'nmap') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ nmap -sV -p 80,443,22 target.local</div>' +
+      '<div class="text-secondary small">Starting Nmap 7.94 ( https://nmap.org ) at 2026-11-14 19:50 UTC</div>' +
+      '<div class="text-light">Nmap scan report for target.local (10.0.10.45)</div>' +
+      '<div class="text-light">Host is up (0.00042s latency).</div>' +
+      '<div class="text-warning">PORT   STATE SERVICE VERSION</div>' +
+      '<div class="text-light">22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu (Protocol 2.0)</div>' +
+      '<div class="text-light">80/tcp open  http    Nginx 1.24.0 (Reverse Proxy upstream)</div>' +
+      '<div class="text-light">443/tcp open ssl/http Nginx 1.24.0 [TLSv1.3 Active]</div>' +
+      '<div class="text-success small mt-1">[+] Service detection complete: 3 services active.</div>';
+  } else if (type === 'auth_log') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ grep -i "fail" /var/log/auth.log | tail -n 4</div>' +
+      '<div class="text-danger">Nov 14 19:42:10 target sshd[8412]: Failed password for invalid user admin from 192.168.1.105 port 49152 ssh2</div>' +
+      '<div class="text-danger">Nov 14 19:42:12 target sshd[8414]: Failed password for invalid user root from 192.168.1.105 port 49154 ssh2</div>' +
+      '<div class="text-danger">Nov 14 19:42:15 target sshd[8416]: Failed password for root from 192.168.1.105 port 49158 ssh2</div>' +
+      '<div class="text-warning small mt-1">[!] PATTERN IDENTIFIED: Sustained credential-stuffing / brute-force burst from 192.168.1.105</div>';
+  } else if (type === 'headers') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ curl -Iv https://target.local</div>' +
+      '<div class="text-secondary small">* Connected to target.local (10.0.10.45) port 443</div>' +
+      '<div class="text-light">&lt; HTTP/2 200 OK</div>' +
+      '<div class="text-light">&lt; server: nginx</div>' +
+      '<div class="text-light">&lt; content-type: text/html; charset=UTF-8</div>' +
+      '<div class="text-warning">&lt; set-cookie: session_id=exp_78a19bc; Path=/; HttpOnly</div>' +
+      '<div class="text-danger">&lt; X-Frame-Options: [MISSING]</div>' +
+      '<div class="text-danger">&lt; Content-Security-Policy: [MISSING]</div>' +
+      '<div class="text-info small mt-1">[*] Header audit complete: Missing anti-clickjacking and CSP security headers.</div>';
+  } else if (type === 'dns') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ dig TXT target.local +short</div>' +
+      '<div class="text-warning">"v=spf1 include:_spf.google.com ip4:198.51.100.10 ~all"</div>' +
+      '<div class="text-secondary small mt-1">SPF record inspected: SoftFail (~all) allows untrusted IP relay spoofing if DMARC is not strictly enforced.</div>';
+  } else if (type === 'firewall') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ iptables -L -n -v --line-numbers</div>' +
+      '<div class="text-light">Chain INPUT (policy DROP 12 packets, 720 bytes)</div>' +
+      '<div class="text-light">num   pkts bytes target prot opt in  out  source        destination</div>' +
+      '<div class="text-light">1     480  28K   ACCEPT tcp  --  *   *    10.0.10.0/24  0.0.0.0/0    tcp dpt:443</div>' +
+      '<div class="text-light">2     120  7200  ACCEPT tcp  --  *   *    10.0.10.0/24  0.0.0.0/0    tcp dpt:22</div>' +
+      '<div class="text-success small mt-1">[+] Kernel Netfilter state: Default ingress DROP policy enforced.</div>';
+  }
+
+  output.appendChild(line);
+  var screen = document.getElementById('terminalScreen');
+  if (screen) screen.scrollTop = screen.scrollHeight;
+};
+
+window.executeTerminalInput = function() {
+  var input = document.getElementById('terminalInput');
+  if (!input || !input.value.trim()) return;
+
+  var cmd = input.value.trim().toLowerCase();
+  var output = document.getElementById('terminalOutput');
+  input.value = '';
+
+  var line = document.createElement('div');
+  line.className = 'mt-2 pt-2 border-top border-secondary border-opacity-25';
+
+  if (cmd === 'help') {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ help</div>' +
+      '<div class="text-light">Available commands:</div>' +
+      '<div class="text-warning">nmap, grep, curl, dig, iptables, status, whois, clear</div>';
+  } else if (cmd === 'clear') {
+    output.innerHTML = '';
+    return;
+  } else if (cmd.indexOf('nmap') !== -1) {
+    window.runLabCmd('nmap');
+    return;
+  } else if (cmd.indexOf('grep') !== -1 || cmd.indexOf('log') !== -1) {
+    window.runLabCmd('auth_log');
+    return;
+  } else if (cmd.indexOf('curl') !== -1) {
+    window.runLabCmd('headers');
+    return;
+  } else if (cmd.indexOf('dig') !== -1) {
+    window.runLabCmd('dns');
+    return;
+  } else if (cmd.indexOf('iptables') !== -1 || cmd.indexOf('firewall') !== -1) {
+    window.runLabCmd('firewall');
+    return;
+  } else {
+    line.innerHTML = 
+      '<div class="text-info fw-bold">analyst@sandbox:~$ ' + cmd + '</div>' +
+      '<div class="text-secondary small">Executing in container sandbox #{{ lab.number }}...</div>' +
+      '<div class="text-success">[OK] Diagnostic probe completed. Review findings in the directive panel below.</div>';
+  }
+
+  output.appendChild(line);
+  var screen = document.getElementById('terminalScreen');
+  if (screen) screen.scrollTop = screen.scrollHeight;
+};
+
+(function () {
         window.CQ.toast('Network error \u2014 please try again.', 'error');
         submitBtn.disabled = false;
       });

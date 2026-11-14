@@ -82,7 +82,7 @@
         <h2 class="h5 mb-0 text-dark fw-bold">Executive Overview &amp; Plain-English Summary</h2>
       </div>
       <p class="lead mb-4" style="font-size: 1.05rem; line-height: 1.6; color: var(--cq-navy);">
-        {{ story.summary_en or story.what_happened_en }}
+        {{ story.effective_what_happened_easy }}
       </p>
 
       {% if story.summary_hi %}
@@ -93,15 +93,15 @@
       {% endif %}
 
       <div class="row g-3">
-        <!-- What Happened -->
+        <!-- What Happened (Easy to Understand) -->
         <div class="col-12 col-md-4">
           <div class="p-3 rounded h-100" style="background: var(--cq-bg-alt); border: 1px solid var(--cq-border);">
             <div class="d-flex align-items-center gap-2 mb-2 text-primary fw-bold">
               <span>🎯</span>
-              <h3 class="h6 mb-0">What Happened</h3>
+              <h3 class="h6 mb-0 text-primary">What Happened</h3>
             </div>
-            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
-              {{ story.what_happened_en }}
+            <p class="small text-dark mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.what_happened_en or story.effective_what_happened_easy }}
             </p>
           </div>
         </div>
@@ -113,8 +113,8 @@
               <span>👥</span>
               <h3 class="h6 mb-0 text-dark">Who Was Affected</h3>
             </div>
-            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
-              {{ story.who_is_affected_en }}
+            <p class="small text-dark mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.effective_who_is_affected }}
             </p>
           </div>
         </div>
@@ -126,8 +126,8 @@
               <span>⚠️</span>
               <h3 class="h6 mb-0 text-danger">Why It Matters</h3>
             </div>
-            <p class="small text-muted mb-0" style="line-height: 1.55; white-space: pre-line;">
-              {{ story.why_it_matters_en }}
+            <p class="small text-dark mb-0" style="line-height: 1.55; white-space: pre-line;">
+              {{ story.effective_why_it_matters }}
             </p>
           </div>
         </div>
@@ -138,7 +138,7 @@
   <!-- Multi-Domain Deep Dive Grid -->
   {% set meta = story.meta %}
   <div class="row g-4 mb-4">
-    <!-- Domain 1: Technical Anatomy (DevOps, IT & Engineers) -->
+    <!-- Domain 1: Technical Anatomy & Knowledge (DevOps, IT & Engineers) -->
     <div class="col-12 col-lg-6">
       <div class="cq-card h-100">
         <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
@@ -149,48 +149,42 @@
           <span class="badge bg-primary text-white small">For Engineers &amp; DevOps</span>
         </div>
 
-        {% if meta.technical_analysis %}
-          {% set tech = meta.technical_analysis %}
+        <div class="mb-3">
+          <span class="text-muted small fw-bold d-block mb-1">ATTACK VECTOR:</span>
+          <div class="p-2 rounded bg-light border small text-dark fw-semibold" style="line-height: 1.5;">
+            {{ story.effective_attack_vector }}
+          </div>
+        </div>
+
+        {% set tech = meta.technical_analysis if meta and meta.technical_analysis else {} %}
+        {% if tech.cve_list %}
           <div class="mb-3">
-            <span class="text-muted small fw-bold d-block mb-1">ATTACK VECTOR:</span>
-            <div class="p-2 rounded bg-light border small text-dark">
-              {{ tech.attack_vector or 'Unspecified attack vector' }}
+            <span class="text-muted small fw-bold d-block mb-1">CVE IDENTIFIERS:</span>
+            <div class="d-flex flex-wrap gap-1">
+              {% for cve in tech.cve_list %}
+                <span class="badge bg-danger text-white">{{ cve }}</span>
+              {% endfor %}
             </div>
           </div>
-
-          {% if tech.cve_list %}
-            <div class="mb-3">
-              <span class="text-muted small fw-bold d-block mb-1">CVE IDENTIFIERS:</span>
-              <div class="d-flex flex-wrap gap-1">
-                {% for cve in tech.cve_list %}
-                  <span class="badge bg-danger text-white">{{ cve }}</span>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-
-          {% if tech.mitre_tactics %}
-            <div class="mb-3">
-              <span class="text-muted small fw-bold d-block mb-1">MITRE ATT&amp;CK TACTICS:</span>
-              <div class="d-flex flex-wrap gap-1">
-                {% for tactic in tech.mitre_tactics %}
-                  <span class="badge bg-dark text-light small">{{ tactic }}</span>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-
-          <div class="mb-0">
-            <span class="text-muted small fw-bold d-block mb-1">ROOT CAUSE BREAKDOWN:</span>
-            <p class="small text-muted mb-0">
-              {{ tech.root_cause or 'Engineering breakdown in progress.' }}
-            </p>
-          </div>
-        {% else %}
-          <p class="small text-muted mb-0">
-            Technical analysis details are summarized in the overview and action checklist.
-          </p>
         {% endif %}
+
+        {% if tech.mitre_tactics %}
+          <div class="mb-3">
+            <span class="text-muted small fw-bold d-block mb-1">MITRE ATT&amp;CK TACTICS:</span>
+            <div class="d-flex flex-wrap gap-1">
+              {% for tactic in tech.mitre_tactics %}
+                <span class="badge bg-dark text-light small">{{ tactic }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="mb-0">
+          <span class="text-muted small fw-bold d-block mb-1">ROOT CAUSE BREAKDOWN:</span>
+          <p class="small text-dark mb-0" style="line-height: 1.55;">
+            {{ story.effective_root_cause }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -205,85 +199,96 @@
           <span class="badge bg-purple text-white small" style="background-color: var(--cq-purple);">For All Employees &amp; HR</span>
         </div>
 
-        {% if meta.behavioral_analysis %}
-          {% set behav = meta.behavioral_analysis %}
-          <div class="mb-3">
-            <span class="text-muted small fw-bold d-block mb-1">PRIMARY HUMAN FACTOR:</span>
-            <div class="p-2 rounded small text-dark fw-semibold" style="background: var(--cq-purple-soft); border: 1px solid var(--cq-border);">
-              {{ behav.human_factor or 'Social Engineering / Trust Exploitation' }}
-            </div>
+        <div class="mb-3">
+          <span class="text-muted small fw-bold d-block mb-1">PRIMARY HUMAN FACTOR:</span>
+          <div class="p-2 rounded small text-dark fw-semibold" style="background: var(--cq-purple-soft); border: 1px solid var(--cq-border);">
+            {{ story.effective_human_factor }}
           </div>
+        </div>
 
-          {% if behav.psychological_hooks %}
-            <div class="mb-3">
-              <span class="text-muted small fw-bold d-block mb-1">PSYCHOLOGICAL TRIGGERS EXPLOITED:</span>
-              <ul class="list-unstyled mb-0 small">
-                {% for hook in behav.psychological_hooks %}
-                  <li class="d-flex align-items-start gap-2 mb-1">
-                    <span class="text-danger fw-bold">&bull;</span>
-                    <span class="text-dark">{{ hook }}</span>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
+        {% set behav = meta.behavioral_analysis if meta and meta.behavioral_analysis else {} %}
+        {% set hooks = behav.psychological_hooks if behav.psychological_hooks else ['Implicit trust in corporate / developer marketplaces', 'Urgency pressure & desire to bypass manual verification', 'Convenience bias leading to unvetted software installations'] %}
+        <div class="mb-3">
+          <span class="text-muted small fw-bold d-block mb-1">PSYCHOLOGICAL TRIGGERS EXPLOITED:</span>
+          <ul class="list-unstyled mb-0 small">
+            {% for hook in hooks %}
+              <li class="d-flex align-items-start gap-2 mb-1">
+                <span class="text-danger fw-bold">&bull;</span>
+                <span class="text-dark">{{ hook }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
 
-          <div class="mb-0">
-            <span class="text-muted small fw-bold d-block mb-1">ORGANIZATIONAL &amp; CULTURE GAP:</span>
-            <p class="small text-muted mb-0">
-              {{ behav.organizational_gap or 'Process fatigue or procedural circumvention.' }}
-            </p>
-          </div>
-        {% else %}
-          <p class="small text-muted mb-0">
-            Human factors analysis highlights the necessity of active skepticism and verified protocol adherence.
+        <div class="mb-0">
+          <span class="text-muted small fw-bold d-block mb-1">ORGANIZATIONAL &amp; CULTURE GAP:</span>
+          <p class="small text-dark mb-0" style="line-height: 1.55;">
+            {{ story.effective_organizational_gap }}
           </p>
-        {% endif %}
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Section 3: Human Firewall Action & Prevention Checklist -->
-  <section id="prevention-checklist" class="mb-4">
-    <div class="cq-card" style="border-top: 4px solid var(--cq-green);">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-        <div class="d-flex align-items-center gap-2">
-          <span style="font-size: 1.3rem;">🛡️</span>
-          <h2 class="h5 mb-0 fw-bold text-dark">Human Firewall Action &amp; Prevention Checklist</h2>
+  <!-- Section 3: Cure, Remediation & Lessons Learned -->
+  <section id="cure-and-remediation" class="mb-4">
+    <div class="row g-4">
+      <!-- Subsection 3A: Cure & Tactical Remediation -->
+      <div class="col-12 col-lg-7">
+        <div class="cq-card h-100" style="border-top: 4px solid var(--cq-green);">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <span style="font-size: 1.3rem;">🛡️</span>
+              <h2 class="h5 mb-0 fw-bold text-dark">Human Firewall Action: Cure &amp; Tactical Remediation</h2>
+            </div>
+            <span class="cq-badge cq-badge-green">Immediate Action Plan</span>
+          </div>
+
+          <p class="cq-muted small mb-3">
+            Execute these actionable remediation steps to neutralize the attack vector, contain threat propagation, and recover operations:
+          </p>
+
+          <div class="list-group mb-3">
+            {% for step in story.effective_cure_remediation %}
+              <label class="list-group-item d-flex gap-3 align-items-start py-3" style="cursor: pointer; background: var(--cq-bg-alt); border-color: var(--cq-border);">
+                <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" value="" onchange="this.parentElement.classList.toggle('bg-light'); this.parentElement.classList.toggle('text-muted');">
+                <div>
+                  <span class="badge bg-secondary me-1">Step {{ loop.index }}</span>
+                  <span class="small text-dark fw-semibold" style="line-height: 1.5;">{{ step }}</span>
+                </div>
+              </label>
+            {% endfor %}
+          </div>
         </div>
-        <span class="cq-badge cq-badge-green">Actionable Security Controls</span>
       </div>
 
-      <p class="cq-muted small mb-3">
-        Apply these concrete controls immediately to protect your organization against the exact exploit vector demonstrated in this incident:
-      </p>
-
-      {% if story.what_to_do_en %}
-        <div class="list-group mb-3">
-          {% for line in story.what_to_do_en.split('\n') %}
-            {% if line.strip() %}
-              <label class="list-group-item d-flex gap-3 align-items-start py-3" style="cursor: pointer;">
-                <input class="form-check-input flex-shrink-0 mt-1" type="checkbox" value="" onchange="this.parentElement.classList.toggle('bg-light');">
-                <span class="small text-dark fw-medium">{{ line.strip() }}</span>
-              </label>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      <!-- Key Architectural Takeaways -->
-      {% if meta.key_takeaways %}
-        <div class="p-3 rounded mt-3" style="background: var(--cq-green-soft); border: 1px solid var(--cq-green-border);">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <strong class="text-success">💡 Key Architectural Takeaways:</strong>
+      <!-- Subsection 3B: Lessons Learned & Defense Architecture -->
+      <div class="col-12 col-lg-5">
+        <div class="cq-card h-100" style="border-top: 4px solid var(--cq-blue);">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <span style="font-size: 1.3rem;">💡</span>
+              <h2 class="h5 mb-0 fw-bold text-dark">Lessons Learned &amp; Architecture</h2>
+            </div>
+            <span class="cq-badge cq-badge-blue">Strategic Defense</span>
           </div>
-          <ul class="mb-0 small text-dark ps-3">
-            {% for takeaway in meta.key_takeaways %}
-              <li class="mb-1">{{ takeaway }}</li>
+
+          <p class="cq-muted small mb-3">
+            Strategic takeaways to prevent future vulnerabilities and build long-term organizational resilience:
+          </p>
+
+          <div class="d-flex flex-column gap-2">
+            {% for lesson in story.effective_lessons_learned %}
+              <div class="p-3 rounded" style="background: var(--cq-blue-soft); border-left: 3px solid var(--cq-blue);">
+                <div class="d-flex align-items-start gap-2">
+                  <span class="text-primary fw-bold fs-6">✦</span>
+                  <p class="small text-dark mb-0 fw-medium" style="line-height: 1.5;">{{ lesson }}</p>
+                </div>
+              </div>
             {% endfor %}
-          </ul>
+          </div>
         </div>
-      {% endif %}
+      </div>
     </div>
   </section>
 

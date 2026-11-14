@@ -5,27 +5,89 @@
 <!-- Battle Arena Header -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
   <div>
-    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-1 fw-bold">🎮 2D Top-Down Cyber Quest</span>
+    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-1 fw-bold" id="arenaGenreBadge">🎮 Real-Time Incident Simulation</span>
     <h1 class="cq-title-gradient h3 mb-0">{{ t_content(game, 'title') }}</h1>
   </div>
   <div class="d-flex align-items-center gap-2">
     <!-- View Switcher Tabs -->
     <div class="btn-group btn-group-sm me-2" role="group" aria-label="Game Mode Switcher">
-      <button type="button" class="btn btn-primary active" id="btnMode2D">🕹️ 2D RPG Adventure</button>
-      <button type="button" class="btn btn-outline-primary" id="btnModeSim">⚡ Rapid Simulator</button>
+      <button type="button" class="btn btn-primary active" id="btnMode3D">🌐 3D Incident World</button>
+      <button type="button" class="btn btn-outline-primary" id="btnModeSplit">⚡ 3D + War Room</button>
+      <button type="button" class="btn btn-outline-primary" id="btnModeSim">🚨 War Room Focus</button>
+      <button type="button" class="btn btn-outline-primary" id="btnMode2D">🕹️ 2D Field Patrol</button>
     </div>
     <div class="form-check form-switch mb-0 me-2">
       <input class="form-check-input" type="checkbox" id="gameSoundToggle" checked>
-      <label class="form-check-label text-secondary small" for="gameSoundToggle">Sound FX 🔊</label>
+      <label class="form-check-label text-secondary small" for="gameSoundToggle">Audio FX 🔊</label>
     </div>
     <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('games.index') }}">&larr; Games Hub</a>
   </div>
 </div>
 
 <!-- ======================================================================= -->
+<!-- SECTION 3D: 3D REAL-LIFE CYBER INCIDENT & WAR ROOM SIMULATION -->
+<!-- ======================================================================= -->
+<section id="sectionMode3D" class="mb-4" style="display: block;">
+  <div class="cq-card p-3 mb-2 bg-dark border-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="d-flex align-items-center gap-3">
+      <div class="cq-brand-mark bg-danger text-white rounded-circle fs-4 shadow animate-pulse" style="width: 44px; height: 44px;">
+        🚨
+      </div>
+      <div>
+        <div class="fw-bold text-light">{{ current_user.display_name or current_user.username }} <span class="badge bg-danger ms-1">Incident Commander</span></div>
+        <div class="small text-secondary">
+          Controls: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&rarr;</kbd><kbd>&darr;</kbd> Move &bull; Mouse Drag Look &bull; <kbd>Shift</kbd> Sprint &bull; <kbd>E</kbd> or <kbd>Space</kbd> Triage Station
+        </div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <div class="text-end">
+        <div class="small text-secondary text-uppercase fw-bold">Platform Integrity</div>
+        <span class="fs-5 fw-bold text-success" id="game3DSecurityLvl">0% Integrity</span>
+      </div>
+      <div class="text-end">
+        <div class="small text-secondary text-uppercase fw-bold">Active Incident</div>
+        <span class="badge bg-warning text-dark fs-6" id="hud3DProgress">Round 1 of {{ scenario_count }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D WebGL Viewport Container -->
+  <div class="cq-game3d-container">
+    <canvas id="gameCanvas3D"></canvas>
+    
+    <!-- 3D HUD Overlay -->
+    <div class="cq-game3d-hud">
+      <div class="cq-game3d-hud-panel">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="cq-threat-live-dot"></span>
+          <strong class="text-info">SEC-OPS GRID TELEMETRY</strong>
+        </div>
+        <div id="game3DHudNodes" class="d-flex flex-wrap gap-1"></div>
+      </div>
+      <div class="cq-game3d-hud-panel text-end">
+        <div class="text-muted small">THREAT CONCENTRATION</div>
+        <strong class="text-danger fs-6">ELEVATED INCIDENT ALERT</strong>
+      </div>
+    </div>
+
+    <!-- 3D Interactive Proximity Prompt -->
+    <div class="cq-game3d-prompt" id="game3DPrompt">
+      <span class="fs-5">🚨</span>
+      <span id="game3DPromptText">TRIAGE INCIDENT [E]</span>
+    </div>
+
+    <!-- 3D Navigation Controls Legend -->
+    <div class="cq-game3d-instructions">
+      <span class="text-light fw-bold">🕹️ 3D VIRTUAL WORLD:</span> Walk up to compromised server racks &amp; press <kbd>E</kbd> to triage!
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================= -->
 <!-- SECTION A: 2D INTERACTIVE ADVENTURE CANVAS ARENA -->
 <!-- ======================================================================= -->
-<section id="sectionMode2D" class="mb-4">
+<section id="sectionMode2D" class="mb-4" style="display: none;">
   <div class="cq-card p-3 mb-2 bg-dark border-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div class="d-flex align-items-center gap-3">
       <div class="cq-brand-mark bg-info text-dark rounded-circle fs-4 shadow" style="width: 44px; height: 44px;">
@@ -100,7 +162,7 @@
 <!-- ======================================================================= -->
 <!-- SECTION B: CLASSIC RAPID SCENARIO SIMULATOR -->
 <!-- ======================================================================= -->
-<div id="sectionModeSim" style="display: none;">
+<div id="sectionModeSim" style="display: block;">
 
 <!-- Human vs. System Battle HUD -->
 <section class="cq-card mb-4 border-primary shadow-lg p-3 p-sm-4">
@@ -198,6 +260,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/game_engine_3d.js') }}"></script>
 <script src="{{ url_for('static', filename='js/game_engine_2d.js') }}"></script>
 <script type="application/json" id="game-data">{{ scenarios_json|tojson }}</script>
 <script type="application/json" id="game-labels">{{ {
@@ -218,29 +281,71 @@
   var answerUrl = '/api/games/' + encodeURIComponent(slug) + '/answer';
   var completeUrl = '/api/games/' + encodeURIComponent(slug) + '/complete';
 
-  // 1. Mode Switcher (2D RPG vs Rapid Simulator)
-  var btnMode2D = document.getElementById('btnMode2D');
+  // 1. Unified Mode Switcher (3D World vs 3D+WarRoom vs WarRoom Focus vs 2D Patrol)
+  var btnMode3D = document.getElementById('btnMode3D');
+  var btnModeSplit = document.getElementById('btnModeSplit');
   var btnModeSim = document.getElementById('btnModeSim');
-  var secMode2D = document.getElementById('sectionMode2D');
-  var secModeSim = document.getElementById('sectionModeSim');
+  var btnMode2D = document.getElementById('btnMode2D');
 
-  if (btnMode2D && btnModeSim) {
-    btnMode2D.addEventListener('click', function () {
-      btnMode2D.classList.add('active', 'btn-primary');
-      btnMode2D.classList.remove('btn-outline-primary');
-      btnModeSim.classList.remove('active', 'btn-primary');
-      btnModeSim.classList.add('btn-outline-primary');
-      secMode2D.style.display = 'block';
-      secModeSim.style.display = 'none';
+  var secMode3D = document.getElementById('sectionMode3D');
+  var secModeSim = document.getElementById('sectionModeSim');
+  var secMode2D = document.getElementById('sectionMode2D');
+
+  function setViewMode(mode) {
+    [btnMode3D, btnModeSplit, btnModeSim, btnMode2D].forEach(function (btn) {
+      if (btn) {
+        btn.classList.remove('active', 'btn-primary');
+        btn.classList.add('btn-outline-primary');
+      }
     });
 
-    btnModeSim.addEventListener('click', function () {
-      btnModeSim.classList.add('active', 'btn-primary');
-      btnModeSim.classList.remove('btn-outline-primary');
-      btnMode2D.classList.remove('active', 'btn-primary');
-      btnMode2D.classList.add('btn-outline-primary');
-      secMode2D.style.display = 'none';
-      secModeSim.style.display = 'block';
+    if (mode === '3d') {
+      if (btnMode3D) { btnMode3D.classList.add('active', 'btn-primary'); btnMode3D.classList.remove('btn-outline-primary'); }
+      if (secMode3D) secMode3D.style.display = 'block';
+      if (secModeSim) secModeSim.style.display = 'block';
+      if (secMode2D) secMode2D.style.display = 'none';
+      if (window.activeGame3D) window.activeGame3D.resizeCanvas();
+    } else if (mode === 'split') {
+      if (btnModeSplit) { btnModeSplit.classList.add('active', 'btn-primary'); btnModeSplit.classList.remove('btn-outline-primary'); }
+      if (secMode3D) secMode3D.style.display = 'block';
+      if (secModeSim) secModeSim.style.display = 'block';
+      if (secMode2D) secMode2D.style.display = 'none';
+      if (window.activeGame3D) window.activeGame3D.resizeCanvas();
+    } else if (mode === 'sim') {
+      if (btnModeSim) { btnModeSim.classList.add('active', 'btn-primary'); btnModeSim.classList.remove('btn-outline-primary'); }
+      if (secMode3D) secMode3D.style.display = 'none';
+      if (secModeSim) secModeSim.style.display = 'block';
+      if (secMode2D) secMode2D.style.display = 'none';
+    } else if (mode === '2d') {
+      if (btnMode2D) { btnMode2D.classList.add('active', 'btn-primary'); btnMode2D.classList.remove('btn-outline-primary'); }
+      if (secMode3D) secMode3D.style.display = 'none';
+      if (secModeSim) secModeSim.style.display = 'none';
+      if (secMode2D) secMode2D.style.display = 'block';
+      if (window.activeGame2D) window.activeGame2D.resizeCanvas();
+    }
+  }
+
+  if (btnMode3D) btnMode3D.addEventListener('click', function() { setViewMode('3d'); });
+  if (btnModeSplit) btnModeSplit.addEventListener('click', function() { setViewMode('split'); });
+  if (btnModeSim) btnModeSim.addEventListener('click', function() { setViewMode('sim'); });
+  if (btnMode2D) btnMode2D.addEventListener('click', function() { setViewMode('2d'); });
+
+  // 2. Initialize 3D Cyber Command Center Engine
+  if (window.Game3DEngine && document.getElementById('gameCanvas3D')) {
+    window.activeGame3D = new window.Game3DEngine({
+      canvasId: 'gameCanvas3D',
+      promptId: 'game3DPrompt',
+      hudNodesId: 'game3DHudNodes',
+      slug: slug,
+      scenarios: scenarios,
+      onTriageRequest: function (nodeId, node) {
+        var box = document.getElementById('sectionModeSim') || document.getElementById('scenario-box');
+        if (box) {
+          box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          box.classList.add('border-warning');
+          setTimeout(function() { box.classList.remove('border-warning'); }, 1200);
+        }
+      }
     });
   }
 
@@ -428,50 +533,167 @@
     clearInterval(timerInterval);
     var scenario = scenarios[index];
     progressEl.textContent = 'Round ' + (index + 1) + ' of ' + total;
+    var hud3DP = document.getElementById('hud3DProgress');
+    if (hud3DP) hud3DP.textContent = 'Round ' + (index + 1) + ' of ' + total;
+    if (window.activeGame3D) {
+      window.activeGame3D.setActiveScenario(index);
+    }
     box.innerHTML = '';
 
     aiStatus.textContent = '🤖 Analyzing your defense...';
     aiStatus.className = 'small text-warning';
 
+    // 1. Detect Specialized Incident Management Console Mode
+    var consoleMode = 'email';
+    var consoleTitle = 'Enterprise Secure Email Gateway (SEG)';
+    var consoleBadge = 'MAIL INGRESS INSPECTION';
+    var consoleTheme = 'border-info';
+
+    if (['soc-alert-triage', 'incident-commander', 'digital-evidence-detective', 'threat-hunting-mission', 'insider-threat-investigation'].indexOf(slug) !== -1) {
+      consoleMode = 'soc';
+      consoleTitle = 'Tier-3 SOC SIEM Incident Command Console';
+      consoleBadge = 'ACTIVE THREAT DETECTED · SEV-1';
+      consoleTheme = 'border-danger';
+    } else if (['ransomware-rescue', 'malware-hunter', 'backup-recovery-mission', 'usb-danger-zone'].indexOf(slug) !== -1) {
+      consoleMode = 'ransomware';
+      consoleTitle = 'Emergency Ransomware Crisis War Room';
+      consoleBadge = 'SYSTEM LOCKOUT / PROPAGATION IN PROGRESS';
+      consoleTheme = 'border-danger';
+    } else if (['access-control-master', 'password-fortress', 'mfa-guardian', 'credential-leak-detective', 'account-recovery-rescue'].indexOf(slug) !== -1) {
+      consoleMode = 'iam';
+      consoleTitle = 'Cloud IAM & Zero-Trust Governance Console';
+      consoleBadge = 'IDENTITY ANOMALY DETECTED';
+      consoleTheme = 'border-warning';
+    } else if (['network-guardian', 'sql-injection-shield', 'xss-defender', 'url-inspector', 'wi-fi-safety-mission'].indexOf(slug) !== -1) {
+      consoleMode = 'network';
+      consoleTitle = 'WAF & Perimeter Intrusion Prevention Console';
+      consoleBadge = 'APPLICATION EXPLOIT SIGNATURE MATCH';
+      consoleTheme = 'border-primary';
+    }
+
+    // Update Header Incident Bar
+    var topTitleEl = document.getElementById('incidentHeaderTitle');
+    if (topTitleEl) topTitleEl.textContent = consoleTitle;
+
     var card = document.createElement('div');
     card.className = 'cq-scenario cq-fade-in';
 
-    // Device Mockup Container
+    // 2. Build Specialized Incident Management Console UI
     var mockup = document.createElement('div');
-    mockup.className = 'p-3 rounded-3 mb-3 bg-dark border border-secondary shadow-sm';
+    mockup.className = 'p-3 rounded-3 mb-3 bg-dark border ' + consoleTheme + ' shadow-lg';
 
-    // Simulated Sender Header
-    var senderRow = document.createElement('div');
-    senderRow.className = 'd-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary';
-    
-    var senderName = document.createElement('div');
-    senderName.className = 'd-flex align-items-center gap-2';
-    senderName.innerHTML = '<span class="badge bg-primary rounded-pill">' + (scenario.type ? scenario.type.toUpperCase() : 'MSG') + '</span> <strong class="text-light">' + (scenario.sender || 'Unknown Contact') + '</strong>';
-
-    var timeBadge = document.createElement('span');
-    timeBadge.className = 'text-secondary small';
-    timeBadge.textContent = 'Just Now · Urgent Alert';
-
-    senderRow.appendChild(senderName);
-    senderRow.appendChild(timeBadge);
-    mockup.appendChild(senderRow);
-
-    if (scenario.subject) {
-      var subject = document.createElement('div');
-      subject.className = 'fw-bold text-info mb-2 fs-6';
-      subject.textContent = scenario.subject;
-      mockup.appendChild(subject);
-    }
-
-    if (scenario.body) {
-      var bodyText = document.createElement('div');
-      bodyText.className = 'p-3 rounded-2 text-light font-monospace small bg-black bg-opacity-50 border border-secondary border-opacity-50 mb-2';
-      bodyText.style.whiteSpace = 'pre-wrap';
-      bodyText.textContent = scenario.body;
-      mockup.appendChild(bodyText);
+    if (consoleMode === 'soc') {
+      mockup.innerHTML = 
+        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-danger animate-pulse">🔴 SEV-1 ACTIVE INCIDENT</span>' +
+            '<strong class="text-light font-monospace small">ASSET: SRV-PROD-DC01.corp (10.0.10.15)</strong>' +
+          '</div>' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-dark text-info border border-secondary small">MITRE: T1078 Valid Accounts</span>' +
+            '<span class="badge bg-dark text-warning border border-secondary small">Rule: SIEM-#8491</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="row g-2 mb-2">' +
+          '<div class="col-4"><div class="p-2 rounded bg-black border border-secondary small text-center"><span class="text-secondary d-block" style="font-size:0.7rem;">HOST STATUS</span><strong class="text-danger">EXFIL RISK HIGH</strong></div></div>' +
+          '<div class="col-4"><div class="p-2 rounded bg-black border border-secondary small text-center"><span class="text-secondary d-block" style="font-size:0.7rem;">CORRELATION</span><strong class="text-warning">3 SUBNET HOPS</strong></div></div>' +
+          '<div class="col-4"><div class="p-2 rounded bg-black border border-secondary small text-center"><span class="text-secondary d-block" style="font-size:0.7rem;">INCIDENT ID</span><strong class="text-info font-monospace">INC-2026-9042</strong></div></div>' +
+        '</div>' +
+        '<div class="p-3 rounded-2 text-light font-monospace small bg-black border border-secondary mb-2" style="white-space: pre-wrap; font-size: 0.86rem; border-left: 3px solid #ef4444 !important;">' +
+          '<div class="text-secondary mb-1">// SIEM LOG TELEMETRY CAPTURED:</div>' +
+          (scenario.subject ? '<div class="text-warning fw-bold mb-1">[ALERT] ' + scenario.subject + '</div>' : '') +
+          (scenario.body || '') +
+        '</div>';
+    } else if (consoleMode === 'ransomware') {
+      mockup.innerHTML = 
+        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom border-danger">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-danger animate-pulse">☣️ CRITICAL: RANSOMWARE ATTACK</span>' +
+            '<strong class="text-light small">THREAT ACTOR: ALPHV / BLACKCAT SYNDICATE</strong>' +
+          '</div>' +
+          '<span class="badge bg-danger-subtle text-danger border border-danger small">PROPAGATION: 18/42 ENDPOINTS</span>' +
+        '</div>' +
+        '<div class="p-3 rounded-2 text-light font-monospace small bg-black border border-danger mb-2" style="white-space: pre-wrap; font-size: 0.86rem; border-left: 3px solid #dc2626 !important;">' +
+          '<div class="text-danger fw-bold mb-1">[EXTRACTED EXTORTION NOTE - RESTORE_FILES.txt]</div>' +
+          (scenario.subject ? '<div class="text-info fw-bold mb-1">' + scenario.subject + '</div>' : '') +
+          (scenario.body || '') +
+        '</div>' +
+        '<div class="p-2 rounded bg-dark border border-secondary d-flex justify-content-between align-items-center mb-2">' +
+          '<span class="small text-secondary">Offline Snapshot Integrity: <strong class="text-success">CLEAN (Snapshot #401 Air-Gapped)</strong></span>' +
+          '<span class="small text-secondary">Active AD Forest: <strong class="text-danger">PARTIALLY LOCKED</strong></span>' +
+        '</div>';
+    } else if (consoleMode === 'iam') {
+      mockup.innerHTML = 
+        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom border-warning">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-warning text-dark">🔑 ZERO-TRUST IAM AUDIT</span>' +
+            '<strong class="text-light small">DIRECTORY: ENTRA ID / OKTA CLOUD</strong>' +
+          '</div>' +
+          '<span class="badge bg-warning-subtle text-warning border border-warning small">RISK SCORE: 94 / 100</span>' +
+        '</div>' +
+        '<div class="d-flex flex-wrap gap-2 mb-2">' +
+          '<span class="badge bg-dark text-danger border border-danger small">Trigger: Impossible Travel Detected</span>' +
+          '<span class="badge bg-dark text-warning border border-secondary small">MFA: Push Bombing Anomaly</span>' +
+          '<span class="badge bg-dark text-info border border-secondary small">Target Role: Global Admin</span>' +
+        '</div>' +
+        '<div class="p-3 rounded-2 text-light font-monospace small bg-black border border-warning mb-2" style="white-space: pre-wrap; font-size: 0.86rem; border-left: 3px solid #f59e0b !important;">' +
+          (scenario.subject ? '<div class="text-warning fw-bold mb-1">' + scenario.subject + '</div>' : '') +
+          (scenario.body || '') +
+        '</div>';
+    } else if (consoleMode === 'network') {
+      mockup.innerHTML = 
+        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom border-primary">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-primary">🌐 WAF / IPS PERIMETER DEFENSE</span>' +
+            '<strong class="text-light font-monospace small">INGRESS: HTTPS / PORT 443</strong>' +
+          '</div>' +
+          '<span class="badge bg-dark text-warning border border-secondary small">RULE: OWASP-A03 INJECTION</span>' +
+        '</div>' +
+        '<div class="p-3 rounded-2 text-light font-monospace small bg-black border border-primary mb-2" style="white-space: pre-wrap; font-size: 0.86rem; border-left: 3px solid #2563eb !important;">' +
+          '<div class="text-secondary mb-1">// PACKET PAYLOAD CAPTURE:</div>' +
+          (scenario.subject ? '<div class="text-info fw-bold mb-1">' + scenario.subject + '</div>' : '') +
+          (scenario.body || '') +
+        '</div>';
+    } else {
+      // Default: Enterprise Mail Gateway & Phishing Detonation
+      mockup.innerHTML = 
+        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom border-info">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-info text-dark">🛡️ SECURE EMAIL GATEWAY</span>' +
+            '<strong class="text-light small">INGRESS MAIL DETONATION</strong>' +
+          '</div>' +
+          '<span class="badge bg-dark text-light border border-secondary small">Policy: Zero-Trust Gateway</span>' +
+        '</div>' +
+        '<div class="d-flex flex-wrap gap-2 mb-2 p-2 rounded bg-black border border-secondary">' +
+          '<span class="badge bg-danger small">SPF: FAIL (Spoofed IP)</span>' +
+          '<span class="badge bg-warning text-dark small">DKIM: UNVERIFIED</span>' +
+          '<span class="badge bg-danger small">DMARC: REJECT</span>' +
+          '<span class="badge bg-dark text-secondary border border-secondary small ms-auto">Domain Age: 3 Days</span>' +
+        '</div>' +
+        '<div class="mb-2 p-2 rounded bg-black border border-secondary">' +
+          '<div class="small text-secondary"><strong class="text-light">DISPLAY NAME:</strong> ' + (scenario.sender || 'External Sender') + '</div>' +
+          (scenario.subject ? '<div class="small text-info fw-bold mt-1">SUBJECT: ' + scenario.subject + '</div>' : '') +
+        '</div>' +
+        '<div class="p-3 rounded-2 text-light font-monospace small bg-black border border-secondary mb-2" style="white-space: pre-wrap; font-size: 0.86rem; border-left: 3px solid #0284c7 !important;">' +
+          (scenario.body || '') +
+        '</div>';
     }
 
     card.appendChild(mockup);
+
+    // Interactive Action Decision Center
+    var actionHeader = document.createElement('div');
+    actionHeader.className = 'd-flex align-items-center justify-content-between mb-2';
+    actionHeader.innerHTML = 
+      '<span class="text-uppercase small fw-bold text-warning">' +
+        (consoleMode === 'soc' ? '⚡ INCIDENT COMMANDER DEFENSIVE ORDER:' :
+         consoleMode === 'ransomware' ? '🚨 EMERGENCY CRISIS RESPONSE DIRECTIVE:' :
+         consoleMode === 'iam' ? '🛡️ ZERO-TRUST ACCESS GOVERNANCE DECISION:' :
+         consoleMode === 'network' ? '🛡️ WAF / FIREWALL MITIGATION ORDER:' :
+         '🛡️ GATEWAY REMEDIATION ORDER:') +
+      '</span>' +
+      '<span class="text-secondary small">Select your tactical response</span>';
+    card.appendChild(actionHeader);
 
     // Interactive Action Controls
     var controls = document.createElement('div');
@@ -508,6 +730,10 @@
             score += (body.xp_value || 25);
             scoreEl.textContent = String(score);
 
+            if (window.activeGame3D) {
+              window.activeGame3D.setNodeStatus(index, 'secured');
+            }
+
             aiStatus.textContent = '🤖 Outsmarted! Trick Exposed!';
             aiStatus.className = 'small text-success fw-bold';
 
@@ -520,6 +746,10 @@
             playFx('lose');
             currentStreak = 0;
             comboBadge.style.display = 'none';
+
+            if (window.activeGame3D) {
+              window.activeGame3D.setNodeStatus(index, 'compromised');
+            }
 
             aiStatus.textContent = '🤖 Trap Sprung! System Scored.';
             aiStatus.className = 'small text-danger fw-bold';
@@ -559,11 +789,11 @@
     }
 
     if (scenario.choices && scenario.choices.length > 0) {
-      scenario.choices.forEach(function (choice) {
+      scenario.choices.forEach(function (choice, idx) {
         var button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn-outline-light text-start p-3 fw-semibold border-secondary';
-        button.textContent = choice.text;
+        button.className = 'btn btn-outline-light text-start p-3 fw-semibold border-secondary shadow-sm d-flex align-items-start gap-2';
+        button.innerHTML = '<span class="badge bg-secondary font-monospace" style="font-size:0.75rem;">ORD-0' + (idx + 1) + '</span> <span>' + choice.text + '</span>';
         button.addEventListener('click', function () {
           submitChoice({ scenario_id: scenario.id, choice_id: choice.id }, button);
         });
@@ -572,16 +802,16 @@
     } else {
       var threatBtn = document.createElement('button');
       threatBtn.type = 'button';
-      threatBtn.className = 'btn btn-outline-danger p-3 fw-bold fs-6 text-start';
-      threatBtn.innerHTML = '🚨 ' + labels.isThreat;
+      threatBtn.className = 'btn btn-outline-danger p-3 fw-bold fs-6 text-start d-flex align-items-center gap-2 shadow-sm';
+      threatBtn.innerHTML = '🚨 <span><strong>[CONTAINMENT DIRECTIVE]</strong> ' + labels.isThreat + ' — Execute Emergency Lockdown</span>';
       threatBtn.addEventListener('click', function () {
         submitChoice({ scenario_id: scenario.id, is_threat: true }, threatBtn);
       });
 
       var safeBtn = document.createElement('button');
       safeBtn.type = 'button';
-      safeBtn.className = 'btn btn-outline-success p-3 fw-bold fs-6 text-start';
-      safeBtn.innerHTML = '✅ ' + labels.isSafe;
+      safeBtn.className = 'btn btn-outline-success p-3 fw-bold fs-6 text-start d-flex align-items-center gap-2 shadow-sm';
+      safeBtn.innerHTML = '✅ <span><strong>[CLEAR &amp; LOG AUDIT]</strong> ' + labels.isSafe + ' — Record in SIEM Audit Log</span>';
       safeBtn.addEventListener('click', function () {
         submitChoice({ scenario_id: scenario.id, is_threat: false }, safeBtn);
       });
@@ -595,6 +825,12 @@
     clearInterval(timerInterval);
     box.innerHTML = '';
     progressEl.textContent = 'Game Complete';
+
+    if (window.activeGame3D) {
+      for (var k = 0; k < window.activeGame3D.nodes.length; k++) {
+        window.activeGame3D.setNodeStatus(k, 'secured');
+      }
+    }
 
     var elapsed = Math.round((Date.now() - startedAt) / 1000);
     var summary = document.getElementById('result-summary');

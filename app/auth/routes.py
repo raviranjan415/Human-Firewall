@@ -19,6 +19,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from app.auth.forms import (
+    ChangePasswordForm,
     JoinOrgForm,
     LoginForm,
     OrgEnrollmentForm,
@@ -30,6 +31,7 @@ from app.auth.forms import (
 )
 from app.extensions import db, limiter
 from app.models import (
+    AuditLog,
     OrganizationMembership,
     User,
     UserAchievement,
@@ -318,21 +320,54 @@ def logout():
 @limiter.limit("10 per hour")
 def forgot_password():
     form = ResetRequestForm()
-    reset_link = None
+    email_dispatched = False
     if form.validate_on_submit():
         email = form.email.data.strip().lower()
         user = User.query.filter(db.func.lower(User.email) == email).first()
         if user is not None and user.is_active:
             token = create_password_reset_token(user)
             reset_link = url_for("auth.reset_password", token=token, _external=True)
-            logger.info("Password reset requested for user id %s", user.id)
-            if not current_app.debug:
-                reset_link = None
+            logger.info("Password reset requested for user id %s (%s)", user.id, user.email)
+            from app.services.mail_service import send_password_reset_email
+            send_password_reset_email(user, reset_link)
 
-        # Anti-enumeration response
-        flash("If that account exists, reset instructions have been created.", "info")
+        email_dispatched = True
+        flash(
+            "If that account exists, password reset instructions have been dispatched to your email address.",
+            "info",
+        )
 
-    return render_template("auth/forgot.html", form=form, reset_link=reset_link)
+    return render_template("auth/forgot.html", form=form, email_dispatched=email_dispatched)
+
+
+@auth_bp.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    """Allow any authenticated user to update their password securely."""
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if not current_user.check_password(form.current_password.data):
+            flash("Your current password was entered incorrectly.", "error")
+            return render_template("auth/change_password.html", form=form)
+
+        current_user.set_password(form.new_password.data)
+        current_user.failed_login_count = 0
+        current_user.locked_until = None
+        db.session.add(
+            AuditLog(
+                actor_id=current_user.id,
+                action="user_changed_password",
+                target_type="user",
+                target_id=str(current_user.id),
+                ip_address=request.remote_addr,
+            )
+        )
+        db.session.commit()
+
+        flash("Your password has been changed successfully.", "success")
+        return redirect(url_for("auth.settings"))
+
+    return render_template("auth/change_password.html", form=form)
 
 
 @auth_bp.route("/reset/<token>", methods=["GET", "POST"])

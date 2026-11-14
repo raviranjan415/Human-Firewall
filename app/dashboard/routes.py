@@ -135,10 +135,9 @@ def leaderboard():
 @dashboard_bp.route("/achievements")
 @login_required
 def achievements():
-    earned_ids = {
-        row.achievement_id
-        for row in UserAchievement.query.filter_by(user_id=current_user.id).all()
-    }
+    user_awards = UserAchievement.query.filter_by(user_id=current_user.id).all()
+    earned_ids = {row.achievement_id for row in user_awards}
+    earned_dates = {row.achievement_id: row.awarded_at for row in user_awards}
     all_achievements = (
         Achievement.query.filter_by(is_active=True).order_by(Achievement.id).all()
     )
@@ -146,6 +145,7 @@ def achievements():
         "dashboard/achievements.html",
         achievements=all_achievements,
         earned_ids=earned_ids,
+        earned_dates=earned_dates,
         progress=gamification.user_stats(current_user),
     )
 

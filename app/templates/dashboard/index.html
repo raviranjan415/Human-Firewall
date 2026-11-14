@@ -252,14 +252,18 @@
       {% if recent_achievements %}
         <div class="row g-2">
           {% for item in recent_achievements[:4] %}
+            {% set a = item.achievement %}
+            {% set icon_char = '🚀' if a.icon == 'rocket' else '⚓' if a.icon == 'hook' else '👁️' if a.icon == 'eye' else '🔎' if a.icon == 'magnifier' else '🛡️' if a.icon == 'shield' else '🔐' if a.icon == 'lock' else '📖' if a.icon == 'book' else '🏆' if a.icon == 'trophy' else '🔥' if a.icon == 'flame' else '⭐' if a.icon == 'star' else '🎖️' if a.icon == 'medal' else '⚡' if a.icon == 'runner' else '👑' if a.icon == 'crown' else '📜' %}
             <div class="col-6">
-              <div class="cq-ach-item earned p-2 d-flex align-items-center gap-2 text-start">
-                <span class="fs-4">{{ item.achievement.icon }}</span>
-                <div>
-                  <div class="small fw-bold text-light">{{ t_content(item.achievement, 'name') }}</div>
-                  <div class="cq-muted" style="font-size: 0.72rem;">Unlocked</div>
+              <a href="{{ url_for('dashboard.achievements') }}" class="cq-card p-2 d-flex align-items-center gap-2 text-start text-decoration-none hoverable border-primary h-100">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center p-2 text-primary fs-5" style="width: 38px; height: 38px; flex-shrink: 0;">
+                  {{ icon_char }}
                 </div>
-              </div>
+                <div class="overflow-hidden">
+                  <div class="small fw-bold text-dark text-truncate">{{ t_content(a, 'name') }}</div>
+                  <div class="text-primary fw-semibold" style="font-size: 0.7rem;">Share Badge &rarr;</div>
+                </div>
+              </a>
             </div>
           {% endfor %}
         </div>

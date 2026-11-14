@@ -1847,4 +1847,189 @@ CATALOG_VIDEOS = [
             ),
         ],
     },
+    # -------------------------------------------------------------------------
+    # Honeytrap Defense Rooms (Module 1: foundations / Basic Level)
+    # -------------------------------------------------------------------------
+    {
+        "module": "foundations",
+        "slug": "cyber-honeytrap-romance-scams",
+        "title_en": "The Cyber Honeytrap: Romance Scams & Catfishing Lures",
+        "title_hi": "साइबर हनीट्रैप: फर्जी प्रोफाइल और रोमांस धोखाधड़ी से बचाव",
+        "difficulty": "beginner",
+        "duration": 7,
+        "summary_en": "Learn how threat actors create glamorous fake personas on LinkedIn, dating apps, and social media to manipulate emotional trust and harvest corporate credentials.",
+        "summary_hi": "जानें कि साइबर अपराधी कैसे सोशल मीडिया और डेटिंग ऐप्स पर आकर्षक फर्जी प्रोफाइल बनाकर भरोसा जीतते हैं और गोपनीय दफ्तर पासवर्ड चुराते हैं।",
+        "script_en": (
+            "Scene 1: An employee receives a connection request from an attractive international researcher on LinkedIn. "
+            "Over 3 weeks of friendly, flattering direct messages, the connection builds strong emotional rapport.\n"
+            "Scene 2: The hook arrives: 'Could you preview my private design portfolio or test our collaborative project at this link?' "
+            "The link points to a credential harvesting phishing portal or drops infostealer malware.\n"
+            "Red Flag Breakdown:\n"
+            "1. Photos that look like AI-generated models or professional studio portraits (often stolen from foreign influencers).\n"
+            "2. Reluctance to participate in live, unscheduled two-way video calls.\n"
+            "3. Rapid progression from professional networking to deeply personal, affectionate messaging.\n"
+            "4. Subtle inquiries about your employer's internal tools, VPN software, or projects.\n"
+            "Golden Rules of Defense: Never open links or attachments from online romantic interests on corporate devices; perform reverse image lookups on suspicious profile photos; report suspicious engagement immediately."
+        ),
+        "script_hi": (
+            "दृश्य 1: एक कर्मचारी को लिंक्डइन पर एक आकर्षक प्रोफाइल से फ्रेंड रिक्वेस्ट मिलती है। "
+            "तीन हफ्तों की मीठी और तारीफ भरी बातचीत के जरिए हमलावर गहरा भावनात्मक भरोसा बना लेता है।\n"
+            "दृश्य 2: हमलावर कहता है: 'क्या आप मेरे नए प्रोजेक्ट की फाइल इस लिंक से देखकर राय दे सकते हैं?' "
+            "वह लिंक असल में एक पासवर्ड चुराने वाला फर्जी पोर्टल होता है।\n"
+            "सावधानी के नियम:\n"
+            "1. एआई से बनी या विदेशी मॉडल्स की फोटो वाली प्रोफाइल से सतर्क रहें।\n"
+            "2. जो व्यक्ति लाइव वीडियो कॉल से कतराए, उस पर कभी भरोसा न करें।\n"
+            "3. कभी भी निजी सोशल मीडिया संपर्कों के कहने पर दफ्तर के कंप्यूटर से अनजान लिंक न खोलें।"
+        ),
+        "narration_en": (
+            "A cyber honeytrap never feels like a cyber attack. It targets your vanity, ego, and human longing for connection. "
+            "Always maintain strict boundaries: personal affection must never cross into corporate access."
+        ),
+        "narration_hi": (
+            "हनीट्रैप कभी हैकिंग जैसा नहीं लगता क्योंकि यह कंप्यूटर पर नहीं, बल्कि आपकी भावनाओं और तारीफ की भूख पर वार करता है। "
+            "दफ्तर के लैपटॉप और पासवर्ड को कभी भी किसी अनजान ऑनलाइन दोस्त के साथ साझा न करें।"
+        ),
+        "transcript_en": "[00:00] The attractive profile request. [00:30] Grooming and manufactured emotional trust. [01:15] The credential harvesting payload. [02:00] Verification and reporting procedures.",
+        "transcript_hi": "[00:00] फर्जी प्रोफाइल का जाल। [00:30] झूठा विश्वास और भावनात्मक हेरफेर। [01:15] खतरनाक लिंक और मैलवेयर का हमला। [02:00] सुरक्षित रहने के नियम।",
+        "questions": [
+            (
+                "Why do cybercriminals use attractive honeytrap personas in social engineering?",
+                [
+                    "To test whether the victim has a slow internet connection",
+                    "To lower the victim's critical defenses through flattery, romance, and emotional manipulation",
+                    "Because firewalls can identify profile pictures",
+                    "To help the employee get a promotion",
+                ],
+                1,
+                "Honeytraps exploit human vanity, loneliness, and emotional trust to disarm skepticism that would normally block suspicious requests.",
+            ),
+            (
+                "What is the safest response when an online connection asks you to review a work document or login portal on your corporate laptop?",
+                [
+                    "Immediately sign in with your corporate SSO credentials",
+                    "Forward the link to all team members",
+                    "Refuse to open the file on work devices, perform reverse image verification, and report to security",
+                    "Send them your master Wi-Fi password",
+                ],
+                2,
+                "Never open unverified files or links from internet acquaintances on corporate hardware; verify identity out-of-band and report.",
+            ),
+        ],
+    },
+    {
+        "module": "foundations",
+        "slug": "corporate-honeytraps-executive-extortion",
+        "title_en": "Corporate Honeytraps: Executive Baiting & Blackmail Schemes",
+        "title_hi": "कॉर्पोरेट हनीट्रैप: अधिकारियों को फंसाने और ब्लैकमेल की साजिशें",
+        "difficulty": "beginner",
+        "duration": 7,
+        "summary_en": "Learn how industrial espionage syndicates and threat actors target corporate executives and researchers with compromised private meetings, intimate lures, and video extortion.",
+        "summary_hi": "सीखें कि कैसे औद्योगिक जासूस और हैकर्स वरिष्ठ अधिकारियों को निजी मुलाकातों और वीडियो कॉल के जरिए ब्लैकमेल करके गोपनीय दस्तावेज चुराते हैं।",
+        "script_en": (
+            "Scene 1: A senior corporate executive traveling to an overseas technology conference receives an invitation to a private VIP cocktail mixer. "
+            "At the mixer, an operative initiates a flirtatious conversation, suggesting continuing the discussion in a private suite.\n"
+            "Scene 2: Hidden cameras record compromising footage. Within 48 hours, the executive receives an anonymous extortion email: "
+            "'Transfer the confidential merger files or this video will be sent to your board of directors and family.'\n"
+            "Defensive Protocol:\n"
+            "1. Pretext Awareness: Understand that traveling executives are priority espionage targets for foreign intelligence and competitor cartels.\n"
+            "2. Clean Device Policy: Never carry unencrypted primary corporate laptops on sensitive personal or unvetted travel.\n"
+            "3. Immediate Incident Escalation: Never pay extortion demands or leak corporate secrets. Report the coercion directly to corporate security and legal counsel, who maintain specialized crisis protocols."
+        ),
+        "script_hi": (
+            "दृश्य 1: विदेश यात्रा पर गए एक वरिष्ठ अधिकारी को किसी निजी वीआईपी पार्टी का निमंत्रण मिलता है। "
+            "पार्टी में एक संदिग्ध व्यक्ति उनसे घुलमिल जाता है और उन्हें निजी कमरे में चलने का प्रस्ताव देता है।\n"
+            "दृश्य 2: गुप्त कैमरों से वीडियो बना लिया जाता है। 48 घंटे में धमकी भरा ईमेल आता है: 'कंपनी के गोपनीय प्रोजेक्ट की फाइलें भेजो वरना वीडियो सार्वजनिक कर देंगे।'\n"
+            "सुरक्षा नियम:\n"
+            "1. यात्रा के दौरान अनजान लोगों से निजी नजदीकी बढ़ाने से बचें।\n"
+            "2. ब्लैकमेल होने पर घबराकर कंपनी का डेटा कभी न सौंपें।\n"
+            "3. तुरंत अपनी कंपनी की आंतरिक सुरक्षा और लीगल टीम को सूचित करें।"
+        ),
+        "narration_en": (
+            "When corporate secrets are worth millions, adversaries invest heavily in personal blackmail. "
+            "No matter how embarrassing an extortion attempt may feel, cooperating with the blackmailer only invites deeper blackmail. Report immediately."
+        ),
+        "narration_hi": (
+            "कॉर्पोरेट जासूसी में ब्लैकमेल सबसे घातक हथियार है। ब्लैकमेलर की मांग पूरी करने से वह कभी नहीं रुकता। "
+            "शर्मिंदगी के डर से कंपनी से गद्दारी करने के बजाय तुरंत सुरक्षा टीम से संपर्क करें।"
+        ),
+        "transcript_en": "[00:00] Travel and executive target profiles. [00:30] The VIP mixer trap. [01:15] The extortion ultimatum. [02:00] Enterprise incident escalation.",
+        "transcript_hi": "[00:00] अधिकारियों को निशाना बनाने का तरीका। [00:30] वीआईपी पार्टी का षड्यंत्र। [01:15] ब्लैकमेल और डेटा की मांग। [02:00] लीगल और सिक्योरिटी रिपोर्टिंग।",
+        "questions": [
+            (
+                "If an executive is targeted with an intimate extortion or blackmail threat demanding corporate files, what is the required protocol?",
+                [
+                    "Silently leak a few low-level files to keep the blackmailer quiet",
+                    "Immediately report the incident to corporate security and legal counsel without sharing any corporate data",
+                    "Pay the blackmailer in cryptocurrency from personal savings",
+                    "Delete all corporate email accounts and resign",
+                ],
+                1,
+                "Giving in to extortion guarantees escalating demands; reporting to organizational security activates formal legal and counter-espionage protections.",
+            ),
+        ],
+    },
+    {
+        "module": "foundations",
+        "slug": "digital-honeypots-deception-defense",
+        "title_en": "Digital Honeypots & Canaries: Turning Traps Against Attackers",
+        "title_hi": "डिजिटल हनीपॉट और कैनरी टोकन: हैकर्स को अपने जाल में फंसाना",
+        "difficulty": "beginner",
+        "duration": 7,
+        "summary_en": "Discover how defensive architects deploy decoy workstations, fake credential spreadsheets, and canary tokens to catch intruders the millisecond they breach the perimeter.",
+        "summary_hi": "जानें कि सुरक्षा टीमें कैसे नेटवर्क में नकली सर्वर, फर्जी पासवर्ड फाइलें और कैनरी टोकन लगाकर घुसपैठियों को तुरंत पकड़ती हैं।",
+        "script_en": (
+            "Animation: An attacker successfully phishes an entry-level employee and lands inside the corporate network. "
+            "Looking around for high-value targets, the attacker spots a file on a shared drive titled 'Admin_Passwords_2026.xlsx'.\n"
+            "The Trap: That file is a Canary Token (Digital Honeypot). The passwords are fake, but the instant the file is opened, "
+            "it triggers an invisible DNS webhook back to the SOC SIEM with the attacker's IP address, machine hostname, and active credentials.\n"
+            "Key Honeypot Technologies:\n"
+            "1. Honeypot Servers: Isolated dummy servers that simulate unpatched database ports (like Port 1433 or 3306) to lure scanners.\n"
+            "2. Canary Tokens: Fake AWS API keys, fake document files, or fake database records that have zero legitimate business use.\n"
+            "3. High-Fidelity Alerting: Because legitimate employees never need to access honeypots, any trigger is 100% genuine malicious activity."
+        ),
+        "script_hi": (
+            "एनीमेशन: एक हैकर कर्मचारी के कंप्यूटर में घुसने में कामयाब हो जाता है। "
+            "नेटवर्क में तलाश करते हुए उसे एक फाइल दिखती है जिसका नाम है 'Admin_Passwords_2026.xlsx'।\n"
+            "चाल: यह फाइल असली नहीं, बल्कि एक डिजिटल हनीपॉट (कैनरी टोकन) है। जैसे ही हैकर इसे खोलता है, "
+            "सुरक्षा टीम (SOC) के पास तुरंत अलार्म बज जाता है और हैकर का कंप्यूटर नेटवर्क से काट दिया जाता है।\n"
+            "हनीपॉट के फायदे:\n"
+            "1. नकली सर्वर और डेटाबेस जो हैकर्स का समय बर्बाद करते हैं।\n"
+            "2. कैनरी फाइल्स जो खुलते ही सुरक्षा दल को सतर्क कर देती हैं।\n"
+            "3. जीरो फॉल्स अलार्म: क्योंकि आम कर्मचारियों को इन नकली फाइलों की कभी जरूरत नहीं होती।"
+        ),
+        "narration_en": (
+            "In cyber defense, deception is an art form. By planting honeypots and canary tokens throughout our network, "
+            "we ensure that an attacker's curiosity becomes their immediate downfall."
+        ),
+        "narration_hi": (
+            "सुरक्षा केवल बचाव नहीं, बल्कि हमलावर को चकमा देने की रणनीति भी है। नेटवर्क में डिजिटल हनीपॉट लगाकर "
+            "हम हैकर की हर हरकत को उसकी खुद की बर्बादी में बदल देते हैं।"
+        ),
+        "transcript_en": "[00:00] The attacker inside the LAN. [00:30] Discovering the honey-token file. [01:15] Silent SIEM tripwire activation. [02:00] Deception technology architecture.",
+        "transcript_hi": "[00:00] नेटवर्क में हैकर की घुसपैठ। [00:30] आकर्षक कैनरी फाइल का लालच। [01:15] बिना भनक लगे अलार्म का बजना। [02:00] आधुनिक हनीपॉट सुरक्षा ढांचा।",
+        "questions": [
+            (
+                "Why are canary tokens and honeypots considered extremely high-fidelity security alerts?",
+                [
+                    "Because they use 100% of the server's CPU",
+                    "Because legitimate business users have no reason to access decoy resources, making any trigger a probable threat",
+                    "Because they automatically delete the operating system",
+                    "Because they replace all passwords with numbers",
+                ],
+                1,
+                "Because honeypots serve no valid business function, any interaction represents unauthorized reconnaissance or active intrusion.",
+            ),
+            (
+                "What happens when an intruder opens a canary document file (like a decoy passwords spreadsheet)?",
+                [
+                    "The screen immediately explodes",
+                    "An invisible beacon alerts security operations with the intruder's IP, hostname, and timestamp",
+                    "The file prints 100 pages of paper",
+                    "The computer connects to a public chat room",
+                ],
+                1,
+                "Canary documents contain invisible tracking beacons or webhooks that immediately alert security analysts of unauthorized access.",
+            ),
+        ],
+    },
 ]

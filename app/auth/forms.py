@@ -193,6 +193,21 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField("auth.reset_new")
 
 
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField("Current Password", validators=[DataRequired()])
+    new_password = PasswordField(
+        "New Password", validators=[DataRequired(), password_strength]
+    )
+    confirm_password = PasswordField(
+        "Confirm New Password",
+        validators=[
+            DataRequired(),
+            EqualTo("new_password", message="New passwords must match."),
+        ],
+    )
+    submit = SubmitField("Update Password")
+
+
 class SettingsForm(FlaskForm):
     display_name = StringField(
         "auth.display_name", validators=[Optional(), Length(max=120)]

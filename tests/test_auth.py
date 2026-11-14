@@ -219,3 +219,42 @@ def test_role_constants_match_the_seeded_roles(app):
 
     names = {row.name for row in Role.query.all()}
     assert {ROLE_LEARNER, ROLE_ADMIN} <= names
+
+
+def test_forgot_password_does_not_leak_raw_url(client, learner):
+    response = client.post(
+        "/auth/forgot", data={"email": learner.email}, follow_redirects=True
+    )
+    assert response.status_code == 200
+    assert b"Your password reset link is ready" not in response.data
+    assert b"If that account exists" in response.data
+
+
+def test_change_password_for_authenticated_user(client, learner):
+    login(client, learner.username, LEARNER_PASSWORD)
+    response = client.post(
+        "/auth/change-password",
+        data={
+            "current_password": LEARNER_PASSWORD,
+            "new_password": "SuperSecretPass123!",
+            "confirm_password": "SuperSecretPass123!",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"password has been changed successfully" in response.data.lower()
+
+    fresh = User.query.filter_by(username=learner.username).first()
+    assert fresh.check_password("SuperSecretPass123!") is True
+    assert fresh.check_password(LEARNER_PASSWORD) is False
+
+
+def test_learner_performance_report_shows_profile_and_no_hash(client, learner):
+    login(client, learner.username, "SuperSecretPass123!" if learner.check_password("SuperSecretPass123!") else LEARNER_PASSWORD)
+    response = client.get(f"/analytics/user/{learner.id}/report")
+    assert response.status_code == 200
+    assert learner.email.encode() in response.data
+    assert b"password_hash" not in response.data
+    assert b"Multi-Domain Attack Vector Readiness" in response.data
+
+

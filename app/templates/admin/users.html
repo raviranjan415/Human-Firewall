@@ -71,7 +71,11 @@
             {% for user in users %}
               <tr>
                 <th scope="row" class="fw-normal">
-                  <div>{{ user.name }}</div>
+                  <div>
+                    <a href="{{ url_for('analytics.user_report', user_id=user.id) }}" class="fw-bold text-decoration-none text-info" title="View Learner Defense Report">
+                      {{ user.name or user.username }}
+                    </a>
+                  </div>
                   <div class="cq-muted small">@{{ user.username }}</div>
                 </th>
                 <td>{{ user.email }}</td>

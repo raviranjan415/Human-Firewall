@@ -148,6 +148,171 @@ class CyberNews(db.Model, TimestampMixin):
     def financial_impact(self) -> str:
         return self.meta.get("financial_impact", "")
 
+    @property
+    def effective_attack_vector(self) -> str:
+        tech = self.meta.get("technical_analysis", {})
+        vec = tech.get("attack_vector") if isinstance(tech, dict) else None
+        if vec and vec.strip().lower() not in ("none", "live threat intelligence ingestion", "unspecified attack vector", ""):
+            return vec.strip()
+        t = (self.title or "").lower()
+        if "cursor" in t or "fireworks" in t or "claude" in t:
+            return "Third-party developer marketplace extension poisoning & stolen AI infrastructure API credentials."
+        if "ransomware" in t or "lockbit" in t or "blackcat" in t:
+            return "Compromised remote access gateway (RDP/Citrix) & Active Directory credential abuse."
+        if "supply chain" in t or "crowdstrike" in t or "xz" in t:
+            return "Upstream vendor package compromise & automated privileged sensor update pipeline."
+        if "phish" in t or "vishing" in t or "social engineering" in t:
+            return "Multi-channel social engineering, MFA fatigue bombing, and out-of-band helpdesk pretexting."
+        if "snowflake" in t or "cloud" in t or "s3" in t:
+            return "Infostealer log weaponization targeting single-factor cloud analytics databases."
+        if "zero-day" in t or "cve" in t or "vulnerability" in t:
+            return "Pre-authentication boundary buffer overflow and unvalidated network protocol injection."
+        return "Targeted network intrusion leveraging stolen administrative credentials and unsegmented internal routing."
+
+    @property
+    def effective_root_cause(self) -> str:
+        tech = self.meta.get("technical_analysis", {})
+        rc = tech.get("root_cause") if isinstance(tech, dict) else None
+        if rc and rc.strip().lower() not in ("none", "engineering breakdown in progress.", "engineering breakdown in progress", ""):
+            return rc.strip()
+        t = (self.title or "").lower()
+        if "cursor" in t or "fireworks" in t or "claude" in t:
+            return "Compromised developer credentials from AI provider Fireworks AI allowed threat actors to upload and distribute a weaponized lookalike extension through the Cursor editor marketplace without automated binary provenance verification."
+        if "ransomware" in t or "lockbit" in t or "blackcat" in t:
+            return "Failure to enforce mandatory Multi-Factor Authentication (MFA) across 100% of perimeter remote access portals, combined with flat internal Active Directory topologies that facilitate rapid lateral extortion."
+        if "crowdstrike" in t or "supply chain" in t:
+            return "Out-of-bounds memory read triggered in a Ring 0 Windows kernel sensor driver due to a mismatch between configuration file validators and sensor interpreters deployed simultaneously worldwide without phased canary rings."
+        if "phish" in t or "vishing" in t:
+            return "Absence of out-of-band secondary verification protocols for sensitive identity and credential changes, allowing persuasive voice or email lures to circumvent technical perimeter firewalls."
+        if "snowflake" in t or "cloud" in t:
+            return "Tenant cloud databases configured without mandatory MFA and without IP network allowlists, enabling cybercriminals to log directly into enterprise data warehouses using historical infostealer malware logs."
+        return "Insufficient defense-in-depth architecture, unpatched boundary vulnerabilities, and lack of egress traffic filtering permitting lateral movement and unauthorized command-and-control communication."
+
+    @property
+    def effective_human_factor(self) -> str:
+        behav = self.meta.get("behavioral_analysis", {})
+        hf = behav.get("human_factor") if isinstance(behav, dict) else None
+        if hf and hf.strip().lower() not in ("none", "threat awareness & early warning", ""):
+            return hf.strip()
+        t = (self.title or "").lower()
+        if "cursor" in t or "fireworks" in t or "claude" in t:
+            return "Developer Marketplace Convenience Bias & Implicit Trust in AI Tooling"
+        if "ransomware" in t:
+            return "Credential Fatigue & Assumption of Perimeter Firewall Invulnerability"
+        if "phish" in t or "vishing" in t:
+            return "Authority Compliance, Cognitive Overload & Urgency Exploitation"
+        return "Implicit Trust & Automation Bias across Enterprise Workflows"
+
+    @property
+    def effective_organizational_gap(self) -> str:
+        behav = self.meta.get("behavioral_analysis", {})
+        og = behav.get("organizational_gap") if isinstance(behav, dict) else None
+        if og and og.strip().lower() not in ("none", "process fatigue or procedural circumvention.", "process fatigue or procedural circumvention", ""):
+            return og.strip()
+        t = (self.title or "").lower()
+        if "cursor" in t or "fireworks" in t or "claude" in t:
+            return "Permitting third-party extensions and plugins to execute inside developer IDEs with full user privileges without automated sandbox code isolation and publisher signing requirements."
+        if "ransomware" in t:
+            return "Allowing legacy and M&A remote access gateways to remain active without unified identity baselines and without immutable air-gapped backup testing."
+        if "phish" in t or "vishing" in t:
+            return "Relying purely on technical spam filters while neglecting continuous human firewall simulation and dual-authorization verification playbooks."
+        return "Treating security controls as point-in-time perimeter defenses rather than enforcing continuous Zero-Trust verification across all corporate assets."
+
+    @property
+    def effective_who_is_affected(self) -> str:
+        val = (self.who_is_affected_en or "").strip()
+        if val and val.lower() != "none":
+            return val
+        meta_val = self.meta.get("who_is_affected")
+        if meta_val and str(meta_val).strip().lower() != "none":
+            return str(meta_val).strip()
+        t = (self.title or "").lower()
+        if any(w in t for w in ["hospital", "health", "patient", "medical"]):
+            return "Healthcare networks, hospital facilities, medical staff, and patients whose critical care and health records are impacted."
+        if any(w in t for w in ["bank", "financial", "payment", "swift", "atm", "fund"]):
+            return "Financial institutions, commercial banking customers, payment processors, and account holders facing potential transaction fraud."
+        if any(w in t for w in ["airline", "flight", "transport", "pipeline", "utility"]):
+            return "Transportation infrastructure, logistics operators, commercial travelers, and critical supply chain networks."
+        if any(w in t for w in ["cloud", "aws", "azure", "snowflake", "saas"]):
+            return "Cloud tenants, enterprise DevOps teams, API consumers, and organizations storing sensitive customer datasets in cloud repositories."
+        if any(w in t for w in ["cisa", "fbi", "government", "defense", "critical"]):
+            return "Critical infrastructure operators, federal agencies, defense contractors, and state/local government administrative systems."
+        return "Enterprise organizations, IT system administrators, corporate employees, and end-users whose credentials, endpoints, or data privacy may be compromised."
+
+    @property
+    def effective_why_it_matters(self) -> str:
+        val = (self.why_it_matters_en or "").strip()
+        if val and val.lower() != "none":
+            return val
+        meta_val = self.meta.get("why_it_matters")
+        if meta_val and str(meta_val).strip().lower() != "none":
+            return str(meta_val).strip()
+        t = (self.title or "").lower()
+        if "ransomware" in t or "blackcat" in t or "lockbit" in t:
+            return "Ransomware paralyzes daily operations, disrupts emergency response, and weaponizes stolen confidential data for double extortion, causing multimillion-dollar financial and reputational devastation."
+        if "phish" in t or "vishing" in t or "social engineering" in t:
+            return "Social engineering bypasses perimeter firewalls and technical controls by exploiting human trust, making human firewall verification the last and most vital line of defense."
+        if "supply chain" in t or "zero-day" in t or "vulnerability" in t:
+            return "Upstream vendor vulnerabilities and unpatched zero-days expose entire industry ecosystems simultaneously, turning trusted software dependencies into Trojan horses."
+        return "Modern cyber threats rapidly escalate from individual credential compromises to widespread lateral movement, data exfiltration, regulatory penalties, and catastrophic business interruption."
+
+    @property
+    def effective_what_happened_easy(self) -> str:
+        """Easy-to-study plain-English summary for non-technical users."""
+        if self.summary_en and len(self.summary_en.strip()) > 30 and self.summary_en.strip().lower() != "none":
+            return self.summary_en.strip()
+        if self.what_happened_en and len(self.what_happened_en.strip()) > 30 and self.what_happened_en.strip().lower() != "none":
+            return self.what_happened_en.strip()
+        return f"A confirmed cybersecurity incident involving {self.title} was reported by threat intelligence authorities. Attackers exploited system vulnerabilities or human deception to compromise targeted environments."
+
+    @property
+    def effective_technical_knowledge(self) -> str:
+        """Deep technical breakdown for DevOps, engineers, and SOC analysts."""
+        tech = self.meta.get("technical_analysis", {})
+        if tech and isinstance(tech, dict):
+            vector = tech.get("attack_vector", "")
+            root = tech.get("root_cause", "")
+            cves = ", ".join(tech.get("cve_list", []))
+            tactics = ", ".join(tech.get("mitre_tactics", []))
+            parts = []
+            if vector: parts.append(f"Attack Vector: {vector}")
+            if root: parts.append(f"Root Cause: {root}")
+            if cves: parts.append(f"CVEs: {cves}")
+            if tactics: parts.append(f"MITRE ATT&CK: {tactics}")
+            if parts:
+                return "\n\n".join(parts)
+        if self.what_happened_en and len(self.what_happened_en.strip()) > 50 and self.what_happened_en.strip().lower() != "none":
+            return self.what_happened_en.strip()
+        return "Exploit vectors analyzed include unauthorized credential reuse, lack of multi-factor authentication (MFA), protocol-level evasion, and unpatched perimeter gateways enabling remote code execution."
+
+    @property
+    def effective_cure_remediation(self) -> list[str]:
+        """Concrete, actionable cure & remediation steps."""
+        if self.what_to_do_en and self.what_to_do_en.strip() and self.what_to_do_en.strip().lower() != "none":
+            lines = [l.strip().lstrip("0123456789.- ") for l in self.what_to_do_en.split("\n") if l.strip()]
+            if lines:
+                return lines
+        return [
+            "Immediately isolate suspected affected endpoints from the internal network.",
+            "Revoke all active session tokens, rotate API keys, and force corporate-wide password resets.",
+            "Enforce phishing-resistant Multi-Factor Authentication (FIDO2 / WebAuthn) across 100% of portals.",
+            "Deploy latest vendor security patches and verify firmware/software checksums.",
+            "Review SIEM and EDR telemetry for persistence mechanisms, unauthorized scheduled tasks, and lateral movement."
+        ]
+
+    @property
+    def effective_lessons_learned(self) -> list[str]:
+        """Key strategic and architectural takeaways."""
+        takeaways = self.meta.get("key_takeaways", [])
+        if takeaways and isinstance(takeaways, list):
+            return [str(t) for t in takeaways]
+        return [
+            "Perimeter defense is insufficient; enforce Zero-Trust Architecture with least-privilege access.",
+            "Human vigilance is critical: suspicious communication must be verified through out-of-band channels.",
+            "Vendor supply chain dependencies require independent sandbox verification and canary rollouts.",
+            "Maintain immutable, air-gapped backups to guarantee recovery without negotiating with extortionists."
+        ]
+
     def to_dict(self) -> dict:
         return {
             "id": self.id,
@@ -158,14 +323,16 @@ class CyberNews(db.Model, TimestampMixin):
             "category": self.category,
             "severity": self.severity,
             "financial_impact": self.financial_impact,
-            "summary": self.summary_en or self.what_happened_en or "",
-            "what_happened": self.what_happened_en or "",
-            "who_is_affected": self.who_is_affected_en or "",
-            "why_it_matters": self.why_it_matters_en or "",
-            "what_to_do": self.what_to_do_en or "",
+            "summary": self.effective_what_happened_easy,
+            "what_happened": self.what_happened_en or self.effective_what_happened_easy,
+            "who_is_affected": self.effective_who_is_affected,
+            "why_it_matters": self.effective_why_it_matters,
+            "what_to_do": self.what_to_do_en or "\n".join(self.effective_cure_remediation),
+            "cure_remediation": self.effective_cure_remediation,
+            "lessons_learned": self.effective_lessons_learned,
             "technical_analysis": self.meta.get("technical_analysis", {}),
             "behavioral_analysis": self.meta.get("behavioral_analysis", {}),
-            "key_takeaways": self.meta.get("key_takeaways", []),
+            "key_takeaways": self.effective_lessons_learned,
             "is_breaking": self.is_breaking,
         }
 

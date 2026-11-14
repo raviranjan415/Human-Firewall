@@ -77,6 +77,7 @@
 
   <div class="d-flex flex-wrap gap-3 align-items-center">
     <button type="submit" class="btn btn-cq btn-cq-primary">{{ t('nav.settings') }}</button>
+    <a class="btn btn-outline-warning" href="{{ url_for('auth.change_password') }}">🔑 Change Password</a>
     <a class="btn btn-cq btn-cq-ghost" href="{{ url_for('analytics.export_csv') }}">{{ t('get.download') }}</a>
     <span class="cq-muted small">Download my data (CSV)</span>
   </div>

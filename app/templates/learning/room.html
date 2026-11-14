@@ -765,24 +765,54 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     var h = canvas.height;
     var title = ROOM_DATA.title[currentLang] || ROOM_DATA.title.en;
 
-    // Background Canvas
-    ctx.fillStyle = "#ffffff";
+    // 1. High-Tech Dark Cyber Command Center Background
+    ctx.fillStyle = "#070b14";
     ctx.fillRect(0, 0, w, h);
 
-    // Header Bar
-    ctx.fillStyle = "#f8fafc";
-    ctx.fillRect(0, 0, w, 44);
-    ctx.fillStyle = "#e2e8f0";
-    ctx.fillRect(0, 44, w, 1);
+    // Subtle Cyber Grid & Scanner Lines
+    ctx.strokeStyle = "rgba(37, 99, 235, 0.08)";
+    ctx.lineWidth = 1;
+    for (var x = 0; x < w; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (var y = 0; y < h; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
 
+    // Animated Scanner Beam
+    var scanY = ((sec * 50) % (h - 60)) + 40;
+    var grad = ctx.createLinearGradient(0, scanY - 20, 0, scanY + 20);
+    grad.addColorStop(0, "rgba(2, 132, 199, 0)");
+    grad.addColorStop(0.5, "rgba(56, 189, 248, 0.15)");
+    grad.addColorStop(1, "rgba(2, 132, 199, 0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, scanY - 20, w, 40);
+
+    // 2. High-Tech Header HUD Bar
+    ctx.fillStyle = "#0b1324";
+    ctx.fillRect(0, 0, w, 44);
+    ctx.strokeStyle = "#1e293b";
+    ctx.strokeRect(0, 44, w, 1);
+
+    // HUD Status Lights
     ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, 22, 5, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(36, 22, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(52, 22, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#10b981"; ctx.beginPath(); ctx.arc(52, 22, 5, 0, Math.PI * 2); ctx.fill();
 
-    ctx.fillStyle = "#334155"; ctx.font = "13px -apple-system, sans-serif";
-    ctx.fillText("30s Defense Briefing — " + title.substring(0, 45), 75, 26);
+    ctx.fillStyle = "#38bdf8"; ctx.font = "bold 13px font-monospace, sans-serif";
+    ctx.fillText("CYBER DEFENSE MASTERCLASS // " + title.substring(0, 45).toUpperCase(), 75, 27);
 
-    // Dynamic Scenes Lookup from synchronized curriculum
+    // Live Audio Waveform Simulation in Header
+    var waveX = w - 140;
+    ctx.fillStyle = "#22c55e";
+    for (var i = 0; i < 8; i++) {
+      var barH = isPlaying ? (Math.sin(sec * 10 + i) * 8 + 10) : 4;
+      ctx.fillRect(waveX + i * 8, 22 - barH / 2, 4, barH);
+    }
+    ctx.fillStyle = "#64748b"; ctx.font = "10px sans-serif";
+    ctx.fillText("AI AUDIO", waveX + 70, 26);
+
+    // 3. Dynamic Chapter Content
     var scenes = (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[currentLang]) ? ROOM_DATA.video_scenes[currentLang] : [];
     var activeIdx = 0;
     if (sec >= 23) activeIdx = 3;
@@ -792,82 +822,110 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     var s = (scenes && scenes[activeIdx]) ? scenes[activeIdx] : null;
     var chapterEl = document.getElementById('player-chapter-title');
 
+    // Central Tactical Holographic Container
+    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+    ctx.fillRect(30, 60, w - 60, h - 130);
+    ctx.strokeStyle = activeIdx === 1 ? "#ef4444" : activeIdx === 2 ? "#10b981" : activeIdx === 3 ? "#0284c7" : "#3b82f6";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(30, 60, w - 60, h - 130);
+
+    // Corner Tech Reticles
+    var retLen = 14;
+    ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(30, 60 + retLen); ctx.lineTo(30, 60); ctx.lineTo(30 + retLen, 60); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w - 30 - retLen, 60); ctx.lineTo(w - 30, 60); ctx.lineTo(w - 30, 60 + retLen); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(30, h - 70 - retLen); ctx.lineTo(30, h - 70); ctx.lineTo(30 + retLen, h - 70); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w - 30 - retLen, h - 70); ctx.lineTo(w - 30, h - 70); ctx.lineTo(w - 30, h - 70 - retLen); ctx.stroke();
+
     if (activeIdx === 0) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "1. Attack Vector (0:00)";
-      ctx.fillStyle = "#2563eb"; ctx.font = "bold 20px sans-serif";
-      ctx.fillText(s ? s.title : "Scene 1: Attack Vector Simulation", 40, 95);
+      ctx.fillStyle = "#60a5fa"; ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.fillText(s ? s.title : "Scene 1: Attack Vector Simulation", 55, 100);
 
-      ctx.fillStyle = "#475569"; ctx.font = "14px sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 75) : "Initial target engagement and deception vector.", 40, 130);
+      ctx.fillStyle = "#94a3b8"; ctx.font = "14px -apple-system, sans-serif";
+      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Initial reconnaissance and deceptive contact vector.", 55, 130);
 
-      ctx.fillStyle = "#f8fafc"; ctx.fillRect(40, 155, w - 80, 120);
-      ctx.strokeStyle = "#cbd5e1"; ctx.strokeRect(40, 155, w - 80, 120);
+      // Terminal Box
+      ctx.fillStyle = "#030712"; ctx.fillRect(55, 150, w - 110, 135);
+      ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
 
-      ctx.fillStyle = "#0f172a"; ctx.font = "bold 14px sans-serif";
-      ctx.fillText(s ? s.badge : "Simulated Threat Scenario", 60, 190);
-      ctx.fillStyle = "#475569"; ctx.font = "13px sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1 : "", 60, 220);
-      ctx.fillStyle = "#64748b"; ctx.font = "13px sans-serif";
-      ctx.fillText(s && s.line2 ? s.line2 : "", 60, 245);
+      ctx.fillStyle = "#38bdf8"; ctx.font = "bold 13px monospace";
+      ctx.fillText("► SIMULATED THREAT INGRESS: " + (s ? s.badge : "ATTACK VECTOR ACTIVE"), 75, 185);
+      ctx.fillStyle = "#e2e8f0"; ctx.font = "13px monospace";
+      ctx.fillText("  Target Asset: Corporate Ingress Portal // Port 443 HTTPS", 75, 215);
+      ctx.fillStyle = "#f59e0b"; ctx.font = "13px monospace";
+      ctx.fillText("  Attacker Strategy: " + (s && s.line2 ? s.line2 : "Synthetic authority impersonation"), 75, 245);
 
     } else if (activeIdx === 1) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:07)";
-      ctx.fillStyle = "#dc2626"; ctx.font = "bold 20px sans-serif";
-      ctx.fillText(s ? s.title : "Scene 2: Threat Mechanics & Red Flags", 40, 95);
+      ctx.fillStyle = "#f87171"; ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.fillText(s ? s.title : "Scene 2: Threat Mechanics & Red Flags", 55, 100);
 
-      ctx.fillStyle = "#475569"; ctx.font = "14px sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 75) : "Psychological lever or tactical technical compromise.", 40, 130);
+      ctx.fillStyle = "#fca5a5"; ctx.font = "14px -apple-system, sans-serif";
+      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Exploitation of cognitive bias and emotional urgency.", 55, 130);
 
-      ctx.fillStyle = "#fef2f2"; ctx.fillRect(40, 155, w - 80, 120);
-      ctx.strokeStyle = "#fecaca"; ctx.strokeRect(40, 155, w - 80, 120);
+      // Alert Warning Box
+      ctx.fillStyle = "#180606"; ctx.fillRect(55, 150, w - 110, 135);
+      ctx.strokeStyle = "#7f1d1d"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
 
-      ctx.fillStyle = "#b91c1c"; ctx.font = "bold 14px sans-serif";
-      ctx.fillText(s ? s.badge : "🚩 Critical Indicators Identified", 60, 190);
-      ctx.fillStyle = "#991b1b"; ctx.font = "13px sans-serif";
-      ctx.fillText("• " + (s && s.line1 ? s.line1 : ""), 60, 220);
-      ctx.fillText("• " + (s && s.line2 ? s.line2 : ""), 60, 245);
+      ctx.fillStyle = "#ef4444"; ctx.font = "bold 14px monospace";
+      ctx.fillText("🚨 CRITICAL RED FLAGS TRIGGERED: " + (s ? s.badge : "HIGH SEVERITY"), 75, 185);
+      ctx.fillStyle = "#fca5a5"; ctx.font = "13px monospace";
+      ctx.fillText("  • " + (s && s.line1 ? s.line1 : "Artificial panic threshold"), 75, 215);
+      ctx.fillStyle = "#fca5a5"; ctx.font = "13px monospace";
+      ctx.fillText("  • " + (s && s.line2 ? s.line2 : "Discrepancy in sender domain authenticity"), 75, 245);
 
     } else if (activeIdx === 2) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:15)";
-      ctx.fillStyle = "#16a34a"; ctx.font = "bold 20px sans-serif";
-      ctx.fillText(s ? s.title : "Scene 3: Human Firewall Countermeasure", 40, 95);
+      ctx.fillStyle = "#4ade80"; ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.fillText(s ? s.title : "Scene 3: Human Firewall Countermeasure", 55, 100);
 
-      ctx.fillStyle = "#475569"; ctx.font = "14px sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 75) : "Defensive verification and containment procedure.", 40, 130);
+      ctx.fillStyle = "#86efac"; ctx.font = "14px -apple-system, sans-serif";
+      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Active skepticism and tactical independent verification.", 55, 130);
 
-      ctx.fillStyle = "#f0fdf4"; ctx.fillRect(40, 155, w - 80, 120);
-      ctx.strokeStyle = "#bbf7d0"; ctx.strokeRect(40, 155, w - 80, 120);
+      // Defense Box
+      ctx.fillStyle = "#051c0e"; ctx.fillRect(55, 150, w - 110, 135);
+      ctx.strokeStyle = "#14532d"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
 
-      ctx.fillStyle = "#15803d"; ctx.font = "bold 14px sans-serif";
-      ctx.fillText(s ? s.badge : "✅ Verified Defensive Action", 60, 190);
-      ctx.fillStyle = "#166534"; ctx.font = "13px sans-serif";
-      ctx.fillText("1. " + (s && s.line1 ? s.line1 : ""), 60, 220);
-      ctx.fillText("2. " + (s && s.line2 ? s.line2 : ""), 60, 245);
+      ctx.fillStyle = "#22c55e"; ctx.font = "bold 14px monospace";
+      ctx.fillText("🛡️ DEFENSE PROTOCOL ACTIVE: " + (s ? s.badge : "VERIFIED COUNTERMEASURE"), 75, 185);
+      ctx.fillStyle = "#bbf7d0"; ctx.font = "13px monospace";
+      ctx.fillText("  [1] " + (s && s.line1 ? s.line1 : "Pause 60 seconds — Break the cognitive rush"), 75, 215);
+      ctx.fillStyle = "#bbf7d0"; ctx.font = "13px monospace";
+      ctx.fillText("  [2] " + (s && s.line2 ? s.line2 : "Verify via official out-of-band channel"), 75, 245);
 
     } else {
       if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (0:23)";
-      ctx.fillStyle = "#0284c7"; ctx.font = "bold 20px sans-serif";
-      ctx.fillText(s ? s.title : "Scene 4: Legal Frameworks & 1930 Helpline", 40, 95);
+      ctx.fillStyle = "#38bdf8"; ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.fillText(s ? s.title : "Scene 4: Legal Frameworks & 1930 Helpline", 55, 100);
 
-      ctx.fillStyle = "#475569"; ctx.font = "14px sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 75) : "Statutory consumer protections and official reporting.", 40, 130);
+      ctx.fillStyle = "#7dd3fc"; ctx.font = "14px -apple-system, sans-serif";
+      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Statutory regulatory frameworks and incident escalation.", 55, 130);
 
-      ctx.fillStyle = "#eff6ff"; ctx.fillRect(40, 155, w - 80, 120);
-      ctx.strokeStyle = "#bfdbfe"; ctx.strokeRect(40, 155, w - 80, 120);
+      // Recourse Box
+      ctx.fillStyle = "#0c1a2e"; ctx.fillRect(55, 150, w - 110, 135);
+      ctx.strokeStyle = "#1e3a8a"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
 
-      ctx.fillStyle = "#1d4ed8"; ctx.font = "bold 14px sans-serif";
-      ctx.fillText(s ? s.badge : "⚖️ Governing Regulations & Recourse", 60, 190);
-      ctx.fillStyle = "#1e3a8a"; ctx.font = "13px sans-serif";
-      ctx.fillText("• " + (s && s.line1 ? s.line1 : "IT Act & DPDP Act protections"), 60, 220);
-      ctx.fillText("• " + (s && s.line2 ? s.line2 : "National Cybercrime Helpline: 1930"), 60, 245);
+      ctx.fillStyle = "#60a5fa"; ctx.font = "bold 14px monospace";
+      ctx.fillText("⚖️ STATUTORY RECOURSE: " + (s ? s.badge : "MANDATORY PROTECTIONS"), 75, 185);
+      ctx.fillStyle = "#bae6fd"; ctx.font = "13px monospace";
+      ctx.fillText("  • " + (s && s.line1 ? s.line1 : "Zero liability protection within 72 hours"), 75, 215);
+      ctx.fillStyle = "#bae6fd"; ctx.font = "13px monospace";
+      ctx.fillText("  • " + (s && s.line2 ? s.line2 : "Escalate immediately via National Helpline: 1930"), 75, 245);
     }
 
-    // Subtitle Bar
-    ctx.fillStyle = "#0f172a";
-    ctx.fillRect(0, h - 50, w, 50);
-    ctx.fillStyle = "#38bdf8"; ctx.font = "13px -apple-system, sans-serif";
+    // 4. Sleek Subtitle & Transcript Banner
+    ctx.fillStyle = "#020617";
+    ctx.fillRect(0, h - 52, w, 52);
+    ctx.strokeStyle = "#1e293b";
+    ctx.strokeRect(0, h - 52, w, 1);
+
+    ctx.fillStyle = "#38bdf8"; ctx.font = "bold 12px sans-serif";
+    ctx.fillText("VOICE BRIEFING:", 25, h - 22);
+
+    ctx.fillStyle = "#f8fafc"; ctx.font = "13px -apple-system, sans-serif";
     var activeSub = s ? s.narration : "Defense Briefing in progress...";
-    ctx.fillText("🎙️ " + activeSub, 25, h - 20);
+    ctx.fillText(activeSub, 140, h - 22);
 
     // Scrubber update
     var scrubber = document.getElementById('videoScrubber');

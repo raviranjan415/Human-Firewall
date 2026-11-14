@@ -53,9 +53,13 @@
             <img src="{{ asset.thumbnail_url }}" alt="{{ t_content(asset, 'title') }}"
                  style="width:100%;border-radius:10px;margin-bottom:.75rem;">
           {% else %}
-            <div aria-hidden="true" class="d-flex align-items-center justify-content-center"
-                 style="height:120px;border-radius:10px;margin-bottom:.75rem;background:linear-gradient(135deg,#e0f2fe,#f1f5f9);border:1px solid #e2e8f0;">
-              <span class="fs-1">🛡️</span>
+            <div aria-hidden="true" class="position-relative d-flex align-items-center justify-content-center overflow-hidden"
+                 style="height:140px;border-radius:10px;margin-bottom:.75rem;background:linear-gradient(135deg,#070b14 0%,#1e293b 100%);border:1px solid #334155;">
+              <div class="position-absolute text-primary opacity-25" style="font-size: 5rem;">🛡️</div>
+              <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-primary bg-opacity-75 text-white shadow-sm" style="backdrop-filter: blur(4px);">
+                <span class="fs-6">▶</span>
+                <span class="small fw-bold">30s Interactive Masterclass</span>
+              </div>
             </div>
           {% endif %}
           <h2 class="h6 mb-2 text-dark">{{ t_content(asset, 'title') }}</h2>
