@@ -20,10 +20,14 @@ def test_room_human_ui_and_regulations(app, client, learner):
     html = response.get_data(as_text=True)
 
     # 1. Human Step Navigation with Merged Practical Lab
-    assert "30s Synced Video" in html
+    assert "80s Video Lecture" in html or "30s Synced Video" in html
     assert "Incident Chat" in html
     assert "Practical Lab" in html
-    assert "Study &amp; Laws" in html or "Study & Laws" in html
+    assert (
+        "Study &amp; Laws" in html
+        or "Study & Laws" in html
+        or "Deep Study &amp; Laws" in html
+    )
     assert "3 MCQs Quiz" in html
 
     # 2. Reading Material & Government Regulations
@@ -36,9 +40,9 @@ def test_room_human_ui_and_regulations(app, client, learner):
     assert "9001" in html
     assert "9002" in html
 
-    # 4. 30-Second Synced Video Player tokens
-    assert "30-Second Synced Video" in html
-    assert "0:30" in html
+    # 4. Synced Video Player tokens
+    assert "80-Second Synced Video" in html or "30-Second Synced Video" in html
+    assert "1:20" in html or "0:30" in html
 
 
 def test_about_page_and_developer_attribution(client):

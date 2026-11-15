@@ -59,75 +59,77 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
     slug = getattr(lesson, "slug", "")
     data = get_lesson_by_id_or_slug(mapped_id, slug) or CURATED_LESSONS.get(1)
 
-    # 2. Build 30-Second Video Animation & Narration Scenes
-    # 4 synchronized intervals: [0-7s], [7-15s], [15-23s], [23-30s]
+    # 2. Build Synchronized Video Animation & Narration Scenes
+    # 4 calibrated intervals of 20 seconds each: [0-20s], [20-40s], [40-60s], [60-80s]
     def make_scenes(lang: str) -> list[dict[str, Any]]:
         is_hi = lang == "hi"
         title_key = "title_hi" if is_hi else "title_en"
         lesson_title = data.get(title_key, data.get("title_en", "Cyber Defense"))
 
         s1_b = data["s1_badge"][1] if is_hi else data["s1_badge"][0]
-        s1_l = (
-            [data["s1_lines"][1], data["s1_lines"][0]]
-            if is_hi
-            else [data["s1_lines"][0], data["s1_lines"][1]]
-        )
-        s1_n = data["s1_narr"][1] if is_hi else data["s1_narr"][0]
-
         s2_b = data["s2_badge"][1] if is_hi else data["s2_badge"][0]
-        s2_l = (
-            [data["s2_lines"][1], data["s2_lines"][0]]
-            if is_hi
-            else [data["s2_lines"][0], data["s2_lines"][1]]
-        )
-        s2_n = data["s2_narr"][1] if is_hi else data["s2_narr"][0]
-
         s3_b = data["s3_badge"][1] if is_hi else data["s3_badge"][0]
-        s3_l = (
-            [data["s3_lines"][1], data["s3_lines"][0]]
-            if is_hi
-            else [data["s3_lines"][0], data["s3_lines"][1]]
-        )
-        s3_n = data["s3_narr"][1] if is_hi else data["s3_narr"][0]
-
         s4_b = data["s4_badge"][1] if is_hi else data["s4_badge"][0]
-        s4_l = (
-            [data["s4_lines"][1], data["s4_lines"][0]]
-            if is_hi
-            else [data["s4_lines"][0], data["s4_lines"][1]]
-        )
+
+        s1_n = data["s1_narr"][1] if is_hi else data["s1_narr"][0]
+        s2_n = data["s2_narr"][1] if is_hi else data["s2_narr"][0]
+        s3_n = data["s3_narr"][1] if is_hi else data["s3_narr"][0]
         s4_n = data["s4_narr"][1] if is_hi else data["s4_narr"][0]
 
-        # Rich teacher speech and comprehensive study points
-        t_script_1 = (
-            f"नमस्ते क्लास! {lesson_title} के पाठ में आपका स्वागत है। स्मार्टबोर्ड पर ध्यान दें: {s1_l[0]} {s1_l[1]}। हमलावर विश्वास जीतकर सुरक्षा कवच को तोड़ते हैं।"
-            if is_hi
-            else f"Hello class! Welcome to today's masterclass on {lesson_title}. Watch the smartboard closely: {s1_l[0]} In this case, {s1_l[1]}."
-        )
+        # Extract pure unmixed language lines:
+        # In curated_lessons.json: index 0=EN line1, 1=HI line1, 2=EN line2, 3=HI line2
+        if is_hi:
+            s1_l = [
+                data["s1_lines"][1] if len(data["s1_lines"]) > 1 else "",
+                data["s1_lines"][3] if len(data["s1_lines"]) > 3 else (data["s1_lines"][1] if len(data["s1_lines"]) > 1 else ""),
+            ]
+            s2_l = [
+                data["s2_lines"][1] if len(data["s2_lines"]) > 1 else "",
+                data["s2_lines"][3] if len(data["s2_lines"]) > 3 else (data["s2_lines"][1] if len(data["s2_lines"]) > 1 else ""),
+            ]
+            s3_l = [
+                data["s3_lines"][1] if len(data["s3_lines"]) > 1 else "",
+                data["s3_lines"][3] if len(data["s3_lines"]) > 3 else (data["s3_lines"][1] if len(data["s3_lines"]) > 1 else ""),
+            ]
+            s4_l = [
+                data["s4_lines"][1] if len(data["s4_lines"]) > 1 else "",
+                data["s4_lines"][3] if len(data["s4_lines"]) > 3 else (data["s4_lines"][1] if len(data["s4_lines"]) > 1 else ""),
+            ]
+        else:
+            s1_l = [
+                data["s1_lines"][0] if len(data["s1_lines"]) > 0 else "",
+                data["s1_lines"][2] if len(data["s1_lines"]) > 2 else (data["s1_lines"][0] if len(data["s1_lines"]) > 0 else ""),
+            ]
+            s2_l = [
+                data["s2_lines"][0] if len(data["s2_lines"]) > 0 else "",
+                data["s2_lines"][2] if len(data["s2_lines"]) > 2 else (data["s2_lines"][0] if len(data["s2_lines"]) > 0 else ""),
+            ]
+            s3_l = [
+                data["s3_lines"][0] if len(data["s3_lines"]) > 0 else "",
+                data["s3_lines"][2] if len(data["s3_lines"]) > 2 else (data["s3_lines"][0] if len(data["s3_lines"]) > 0 else ""),
+            ]
+            s4_l = [
+                data["s4_lines"][0] if len(data["s4_lines"]) > 0 else "",
+                data["s4_lines"][2] if len(data["s4_lines"]) > 2 else (data["s4_lines"][0] if len(data["s4_lines"]) > 0 else ""),
+            ]
 
-        t_script_2 = (
-            f"छात्रों, इस मुख्य खतरे के संकेत पर ध्यान दें! {s2_b}। {s2_l[0]} {s2_n} हमेशा जल्दबाजी के पीछे छिपे दबाव को पहचानें!"
-            if is_hi
-            else f"Notice this critical red flag right here on the board! {s2_b}. {s2_l[0]} Remember: {s2_n} Never let urgency rush your judgment!"
-        )
-
-        t_script_3 = (
-            f"यह है हमारा 3-चरणीय ह्यूमन फ़ायरवॉल नियम! पहला कदम: 60 सेकंड ठहरें। {s3_l[0]} दूसरा: {s3_l[1]}। स्वतंत्र सत्यापन से 98 प्रतिशत धोखे नाकाम हो जाते हैं!"
-            if is_hi
-            else f"Here is our Human Firewall defense drill! Step one: Pause and breathe for sixty seconds. {s3_l[0]} Step two: {s3_l[1]} Independent verification stops ninety-eight percent of attacks!"
-        )
-
-        t_script_4 = (
-            f"कक्षा, अपने कानूनी अधिकार जानिए! {s4_l[0]} किसी भी अनधिकृत धोखाधड़ी की स्थिति में तीन दिन के भीतर तुरंत राष्ट्रीय साइबर हेल्पलाइन 1930 पर कॉल करें!"
-            if is_hi
-            else f"Class, always remember the law protects you! {s4_l[0]} In any unauthorized fraud, prompt reporting guarantees zero liability. Dial the National Cyber Helpline 1930 immediately!"
-        )
+        # Conversational masterclass teacher lecture (distinct from written slide bullets)
+        if is_hi:
+            t_script_1 = f"नमस्ते क्लास! साइबर सुरक्षा कक्षा में आपका स्वागत है। आज हम समझेंगे कि हमलावर {lesson_title} का जाल कैसे बिछाते हैं। बोर्ड पर ध्यान दें: हमलावर कंप्यूटर सिस्टम को हैक करने के बजाय मानवीय भरोसे और मदद की भावना का फायदा उठाते हैं। हर अप्रत्याशित संपर्क को हमेशा सावधानी से परखना जरूरी है।"
+            t_script_2 = "छात्रों, अब इस हमले के पीछे के मनोविज्ञान को समझिए। हमलावर जानबूझकर आपके मन में घबराहट और जल्दबाजी पैदा करते हैं ताकि आप बिना सोचे-समझे कदम उठा लें। जब भी कोई व्यक्ति अत्यधिक जल्दबाजी दिखाए या बात को गुप्त रखने का दबाव बनाए, तो समझ जाइए कि यह धोखाधड़ी का सबसे बड़ा संकेत है।"
+            t_script_3 = "यह है हमारा मुख्य रक्षा नियम: साठ सेकंड का ठहराव लें। हमलावर के दबाव में आए बिना बातचीत वहीं रोकें, और जिस व्यक्ति या संस्था के नाम से संदेश आया है उनके आधिकारिक नंबर पर अलग से फोन करके पुष्टि करें। वास्तविक अधिकारी हमेशा सुरक्षा जांच का सम्मान करते हैं।"
+            t_script_4 = "कक्षा ध्यान दें, हमेशा याद रखें कि कानून आपकी पूरी रक्षा करता है। बैंकिंग नियमों और आईटी अधिनियम के तहत तीन दिन के भीतर सूचना देने पर आपकी देनदारी शून्य होती है। किसी भी संदिग्ध घटना की सूचना तुरंत सुरक्षा टीम को दें और राष्ट्रीय साइबर हेल्पलाइन उन्नीस-तीस पर तुरंत कॉल करें।"
+        else:
+            t_script_1 = f"Hello class! Welcome to today's cyber defense briefing. In this session, we examine how adversaries execute {lesson_title}. Notice that attackers manipulate natural human trust rather than breaking technical firewalls. Every unexpected demand is an unverified entry point that requires your scrutiny."
+            t_script_2 = "Notice the psychology behind this threat. The attacker deliberately manufactures artificial panic and urgency to bypass your normal verification habits. When someone pressures you with sudden consequences or insists on secrecy, that manufactured urgency is your number-one warning sign."
+            t_script_3 = "Here is our Human Firewall defense countermeasure. When confronted with an urgent or irregular request, enforce an intentional sixty-second pause. Disengage from the interaction and independently verify the request through an established trusted channel. Authentic colleagues will always respect your verification."
+            t_script_4 = "Class, always remember that corporate policy and the law are firmly on your side. Under banking directives and data protection frameworks, prompt reporting within seventy-two hours provides complete zero-liability protection. Immediately notify your security team and dial the national emergency helpline nineteen-thirty."
 
         return [
             {
                 "idx": 0,
                 "start_s": 0,
-                "end_s": 7,
+                "end_s": 20,
                 "badge": s1_b,
                 "board_title": f"{lesson_title} · {'हमला परिदृश्य' if is_hi else 'Attack Anatomy'}",
                 "title": f"{lesson_title} - {'चरण 1: हमला परिदृश्य' if is_hi else 'Phase 1: Real Attack Scenario'}",
@@ -146,8 +148,8 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
             },
             {
                 "idx": 1,
-                "start_s": 7,
-                "end_s": 15,
+                "start_s": 20,
+                "end_s": 40,
                 "badge": s2_b,
                 "board_title": f"{lesson_title} · {'खतरे के संकेत व दबाव' if is_hi else 'Tactical Red Flags'}",
                 "title": f"{lesson_title} - {'चरण 2: मनोवैज्ञानिक दबाव व संकेत' if is_hi else 'Phase 2: Tactical Red Flags'}",
@@ -166,8 +168,8 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
             },
             {
                 "idx": 2,
-                "start_s": 15,
-                "end_s": 23,
+                "start_s": 40,
+                "end_s": 60,
                 "badge": s3_b,
                 "board_title": f"{lesson_title} · {'ह्यूमन फ़ायरवॉल सुरक्षा कदम' if is_hi else 'Human Firewall Protocol'}",
                 "title": f"{lesson_title} - {'चरण 3: मानवीय सुरक्षा कदम' if is_hi else 'Phase 3: Human Firewall Defense'}",
@@ -186,8 +188,8 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
             },
             {
                 "idx": 3,
-                "start_s": 23,
-                "end_s": 30,
+                "start_s": 60,
+                "end_s": 80,
                 "badge": s4_b,
                 "board_title": f"{lesson_title} · {'कानूनी अधिकार व 1930' if is_hi else 'Statutory Rights & Helpline'}",
                 "title": f"{lesson_title} - {'चरण 4: कानूनी अधिकार व सरकारी नियम' if is_hi else 'Phase 4: Statutory Rights & Laws'}",
@@ -200,7 +202,7 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
                     s4_b,
                     s4_l[0],
                     s4_l[1] if len(s4_l) > 1 else s4_n,
-                    "National Cyber Helpline: 1930 (Zero Liability within 72 hrs)",
+                    "राष्ट्रीय हेल्पलाइन: 1930 (72 घंटे में शून्य देनदारी)" if is_hi else "National Cyber Helpline: 1930 (Zero Liability within 72 hrs)",
                 ],
                 "kind": "legal",
                 "character_action": "legal",

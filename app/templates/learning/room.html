@@ -2,6 +2,60 @@
 {% block title %}{{ video.title_en }} · Defense Room · Human Firewall{% endblock %}
 
 {% block content %}
+<style>
+/* Modern High-Contrast Step Navigation */
+.room-nav-btn {
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  cursor: pointer;
+}
+.room-nav-btn:hover {
+  border-color: #3b82f6 !important;
+  color: #1d4ed8 !important;
+  transform: translateY(-1px);
+}
+.room-nav-btn.active-step {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45) !important;
+  transform: translateY(-2px);
+  font-weight: 700 !important;
+}
+.room-nav-btn.active-step .badge {
+  background-color: #ffffff !important;
+  color: #1e40af !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.room-nav-btn.completed-step {
+  background-color: #f0fdf4 !important;
+  border-color: #86efac !important;
+  color: #166534 !important;
+}
+.room-nav-btn.completed-step .badge {
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+.step-pane {
+  animation: fadeInStep 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fadeInStep {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+
 <!-- Professional, Clean Breadcrumb -->
 <div class="mb-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
   <div class="d-flex align-items-center gap-2">
@@ -36,12 +90,12 @@
         <div class="d-flex align-items-center gap-2 mb-2">
           <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded">Interactive Defense Room</span>
           <span class="badge bg-light text-secondary border px-2 py-1 rounded">{{ lesson.difficulty | title }}</span>
-          <span class="badge bg-light text-secondary border px-2 py-1 rounded">⏱️ 30-Sec Video + Hands-On Lab</span>
+          <span class="badge bg-light text-secondary border px-2 py-1 rounded">⏱️ 80-Sec Video + Hands-On Lab</span>
           <span class="badge bg-light text-secondary border px-2 py-1 rounded">Lab #{{ lab.number if lab else 1 }}</span>
         </div>
         <h1 class="h3 fw-bold text-dark mb-2" id="dyn-room-title">{{ video.title_en }}</h1>
         <p class="text-secondary mb-0" id="dyn-room-summary" style="max-width: 820px; font-size: 0.95rem;">
-          {{ lesson.summary_en or "An all-in-one hands-on cyber defense room combining synchronized 30-second video briefing, incident chats, practical evidence lab, government legal protections, and scenario MCQs." }}
+          {{ lesson.summary_en or "An all-in-one hands-on cyber defense room combining synchronized 80-second video briefing, incident chats, practical evidence lab, government legal protections, and scenario MCQs." }}
         </p>
       </div>
 
@@ -57,35 +111,35 @@
       </div>
     </div>
 
-    <!-- 5-Step Unified Workflow Navigation Bar -->
+    <!-- 5-Step Unified Workflow Navigation Bar with High Visibility Active Highlight -->
     <div class="row g-2 mt-3 pt-3 border-top">
       <div class="col">
-        <button type="button" class="w-100 btn text-start p-2 rounded border fw-semibold d-flex align-items-center gap-2" id="nav-btn-1" onclick="goToStep(1)" style="background: #eff6ff; border-color: #bfdbfe !important; color: #1d4ed8;">
-          <span class="badge bg-primary rounded-circle" id="nav-icon-1">1</span>
-          <span class="small text-truncate">30s Synced Video</span>
+        <button type="button" class="w-100 btn room-nav-btn active-step text-start p-2 rounded fw-semibold d-flex align-items-center gap-2" id="nav-btn-1" onclick="goToStep(1)">
+          <span class="badge rounded-circle" id="nav-icon-1">1</span>
+          <span class="small text-truncate">80s Video Lecture</span>
         </button>
       </div>
       <div class="col">
-        <button type="button" class="w-100 btn text-start p-2 rounded border fw-semibold d-flex align-items-center gap-2 bg-white text-secondary" id="nav-btn-2" onclick="goToStep(2)">
-          <span class="badge bg-light text-dark border rounded-circle" id="nav-icon-2">2</span>
+        <button type="button" class="w-100 btn room-nav-btn text-start p-2 rounded fw-semibold d-flex align-items-center gap-2" id="nav-btn-2" onclick="goToStep(2)">
+          <span class="badge bg-light text-secondary border rounded-circle" id="nav-icon-2">2</span>
           <span class="small text-truncate">Incident Chat</span>
         </button>
       </div>
       <div class="col">
-        <button type="button" class="w-100 btn text-start p-2 rounded border fw-semibold d-flex align-items-center gap-2 bg-white text-secondary" id="nav-btn-3" onclick="goToStep(3)">
-          <span class="badge bg-light text-dark border rounded-circle" id="nav-icon-3">3</span>
+        <button type="button" class="w-100 btn room-nav-btn text-start p-2 rounded fw-semibold d-flex align-items-center gap-2" id="nav-btn-3" onclick="goToStep(3)">
+          <span class="badge bg-light text-secondary border rounded-circle" id="nav-icon-3">3</span>
           <span class="small text-truncate">Practical Lab</span>
         </button>
       </div>
       <div class="col">
-        <button type="button" class="w-100 btn text-start p-2 rounded border fw-semibold d-flex align-items-center gap-2 bg-white text-secondary" id="nav-btn-4" onclick="goToStep(4)">
-          <span class="badge bg-light text-dark border rounded-circle" id="nav-icon-4">4</span>
-          <span class="small text-truncate">Study &amp; Laws</span>
+        <button type="button" class="w-100 btn room-nav-btn text-start p-2 rounded fw-semibold d-flex align-items-center gap-2" id="nav-btn-4" onclick="goToStep(4)">
+          <span class="badge bg-light text-secondary border rounded-circle" id="nav-icon-4">4</span>
+          <span class="small text-truncate">Deep Study &amp; Laws</span>
         </button>
       </div>
       <div class="col">
-        <button type="button" class="w-100 btn text-start p-2 rounded border fw-semibold d-flex align-items-center gap-2 bg-white text-secondary" id="nav-btn-5" onclick="goToStep(5)">
-          <span class="badge bg-light text-dark border rounded-circle" id="nav-icon-5">5</span>
+        <button type="button" class="w-100 btn room-nav-btn text-start p-2 rounded fw-semibold d-flex align-items-center gap-2" id="nav-btn-5" onclick="goToStep(5)">
+          <span class="badge bg-light text-secondary border rounded-circle" id="nav-icon-5">5</span>
           <span class="small text-truncate">3 MCQs Quiz</span>
         </button>
       </div>
@@ -94,7 +148,7 @@
 </div>
 
 <!-- =========================================================================
-     STEP 1: 30-SECOND SYNCHRONIZED VIDEO & AUDIO PLAYER
+     STEP 1: 80-SECOND SYNCHRONIZED VIDEO & AUDIO PLAYER
      ========================================================================= -->
 <div class="step-pane" id="step-pane-1">
   <div class="row g-4">
@@ -102,7 +156,7 @@
       <div class="card border shadow-sm overflow-hidden" style="border-radius: 14px;">
         <div class="card-header bg-white py-2 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom">
           <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary px-2 py-1 rounded small">30-Second Synced Video</span>
+            <span class="badge bg-primary px-2 py-1 rounded small">80-Second Synced Video</span>
             <strong class="small text-dark" id="player-chapter-title">Chapter 1: The Trust Pretext</strong>
           </div>
           
@@ -116,7 +170,7 @@
                 👩‍🏫 Prof. Maya
               </button>
             </div>
-            <span class="badge bg-light text-dark border fw-bold" id="video-timer">0:00 / 0:30</span>
+            <span class="badge bg-light text-dark border fw-bold" id="video-timer">0:00 / 1:20</span>
           </div>
         </div>
 
@@ -128,7 +182,7 @@
           <div class="position-absolute bottom-0 start-0 w-100 p-3" style="background: linear-gradient(to top, rgba(15,23,42,0.95), transparent);">
             <!-- Interactive Scrubber -->
             <div class="mb-2">
-              <input type="range" class="form-range" id="videoScrubber" min="0" max="30" step="0.1" value="0" style="cursor: pointer;">
+              <input type="range" class="form-range" id="videoScrubber" min="0" max="80" step="0.25" value="0" style="cursor: pointer;">
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
@@ -158,9 +212,9 @@
         <div class="card-footer bg-light py-2 px-3">
           <div class="d-flex justify-content-between small text-muted">
             <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(0)">0:00 Pretext</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(7)">0:07 Red Flags</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(15)">0:15 Defense Drill</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(23)">0:23 Legal Rights</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(20)">0:20 Red Flags</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(40)">0:40 Defense Drill</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(60)">1:00 Legal Rights</span>
           </div>
         </div>
       </div>
@@ -237,9 +291,9 @@
             <h6 class="small fw-bold text-primary text-uppercase mb-1">💡 Ask the Professor</h6>
             <div class="small text-secondary mb-2">Have a question about this incident? Click any question for teacher guidance:</div>
             <div class="d-flex flex-wrap gap-1 mb-2">
-              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(1)">Why do attackers use urgency?</button>
-              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(2)">What if I already clicked a link?</button>
-              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(3)">How does 1930 helpline work?</button>
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" id="btn-ask-q1" onclick="askTeacherQuestion(1)">Why do attackers use urgency?</button>
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" id="btn-ask-q2" onclick="askTeacherQuestion(2)">What if I already clicked a link?</button>
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" id="btn-ask-q3" onclick="askTeacherQuestion(3)">How does 1930 helpline work?</button>
             </div>
             <div id="teacherAnswerBox" class="p-2 bg-white rounded border small text-dark" style="display: none;"></div>
           </div>
@@ -461,6 +515,27 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
               Hint: {{ sync_lab.hint if sync_lab else "Examine the technical indicators and sender verification properties." }}
             </div>
           </div>
+
+          <!-- Forensic Investigator Checklist Card -->
+          <div class="mt-3 p-3 bg-white rounded border">
+            <h6 class="small fw-bold text-dark text-uppercase mb-2 d-flex align-items-center gap-2">
+              <span>🔬</span> Forensic Investigator Checklist
+            </h6>
+            <div class="d-flex flex-column gap-2 small text-secondary">
+              <div class="d-flex align-items-start gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Check 1</span>
+                <div><strong>Sender &amp; Return-Path Authenticity:</strong> Compare the display name against the envelope sender (RFC 5321 vs RFC 5322). Look for mismatched domains or third-party webmail relays.</div>
+              </div>
+              <div class="d-flex align-items-start gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Check 2</span>
+                <div><strong>Domain Orthography &amp; Punycode:</strong> Check for visually deceptive Cyrillic or numeric substitutions (e.g. <code>paypaI.com</code> with uppercase 'I' or <code>micro-soft.com</code>).</div>
+              </div>
+              <div class="d-flex align-items-start gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Check 3</span>
+                <div><strong>Procedural Out-of-Band Verification:</strong> Never rely on contact info inside the suspect message. Use the pre-registered company intranet directory or physical corporate phone book.</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Interactive Task Right -->
@@ -575,7 +650,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       </div>
 
       <!-- Action Protocol -->
-      <div class="alert alert-info border p-3 rounded mb-0">
+      <div class="alert alert-info border p-3 rounded mb-4">
         <h5 class="h6 fw-bold mb-1">🚨 Emergency Reporting Protocol:</h5>
         <ol class="small mb-0 ps-3">
           <li class="mb-1"><strong>Disconnect immediately:</strong> Do not click links or share verification codes.</li>
@@ -583,6 +658,162 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
           <li class="mb-1"><strong>National Cybercrime Helpline:</strong> Dial <strong>1930</strong> (toll-free) within the golden hour to freeze fraudulent bank transfers.</li>
           <li><strong>Report on cybercrime.gov.in:</strong> File an official complaint for cyber investigation.</li>
         </ol>
+      </div>
+
+      <!-- Comprehensive Forensic Indicators & Attack Layer Matrix -->
+      <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h4 class="h6 fw-bold text-dark mb-0">🔬 Forensic Indicators of Compromise (IOC) Matrix</h4>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Technical Forensics</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase" style="font-size: 0.75rem;">
+                <tr>
+                  <th class="ps-3 py-2">Attack Layer</th>
+                  <th class="py-2">Deceptive Artifact / Threat Signal</th>
+                  <th class="py-2">Forensic Detection Rule</th>
+                  <th class="pe-3 py-2">Defensive Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3 fw-bold text-dark">Email / Header</td>
+                  <td>Mismatched <code>Return-Path</code> or SPF <code>softfail</code></td>
+                  <td>Inspect RFC 5322 header; match against authorized DKIM selectors</td>
+                  <td class="pe-3"><span class="badge bg-danger-subtle text-danger">Quarantine Immediately</span></td>
+                </tr>
+                <tr>
+                  <td class="ps-3 fw-bold text-dark">Domain Identity</td>
+                  <td>Homoglyph / Punycode (e.g. Cyrillic 'a', lookalike hyphenated domain)</td>
+                  <td>Check WHOIS registration age &lt; 30 days and reverse DNS PTR records</td>
+                  <td class="pe-3"><span class="badge bg-warning-subtle text-warning-emphasis">Block Domain at Gateway</span></td>
+                </tr>
+                <tr>
+                  <td class="ps-3 fw-bold text-dark">File Payload</td>
+                  <td>Double extension (e.g. <code>report.pdf.exe</code>) or macro document</td>
+                  <td>Never enable macros; verify SHA-256 hash in VirusTotal sandbox</td>
+                  <td class="pe-3"><span class="badge bg-danger-subtle text-danger">Submit to SOC Sandbox</span></td>
+                </tr>
+                <tr>
+                  <td class="ps-3 fw-bold text-dark">Communication Channel</td>
+                  <td>Off-platform redirection (demanding switch to WhatsApp/Telegram)</td>
+                  <td>Corporate compliance forbids conducting official financial approvals on personal chats</td>
+                  <td class="pe-3"><span class="badge bg-info-subtle text-info">Enforce Intranet Directory</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cognitive Psychology & Manipulation Vectors Deep Dive -->
+      <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h4 class="h6 fw-bold text-dark mb-0">🧠 Cognitive Psychology Deep Dive: How Adversaries Exploit Human Nature</h4>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 bg-light rounded border h-100">
+                <span class="badge bg-danger text-white mb-2">Vector 1: Panic &amp; Amygdala Hijack</span>
+                <strong class="d-block small text-dark mb-1">Manufactured Urgency:</strong>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  Attackers induce severe anxiety with phrases like <em>"Account terminated in 15 minutes"</em> or <em>"Arrest warrant issued"</em>. When fear spikes, your brain defaults to reactive impulses instead of logical analysis.
+                </p>
+                <div class="small fw-semibold text-danger">Countermeasure: Enforce a strict 60-second breathing pause.</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-light rounded border h-100">
+                <span class="badge bg-primary text-white mb-2">Vector 2: The Authority Trap</span>
+                <strong class="d-block small text-dark mb-1">C-Suite &amp; Police Impersonation:</strong>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  Humans are conditioned to defer to perceived hierarchy (The Milgram Effect). Fraudsters spoof Managing Directors, CISOs, or tax auditors to trigger instinctual compliance without question.
+                </p>
+                <div class="small fw-semibold text-primary">Countermeasure: Standard protocol supersedes any verbal hierarchy.</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-light rounded border h-100">
+                <span class="badge bg-warning text-dark mb-2">Vector 3: Fabricated Secrecy</span>
+                <strong class="d-block small text-dark mb-1">Isolation from Coworkers:</strong>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  Scammers demand extreme secrecy (<em>"Confidential acquisition — tell nobody"</em>). By isolating the victim from colleagues, they eliminate the chance that a peer will spot the fraud.
+                </p>
+                <div class="small fw-semibold text-warning-emphasis">Countermeasure: Routine corporate actions are never secret from your manager.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statutory & Regulatory Protections Deep-Dive (IT Act, RBI Zero Liability, DPDP) -->
+      <div class="card border shadow-sm mb-4" style="border-radius: 12px;">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h4 class="h6 fw-bold text-dark mb-0">⚖️ Statutory Protections &amp; Legal Rights Deep-Dive</h4>
+          <span class="badge bg-success-subtle text-success border border-success-subtle">Statutory Law</span>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-primary">IT Act 2000</span>
+                  <strong class="small text-dark">Section 43 &amp; Section 66D</strong>
+                </div>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  <strong>Section 66D:</strong> Prescribes up to 3 years rigorous imprisonment and monetary fine for anyone cheating by personating another person through any computer resource.
+                  <br>
+                  <strong>Section 43:</strong> Mandates compensation up to ₹1 Crore against perpetrators causing unauthorized access, data theft, or system degradation.
+                </p>
+                <span class="badge bg-white text-secondary border small">Criminal &amp; Civil Recourse</span>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-success">RBI Master Circular</span>
+                  <strong class="small text-dark">Zero Liability Protection</strong>
+                </div>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  <strong>Zero Liability:</strong> The account holder has 100% zero financial liability if an unauthorized transaction occurs due to bank infrastructure flaws or third-party breaches reported within 3 working days.
+                  <br>
+                  <strong>Burden of Proof:</strong> Statutorily rests upon the bank to prove customer negligence.
+                </p>
+                <span class="badge bg-white text-success border small">Financial Restitution</span>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-dark">DPDP Act 2023</span>
+                  <strong class="small text-dark">Section 8 Data Fiduciary Obligations</strong>
+                </div>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  Employers and service providers (Data Fiduciaries) are legally mandated under Section 8 to implement robust technical and organizational security safeguards to prevent user credential or PII leaks, with penalties up to ₹250 Crores for systemic non-compliance.
+                </p>
+                <span class="badge bg-white text-dark border small">Corporate Responsibility</span>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-danger">MHA Helpline 1930</span>
+                  <strong class="small text-dark">CFCFRS Real-Time Golden Hour Freeze</strong>
+                </div>
+                <p class="small text-secondary mb-2" style="font-size: 0.85rem; line-height: 1.5;">
+                  The Citizen Financial Cyber Fraud Reporting System operates 24x7 via dial-code <strong>1930</strong>. Reporting within the golden hour enables immediate automated API holds across 240+ commercial banks, wallets, and merchant escrow accounts before attackers can execute ATM cash-outs.
+                </p>
+                <span class="badge bg-white text-danger border small">Emergency Protocol</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -710,26 +941,43 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   var isMuted = false;
   var userAnswers = {};
 
-  // Navigation Steps (1 to 5)
+  // Navigation Steps (1 to 5) with High-Visibility Active State
   window.goToStep = function (stepNum) {
     for (var i = 1; i <= 5; i++) {
       var pane = document.getElementById('step-pane-' + i);
       var btn = document.getElementById('nav-btn-' + i);
+      var icon = document.getElementById('nav-icon-' + i);
+
       if (pane) pane.style.display = 'none';
       if (btn) {
-        btn.style.background = '#ffffff';
-        btn.style.borderColor = '#e2e8f0';
-        btn.style.color = '#64748b';
+        btn.classList.remove('active-step', 'completed-step');
+        if (i < stepNum) {
+          btn.classList.add('completed-step');
+          if (icon) {
+            icon.className = 'badge rounded-circle';
+            icon.textContent = '✓';
+          }
+        } else {
+          if (icon) {
+            icon.className = 'badge bg-light text-secondary border rounded-circle';
+            icon.textContent = i;
+          }
+        }
       }
     }
 
     var targetPane = document.getElementById('step-pane-' + stepNum);
     var targetBtn = document.getElementById('nav-btn-' + stepNum);
+    var targetIcon = document.getElementById('nav-icon-' + stepNum);
+
     if (targetPane) targetPane.style.display = 'block';
     if (targetBtn) {
-      targetBtn.style.background = '#eff6ff';
-      targetBtn.style.borderColor = '#bfdbfe';
-      targetBtn.style.color = '#1d4ed8';
+      targetBtn.classList.remove('completed-step');
+      targetBtn.classList.add('active-step');
+      if (targetIcon) {
+        targetIcon.className = 'badge rounded-circle';
+        targetIcon.textContent = stepNum;
+      }
     }
 
     window.scrollTo({ top: 120, behavior: 'smooth' });
@@ -799,19 +1047,27 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     });
     document.getElementById('dyn-redflags-list').innerHTML = rfHtml;
 
+    // Pure language updates for teacher question buttons
+    var q1Btn = document.getElementById('btn-ask-q1');
+    var q2Btn = document.getElementById('btn-ask-q2');
+    var q3Btn = document.getElementById('btn-ask-q3');
+    if (q1Btn) q1Btn.textContent = lang === 'hi' ? 'हमलावर जल्दबाजी क्यों दिखाते हैं?' : 'Why do attackers use urgency?';
+    if (q2Btn) q2Btn.textContent = lang === 'hi' ? 'यदि लिंक पर क्लिक हो जाए तो क्या करें?' : 'What if I already clicked a link?';
+    if (q3Btn) q3Btn.textContent = lang === 'hi' ? '1930 हेल्पलाइन कैसे काम करती है?' : 'How does 1930 helpline work?';
+
     // Resync Canvas and Quiz
     drawSim(currentVideoSecond);
     renderQuiz();
   };
 
   // =========================================================================
-  // 30-SECOND SYNCHRONIZED CLASSROOM VIDEO & TEACHER AUDIO ENGINE
+  // 80-SECOND SYNCHRONIZED CLASSROOM VIDEO & TEACHER AUDIO ENGINE
   // =========================================================================
   var canvas = document.getElementById('simCanvas');
   var ctx = canvas ? canvas.getContext('2d') : null;
   var isPlaying = false;
-  var currentVideoSecond = 0; // 0 to 30
-  var totalDuration = 30; // exactly 30 seconds
+  var currentVideoSecond = 0; // 0 to 80
+  var totalDuration = 80; // exactly 80 seconds
   var playbackTimer = null;
   var lastSpokenSegment = -1;
   var selectedTeacher = 'alex'; // 'alex' or 'maya'
@@ -977,7 +1233,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     playNarrationSegment(ans);
   };
 
-  // 4 Timed Audio Narration Segments for 30 seconds
+  // 4 Timed Audio Narration Segments for 80 seconds
   function getSegments(lang) {
     if (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[lang] && ROOM_DATA.video_scenes[lang].length > 0) {
       return ROOM_DATA.video_scenes[lang].map(function (s) {
@@ -987,16 +1243,16 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     if (lang === 'hi') {
       return [
         { start: 0, text: "नमस्ते क्लास! आज के पाठ में हम समझेंगे कि हमलावर कैसे विश्वास जीतकर हमला करते हैं।" },
-        { start: 7, text: "छात्रों, खतरे के संकेत पर ध्यान दें! जल्दबाजी और झूठे डर का दबाव हमेशा जांचें।" },
-        { start: 15, text: "यह है हमारा 3-चरणीय ह्यूमन फ़ायरवॉल नियम: 60 सेकंड रुकें और स्वतंत्र फोन से पुष्टि करें।" },
-        { start: 23, text: "कक्षा ध्यान दें: तीन दिन में सूचना देने पर आपकी देनदारी शून्य होती है। 1930 पर कॉल करें।" }
+        { start: 20, text: "छात्रों, खतरे के संकेत पर ध्यान दें! जल्दबाजी और झूठे डर का दबाव हमेशा जांचें।" },
+        { start: 40, text: "यह है हमारा मुख्य रक्षा नियम: साठ सेकंड का ठहराव लें और स्वतंत्र फोन से पुष्टि करें।" },
+        { start: 60, text: "कक्षा ध्यान दें: तीन दिन में सूचना देने पर आपकी देनदारी शून्य होती है। 1930 पर कॉल करें।" }
       ];
     }
     return [
       { start: 0, text: "Hello class! Welcome to today's masterclass. Notice how attackers establish trust and deploy deceptive lures." },
-      { start: 7, text: "Pay close attention students! The attacker is manufacturing artificial urgency to bypass normal verification." },
-      { start: 15, text: "Here is your golden Human Firewall rule: Pause for 60 seconds and conduct out-of-band verification." },
-      { start: 23, text: "Remember class: under RBI rules and the IT Act, you are legally protected with zero liability. Dial 1930 immediately." }
+      { start: 20, text: "Notice this critical red flag right here on the board! The attacker is manufacturing artificial urgency to bypass normal verification." },
+      { start: 40, text: "Here is our Human Firewall defense countermeasure. Pause for sixty seconds and conduct out-of-band verification." },
+      { start: 60, text: "Class, always remember that corporate policy and the law are firmly on your side. Under RBI rules, you have zero liability. Dial 1930 immediately." }
     ];
   }
 
@@ -1103,7 +1359,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         ctx.fillRect(clockX + Math.sin(a) * 13 - 1, clockY - Math.cos(a) * 13 - 1, 2, 2);
       }
       // Clock hands
-      var secAngle = (sec * 12) * Math.PI / 180;
+      var secAngle = (sec * (360 / 80)) * Math.PI / 180;
       ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.sin(secAngle) * 12, clockY - Math.cos(secAngle) * 12); ctx.stroke();
       ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2;
@@ -1119,9 +1375,9 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       // 2. Active Scene Detection
       var scenes = (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[currentLang]) ? ROOM_DATA.video_scenes[currentLang] : [];
       var activeIdx = 0;
-      if (sec >= 23) activeIdx = 3;
-      else if (sec >= 15) activeIdx = 2;
-      else if (sec >= 7) activeIdx = 1;
+      if (sec >= 60) activeIdx = 3;
+      else if (sec >= 40) activeIdx = 2;
+      else if (sec >= 20) activeIdx = 1;
 
       var s = (scenes && scenes[activeIdx]) ? scenes[activeIdx] : null;
       var chapterEl = document.getElementById('player-chapter-title');
@@ -1170,8 +1426,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       ctx.fillText(smartTitle.toUpperCase(), bX + 26, bY + 17);
 
       // Active Bullet Point Detection for Teacher Laser Pointer
-      var sceneElapsed = sec - (activeIdx === 3 ? 23 : activeIdx === 2 ? 15 : activeIdx === 1 ? 7 : 0);
-      var activeBullet = sceneElapsed < 2.5 ? 0 : (sceneElapsed < 5 ? 1 : 2);
+      var sceneElapsed = sec - (activeIdx === 3 ? 60 : activeIdx === 2 ? 40 : activeIdx === 1 ? 20 : 0);
+      var activeBullet = sceneElapsed < 6 ? 0 : (sceneElapsed < 13 ? 1 : 2);
       var pointerTargetY = bY + 80 + activeBullet * 44;
       var pointerTargetX = bX + 30;
 
@@ -1204,7 +1460,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         drawBoardBullet(ctx, bX + 18, bY + 174, "📌", "TACTIC:", b1_2.substring(0, 52), activeBullet === 2);
 
       } else if (activeIdx === 1) {
-        if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:07)";
+        if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:20)";
 
         // Warning Banner on Board
         ctx.fillStyle = "#7f1d1d"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
@@ -1223,7 +1479,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, false);
 
       } else if (activeIdx === 2) {
-        if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:15)";
+        if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:40)";
 
         // Defense Protocol Banner
         ctx.fillStyle = "#064e3b"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
@@ -1243,7 +1499,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, true);
 
       } else {
-        if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (0:23)";
+        if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (1:00)";
 
         // Legal Framework Banner
         ctx.fillStyle = "#1e3a8a"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
@@ -1296,7 +1552,11 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
       var curSec = Math.floor(sec);
       var timerEl = document.getElementById('video-timer');
-      if (timerEl) timerEl.textContent = "0:" + (curSec < 10 ? "0" : "") + curSec + " / 0:30";
+      if (timerEl) {
+        var m = Math.floor(curSec / 60);
+        var remSec = curSec % 60;
+        timerEl.textContent = m + ":" + (remSec < 10 ? "0" : "") + remSec + " / 1:20";
+      }
 
       // Synchronize Live Transcript in Right Pane
       var narEl = document.getElementById('dyn-task1-narration');
@@ -1560,9 +1820,9 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
       // Check audio segment sync
       var segIdx = 0;
-      if (currentVideoSecond >= 23) segIdx = 3;
-      else if (currentVideoSecond >= 15) segIdx = 2;
-      else if (currentVideoSecond >= 7) segIdx = 1;
+      if (currentVideoSecond >= 60) segIdx = 3;
+      else if (currentVideoSecond >= 40) segIdx = 2;
+      else if (currentVideoSecond >= 20) segIdx = 1;
 
       if (segIdx !== lastSpokenSegment) {
         lastSpokenSegment = segIdx;
@@ -1581,8 +1841,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         playClassroomAudio('win');
         var b = document.getElementById('playBtn');
         if (b) b.textContent = '▶ Replay Lesson';
-        currentVideoSecond = 30;
-        drawSim(30);
+        currentVideoSecond = 80;
+        drawSim(80);
       }
     }, 250);
   }
