@@ -100,16 +100,28 @@
   <div class="row g-4">
     <div class="col-lg-7">
       <div class="card border shadow-sm overflow-hidden" style="border-radius: 14px;">
-        <div class="card-header bg-white py-2 px-3 d-flex justify-content-between align-items-center border-bottom">
+        <div class="card-header bg-white py-2 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom">
           <div class="d-flex align-items-center gap-2">
             <span class="badge bg-primary px-2 py-1 rounded small">30-Second Synced Video</span>
             <strong class="small text-dark" id="player-chapter-title">Chapter 1: The Trust Pretext</strong>
           </div>
-          <span class="badge bg-light text-dark border fw-bold" id="video-timer">0:00 / 0:30</span>
+          
+          <div class="d-flex align-items-center gap-2">
+            <!-- Teacher Selector Pill -->
+            <div class="btn-group btn-group-sm" role="group" aria-label="Teacher Selector">
+              <button type="button" class="btn btn-outline-primary active btn-sm py-0 px-2 fw-semibold" id="btnTeacherAlex" onclick="selectTeacher('alex')">
+                👨‍🏫 Prof. Alex
+              </button>
+              <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 fw-semibold" id="btnTeacherMaya" onclick="selectTeacher('maya')">
+                👩‍🏫 Prof. Maya
+              </button>
+            </div>
+            <span class="badge bg-light text-dark border fw-bold" id="video-timer">0:00 / 0:30</span>
+          </div>
         </div>
 
-        <!-- Synced Video Stage -->
-        <div class="position-relative bg-dark" style="aspect-ratio: 16/9; min-height: 330px; cursor: pointer;" id="videoScreenArea">
+        <!-- Synced Video Stage (Classroom Canvas) -->
+        <div class="position-relative bg-dark" style="aspect-ratio: 16/9; min-height: 340px; cursor: pointer;" id="videoScreenArea">
           <canvas id="simCanvas" width="800" height="450" style="width: 100%; height: 100%; display: block;"></canvas>
           
           <!-- Normal Synced Video Controls Toolbar -->
@@ -119,7 +131,7 @@
               <input type="range" class="form-range" id="videoScrubber" min="0" max="30" step="0.1" value="0" style="cursor: pointer;">
             </div>
 
-            <div class="d-flex align-items-center justify-content-between gap-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
               <div class="d-flex align-items-center gap-2">
                 <button type="button" class="btn btn-primary btn-sm px-3 fw-bold" id="playBtn">
                   ▶ Play Lesson
@@ -133,8 +145,10 @@
               </div>
 
               <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-secondary-subtle text-white border border-secondary small" id="playbackSpeedBadge">1.0x Speed</span>
-                <span class="small text-info fw-semibold" id="audioSyncIndicator">🎙️ Audio Synced</span>
+                <button type="button" class="btn btn-outline-info btn-sm py-0 px-2" id="cycleSpeedBtn" onclick="cyclePlaybackSpeed()" title="Click to change playback speed">
+                  ⚡ <span id="playbackSpeedBadge">1.0x Speed</span>
+                </button>
+                <span class="small text-info fw-semibold" id="audioSyncIndicator">🎙️ Classroom Audio</span>
               </div>
             </div>
           </div>
@@ -144,36 +158,90 @@
         <div class="card-footer bg-light py-2 px-3">
           <div class="d-flex justify-content-between small text-muted">
             <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(0)">0:00 Pretext</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(8)">0:08 Urgency Lever</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(16)">0:16 Defensive Pause</span>
-            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(24)">0:24 Legal Rights</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(7)">0:07 Red Flags</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(15)">0:15 Defense Drill</span>
+            <span role="button" class="text-primary fw-semibold" onclick="seekToSecond(23)">0:23 Legal Rights</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Briefing Right Column -->
+    <!-- Briefing Right Column: Teacher Masterclass & Comprehensive Study Hub -->
     <div class="col-lg-5">
       <div class="card border shadow-sm h-100 d-flex flex-column justify-content-between" style="border-radius: 14px;">
-        <div class="card-body p-4">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="badge bg-primary text-white">Rapid 30-Sec Briefing</span>
-            <span class="small text-muted">High-Retention Training</span>
+        <div class="card-body p-4" style="max-height: 520px; overflow-y: auto;">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-primary text-white">Classroom Masterclass</span>
+              <span class="badge bg-light text-dark border" id="activeTeacherBadge">👨‍🏫 Prof. Alex</span>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle small">Interactive Classroom</span>
           </div>
-          <h2 class="h5 fw-bold text-dark mb-2">Synchronized Audio-Visual Lesson</h2>
+
+          <h2 class="h5 fw-bold text-dark mb-1">Teacher Briefing &amp; Study Notes</h2>
           <p class="small text-secondary mb-3">
-            Pressing <strong>Play</strong> automatically runs the video animation and voice narration in complete synchrony. Everything is condensed into 30 seconds of high-impact defensive knowledge.
+            Listen as your instructor walks you through the real-world incident, identifies red flags, and teaches actionable human defense rules.
           </p>
 
+          <!-- Live Teacher Speech Card -->
           <div class="p-3 bg-light rounded border mb-3">
-            <h6 class="small fw-bold text-dark text-uppercase mb-1">Narration Transcript</h6>
-            <p class="small text-secondary mb-0" id="dyn-task1-narration">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <h6 class="small fw-bold text-dark text-uppercase mb-0">Teacher Lecture Transcript</h6>
+              <span class="badge bg-info text-dark" style="font-size: 0.7rem;">Live Voice</span>
+            </div>
+            <p class="small text-dark mb-0 fw-medium" id="dyn-task1-narration" style="line-height: 1.6;">
               {{ sync_content.video_scenes.en[0].narration if sync_content and sync_content.video_scenes and sync_content.video_scenes.en else (video.narration_en or "Cyber attackers target people because humans are helpful and trust authority. Always verify unexpected urgent demands.") }}
             </p>
           </div>
 
-          <div class="alert alert-info py-2 px-3 small mb-0">
-            <strong>Golden Rule:</strong> Attackers rely on synthetic urgency to prevent you from thinking. Taking 60 seconds to verify defeats 98% of social engineering attacks.
+          <!-- Comprehensive 4-Phase Study Flashcards (No Study Point Missed!) -->
+          <div class="mb-3">
+            <h6 class="small fw-bold text-dark text-uppercase mb-2">Key Topic Study Points</h6>
+            <div class="d-flex flex-column gap-2">
+              <div class="p-2 rounded border bg-white small d-flex gap-2 align-items-start">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">1. Attack</span>
+                <div>
+                  <strong class="d-block text-dark" id="study-point-1">{{ sync_content.video_scenes.en[0].badge if sync_content and sync_content.video_scenes and sync_content.video_scenes.en else 'Attack Vector' }}</strong>
+                  <span class="text-secondary" id="study-desc-1">{{ sync_content.video_scenes.en[0].line1 if sync_content and sync_content.video_scenes and sync_content.video_scenes.en else 'Attackers exploit cognitive trust to initiate unauthorized contact.' }}</span>
+                </div>
+              </div>
+
+              <div class="p-2 rounded border bg-white small d-flex gap-2 align-items-start">
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">2. Red Flag</span>
+                <div>
+                  <strong class="d-block text-dark" id="study-point-2">{{ sync_content.video_scenes.en[1].badge if sync_content and sync_content.video_scenes and sync_content.video_scenes.en and sync_content.video_scenes.en|length > 1 else 'Cognitive Lever' }}</strong>
+                  <span class="text-secondary" id="study-desc-2">{{ sync_content.video_scenes.en[1].line1 if sync_content and sync_content.video_scenes and sync_content.video_scenes.en and sync_content.video_scenes.en|length > 1 else 'Artificial urgency designed to prevent verification.' }}</span>
+                </div>
+              </div>
+
+              <div class="p-2 rounded border bg-white small d-flex gap-2 align-items-start">
+                <span class="badge bg-success-subtle text-success border border-success-subtle">3. Defense</span>
+                <div>
+                  <strong class="d-block text-dark" id="study-point-3">{{ sync_content.video_scenes.en[2].badge if sync_content and sync_content.video_scenes and sync_content.video_scenes.en and sync_content.video_scenes.en|length > 2 else 'Human Firewall Habit' }}</strong>
+                  <span class="text-secondary" id="study-desc-3">{{ sync_content.video_scenes.en[2].line1 if sync_content and sync_content.video_scenes and sync_content.video_scenes.en and sync_content.video_scenes.en|length > 2 else 'Pause for 60 seconds and verify via independent trusted channel.' }}</span>
+                </div>
+              </div>
+
+              <div class="p-2 rounded border bg-white small d-flex gap-2 align-items-start">
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle">4. Rights</span>
+                <div>
+                  <strong class="d-block text-dark" id="study-point-4">{{ sync_content.video_scenes.en[3].badge if sync_content and sync_content.video_scenes and sync_content.video_scenes.en and sync_content.video_scenes.en|length > 3 else 'Statutory Protection' }}</strong>
+                  <span class="text-secondary" id="study-desc-4">Zero Liability within 72 hrs (RBI &amp; IT Act) &bull; National Helpline: <strong>1930</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Ask the Professor -->
+          <div class="p-3 bg-primary-subtle border border-primary-subtle rounded mb-0">
+            <h6 class="small fw-bold text-primary text-uppercase mb-1">💡 Ask the Professor</h6>
+            <div class="small text-secondary mb-2">Have a question about this incident? Click any question for teacher guidance:</div>
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(1)">Why do attackers use urgency?</button>
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(2)">What if I already clicked a link?</button>
+              <button type="button" class="btn btn-sm btn-white border bg-white py-0 px-2 small text-dark" onclick="askTeacherQuestion(3)">How does 1930 helpline work?</button>
+            </div>
+            <div id="teacherAnswerBox" class="p-2 bg-white rounded border small text-dark" style="display: none;"></div>
           </div>
         </div>
 
@@ -697,6 +765,25 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       if (t[2]) document.getElementById('dyn-takeaway-3').textContent = t[2];
     }
 
+    if (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[lang]) {
+      var scs = ROOM_DATA.video_scenes[lang];
+      if (scs[0]) {
+        var sp1 = document.getElementById('study-point-1'); if (sp1) sp1.textContent = scs[0].badge;
+        var sd1 = document.getElementById('study-desc-1'); if (sd1) sd1.textContent = scs[0].line1;
+      }
+      if (scs[1]) {
+        var sp2 = document.getElementById('study-point-2'); if (sp2) sp2.textContent = scs[1].badge;
+        var sd2 = document.getElementById('study-desc-2'); if (sd2) sd2.textContent = scs[1].line1;
+      }
+      if (scs[2]) {
+        var sp3 = document.getElementById('study-point-3'); if (sp3) sp3.textContent = scs[2].badge;
+        var sd3 = document.getElementById('study-desc-3'); if (sd3) sd3.textContent = scs[2].line1;
+      }
+      if (scs[3]) {
+        var sp4 = document.getElementById('study-point-4'); if (sp4) sp4.textContent = scs[3].badge;
+      }
+    }
+
     if (ROOM_DATA.lab) {
       var taskEl = document.getElementById('dyn-lab-task');
       if (taskEl) taskEl.textContent = lang === 'hi' ? (ROOM_DATA.lab.task_hi || ROOM_DATA.lab.task) : (ROOM_DATA.lab.task_en || ROOM_DATA.lab.task);
@@ -718,7 +805,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   };
 
   // =========================================================================
-  // 30-SECOND SYNCHRONIZED VIDEO & AUDIO PLAYER ENGINE
+  // 30-SECOND SYNCHRONIZED CLASSROOM VIDEO & TEACHER AUDIO ENGINE
   // =========================================================================
   var canvas = document.getElementById('simCanvas');
   var ctx = canvas.getContext('2d');
@@ -727,27 +814,157 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   var totalDuration = 30; // exactly 30 seconds
   var playbackTimer = null;
   var lastSpokenSegment = -1;
+  var selectedTeacher = 'alex'; // 'alex' or 'maya'
+  var playbackSpeed = 1.0; // 0.75, 1.0, 1.25, 1.5
 
-  // 4 Timed Audio Narration Segments for 30 seconds (curated to active lesson)
+  // Classroom Web Audio Synthesizer for natural sounds
+  function playClassroomAudio(type) {
+    if (isMuted) return;
+    try {
+      var AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      var actx = new AudioCtx();
+      var now = actx.currentTime;
+      if (type === 'bell' || type === 'start') {
+        var o1 = actx.createOscillator(), o2 = actx.createOscillator();
+        var g = actx.createGain();
+        o1.type = 'sine'; o1.frequency.setValueAtTime(523.25, now);
+        o2.type = 'sine'; o2.frequency.setValueAtTime(783.99, now + 0.15);
+        g.gain.setValueAtTime(0.12, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        o1.connect(g); o2.connect(g); g.connect(actx.destination);
+        o1.start(now); o1.stop(now + 0.3);
+        o2.start(now + 0.15); o2.stop(now + 0.8);
+      } else if (type === 'tick') {
+        var osc = actx.createOscillator(), gn = actx.createGain();
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(880, now);
+        gn.gain.setValueAtTime(0.06, now); gn.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.connect(gn); gn.connect(actx.destination);
+        osc.start(now); osc.stop(now + 0.1);
+      } else if (type === 'shield') {
+        [440, 554.37, 659.25].forEach(function(freq) {
+          var o = actx.createOscillator(), g = actx.createGain();
+          o.type = 'sine'; o.frequency.setValueAtTime(freq, now);
+          g.gain.setValueAtTime(0.06, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+          o.connect(g); g.connect(actx.destination);
+          o.start(now); o.stop(now + 0.8);
+        });
+      } else if (type === 'win') {
+        [523.25, 659.25, 783.99, 1046.5].forEach(function(freq, idx) {
+          var o = actx.createOscillator(), g = actx.createGain();
+          o.type = 'sine'; o.frequency.setValueAtTime(freq, now + idx * 0.12);
+          g.gain.setValueAtTime(0.09, now + idx * 0.12);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.6);
+          o.connect(g); g.connect(actx.destination);
+          o.start(now + idx * 0.12); o.stop(now + idx * 0.12 + 0.6);
+        });
+      }
+    } catch (e) {}
+  }
+
+  // Teacher Voice Selection & Natural Speech Synthesizer
+  function getTeacherVoice(lang) {
+    if (!('speechSynthesis' in window)) return null;
+    var voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+    var prefix = lang === 'hi' ? 'hi' : 'en';
+    var matched = voices.filter(function (v) { return v.lang && v.lang.toLowerCase().indexOf(prefix) === 0; });
+    if (matched.length === 0) matched = voices;
+    for (var i = 0; i < matched.length; i++) {
+      var name = matched[i].name.toLowerCase();
+      if (selectedTeacher === 'maya') {
+        if (name.indexOf('natural') !== -1 || name.indexOf('female') !== -1 || name.indexOf('jenny') !== -1 || name.indexOf('samantha') !== -1 || name.indexOf('zira') !== -1 || name.indexOf('swara') !== -1 || name.indexOf('kalpana') !== -1) {
+          return matched[i];
+        }
+      } else {
+        if (name.indexOf('natural') !== -1 || name.indexOf('male') !== -1 || name.indexOf('guy') !== -1 || name.indexOf('david') !== -1 || name.indexOf('daniel') !== -1 || name.indexOf('rishi') !== -1) {
+          return matched[i];
+        }
+      }
+    }
+    return matched[0];
+  }
+
+  // Pre-load voices
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = function () {
+      getTeacherVoice(currentLang);
+    };
+  }
+
+  // Teacher Selection Controller
+  window.selectTeacher = function (teacher) {
+    selectedTeacher = teacher;
+    var btnA = document.getElementById('btnTeacherAlex');
+    var btnM = document.getElementById('btnTeacherMaya');
+    var badge = document.getElementById('activeTeacherBadge');
+    if (teacher === 'maya') {
+      if (btnM) { btnM.classList.add('active'); }
+      if (btnA) { btnA.classList.remove('active'); }
+      if (badge) badge.textContent = '👩‍🏫 Prof. Maya';
+    } else {
+      if (btnA) { btnA.classList.add('active'); }
+      if (btnM) { btnM.classList.remove('active'); }
+      if (badge) badge.textContent = '👨‍🏫 Prof. Alex';
+    }
+    drawSim(currentVideoSecond);
+  };
+
+  // Playback Speed Controller
+  window.cyclePlaybackSpeed = function () {
+    if (playbackSpeed === 1.0) playbackSpeed = 1.25;
+    else if (playbackSpeed === 1.25) playbackSpeed = 1.5;
+    else if (playbackSpeed === 1.5) playbackSpeed = 0.75;
+    else playbackSpeed = 1.0;
+    var badge = document.getElementById('playbackSpeedBadge');
+    if (badge) badge.textContent = playbackSpeed + 'x Speed';
+  };
+
+  // Interactive Ask the Professor
+  window.askTeacherQuestion = function (qId) {
+    var box = document.getElementById('teacherAnswerBox');
+    if (!box) return;
+    box.style.display = 'block';
+    var teacherName = selectedTeacher === 'maya' ? 'Prof. Maya' : 'Prof. Alex';
+    var answers = {
+      1: {
+        en: "Attackers manufacture urgency because panic inhibits our prefrontal cortex! When rushed, we act on impulse rather than logic. Taking a deliberate 60-second pause reactivates rational thinking and stops social engineering in its tracks.",
+        hi: "हमलावर जानबूझकर जल्दबाजी का नाटक करते हैं ताकि सोचने-समझने का समय न मिले! 60 सेकंड ठहरने से हमारा संयम लौट आता है और धोखेबाज का भंडाफोड़ हो जाता है।"
+      },
+      2: {
+        en: "Do not panic! Immediately disconnect your device from the network (turn off Wi-Fi). If you entered credentials, change them immediately from a separate secure device, and notify your security team or bank within the golden hour.",
+        hi: "घबराएं नहीं! तुरंत डिवाइस का इंटरनेट (वाई-फाई) बंद करें। यदि पासवर्ड दर्ज किया है तो दूसरे सुरक्षित डिवाइस से तुरंत बदलें, और सुरक्षा टीम या बैंक को सूचित करें।"
+      },
+      3: {
+        en: "The National Cybercrime Helpline 1930 is a 24x7 emergency service by the Ministry of Home Affairs. In financial frauds, reporting within the golden hour allows police and banks to freeze stolen funds before scammers cash out!",
+        hi: "राष्ट्रीय हेल्पलाइन 1930 गृह मंत्रालय की 24x7 आपातकालीन सेवा है। वित्तीय धोखाधड़ी में तुरंत कॉल करने पर पुलिस और बैंक चुराए गए पैसे को तुरंत फ्रीज कर देते हैं!"
+      }
+    };
+    var ans = (answers[qId] && answers[qId][currentLang]) ? answers[qId][currentLang] : answers[1].en;
+    box.innerHTML = '<strong>' + teacherName + ':</strong> ' + ans;
+    playNarrationSegment(ans);
+  };
+
+  // 4 Timed Audio Narration Segments for 30 seconds
   function getSegments(lang) {
     if (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[lang] && ROOM_DATA.video_scenes[lang].length > 0) {
       return ROOM_DATA.video_scenes[lang].map(function (s) {
-        return { start: s.start_s, text: s.narration };
+        return { start: s.start_s, text: s.teacher_script || s.narration };
       });
     }
     if (lang === 'hi') {
       return [
-        { start: 0, text: "दृश्य 1: हमलावर बैंक या अधिकारी बनकर विश्वास जीतते हैं।" },
-        { start: 7, text: "दृश्य 2: अत्यधिक जल्दबाजी का दबाव बनाते हैं ताकि आप सोचने का समय न पाएं।" },
-        { start: 15, text: "दृश्य 3: 60 सेकंड रुकें। कभी अनधिकृत लिंक पर क्लिक न करें।" },
-        { start: 23, text: "दृश्य 4: आरबीआई नियम से 3 दिन में सूचित करने पर शून्य नुकसान होता है। 1930 पर कॉल करें।" }
+        { start: 0, text: "नमस्ते क्लास! आज के पाठ में हम समझेंगे कि हमलावर कैसे विश्वास जीतकर हमला करते हैं।" },
+        { start: 7, text: "छात्रों, खतरे के संकेत पर ध्यान दें! जल्दबाजी और झूठे डर का दबाव हमेशा जांचें।" },
+        { start: 15, text: "यह है हमारा 3-चरणीय ह्यूमन फ़ायरवॉल नियम: 60 सेकंड रुकें और स्वतंत्र फोन से पुष्टि करें।" },
+        { start: 23, text: "कक्षा ध्यान दें: तीन दिन में सूचना देने पर आपकी देनदारी शून्य होती है। 1930 पर कॉल करें।" }
       ];
     }
     return [
-      { start: 0, text: "Scene 1: Attackers impersonate trusted authorities to trap your attention." },
-      { start: 7, text: "Scene 2: They deploy artificial urgency so you bypass normal verification." },
-      { start: 15, text: "Scene 3: Pause for 60 seconds. Verify out of band using official numbers." },
-      { start: 23, text: "Scene 4: You have zero liability under RBI rules within 3 days. Dial 1930 immediately." }
+      { start: 0, text: "Hello class! Welcome to today's masterclass. Notice how attackers establish trust and deploy deceptive lures." },
+      { start: 7, text: "Pay close attention students! The attacker is manufacturing artificial urgency to bypass normal verification." },
+      { start: 15, text: "Here is your golden Human Firewall rule: Pause for 60 seconds and conduct out-of-band verification." },
+      { start: 23, text: "Remember class: under RBI rules and the IT Act, you are legally protected with zero liability. Dial 1930 immediately." }
     ];
   }
 
@@ -756,63 +973,103 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     window.speechSynthesis.cancel();
     var utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
-    utterance.rate = 1.05;
+    utterance.rate = playbackSpeed;
+    utterance.pitch = selectedTeacher === 'maya' ? 1.12 : 1.02;
+    var v = getTeacherVoice(currentLang);
+    if (v) utterance.voice = v;
     window.speechSynthesis.speak(utterance);
   }
 
+  // =========================================================================
+  // VIBRANT CARTOON CLASSROOM RENDERER (DRAW SIM)
+  // =========================================================================
   function drawSim(sec) {
     var w = canvas.width;
     var h = canvas.height;
     var title = ROOM_DATA.title[currentLang] || ROOM_DATA.title.en;
 
-    // 1. High-Tech Dark Cyber Command Center Background
-    ctx.fillStyle = "#070b14";
-    ctx.fillRect(0, 0, w, h);
+    // 1. Classroom Background & Wall Lighting
+    var wallGrad = ctx.createLinearGradient(0, 0, 0, 310);
+    wallGrad.addColorStop(0, "#0b1120");
+    wallGrad.addColorStop(1, "#1e293b");
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, w, 310);
 
-    // Subtle Cyber Grid & Scanner Lines
-    ctx.strokeStyle = "rgba(37, 99, 235, 0.08)";
+    // Ceiling Downlights Radial Glow Cones
+    var glow1 = ctx.createRadialGradient(130, 0, 10, 130, 200, 260);
+    glow1.addColorStop(0, "rgba(56, 189, 248, 0.12)");
+    glow1.addColorStop(1, "transparent");
+    ctx.fillStyle = glow1;
+    ctx.fillRect(0, 0, 280, 310);
+
+    var glow2 = ctx.createRadialGradient(415, 0, 20, 415, 200, 320);
+    glow2.addColorStop(0, "rgba(251, 191, 36, 0.08)");
+    glow2.addColorStop(1, "transparent");
+    ctx.fillStyle = glow2;
+    ctx.fillRect(200, 0, 430, 310);
+
+    // Wall Chair-Rail Trim
+    ctx.fillStyle = "#334155";
+    ctx.fillRect(0, 296, w, 6);
+    ctx.fillStyle = "#1e293b";
+    ctx.fillRect(0, 302, w, 4);
+
+    // Classroom Parquet Wood Floor
+    var floorGrad = ctx.createLinearGradient(0, 306, 0, h);
+    floorGrad.addColorStop(0, "#1e293b");
+    floorGrad.addColorStop(1, "#0f172a");
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(0, 306, w, h - 306);
+
+    // Perspective Floor Plank Lines
+    ctx.strokeStyle = "rgba(71, 85, 105, 0.35)";
     ctx.lineWidth = 1;
-    for (var x = 0; x < w; x += 40) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    for (var fx = -100; fx < w + 200; fx += 70) {
+      ctx.beginPath();
+      ctx.moveTo(fx, 306);
+      ctx.lineTo(fx + (fx - w / 2) * 0.45, h);
+      ctx.stroke();
     }
-    for (var y = 0; y < h; y += 40) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+
+    // Top Classroom Banner
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(210, 14, 410, 26);
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(210, 14, 410, 26);
+    ctx.fillStyle = "#facc15";
+    ctx.font = "bold 11px -apple-system, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🎓 HUMAN FIREWALL ACADEMY · CYBER DEFENSE CLASSROOM", 415, 31);
+    ctx.textAlign = "start";
+
+    // Classroom Wall Clock with Animated Ticking Hand
+    var clockX = 745, clockY = 32, clockR = 17;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath(); ctx.arc(clockX, clockY, clockR, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#f59e0b"; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.beginPath(); ctx.arc(clockX, clockY, 2, 0, Math.PI * 2); ctx.fill();
+    // Clock markers
+    for (var m = 0; m < 12; m++) {
+      var a = (m * 30) * Math.PI / 180;
+      ctx.fillRect(clockX + Math.sin(a) * 13 - 1, clockY - Math.cos(a) * 13 - 1, 2, 2);
     }
+    // Clock hands
+    var secAngle = (sec * 12) * Math.PI / 180;
+    ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.sin(secAngle) * 12, clockY - Math.cos(secAngle) * 12); ctx.stroke();
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + 8, clockY); ctx.stroke();
 
-    // Animated Scanner Beam
-    var scanY = ((sec * 50) % (h - 60)) + 40;
-    var grad = ctx.createLinearGradient(0, scanY - 20, 0, scanY + 20);
-    grad.addColorStop(0, "rgba(2, 132, 199, 0)");
-    grad.addColorStop(0.5, "rgba(56, 189, 248, 0.15)");
-    grad.addColorStop(1, "rgba(2, 132, 199, 0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, scanY - 20, w, 40);
+    // Wall Cyber Defense Diploma
+    ctx.fillStyle = "#1e293b"; ctx.fillRect(660, 16, 52, 34);
+    ctx.strokeStyle = "#facc15"; ctx.lineWidth = 1.5; ctx.strokeRect(660, 16, 52, 34);
+    ctx.fillStyle = "#e2e8f0"; ctx.fillRect(664, 20, 44, 26);
+    ctx.fillStyle = "#1d4ed8"; ctx.font = "bold 6px sans-serif"; ctx.fillText("HONOR ROLL", 668, 28);
+    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(686, 38, 4, 0, Math.PI * 2); ctx.fill();
 
-    // 2. High-Tech Header HUD Bar
-    ctx.fillStyle = "#0b1324";
-    ctx.fillRect(0, 0, w, 44);
-    ctx.strokeStyle = "#1e293b";
-    ctx.strokeRect(0, 44, w, 1);
-
-    // HUD Status Lights
-    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, 22, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(36, 22, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#10b981"; ctx.beginPath(); ctx.arc(52, 22, 5, 0, Math.PI * 2); ctx.fill();
-
-    ctx.fillStyle = "#38bdf8"; ctx.font = "bold 13px font-monospace, sans-serif";
-    ctx.fillText("CYBER DEFENSE MASTERCLASS // " + title.substring(0, 45).toUpperCase(), 75, 27);
-
-    // Live Audio Waveform Simulation in Header
-    var waveX = w - 140;
-    ctx.fillStyle = "#22c55e";
-    for (var i = 0; i < 8; i++) {
-      var barH = isPlaying ? (Math.sin(sec * 10 + i) * 8 + 10) : 4;
-      ctx.fillRect(waveX + i * 8, 22 - barH / 2, 4, barH);
-    }
-    ctx.fillStyle = "#64748b"; ctx.font = "10px sans-serif";
-    ctx.fillText("AI AUDIO", waveX + 70, 26);
-
-    // 3. Dynamic Chapter Content
+    // 2. Active Scene Detection
     var scenes = (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[currentLang]) ? ROOM_DATA.video_scenes[currentLang] : [];
     var activeIdx = 0;
     if (sec >= 23) activeIdx = 3;
@@ -822,123 +1079,419 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     var s = (scenes && scenes[activeIdx]) ? scenes[activeIdx] : null;
     var chapterEl = document.getElementById('player-chapter-title');
 
-    // Central Tactical Holographic Container
-    ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-    ctx.fillRect(30, 60, w - 60, h - 130);
-    ctx.strokeStyle = activeIdx === 1 ? "#ef4444" : activeIdx === 2 ? "#10b981" : activeIdx === 3 ? "#0284c7" : "#3b82f6";
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(30, 60, w - 60, h - 130);
+    // 3. Digital Smartboard Frame & Screen
+    var bX = 205, bY = 52, bW = 420, bH = 244;
+    // Outer brushed metal frame
+    ctx.fillStyle = "#334155";
+    ctx.beginPath(); ctx.roundRect(bX - 6, bY - 6, bW + 12, bH + 12, 10); ctx.fill();
+    ctx.strokeStyle = "#64748b"; ctx.lineWidth = 2; ctx.stroke();
 
-    // Corner Tech Reticles
-    var retLen = 14;
-    ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(30, 60 + retLen); ctx.lineTo(30, 60); ctx.lineTo(30 + retLen, 60); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(w - 30 - retLen, 60); ctx.lineTo(w - 30, 60); ctx.lineTo(w - 30, 60 + retLen); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(30, h - 70 - retLen); ctx.lineTo(30, h - 70); ctx.lineTo(30 + retLen, h - 70); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(w - 30 - retLen, h - 70); ctx.lineTo(w - 30, h - 70); ctx.lineTo(w - 30, h - 70 - retLen); ctx.stroke();
+    // Inner Smartboard Display Area
+    var scrGrad;
+    if (activeIdx === 1) {
+      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+      scrGrad.addColorStop(0, "#1c0b0e"); scrGrad.addColorStop(1, "#0a0304");
+    } else if (activeIdx === 2) {
+      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+      scrGrad.addColorStop(0, "#061a12"); scrGrad.addColorStop(1, "#020b08");
+    } else if (activeIdx === 3) {
+      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+      scrGrad.addColorStop(0, "#0a172e"); scrGrad.addColorStop(1, "#040914");
+    } else {
+      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+      scrGrad.addColorStop(0, "#081326"); scrGrad.addColorStop(1, "#030812");
+    }
+    ctx.fillStyle = scrGrad;
+    ctx.beginPath(); ctx.roundRect(bX, bY, bW, bH, 6); ctx.fill();
 
+    // Smartboard Border Glow
+    var bGlowColor = activeIdx === 1 ? "#ef4444" : activeIdx === 2 ? "#10b981" : activeIdx === 3 ? "#f59e0b" : "#38bdf8";
+    ctx.strokeStyle = bGlowColor; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(bX, bY, bW, bH, 6); ctx.stroke();
+
+    // Smartboard Header Bar
+    ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+    ctx.fillRect(bX, bY, bW, 26);
+    ctx.strokeStyle = "rgba(100, 116, 139, 0.4)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(bX, bY + 26); ctx.lineTo(bX + bW, bY + 26); ctx.stroke();
+
+    // Smartboard Title & Status LED
+    ctx.fillStyle = bGlowColor; ctx.beginPath(); ctx.arc(bX + 14, bY + 13, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px -apple-system, sans-serif";
+    var smartTitle = (s && s.board_title) ? s.board_title : (title.substring(0, 36) + " · LESSON");
+    ctx.fillText(smartTitle.toUpperCase(), bX + 26, bY + 17);
+
+    // Active Bullet Point Detection for Teacher Laser Pointer
+    var sceneElapsed = sec - (activeIdx === 3 ? 23 : activeIdx === 2 ? 15 : activeIdx === 1 ? 7 : 0);
+    var activeBullet = sceneElapsed < 2.5 ? 0 : (sceneElapsed < 5 ? 1 : 2);
+    var pointerTargetY = bY + 80 + activeBullet * 44;
+    var pointerTargetX = bX + 30;
+
+    // 4. Whiteboard Visual Content by Phase
     if (activeIdx === 0) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "1. Attack Vector (0:00)";
-      ctx.fillStyle = "#60a5fa"; ctx.font = "bold 20px -apple-system, sans-serif";
-      ctx.fillText(s ? s.title : "Scene 1: Attack Vector Simulation", 55, 100);
 
-      ctx.fillStyle = "#94a3b8"; ctx.font = "14px -apple-system, sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Initial reconnaissance and deceptive contact vector.", 55, 130);
+      // Connected Flow Diagram on Board
+      ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(bX + 18, bY + 36, 92, 28, 5); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎭 Attacker", bX + 32, bY + 54);
 
-      // Terminal Box
-      ctx.fillStyle = "#030712"; ctx.fillRect(55, 150, w - 110, 135);
-      ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
+      // Arrow with moving packet
+      ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(bX + 112, bY + 50); ctx.lineTo(bX + 280, bY + 50); ctx.stroke();
+      var pktX = bX + 115 + ((sec * 55) % 155);
+      ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.arc(pktX, bY + 50, 4, 0, Math.PI * 2); ctx.fill();
 
-      ctx.fillStyle = "#38bdf8"; ctx.font = "bold 13px monospace";
-      ctx.fillText("► SIMULATED THREAT INGRESS: " + (s ? s.badge : "ATTACK VECTOR ACTIVE"), 75, 185);
-      ctx.fillStyle = "#e2e8f0"; ctx.font = "13px monospace";
-      ctx.fillText("  Target Asset: Corporate Ingress Portal // Port 443 HTTPS", 75, 215);
-      ctx.fillStyle = "#f59e0b"; ctx.font = "13px monospace";
-      ctx.fillText("  Attacker Strategy: " + (s && s.line2 ? s.line2 : "Synthetic authority impersonation"), 75, 245);
+      ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(bX + 282, bY + 36, 118, 28, 5); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎯 Target Asset", bX + 296, bY + 54);
+
+      // Teaching Bullets
+      var b1_0 = s ? s.badge : "Perimeter Vector";
+      var b1_1 = (s && s.line1) ? s.line1 : "Initial deceptive contact via unverified channel.";
+      var b1_2 = (s && s.line2) ? s.line2 : "Exploits natural helpfulness and authority.";
+
+      drawBoardBullet(ctx, bX + 18, bY + 86, "📌", "VECTOR:", b1_0, activeBullet === 0);
+      drawBoardBullet(ctx, bX + 18, bY + 130, "📌", "SCENARIO:", b1_1.substring(0, 52), activeBullet === 1);
+      drawBoardBullet(ctx, bX + 18, bY + 174, "📌", "TACTIC:", b1_2.substring(0, 52), activeBullet === 2);
 
     } else if (activeIdx === 1) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:07)";
-      ctx.fillStyle = "#f87171"; ctx.font = "bold 20px -apple-system, sans-serif";
-      ctx.fillText(s ? s.title : "Scene 2: Threat Mechanics & Red Flags", 55, 100);
 
-      ctx.fillStyle = "#fca5a5"; ctx.font = "14px -apple-system, sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Exploitation of cognitive bias and emotional urgency.", 55, 130);
+      // Warning Banner on Board
+      ctx.fillStyle = "#7f1d1d"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+      ctx.fillStyle = "#fef2f2"; ctx.font = "bold 11px sans-serif";
+      ctx.fillText("🚨 CRITICAL WARNING SIGNS (DON'T IGNORE)", bX + 24, bY + 50);
 
-      // Alert Warning Box
-      ctx.fillStyle = "#180606"; ctx.fillRect(55, 150, w - 110, 135);
-      ctx.strokeStyle = "#7f1d1d"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
+      var b2_0 = s ? s.badge : "High Severity Lever";
+      var b2_1 = (s && s.line1) ? s.line1 : "Manufactured urgency to trigger impulsive action.";
+      var b2_2 = (s && s.line2) ? s.line2 : "Demand to skip verification or keep secrecy.";
 
-      ctx.fillStyle = "#ef4444"; ctx.font = "bold 14px monospace";
-      ctx.fillText("🚨 CRITICAL RED FLAGS TRIGGERED: " + (s ? s.badge : "HIGH SEVERITY"), 75, 185);
-      ctx.fillStyle = "#fca5a5"; ctx.font = "13px monospace";
-      ctx.fillText("  • " + (s && s.line1 ? s.line1 : "Artificial panic threshold"), 75, 215);
-      ctx.fillStyle = "#fca5a5"; ctx.font = "13px monospace";
-      ctx.fillText("  • " + (s && s.line2 ? s.line2 : "Discrepancy in sender domain authenticity"), 75, 245);
+      drawBoardBullet(ctx, bX + 18, bY + 76, "⚠️", "LEVER:", b2_0, activeBullet === 0, "#f87171");
+      drawBoardBullet(ctx, bX + 18, bY + 120, "⚠️", "RED FLAG:", b2_1.substring(0, 52), activeBullet === 1, "#fca5a5");
+      drawBoardBullet(ctx, bX + 18, bY + 164, "⚠️", "PRESSURE:", b2_2.substring(0, 52), activeBullet === 2, "#fca5a5");
+
+      // Cartoon Scammer Mascot Peeking from top right of the board
+      drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, false);
 
     } else if (activeIdx === 2) {
       if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:15)";
-      ctx.fillStyle = "#4ade80"; ctx.font = "bold 20px -apple-system, sans-serif";
-      ctx.fillText(s ? s.title : "Scene 3: Human Firewall Countermeasure", 55, 100);
 
-      ctx.fillStyle = "#86efac"; ctx.font = "14px -apple-system, sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Active skepticism and tactical independent verification.", 55, 130);
+      // Defense Protocol Banner
+      ctx.fillStyle = "#064e3b"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+      ctx.fillStyle = "#ecfdf5"; ctx.font = "bold 11px sans-serif";
+      ctx.fillText("🛡️ 3-STEP HUMAN FIREWALL PROTOCOL", bX + 24, bY + 50);
 
-      // Defense Box
-      ctx.fillStyle = "#051c0e"; ctx.fillRect(55, 150, w - 110, 135);
-      ctx.strokeStyle = "#14532d"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
+      var b3_0 = "STEP 1: ⏸️ 60-Sec Pause — Stop the panic reflex.";
+      var b3_1 = "STEP 2: 🔍 INSPECT — " + (s && s.line1 ? s.line1.substring(0, 42) : "Verify sender & indicators");
+      var b3_2 = "STEP 3: 📞 OUT-OF-BAND — " + (s && s.line2 ? s.line2.substring(0, 40) : "Confirm via official channel");
 
-      ctx.fillStyle = "#22c55e"; ctx.font = "bold 14px monospace";
-      ctx.fillText("🛡️ DEFENSE PROTOCOL ACTIVE: " + (s ? s.badge : "VERIFIED COUNTERMEASURE"), 75, 185);
-      ctx.fillStyle = "#bbf7d0"; ctx.font = "13px monospace";
-      ctx.fillText("  [1] " + (s && s.line1 ? s.line1 : "Pause 60 seconds — Break the cognitive rush"), 75, 215);
-      ctx.fillStyle = "#bbf7d0"; ctx.font = "13px monospace";
-      ctx.fillText("  [2] " + (s && s.line2 ? s.line2 : "Verify via official out-of-band channel"), 75, 245);
+      drawBoardBullet(ctx, bX + 18, bY + 76, "✅", "", b3_0, activeBullet === 0, "#34d399");
+      drawBoardBullet(ctx, bX + 18, bY + 120, "✅", "", b3_1, activeBullet === 1, "#6ee7b7");
+      drawBoardBullet(ctx, bX + 18, bY + 164, "✅", "", b3_2, activeBullet === 2, "#6ee7b7");
+
+      // Holographic Shield Deflecting Threats
+      drawHolographicShield(ctx, bX + bW - 68, bY + 130, sec);
+      drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, true);
 
     } else {
       if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (0:23)";
-      ctx.fillStyle = "#38bdf8"; ctx.font = "bold 20px -apple-system, sans-serif";
-      ctx.fillText(s ? s.title : "Scene 4: Legal Frameworks & 1930 Helpline", 55, 100);
 
-      ctx.fillStyle = "#7dd3fc"; ctx.font = "14px -apple-system, sans-serif";
-      ctx.fillText(s && s.line1 ? s.line1.substring(0, 80) : "Statutory regulatory frameworks and incident escalation.", 55, 130);
+      // Legal Framework Banner
+      ctx.fillStyle = "#1e3a8a"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+      ctx.fillStyle = "#eff6ff"; ctx.font = "bold 11px sans-serif";
+      ctx.fillText("⚖️ STATUTORY RIGHTS & HELPLINE 1930", bX + 24, bY + 50);
 
-      // Recourse Box
-      ctx.fillStyle = "#0c1a2e"; ctx.fillRect(55, 150, w - 110, 135);
-      ctx.strokeStyle = "#1e3a8a"; ctx.lineWidth = 1; ctx.strokeRect(55, 150, w - 110, 135);
+      var b4_0 = "LAW: " + (s ? s.badge : "IT Act & DPDP Protections");
+      var b4_1 = "RBI RULE: Zero Liability if reported within 3 days";
+      var b4_2 = "HELPLINE: Dial 1930 (National Cybercrime Portal 24x7)";
 
-      ctx.fillStyle = "#60a5fa"; ctx.font = "bold 14px monospace";
-      ctx.fillText("⚖️ STATUTORY RECOURSE: " + (s ? s.badge : "MANDATORY PROTECTIONS"), 75, 185);
-      ctx.fillStyle = "#bae6fd"; ctx.font = "13px monospace";
-      ctx.fillText("  • " + (s && s.line1 ? s.line1 : "Zero liability protection within 72 hours"), 75, 215);
-      ctx.fillStyle = "#bae6fd"; ctx.font = "13px monospace";
-      ctx.fillText("  • " + (s && s.line2 ? s.line2 : "Escalate immediately via National Helpline: 1930"), 75, 245);
+      drawBoardBullet(ctx, bX + 18, bY + 76, "🏛️", "", b4_0, activeBullet === 0, "#60a5fa");
+      drawBoardBullet(ctx, bX + 18, bY + 120, "📜", "", b4_1, activeBullet === 1, "#93c5fd");
+      drawBoardBullet(ctx, bX + 18, bY + 164, "📞", "", b4_2, activeBullet === 2, "#facc15");
+
+      // Golden Regulatory Seal
+      drawStatutorySeal(ctx, bX + bW - 68, bY + 130);
     }
 
-    // 4. Sleek Subtitle & Transcript Banner
-    ctx.fillStyle = "#020617";
-    ctx.fillRect(0, h - 52, w, 52);
-    ctx.strokeStyle = "#1e293b";
-    ctx.strokeRect(0, h - 52, w, 1);
+    // 5. Cartoon Teacher Character (Prof. Alex or Prof. Maya)
+    drawCartoonTeacher(ctx, 115, 140, sec, activeIdx, isPlaying && !isMuted, pointerTargetX, pointerTargetY);
 
-    ctx.fillStyle = "#38bdf8"; ctx.font = "bold 12px sans-serif";
-    ctx.fillText("VOICE BRIEFING:", 25, h - 22);
+    // 6. Cartoon Student Characters in the Front Row
+    drawCartoonStudents(ctx, 660, 205, sec, activeIdx === 2);
 
+    // 7. Dynamic Laser Pointer Line from Teacher to Board
+    drawTeacherLaser(ctx, 155, 195, pointerTargetX, pointerTargetY + 12, sec);
+
+    // 8. Bottom Subtitle & Speech Banner
+    ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+    ctx.fillRect(0, h - 54, w, 54);
+    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, h - 54); ctx.lineTo(w, h - 54); ctx.stroke();
+
+    // Teacher Avatar Pill
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath(); ctx.roundRect(14, h - 42, 128, 30, 15); ctx.fill();
+    ctx.strokeStyle = selectedTeacher === 'maya' ? "#ec4899" : "#38bdf8"; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px sans-serif";
+    ctx.fillText(selectedTeacher === 'maya' ? "👩‍🏫 Prof. Maya" : "👨‍🏫 Prof. Alex", 28, h - 23);
+
+    // Subtitle Text
     ctx.fillStyle = "#f8fafc"; ctx.font = "13px -apple-system, sans-serif";
-    var activeSub = s ? s.narration : "Defense Briefing in progress...";
-    ctx.fillText(activeSub, 140, h - 22);
+    var activeSub = (s && (s.teacher_script || s.narration)) ? (s.teacher_script || s.narration) : "Mastering cybersecurity defenses...";
+    var clippedSub = activeSub.length > 88 ? (activeSub.substring(0, 85) + "...") : activeSub;
+    ctx.fillText(clippedSub, 156, h - 23);
 
-    // Scrubber update
+    // Update Scrubber & Timer UI
     var scrubber = document.getElementById('videoScrubber');
     if (scrubber) scrubber.value = sec;
 
     var curSec = Math.floor(sec);
     var timerEl = document.getElementById('video-timer');
     if (timerEl) timerEl.textContent = "0:" + (curSec < 10 ? "0" : "") + curSec + " / 0:30";
+
+    // Synchronize Live Transcript in Right Pane
+    var narEl = document.getElementById('dyn-task1-narration');
+    if (narEl && s && (s.teacher_script || s.narration)) {
+      narEl.textContent = s.teacher_script || s.narration;
+    }
   }
 
+  // =========================================================================
+  // HELPER CANVAS DRAWING ROUTINES FOR CARTOON CHARACTERS & GRAPHICS
+  // =========================================================================
+  function drawBoardBullet(ctx, x, y, icon, label, text, isActive, color) {
+    color = color || "#e2e8f0";
+    if (isActive) {
+      ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
+      ctx.beginPath(); ctx.roundRect(x - 4, y - 14, 340, 36, 4); ctx.fill();
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.4)"; ctx.lineWidth = 1; ctx.stroke();
+    }
+    ctx.fillStyle = "#facc15"; ctx.font = "13px sans-serif";
+    ctx.fillText(icon, x, y + 8);
+    if (label) {
+      ctx.fillStyle = isActive ? "#38bdf8" : "#94a3b8"; ctx.font = "bold 10px sans-serif";
+      ctx.fillText(label, x + 24, y);
+    }
+    ctx.fillStyle = color; ctx.font = (isActive ? "bold " : "") + "12px -apple-system, sans-serif";
+    ctx.fillText(text, x + (label ? 24 : 20), y + (label ? 16 : 8));
+  }
+
+  // Cartoon Teacher (Prof. Alex / Prof. Maya)
+  function drawCartoonTeacher(ctx, x, y, sec, phase, isSpeaking, targetX, targetY) {
+    var bob = Math.sin(sec * 3.2) * 2;
+    var cy = y + bob;
+    var isMaya = selectedTeacher === 'maya';
+
+    // Body / Suit Jacket
+    ctx.fillStyle = isMaya ? "#0f766e" : "#1e3a8a"; // Teal or Navy
+    ctx.beginPath(); ctx.roundRect(x - 22, cy + 62, 44, 76, 8); ctx.fill();
+    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // White Shirt Collar
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath(); ctx.moveTo(x - 8, cy + 62); ctx.lineTo(x, cy + 82); ctx.lineTo(x + 8, cy + 62); ctx.fill();
+
+    // Tie or Silk Scarf
+    ctx.fillStyle = isMaya ? "#f43f5e" : "#ef4444";
+    ctx.beginPath(); ctx.moveTo(x - 3, cy + 72); ctx.lineTo(x + 3, cy + 72); ctx.lineTo(x, cy + 100); ctx.fill();
+
+    // Teacher Gold Lapel Pin
+    ctx.fillStyle = "#facc15";
+    ctx.beginPath(); ctx.arc(x - 14, cy + 80, 2.5, 0, Math.PI * 2); ctx.fill();
+
+    // Teacher Head & Neck
+    ctx.fillStyle = "#fed7aa"; // Skin tone
+    ctx.fillRect(x - 6, cy + 46, 12, 18); // Neck
+
+    // Head Oval
+    ctx.beginPath(); ctx.ellipse(x, cy + 24, 19, 23, 0, 0, Math.PI * 2); ctx.fill();
+
+    // Hair
+    ctx.fillStyle = isMaya ? "#3b1e10" : "#451a03";
+    if (isMaya) {
+      // Bob haircut with ponytail
+      ctx.beginPath(); ctx.arc(x, cy + 18, 21, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x - 18, cy + 26, 6, 15, 0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x + 18, cy + 26, 6, 15, -0.2, 0, Math.PI * 2); ctx.fill();
+    } else {
+      // Styled professor hair
+      ctx.beginPath(); ctx.arc(x, cy + 18, 20, Math.PI * 0.9, Math.PI * 2.1); ctx.fill();
+      ctx.fillRect(x - 19, cy + 10, 38, 8);
+    }
+
+    // Spectacles / Glasses
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.arc(x - 7, cy + 22, 6, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x + 7, cy + 22, 6, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 1, cy + 22); ctx.lineTo(x + 1, cy + 22); ctx.stroke();
+
+    // Eyes
+    ctx.fillStyle = "#0284c7";
+    ctx.beginPath(); ctx.arc(x - 7, cy + 22, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 7, cy + 22, 2.5, 0, Math.PI * 2); ctx.fill();
+
+    // Eyebrows
+    ctx.strokeStyle = "#451a03"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(x - 12, cy + 14); ctx.lineTo(x - 2, cy + 15); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 2, cy + 15); ctx.lineTo(x + 12, cy + 14); ctx.stroke();
+
+    // Animated Speaking Mouth
+    ctx.fillStyle = "#991b1b";
+    var mouthH = (isSpeaking && (Math.abs(Math.sin(sec * 14)) > 0.2)) ? 5 : 2;
+    ctx.beginPath(); ctx.ellipse(x, cy + 36, 4, mouthH, 0, 0, Math.PI * 2); ctx.fill();
+
+    // Left Arm Gestures according to phase
+    ctx.fillStyle = isMaya ? "#0f766e" : "#1e3a8a";
+    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4;
+    if (phase === 1) {
+      // Raised Warning Index Finger
+      ctx.beginPath(); ctx.moveTo(x - 18, cy + 75); ctx.lineTo(x - 30, cy + 50); ctx.stroke();
+      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(x - 30, cy + 48, 4, 0, Math.PI * 2); ctx.fill();
+    } else if (phase === 2) {
+      // Thumbs-Up / Shield salute
+      ctx.beginPath(); ctx.moveTo(x - 18, cy + 75); ctx.lineTo(x - 28, cy + 60); ctx.stroke();
+      ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(x - 28, cy + 58, 5, 0, Math.PI * 2); ctx.fill();
+    } else {
+      // Welcoming gesture
+      ctx.beginPath(); ctx.moveTo(x - 18, cy + 75); ctx.lineTo(x - 32, cy + 85); ctx.stroke();
+      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(x - 32, cy + 85, 4, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  // Teacher Laser Pointer Stick
+  function drawTeacherLaser(ctx, handX, handY, targetX, targetY, sec) {
+    // Teaching stick
+    ctx.strokeStyle = "#d97706"; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(handX - 12, handY); ctx.lineTo(handX + 28, handY - 14); ctx.stroke();
+
+    // Glowing Laser Beam from pointer tip to active bullet
+    ctx.strokeStyle = "rgba(239, 68, 68, 0.4)"; ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(handX + 28, handY - 14); ctx.lineTo(targetX, targetY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Glowing Pulsing Laser Dot at target text
+    var lPulse = Math.sin(sec * 12) * 1.5 + 3.5;
+    ctx.fillStyle = "#ef4444";
+    ctx.beginPath(); ctx.arc(targetX, targetY, lPulse, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Cartoon Students at front row desks
+  function drawCartoonStudents(ctx, x, y, sec, hasLightbulb) {
+    // Desk 1 (Sam in Orange Hoodie)
+    var s1Bob = Math.sin(sec * 2.8) * 1.5;
+    ctx.fillStyle = "#ea580c"; // Orange hoodie
+    ctx.beginPath(); ctx.roundRect(x, y + 42 + s1Bob, 36, 44, 6); ctx.fill();
+    // Head
+    ctx.fillStyle = "#fed7aa";
+    ctx.beginPath(); ctx.arc(x + 18, y + 26 + s1Bob, 14, 0, Math.PI * 2); ctx.fill();
+    // Hair
+    ctx.fillStyle = "#78350f";
+    ctx.beginPath(); ctx.arc(x + 18, y + 21 + s1Bob, 15, Math.PI * 0.9, Math.PI * 2.1); ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = "#0f172a";
+    ctx.beginPath(); ctx.arc(x + 14, y + 26 + s1Bob, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 22, y + 26 + s1Bob, 1.8, 0, Math.PI * 2); ctx.fill();
+
+    // Lightbulb moment during Phase 2 (Defense)
+    if (hasLightbulb) {
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath(); ctx.arc(x + 18, y - 2 + s1Bob, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.font = "bold 9px sans-serif";
+      ctx.fillText("💡", x + 12, y + 2 + s1Bob);
+    }
+
+    // Desk surface for Sam
+    ctx.fillStyle = "#78350f"; ctx.fillRect(x - 8, y + 80, 52, 8);
+    ctx.fillStyle = "#f1f5f9"; ctx.fillRect(x + 2, y + 74, 20, 10); // Notebook
+
+    // Desk 2 (Priya with Laptop)
+    var pX = x + 62;
+    var s2Bob = Math.cos(sec * 2.4) * 1.5;
+    ctx.fillStyle = "#0d9488"; // Teal shirt
+    ctx.beginPath(); ctx.roundRect(pX, y + 44 + s2Bob, 34, 42, 6); ctx.fill();
+    // Head
+    ctx.fillStyle = "#fcd34d";
+    ctx.beginPath(); ctx.arc(pX + 17, y + 27 + s2Bob, 13, 0, Math.PI * 2); ctx.fill();
+    // Dark hair ponytail
+    ctx.fillStyle = "#1c1917";
+    ctx.beginPath(); ctx.arc(pX + 17, y + 22 + s2Bob, 14, Math.PI * 0.8, Math.PI * 2.2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(pX + 32, y + 28 + s2Bob, 4, 8, 0.4, 0, Math.PI * 2); ctx.fill();
+
+    // Desk & Laptop
+    ctx.fillStyle = "#78350f"; ctx.fillRect(pX - 6, y + 80, 50, 8);
+    ctx.fillStyle = "#94a3b8"; ctx.fillRect(pX + 4, y + 68, 22, 14); // Laptop screen
+    ctx.fillStyle = "#38bdf8"; ctx.fillRect(pX + 6, y + 70, 18, 10); // Screen glow
+  }
+
+  // Cartoon Scammer Mascot ("Sneaky Fox")
+  function drawCartoonScammer(ctx, x, y, sec, isBlocked) {
+    var bob = Math.sin(sec * 4) * 2;
+    // Trenchcoat / Fedora Hat
+    ctx.fillStyle = "#1e293b";
+    ctx.beginPath(); ctx.ellipse(x, y + 6 + bob, 14, 5, 0, 0, Math.PI * 2); ctx.fill(); // Brim
+    ctx.fillRect(x - 9, y - 5 + bob, 18, 11); // Crown
+
+    // Masked Face
+    ctx.fillStyle = "#ea580c"; // Fox orange
+    ctx.beginPath(); ctx.arc(x, y + 16 + bob, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#0f172a"; // Bandit mask
+    ctx.fillRect(x - 9, y + 13 + bob, 18, 5);
+
+    // Fishing Rod Lure or Blocked Puff
+    if (isBlocked) {
+      ctx.fillStyle = "#ef4444"; ctx.font = "bold 10px sans-serif";
+      ctx.fillText("BLOCKED! 🚫", x - 20, y - 10 + bob);
+    } else {
+      ctx.strokeStyle = "#94a3b8"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x + 8, y + 12 + bob); ctx.lineTo(x + 22, y - 2 + bob); ctx.stroke();
+      ctx.fillStyle = "#facc15"; ctx.font = "10px sans-serif";
+      ctx.fillText("🎣", x + 20, y + bob);
+    }
+  }
+
+  // Holographic Defense Shield
+  function drawHolographicShield(ctx, x, y, sec) {
+    var pulse = Math.sin(sec * 6) * 3;
+    ctx.fillStyle = "rgba(16, 185, 129, 0.25)";
+    ctx.strokeStyle = "#10b981"; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 20 - pulse);
+    ctx.lineTo(x + 22 + pulse, y - 8);
+    ctx.lineTo(x + 16, y + 22 + pulse);
+    ctx.lineTo(x, y + 32 + pulse);
+    ctx.lineTo(x - 16, y + 22 + pulse);
+    ctx.lineTo(x - 22 - pulse, y - 8);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🛡️", x, y + 12);
+    ctx.textAlign = "start";
+  }
+
+  // Statutory Gold Seal
+  function drawStatutorySeal(ctx, x, y) {
+    ctx.fillStyle = "#f59e0b";
+    ctx.beginPath(); ctx.arc(x, y, 22, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#fef08a"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#0f172a"; ctx.font = "bold 9px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("1930", x, y + 3);
+    ctx.font = "6px sans-serif";
+    ctx.fillText("ZERO LOSS", x, y + 11);
+    ctx.textAlign = "start";
+  }
+
+  // =========================================================================
+  // PLAYBACK CONTROL LOOP
+  // =========================================================================
   function startPlayback() {
     isPlaying = true;
     document.getElementById('playBtn').textContent = '⏸ Pause';
+    playClassroomAudio('start');
     
     playbackTimer = setInterval(function () {
       currentVideoSecond += 0.25;
@@ -951,6 +1504,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
       if (segIdx !== lastSpokenSegment) {
         lastSpokenSegment = segIdx;
+        if (segIdx === 2) playClassroomAudio('shield');
+        else playClassroomAudio('tick');
         var segments = getSegments(currentLang);
         if (segments && segments[segIdx]) {
           playNarrationSegment(segments[segIdx].text);
@@ -961,6 +1516,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
       if (currentVideoSecond >= totalDuration) {
         pausePlayback();
+        playClassroomAudio('win');
         document.getElementById('playBtn').textContent = '▶ Replay Lesson';
         currentVideoSecond = 30;
         drawSim(30);
@@ -1008,6 +1564,15 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
   window.toggleMute = function () {
     isMuted = !isMuted;
+    var btn = document.getElementById('muteBtn');
+    if (btn) {
+      btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound On';
+      btn.className = isMuted ? 'btn btn-outline-danger btn-sm px-2' : 'btn btn-outline-light btn-sm px-2';
+    }
+    if (isMuted && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
     var btn = document.getElementById('muteBtn');
     if (btn) {
       btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound On';

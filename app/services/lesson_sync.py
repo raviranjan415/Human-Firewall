@@ -98,50 +98,112 @@ def get_synchronized_room_content(video: Any, lesson: Any) -> dict[str, Any]:
         )
         s4_n = data["s4_narr"][1] if is_hi else data["s4_narr"][0]
 
+        # Rich teacher speech and comprehensive study points
+        t_script_1 = (
+            f"नमस्ते क्लास! {lesson_title} के पाठ में आपका स्वागत है। स्मार्टबोर्ड पर ध्यान दें: {s1_l[0]} {s1_l[1]}। हमलावर विश्वास जीतकर सुरक्षा कवच को तोड़ते हैं।"
+            if is_hi
+            else f"Hello class! Welcome to today's masterclass on {lesson_title}. Watch the smartboard closely: {s1_l[0]} In this case, {s1_l[1]}."
+        )
+
+        t_script_2 = (
+            f"छात्रों, इस मुख्य खतरे के संकेत पर ध्यान दें! {s2_b}। {s2_l[0]} {s2_n} हमेशा जल्दबाजी के पीछे छिपे दबाव को पहचानें!"
+            if is_hi
+            else f"Notice this critical red flag right here on the board! {s2_b}. {s2_l[0]} Remember: {s2_n} Never let urgency rush your judgment!"
+        )
+
+        t_script_3 = (
+            f"यह है हमारा 3-चरणीय ह्यूमन फ़ायरवॉल नियम! पहला कदम: 60 सेकंड ठहरें। {s3_l[0]} दूसरा: {s3_l[1]}। स्वतंत्र सत्यापन से 98 प्रतिशत धोखे नाकाम हो जाते हैं!"
+            if is_hi
+            else f"Here is our Human Firewall defense drill! Step one: Pause and breathe for sixty seconds. {s3_l[0]} Step two: {s3_l[1]} Independent verification stops ninety-eight percent of attacks!"
+        )
+
+        t_script_4 = (
+            f"कक्षा, अपने कानूनी अधिकार जानिए! {s4_l[0]} किसी भी अनधिकृत धोखाधड़ी की स्थिति में तीन दिन के भीतर तुरंत राष्ट्रीय साइबर हेल्पलाइन 1930 पर कॉल करें!"
+            if is_hi
+            else f"Class, always remember the law protects you! {s4_l[0]} In any unauthorized fraud, prompt reporting guarantees zero liability. Dial the National Cyber Helpline 1930 immediately!"
+        )
+
         return [
             {
                 "idx": 0,
                 "start_s": 0,
                 "end_s": 7,
                 "badge": s1_b,
+                "board_title": f"{lesson_title} · {'हमला परिदृश्य' if is_hi else 'Attack Anatomy'}",
                 "title": f"{lesson_title} - {'चरण 1: हमला परिदृश्य' if is_hi else 'Phase 1: Real Attack Scenario'}",
                 "line1": s1_l[0],
                 "line2": s1_l[1] if len(s1_l) > 1 else "",
-                "narration": s1_n,
+                "narration": t_script_1,
+                "teacher_script": t_script_1,
+                "raw_narration": s1_n,
+                "study_bullets": [
+                    s1_b,
+                    s1_l[0],
+                    s1_l[1] if len(s1_l) > 1 else s1_n,
+                ],
                 "kind": "threat",
+                "character_action": "welcome",
             },
             {
                 "idx": 1,
                 "start_s": 7,
                 "end_s": 15,
                 "badge": s2_b,
+                "board_title": f"{lesson_title} · {'खतरे के संकेत व दबाव' if is_hi else 'Tactical Red Flags'}",
                 "title": f"{lesson_title} - {'चरण 2: मनोवैज्ञानिक दबाव व संकेत' if is_hi else 'Phase 2: Tactical Red Flags'}",
                 "line1": s2_l[0],
                 "line2": s2_l[1] if len(s2_l) > 1 else "",
-                "narration": s2_n,
+                "narration": t_script_2,
+                "teacher_script": t_script_2,
+                "raw_narration": s2_n,
+                "study_bullets": [
+                    s2_b,
+                    s2_l[0],
+                    s2_l[1] if len(s2_l) > 1 else s2_n,
+                ],
                 "kind": "alert",
+                "character_action": "warn",
             },
             {
                 "idx": 2,
                 "start_s": 15,
                 "end_s": 23,
                 "badge": s3_b,
+                "board_title": f"{lesson_title} · {'ह्यूमन फ़ायरवॉल सुरक्षा कदम' if is_hi else 'Human Firewall Protocol'}",
                 "title": f"{lesson_title} - {'चरण 3: मानवीय सुरक्षा कदम' if is_hi else 'Phase 3: Human Firewall Defense'}",
                 "line1": s3_l[0],
                 "line2": s3_l[1] if len(s3_l) > 1 else "",
-                "narration": s3_n,
+                "narration": t_script_3,
+                "teacher_script": t_script_3,
+                "raw_narration": s3_n,
+                "study_bullets": [
+                    s3_b,
+                    s3_l[0],
+                    s3_l[1] if len(s3_l) > 1 else s3_n,
+                ],
                 "kind": "defense",
+                "character_action": "shield",
             },
             {
                 "idx": 3,
                 "start_s": 23,
                 "end_s": 30,
                 "badge": s4_b,
+                "board_title": f"{lesson_title} · {'कानूनी अधिकार व 1930' if is_hi else 'Statutory Rights & Helpline'}",
                 "title": f"{lesson_title} - {'चरण 4: कानूनी अधिकार व सरकारी नियम' if is_hi else 'Phase 4: Statutory Rights & Laws'}",
                 "line1": s4_l[0],
                 "line2": s4_l[1] if len(s4_l) > 1 else "",
-                "narration": s4_n,
+                "narration": t_script_4,
+                "teacher_script": t_script_4,
+                "raw_narration": s4_n,
+                "study_bullets": [
+                    s4_b,
+                    s4_l[0],
+                    s4_l[1] if len(s4_l) > 1 else s4_n,
+                    "National Cyber Helpline: 1930 (Zero Liability within 72 hrs)",
+                ],
                 "kind": "legal",
+                "character_action": "legal",
             },
         ]
 

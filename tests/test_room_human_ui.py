@@ -142,3 +142,47 @@ def test_lesson_synchronization_across_topics(app, client, learner):
         assert any(kw.lower() in html.lower() for kw in expected_keywords), (
             f"Lesson {lesson_num} does not contain any of {expected_keywords}"
         )
+
+
+def test_classroom_video_teacher_engine(app, client, learner):
+    """Verify cartoon classroom video presentation, teacher selector, and study points."""
+    login(client, "learner1")
+
+    video = VideoAsset.query.first()
+    assert video is not None
+
+    resp = client.get(f"/learn/videos/{video.id}")
+    assert resp.status_code == 200
+    html = resp.get_data(as_text=True)
+
+    # 1. Classroom Teachers & Interactive Controls
+    assert "Prof. Alex" in html
+    assert "Prof. Maya" in html
+    assert "simCanvas" in html
+    assert "Classroom Masterclass" in html
+    assert "Ask the Professor" in html
+    assert "Key Topic Study Points" in html
+
+    # 2. Check lesson_sync output for teacher_script and study_bullets
+    from app.services.lesson_sync import get_synchronized_room_content
+
+    with app.app_context():
+        content = get_synchronized_room_content(video, video.lesson)
+        scenes_en = content["video_scenes"]["en"]
+        scenes_hi = content["video_scenes"]["hi"]
+
+        assert len(scenes_en) == 4
+        assert len(scenes_hi) == 4
+
+        for s in scenes_en:
+            assert "teacher_script" in s
+            assert "Hello class!" in s["teacher_script"] or "Notice" in s["teacher_script"] or "Here is our" in s["teacher_script"] or "Class," in s["teacher_script"]
+            assert "study_bullets" in s
+            assert len(s["study_bullets"]) >= 2
+
+        for s in scenes_hi:
+            assert "teacher_script" in s
+            assert "नमस्ते क्लास!" in s["teacher_script"] or "छात्रों" in s["teacher_script"] or "यह है हमारा" in s["teacher_script"] or "कक्षा" in s["teacher_script"]
+            assert "study_bullets" in s
+            assert len(s["study_bullets"]) >= 2
+
