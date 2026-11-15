@@ -290,7 +290,7 @@ def lab_submit(lab_id: int):
 @api_bp.route("/news/feed", methods=["GET"])
 def news_feed():
     """Live API returning curated and ingested cyber news.
-    
+
     Supports query parameters:
       - category: filter by category (e.g. Ransomware, Social Engineering, Cloud & Identity)
       - search: keyword search in title and summaries

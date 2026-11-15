@@ -15,6 +15,128 @@ from __future__ import annotations
 
 GAMES_30: list[dict] = [
     # =========================================================================
+    # FLAGSHIP — 3D CORPORATE OFFICE & JOB SIMULATOR
+    # =========================================================================
+    {
+        "slug": "corporate-office-simulator",
+        "title_en": "Corporate Office Simulator",
+        "title_hi": "कॉर्पोरेट ऑफिस सिम्युलेटर",
+        "category": "corporate_simulation",
+        "category_title_en": "Corporate Office Simulation",
+        "category_title_hi": "कॉर्पोरेट ऑफिस सिमुलेशन",
+        "instructions_en": "Step into the shoes of a Junior Cybersecurity Analyst on your first shift. Explore the corporate office, manage your workstation, inspect suspicious emails, verify employee identity, triage SIEM alerts, and submit professional incident reports.",
+        "instructions_hi": "एक जूनियर साइबर सुरक्षा विश्लेषक के रूप में अपने पहले दिन का अनुभव करें। कॉर्पोरेट कार्यालय का अन्वेषण करें, अपने वर्कस्टेशन का प्रबंधन करें, संदिग्ध ईमेल की जांच करें, कर्मचारी की पहचान सत्यापित करें और रिपोर्ट सबमिट करें।",
+        "debrief_en": "Excellent work on your first day! Real-world cybersecurity requires rigorous verification: never trust unverified sender domains, always inspect MIME headers and attachments, and correlate SIEM alerts with host behavior.",
+        "debrief_hi": "आपके पहले दिन का उत्कृष्ट कार्य! वास्तविक दुनिया की साइबर सुरक्षा में कठोर सत्यापन की आवश्यकता होती है।",
+        "difficulty": "beginner",
+        "timed": True,
+        "time_limit_seconds": 600,
+        "xp": 100,
+        "order_index": 0,
+        "scenarios": [
+            {
+                "type": "email",
+                "sender": "HR Payroll Desk <payroll@company-payrolldesk.com>",
+                "subject": "Urgent: Direct Deposit Account Verification Needed Before Midnight",
+                "body": "Our automated payroll batch flagged an invalid routing number for your monthly direct deposit. To prevent a 30-day salary freeze, click below to re-verify your banking credentials immediately: http://login.company-payrolldesk.com/update-auth",
+                "is_threat": True,
+                "explanation_en": "The domain company-payrolldesk.com is an unapproved external domain. Legitimate HR teams do not issue midnight salary freeze ultimatums.",
+                "explanation_hi": "यह डोमेन आंतरिक पेरोल की नकल कर रहा है। वैध एचआर टीमें आधी रात तक वेतन रोकने की धमकी नहीं देतीं।",
+                "warning_signs_en": "Artificial urgency, external lookalike domain, threatening financial consequence.",
+                "warning_signs_hi": "कृत्रिम तात्कालिकता, बाहरी नकली डोमेन, वित्तीय रोक की धमकी।",
+                "choices": [
+                    (
+                        "Inspect MIME headers and quarantine the email as credential phishing",
+                        True,
+                        "Spot on! Headers revealed SPF failure and an unauthorized external IP.",
+                        "बिल्कुल सही! हेडर ने एसपीएफ विफलता और एक अनधिकृत बाहरी आईपी का खुलासा किया।",
+                    ),
+                    (
+                        "Click the link and update banking information to prevent salary freeze",
+                        False,
+                        "Dangerous! This hands credentials directly to the attacker.",
+                        "खतरनाक! यह सीधे हमलावर को साख सौंपता है।",
+                    ),
+                ],
+            },
+            {
+                "type": "chat",
+                "sender": "Michael Scott (VP Finance via Internal Chat)",
+                "subject": "Emergency Password Reset Request for Wire Portal",
+                "body": "Hey, I am locked out of the international SWIFT wire portal from my hotel in Frankfurt. I have an urgent supplier transfer due in 20 minutes. Please reset my password and text the temporary password to my personal mobile number right now.",
+                "is_threat": True,
+                "explanation_en": "This is executive pretexting / vishing. Helpdesk staff must verify identity through out-of-band approved channels and never text temporary credentials to unverified personal numbers.",
+                "explanation_hi": "यह कार्यकारी प्रीटेक्स्टिंग है। हेल्पडेस्क को हमेशा स्वीकृत माध्यमों से पहचान सत्यापित करनी चाहिए।",
+                "warning_signs_en": "Urgent pressure, request to bypass standard dual-authorization, sending credentials to personal phone.",
+                "warning_signs_hi": "तत्कालता का दबाव, सामान्य प्रक्रियाओं को दरकिनार करने का अनुरोध।",
+                "choices": [
+                    (
+                        "Reject password text; initiate out-of-band corporate callback to verify executive identity",
+                        True,
+                        "Excellent! You stopped an unauthorized executive account takeover.",
+                        "उत्कृष्ट! आपने एक अनधिकृत खाता अधिग्रहण को रोक दिया।",
+                    ),
+                    (
+                        "Quickly reset the password and text it to the personal mobile to help the VP",
+                        False,
+                        "Security breach! The attacker now controls executive wire authorization.",
+                        "सुरक्षा उल्लंघन! हमलावर अब वायर प्राधिकरण को नियंत्रित करता है।",
+                    ),
+                ],
+            },
+            {
+                "type": "call",
+                "sender": "SIEM Endpoint Alert: Workstation WS-FIN-08",
+                "subject": "Alert: Unauthorized Powershell Download Cradle & Egress Beaconing",
+                "body": "EDR detected powershell.exe executing an encoded base64 command downloading an unverified binary payload from 185.220.101.5:4444 on workstation WS-FIN-08 (Finance Dept).",
+                "is_threat": True,
+                "explanation_en": "Active command-and-control beaconing requires immediate host network isolation to prevent lateral movement and ransomware deployment.",
+                "explanation_hi": "सक्रिय सी2 बीकनिंग के लिए तुरंत होस्ट को नेटवर्क से अलग करना आवश्यक है।",
+                "warning_signs_en": "Encoded base64 PowerShell, suspicious non-standard port 4444 outbound, untrusted external IP.",
+                "warning_signs_hi": "एन्कोडेड पॉवरशेल, गैर-मानक पोर्ट 4444, अविश्वसनीय आईपी।",
+                "choices": [
+                    (
+                        "Immediately isolate WS-FIN-08 from network and revoke active session tokens",
+                        True,
+                        "Correct! Fast containment prevents malware lateral spread.",
+                        "सही! त्वरित रोकथाम मैलवेयर के प्रसार को रोकती है।",
+                    ),
+                    (
+                        "Leave the workstation online and wait until end of day to check logs",
+                        False,
+                        "Catastrophic delay! The attacker could encrypt the entire corporate network.",
+                        "विनाशकारी देरी! हमलावर पूरे कॉर्पोरेट नेटवर्क को एन्क्रिप्ट कर सकता है।",
+                    ),
+                ],
+            },
+            {
+                "type": "page",
+                "sender": "Incident Investigation Desk",
+                "subject": "Compile & Submit Formal Security Incident Report #IR-2026-042",
+                "body": "Synthesize findings from the payroll phishing campaign, executive pretexting attempt, and endpoint beaconing into an authoritative incident report for CISO Marcus Vance.",
+                "is_threat": False,
+                "explanation_en": "Thorough documentation preserves chain of custody and enables post-incident hardening.",
+                "explanation_hi": "विस्तृत दस्तावेज़ीकरण से भविष्य के हमलों को रोकने में मदद मिलती है।",
+                "warning_signs_en": "None. This is standard corporate compliance reporting.",
+                "warning_signs_hi": "कोई चेतावनी नहीं। यह मानक अनुपालन रिपोर्टिंग है।",
+                "choices": [
+                    (
+                        "Submit completed incident dossier with indicators of compromise and mitigation checklist",
+                        True,
+                        "Outstanding! CISO Marcus Vance commended your investigation and awarded promotion points.",
+                        "शानदार! सीआईएसओ मार्कस वेंस ने आपकी जांच की सराहना की और पदोन्नति अंक दिए।",
+                    ),
+                    (
+                        "Close incident without documentation to save time",
+                        False,
+                        "Unacceptable! Compliance requires comprehensive documentation.",
+                        "अस्वीकार्य! अनुपालन के लिए व्यापक दस्तावेज़ीकरण की आवश्यकता है।",
+                    ),
+                ],
+            },
+        ],
+    },
+    # =========================================================================
     # CATEGORY A — SOCIAL ENGINEERING
     # =========================================================================
     {

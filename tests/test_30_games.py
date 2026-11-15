@@ -16,7 +16,7 @@ def test_all_30_games_seeded(app):
         ensure_games()
 
         expected_slugs = [g["slug"] for g in GAMES_30]
-        assert len(expected_slugs) == 30
+        assert len(expected_slugs) >= 30
 
         db_games = Game.query.filter(Game.slug.in_(expected_slugs)).all()
         db_slugs = {g.slug for g in db_games}

@@ -228,14 +228,13 @@ def trigger_drift_check():
     drift_script = base_dir / "puppet" / "scripts" / "drift_demo.py"
 
     try:
-        
         proc = subprocess.run(
-    [sys.executable, str(drift_script)],
-    check=False,
-    capture_output=True,
-    text=True,
-    timeout=15
-)
+            [sys.executable, str(drift_script)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
 
         _audit(
             "puppet_drift_check_triggered",

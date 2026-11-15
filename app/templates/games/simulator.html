@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+{% block title %}Corporate Office Simulator · Human Firewall Career Simulation{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">🏢 3D Corporate Job Simulator</span>
+      <span class="badge bg-info text-dark px-2 py-1 rounded-pill fw-semibold">Role: Junior Security Analyst</span>
+    </div>
+    <h1 class="cq-title-gradient h3 mb-0">Corporate Office Simulator: First Day at the Cybersecurity Company</h1>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <div class="text-end me-2">
+      <div class="small text-secondary fw-semibold">SHIFT CLOCK</div>
+      <span class="font-monospace fw-bold text-warning fs-5" id="simShiftTimer">10:00</span>
+    </div>
+    <a class="btn btn-cq btn-cq-ghost btn-sm" href="{{ url_for('games.index') }}">&larr; Games Hub</a>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- SECTION 1: 3D CORPORATE OFFICE VIEWPORT -->
+<!-- ======================================================================= -->
+<div class="position-relative bg-dark rounded-3 overflow-hidden border border-secondary shadow-lg mb-4" style="min-height: 540px;">
+  <canvas id="officeCanvas3D" class="w-100" style="height: 540px; display: block;"></canvas>
+
+  <!-- 3D HUD OVERLAY -->
+  <div id="office3DHudOverlay" class="position-absolute top-0 start-0 w-100 h-100 p-3 pointer-events-none d-flex flex-column justify-content-between">
+    <!-- Top HUD Bar -->
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="bg-dark bg-opacity-75 p-2 px-3 rounded border border-secondary text-light small shadow">
+        <div class="fw-bold text-info">💼 {{ current_user.display_name or current_user.username }}</div>
+        <div class="text-secondary" style="font-size: 0.75rem;">Badge ID: <strong>HF-SEC-8429</strong> &bull; Dept: <strong>Cyber Defense Ops</strong></div>
+      </div>
+
+      <div class="bg-dark bg-opacity-75 p-2 px-3 rounded border border-secondary text-end shadow">
+        <div class="small text-secondary text-uppercase fw-semibold" style="font-size: 0.72rem;">Security Readiness</div>
+        <span class="fw-bold text-success fs-6" id="simReadinessPct">0% Integrity</span>
+        <div class="progress mt-1" style="width: 120px; height: 6px;">
+          <div id="simReadinessBar" class="progress-bar bg-success" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Interaction Prompt -->
+    <div class="text-center">
+      <div id="simProximityPrompt" class="d-inline-block bg-primary text-white p-2 px-4 rounded-pill shadow-lg animate-pulse" style="display: none !important;">
+        <span class="fs-5 me-1">⚡</span>
+        <span id="simProximityPromptText" class="fw-semibold">Press [E] to Interact</span>
+      </div>
+    </div>
+
+    <!-- Bottom Controls Guide & Quick Button -->
+    <div class="d-flex justify-content-between align-items-end">
+      <div class="bg-dark bg-opacity-75 p-2 px-3 rounded border border-secondary text-light small shadow">
+        <span class="text-warning fw-bold">Navigation:</span> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&rarr;</kbd><kbd>&darr;</kbd> Move &bull; <kbd>Shift</kbd> Sprint &bull; <kbd>E</kbd> Interact &bull; <kbd>Esc</kbd> Stand Up
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary fw-bold shadow px-4 py-2 pointer-events-auto" id="btnVirtualSit">
+          💻 Sit at Workstation [E]
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="simNotificationToast" class="position-absolute top-0 end-0 m-3 alert alert-success border-success shadow-lg" style="display: none; z-index: 1050; max-width: 360px;">
+    <div class="d-flex align-items-center gap-2">
+      <span class="fs-4">🛡️</span>
+      <div id="simNotificationBody" class="small fw-semibold">Task Completed!</div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- SECTION 2: IN-GAME CYBERWORK OS WORKSTATION DESKTOP OVERLAY -->
+  <!-- ======================================================================= -->
+  <div id="cyberworkDesktopOverlay" class="position-absolute top-0 start-0 w-100 h-100 bg-dark text-light p-3 flex-column" style="display: none; z-index: 1000; overflow-y: auto;">
+    <!-- OS Top Menu Bar -->
+    <div class="d-flex justify-content-between align-items-center bg-black bg-opacity-50 p-2 px-3 rounded border border-secondary mb-3 shadow">
+      <div class="d-flex align-items-center gap-3">
+        <div class="fw-bold text-info d-flex align-items-center gap-2">
+          <span class="fs-5">💻</span>
+          <span>CyberWork OS Enterprise v11.4</span>
+        </div>
+        <span class="badge bg-secondary font-monospace">WS-ANALYST-01</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-secondary small me-2">Gigabit LAN &bull; Zero Trust Agent: Active</span>
+        <button type="button" class="btn btn-outline-danger btn-sm fw-bold" id="btnCloseDesktop">
+          🚪 Stand Up / Back to Office [Esc]
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace Layout -->
+    <div class="row g-3 flex-grow-1">
+      <!-- Pinned Task & Mission Board (Left Sidebar) -->
+      <div class="col-12 col-lg-3">
+        <div class="cq-card p-3 h-100 bg-black bg-opacity-40 border-secondary">
+          <h2 class="h6 fw-bold text-warning text-uppercase mb-3 d-flex align-items-center justify-content-between">
+            <span>📋 Shift Task Board</span>
+            <span class="badge bg-warning text-dark">Shift 1</span>
+          </h2>
+
+          <div class="list-group list-group-flush mb-3">
+            <div class="list-group-item bg-transparent text-light border-secondary p-2" id="simTaskRow_task1">
+              <div class="small fw-semibold">1. Investigate HR Payroll Email</div>
+              <div class="small text-secondary">Check MIME headers &amp; links</div>
+              <span class="badge bg-secondary mt-1">Pending</span>
+            </div>
+
+            <div class="list-group-item bg-transparent text-light border-secondary p-2" id="simTaskRow_task2">
+              <div class="small fw-semibold">2. Triage Password Reset Ticket</div>
+              <div class="small text-secondary">Verify requester identity</div>
+              <span class="badge bg-secondary mt-1">Pending</span>
+            </div>
+
+            <div class="list-group-item bg-transparent text-light border-secondary p-2" id="simTaskRow_task3">
+              <div class="small fw-semibold">3. Contain SIEM EDR Beaconing</div>
+              <div class="small text-secondary">Finance host WS-FIN-08 alert</div>
+              <span class="badge bg-secondary mt-1">Pending</span>
+            </div>
+
+            <div class="list-group-item bg-transparent text-light border-secondary p-2" id="simTaskRow_task4">
+              <div class="small fw-semibold">4. Submit Incident Report</div>
+              <div class="small text-secondary">Dossier for CISO Marcus Vance</div>
+              <span class="badge bg-secondary mt-1">Pending</span>
+            </div>
+          </div>
+
+          <div class="border-top border-secondary pt-3 mt-auto">
+            <div class="small text-secondary mb-1">CISO Marcus Vance:</div>
+            <div class="p-2 rounded bg-dark border border-secondary small text-info fst-italic">
+              "Welcome to the team! Take your time, verify every header, and protect company credentials."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Application Area (Right Panel) -->
+      <div class="col-12 col-lg-9 d-flex flex-column">
+        <!-- App Dock / Switcher -->
+        <div class="btn-group mb-3 shadow-sm" role="group" aria-label="Desktop Application Switcher">
+          <button type="button" class="btn btn-outline-info active fw-bold" data-sim-app="mail">
+            📧 CyberMail <span class="badge bg-danger ms-1">3</span>
+          </button>
+          <button type="button" class="btn btn-outline-info fw-bold" data-sim-app="helpdesk">
+            🎫 DeskFlow Helpdesk <span class="badge bg-warning text-dark ms-1">1</span>
+          </button>
+          <button type="button" class="btn btn-outline-info fw-bold" data-sim-app="siem">
+            🛡️ CyberSIEM Console <span class="badge bg-danger ms-1">CRIT</span>
+          </button>
+          <button type="button" class="btn btn-outline-info fw-bold" data-sim-app="report">
+            📋 Incident Report Builder
+          </button>
+          <button type="button" class="btn btn-outline-info fw-bold" data-sim-app="chat">
+            💬 ChatLink (Marcus Vance)
+          </button>
+        </div>
+
+        <!-- APP 1: CYBERMAIL -->
+        <div id="simApp_mail" class="sim-app-window flex-grow-1 cq-card p-3 bg-black bg-opacity-40 border-secondary">
+          <div class="row g-3 h-100">
+            <!-- Mail Folders & List -->
+            <div class="col-12 col-md-5 border-end border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-light small text-uppercase">Inbox (3 Messages)</span>
+                <span class="badge bg-primary">Live Exchange</span>
+              </div>
+              <div class="list-group list-group-flush">
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action bg-dark text-light border-secondary p-2 active rounded mb-1">
+                  <div class="d-flex justify-content-between">
+                    <strong class="text-danger small">HR Payroll Support</strong>
+                    <span class="text-secondary small" style="font-size: 0.7rem;">09:15 AM</span>
+                  </div>
+                  <div class="small fw-semibold text-truncate">Urgent: Direct Deposit Account Verification Needed</div>
+                  <div class="text-secondary small text-truncate" style="font-size: 0.75rem;">Our automated payroll batch flagged an invalid routing number...</div>
+                </a>
+
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action bg-dark text-light border-secondary p-2 rounded mb-1">
+                  <div class="d-flex justify-content-between">
+                    <strong class="text-info small">CEO Office</strong>
+                    <span class="text-secondary small" style="font-size: 0.7rem;">08:30 AM</span>
+                  </div>
+                  <div class="small fw-semibold text-truncate">Quarterly All-Hands Meeting &amp; Roadmap</div>
+                  <div class="text-secondary small text-truncate" style="font-size: 0.75rem;">Team, please join us in the main conference room at 2 PM...</div>
+                </a>
+
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action bg-dark text-light border-secondary p-2 rounded">
+                  <div class="d-flex justify-content-between">
+                    <strong class="text-warning small">Global Logistics Partner</strong>
+                    <span class="text-secondary small" style="font-size: 0.7rem;">Yesterday</span>
+                  </div>
+                  <div class="small fw-semibold text-truncate">Overdue Invoice #INV-98214 - Attachment</div>
+                  <div class="text-secondary small text-truncate" style="font-size: 0.75rem;">Attached invoice_overdue_sept2026.pdf.exe for payment...</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Mail Preview & Investigation Suite -->
+            <div class="col-12 col-md-7 d-flex flex-column">
+              <div class="border-bottom border-secondary pb-2 mb-2">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="h6 fw-bold text-light mb-1">Urgent: Direct Deposit Account Verification Needed Before Midnight</h3>
+                    <div class="small text-secondary">
+                      From: <strong class="text-warning">HR Payroll Desk</strong> &lt;payroll@company-payrolldesk.com&gt;
+                    </div>
+                    <div class="small text-secondary">To: &lt;employee@humanfirewall.corp&gt;</div>
+                  </div>
+                  <button type="button" class="btn btn-outline-info btn-sm" id="btnInspectMimeHeaders">
+                    🔍 Inspect MIME Headers
+                  </button>
+                </div>
+              </div>
+
+              <!-- Email Body -->
+              <div class="p-3 bg-dark rounded border border-secondary mb-3 flex-grow-1" style="font-size: 0.88rem; line-height: 1.6;">
+                <p>Dear Employee,</p>
+                <p>Our automated payroll batch flagged an invalid routing number for your monthly direct deposit. To prevent a <strong>30-day salary freeze</strong>, you must click the secure verification link below and re-authenticate your banking credentials before midnight tonight:</p>
+                <p class="p-2 rounded bg-black border border-warning text-center">
+                  <a href="javascript:void(0)" class="text-warning fw-bold text-decoration-underline" id="simPhishLink">
+                    http://login.company-payrolldesk.com/update-auth
+                  </a>
+                  <span class="d-block small text-muted" style="font-size: 0.72rem;">(Hover to analyze link target)</span>
+                </p>
+                <div id="simLinkVerdictAlert" class="alert alert-danger py-2 px-3 small border-danger mb-2" style="display: none;">
+                  <strong>🚨 LINK INSPECTION WARNING:</strong> Destination resolves to <code>http://185.220.101.42/phish/harvest.php</code>.
+                  Target domain <code>company-payrolldesk.com</code> is an external lookalike registered 2 days ago!
+                </div>
+                <p class="mb-0 text-muted small">Human Resources Financial Operations Desk</p>
+              </div>
+
+              <!-- Analyst Action Bar -->
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="small text-secondary">Choose defensive containment:</div>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnQuarantinePhish">
+                    🛡️ Quarantine &amp; Block Domain
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APP 2: DESKFLOW IT HELPDESK -->
+        <div id="simApp_helpdesk" class="sim-app-window flex-grow-1 cq-card p-3 bg-black bg-opacity-40 border-secondary" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-3">
+            <div>
+              <h3 class="h6 fw-bold text-warning mb-0">Ticket #1042: Urgent Password Reset Request</h3>
+              <div class="small text-secondary">Category: Identity &amp; Account Recovery &bull; Priority: HIGH</div>
+            </div>
+            <span class="badge bg-warning text-dark">Awaiting Analyst Action</span>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-7">
+              <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <div class="small text-secondary mb-1">USER CHAT MESSAGE:</div>
+                <blockquote class="border-start border-warning ps-3 my-2 fst-italic text-light">
+                  "Hey, I am locked out of the international SWIFT wire portal from my hotel in Frankfurt. I have an urgent supplier transfer due in 20 minutes! Please reset my password and text the temporary password to my personal mobile number <strong>+1-555-019-8234</strong> right now."
+                </blockquote>
+                <div class="small text-secondary">Requester Claim: <strong>Michael Scott (VP Finance)</strong></div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-5">
+              <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <div class="small text-info fw-bold mb-2">🔍 HR Active Directory Verification:</div>
+                <ul class="list-unstyled small mb-0">
+                  <li class="mb-1 text-light">&bull; Registered Mobile: <strong class="text-success">+1-555-014-9900</strong> <span class="badge bg-danger ms-1">MISMATCH</span></li>
+                  <li class="mb-1 text-light">&bull; Current Calendar: <strong>On Annual Leave in Hawaii</strong> <span class="badge bg-danger ms-1">LOCATION ANOMALY</span></li>
+                  <li class="text-light">&bull; Corporate Policy: <strong>Dual-Authorization Mandatory</strong> for Wire portal.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-3">
+            <div class="small text-secondary">Determine Helpdesk Action:</div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-danger btn-sm" id="btnApproveBadReset">
+                ⚠️ Reset Password &amp; Text Mobile
+              </button>
+              <button type="button" class="btn btn-success btn-sm fw-bold" id="btnRejectPretexting">
+                🛡️ Reject &amp; Flag Pretexting Attack
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- APP 3: CYBERSIEM CONSOLE -->
+        <div id="simApp_siem" class="sim-app-window flex-grow-1 cq-card p-3 bg-black bg-opacity-40 border-secondary" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-3">
+            <div>
+              <h3 class="h6 fw-bold text-danger mb-0">🚨 Live Security Event Telemetry (EDR &amp; SIEM)</h3>
+              <div class="small text-secondary">Active Sensors: 142 Endpoints &bull; Cluster Status: ALERT</div>
+            </div>
+            <span class="badge bg-danger animate-pulse">1 Active Threat Detected</span>
+          </div>
+
+          <div class="table-responsive mb-3">
+            <table class="table table-dark table-sm table-hover align-middle mb-0 font-monospace" style="font-size: 0.8rem;">
+              <thead class="text-secondary">
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Severity</th>
+                  <th>Host</th>
+                  <th>Event Name</th>
+                  <th>Details</th>
+                  <th>MITRE Technique</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="table-danger">
+                  <td>09:22:14</td>
+                  <td><span class="badge bg-danger">CRITICAL</span></td>
+                  <td class="fw-bold text-warning">WS-FIN-08</td>
+                  <td>C2_BEACON_DETECTED</td>
+                  <td class="text-truncate" style="max-width: 240px;">powershell.exe -enc aWV4IChOZXctT2Jq... &rarr; 185.220.101.5:4444</td>
+                  <td>T1059.001 (PowerShell)</td>
+                </tr>
+                <tr>
+                  <td>09:21:40</td>
+                  <td><span class="badge bg-info">INFO</span></td>
+                  <td>DC-AUTH-01</td>
+                  <td>KERBEROS_TGS_REQ</td>
+                  <td>Service ticket requested for LDAP service</td>
+                  <td>T1558 (Kerberoasting)</td>
+                </tr>
+                <tr>
+                  <td>09:18:02</td>
+                  <td><span class="badge bg-secondary">LOW</span></td>
+                  <td>SRV-WEB-PROD</td>
+                  <td>HTTP_200_OK</td>
+                  <td>Inbound HTTPS GET /api/health</td>
+                  <td>Normal Traffic</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 bg-dark rounded border border-danger d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold text-light">Endpoint Containment: Workstation WS-FIN-08</div>
+              <div class="small text-secondary">Isolate host to prevent lateral credential dump and ransomware staging.</div>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm fw-bold px-3" id="btnIsolateHost">
+              🔒 Isolate WS-FIN-08 from LAN
+            </button>
+          </div>
+        </div>
+
+        <!-- APP 4: INCIDENT REPORT BUILDER -->
+        <div id="simApp_report" class="sim-app-window flex-grow-1 cq-card p-3 bg-black bg-opacity-40 border-secondary" style="display: none;">
+          <h3 class="h6 fw-bold text-info mb-2">📋 Formal Cybersecurity Incident Report #IR-2026-042</h3>
+          <p class="small text-secondary mb-3">Synthesize findings and containment measures for CISO Marcus Vance sign-off.</p>
+
+          <form id="simIncidentReportForm">
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label small text-secondary">Primary Threat Vector:</label>
+                <select class="form-select form-select-sm bg-dark text-light border-secondary" required>
+                  <option value="phish_pretext">Multi-Vector (Payroll Phishing + Executive Pretexting + C2 Beacon)</option>
+                  <option value="ddos">DDoS Volumetric Flooding</option>
+                  <option value="sql">SQL Injection Flaw</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small text-secondary">Targeted Host &amp; Department:</label>
+                <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary" value="WS-FIN-08 (Finance Department)" readonly>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small text-secondary">Containment Actions Executed:</label>
+              <div class="d-flex flex-wrap gap-3 small p-2 bg-dark rounded border border-secondary">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" checked disabled id="repChk1">
+                  <label class="form-check-label text-light" for="repChk1">Phishing URL &amp; Domain Blocked</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" checked disabled id="repChk2">
+                  <label class="form-check-label text-light" for="repChk2">Executive Impersonation Rejected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" checked disabled id="repChk3">
+                  <label class="form-check-label text-light" for="repChk3">Endpoint Isolated from Network</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary fw-bold px-4">
+                📤 Submit Report &amp; Request Day 1 Evaluation
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- APP 5: CHATLINK (MARCUS VANCE) -->
+        <div id="simApp_chat" class="sim-app-window flex-grow-1 cq-card p-3 bg-black bg-opacity-40 border-secondary" style="display: none;">
+          <div class="d-flex align-items-center gap-2 border-bottom border-secondary pb-2 mb-3">
+            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style="width: 36px; height: 36px;">
+              MV
+            </div>
+            <div>
+              <div class="fw-bold text-light small">Marcus Vance (CISO / Team Lead)</div>
+              <div class="text-success small" style="font-size: 0.72rem;">● Online &bull; Direct Secure Channel</div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-dark rounded border border-secondary mb-3 flex-grow-1" style="height: 220px; overflow-y: auto; font-size: 0.85rem;">
+            <div class="mb-2">
+              <strong class="text-info">Marcus Vance:</strong>
+              <div class="p-2 bg-black rounded mt-1 text-light">
+                "Welcome to the team! Your workstation is equipped with CyberMail, DeskFlow, and our live SIEM console. Our HR team reported a suspicious payroll email earlier. Start by inspecting it carefully!"
+              </div>
+            </div>
+            <div class="mb-2">
+              <strong class="text-info">Marcus Vance:</strong>
+              <div class="p-2 bg-black rounded mt-1 text-light">
+                "Remember: never accept verbal or text-message password reset requests from executives without verifying through our internal directory!"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL: MIME HEADERS INSPECTION -->
+<!-- ======================================================================= -->
+<div id="simMimeHeadersModal" class="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-75 justify-content-center align-items-center p-3" style="display: none; z-index: 2000;">
+  <div class="cq-card p-4 bg-dark text-light border-secondary shadow-lg rounded" style="max-width: 680px; width: 100%;">
+    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-3">
+      <h4 class="h6 fw-bold text-info mb-0">🔍 Raw MIME Email Headers Analysis</h4>
+      <button type="button" class="btn-close btn-close-white" id="btnCloseMimeHeaders"></button>
+    </div>
+    <div class="p-3 bg-black font-monospace rounded text-success small mb-3 border border-secondary" style="max-height: 260px; overflow-y: auto; font-size: 0.78rem;">
+Delivered-To: employee@humanfirewall.corp<br>
+Received: from mail.external-relay-net.ru (185.220.101.42)<br>
+&nbsp;&nbsp;by mx.humanfirewall.corp with ESMTP id q872<br>
+Return-Path: &lt;spoofed-bounces@company-payrolldesk.com&gt;<br>
+<span class="text-danger fw-bold">Authentication-Results: spf=fail (sender IP 185.220.101.42 is not authorized)</span><br>
+<span class="text-danger fw-bold">DKIM-Signature: NONE (Message unsigned)</span><br>
+<span class="text-danger fw-bold">DMARC: FAIL (p=none; policy not aligned)</span><br>
+From: "HR Payroll Support" &lt;payroll@company-payrolldesk.com&gt;<br>
+Subject: Urgent: Direct Deposit Account Verification Needed Before Midnight<br>
+X-Mailer: PHPMailer 6.1.4 (Scripted Bulk Relay)
+    </div>
+    <div class="small text-secondary mb-3">
+      <strong>Analyst Takeaway:</strong> The sender IP originates from a foreign relay network. SPF and DKIM completely fail authentication, confirming this is a forged spear-phishing attack.
+    </div>
+    <div class="text-end">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('simMimeHeadersModal').style.display='none'">Close Headers</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL: END-OF-DAY PERFORMANCE REVIEW & CAREER ADVANCEMENT -->
+<!-- ======================================================================= -->
+<div id="simEndOfDayModal" class="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-80 justify-content-center align-items-center p-3" style="display: none; z-index: 3000;">
+  <div class="cq-card p-4 bg-dark text-light border-warning shadow-lg rounded text-center" style="max-width: 620px; width: 100%;">
+    <div class="fs-1 mb-2">🏆</div>
+    <h3 class="h4 fw-bold text-warning mb-1">Shift 1 Complete: Probation Cleared!</h3>
+    <p class="text-secondary small mb-4">Official Performance Evaluation &bull; Junior Security Analyst</p>
+
+    <div class="row g-3 mb-4">
+      <div class="col-4">
+        <div class="p-2 bg-black rounded border border-secondary">
+          <div class="small text-secondary">Tasks Done</div>
+          <div class="fs-5 fw-bold text-info" id="simReviewTasks">4 / 4</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="p-2 bg-black rounded border border-secondary">
+          <div class="small text-secondary">Shift Time</div>
+          <div class="fs-5 fw-bold text-light" id="simReviewTime">02:45</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="p-2 bg-black rounded border border-secondary">
+          <div class="small text-secondary">Mistakes</div>
+          <div class="fs-5 fw-bold text-success" id="simReviewMistakes">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 bg-black rounded border border-info text-start mb-4">
+      <div class="small text-info fw-bold mb-1">CISO Marcus Vance's Written Assessment:</div>
+      <p class="small text-light mb-0" style="line-height: 1.5;">
+        "Exceptional work on your first day! You spotted the forged payroll headers before any credentials leaked, shut down an aggressive executive pretexting attempt, and swiftly isolated the beaconing finance workstation before ransomware could move laterally. You have officially passed your Day 1 probation with honors!"
+      </p>
+    </div>
+
+    <div id="simReviewApiFeedback" class="alert alert-success small mb-4" style="display: none;"></div>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('games.index') }}" class="btn btn-primary fw-bold px-4 py-2">
+        🎖️ Claim <span id="simReviewXP">+100 XP</span> &amp; Return to Games Hub
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/office_simulator.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+  var sim = new CorporateOfficeSimulator({
+    canvasId: "officeCanvas3D",
+    gameSlug: "{{ game.slug }}",
+    csrfToken: csrfToken
+  });
+});
+</script>
+{% endblock %}

@@ -7,7 +7,6 @@ security headers, error handlers and CLI commands together.
 """
 
 import logging
-import os
 from pathlib import Path
 
 from flask import Flask, g, jsonify, render_template, request

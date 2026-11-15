@@ -3,17 +3,15 @@
 from __future__ import annotations
 
 from datetime import timedelta
-import pytest
 
-from app.models import CyberNews, NewsSource
+from app.models import CyberNews
 from app.models.user import utcnow
 from app.services.catalog_cyber_news import CURATED_CYBER_ATTACKS
 from app.services.news_service import (
     ensure_cyber_news,
-    get_news_feed,
     prune_expired_news,
 )
-from .conftest import LEARNER_PASSWORD, login
+from .conftest import login
 
 
 def test_curated_attacks_catalog_integrity():

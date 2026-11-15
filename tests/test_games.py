@@ -154,3 +154,40 @@ def test_scenario_choices_are_immutable_content(app):
             f"scenario {scenario.id} has {len(correct)} correct choices"
         )
         assert all(isinstance(c, ScenarioChoice) for c in scenario.choices)
+
+
+def test_corporate_office_simulator_renders_workstation_and_apps(client, learner):
+    login(client, learner.username)
+    response = client.get("/games/corporate-office-simulator")
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert "Corporate Office Simulator" in html
+    assert "officeCanvas3D" in html
+    assert "CyberWork OS Enterprise" in html
+    assert "CyberMail" in html
+    assert "DeskFlow Helpdesk" in html
+    assert "CyberSIEM" in html
+    assert "Incident Report Builder" in html
+
+
+def test_corporate_office_simulator_complete_awards_xp_idempotently(client, learner):
+    login(client, learner.username)
+    res1 = client.post(
+        "/api/games/corporate-office-simulator/complete",
+        json={"score": 100, "total": 100, "time_spent": 180},
+    )
+    assert res1.status_code == 200
+    data1 = res1.get_json()
+    assert data1["passed"] is True
+    assert data1["xp_awarded"] == 110  # 100 base XP + 10 perfect score bonus
+
+    # Idempotent replay: zero additional XP payout
+    res2 = client.post(
+        "/api/games/corporate-office-simulator/complete",
+        json={"score": 100, "total": 100, "time_spent": 180},
+    )
+    assert res2.status_code == 200
+    data2 = res2.get_json()
+    assert data2["passed"] is True
+    assert data2["xp_awarded"] == 0
+

@@ -53,9 +53,29 @@ def index():
     )
 
 
+@games_bp.route("/corporate-office-simulator")
+@games_bp.route("/office-simulator")
+@login_required
+def corporate_office_simulator():
+    """Flagship 3D Corporate Office & Cybersecurity Career Job Simulator."""
+    game = Game.query.filter_by(slug="corporate-office-simulator", state="published").first()
+    if not game:
+        game = Game.query.filter_by(slug="phishing-detective").first_or_404()
+
+    record = progress_service.get_progress(current_user.id, "game", game.id)
+    return render_template(
+        "games/simulator.html",
+        game=game,
+        record=record,
+    )
+
+
 @games_bp.route("/<slug>")
 @login_required
 def play(slug: str):
+    if slug in ("corporate-office-simulator", "office-simulator"):
+        return corporate_office_simulator()
+
     game = Game.query.filter_by(slug=slug, state="published").first_or_404()
     scenarios = (
         GameScenario.query.filter_by(game_id=game.id)

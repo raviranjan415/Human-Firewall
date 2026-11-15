@@ -130,3 +130,4 @@ The Human Firewall Security Team
 </html>
 """
     return send_email(user.email, subject, text_body, html_body)
+

@@ -17,13 +17,11 @@ import logging
 import re
 from datetime import datetime, timedelta
 
-from flask import current_app
-
 from app.extensions import db
 from app.models import CyberNews, NewsSource
 from app.models.user import utcnow
 from app.services.catalog_cyber_news import CURATED_CYBER_ATTACKS
-from app.services.news_ingest import DEFAULT_SOURCES, _clean, ensure_default_sources
+from app.services.news_ingest import _clean, ensure_default_sources
 
 logger = logging.getLogger(__name__)
 

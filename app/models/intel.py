@@ -275,10 +275,14 @@ class CyberNews(db.Model, TimestampMixin):
             cves = ", ".join(tech.get("cve_list", []))
             tactics = ", ".join(tech.get("mitre_tactics", []))
             parts = []
-            if vector: parts.append(f"Attack Vector: {vector}")
-            if root: parts.append(f"Root Cause: {root}")
-            if cves: parts.append(f"CVEs: {cves}")
-            if tactics: parts.append(f"MITRE ATT&CK: {tactics}")
+            if vector:
+                parts.append(f"Attack Vector: {vector}")
+            if root:
+                parts.append(f"Root Cause: {root}")
+            if cves:
+                parts.append(f"CVEs: {cves}")
+            if tactics:
+                parts.append(f"MITRE ATT&CK: {tactics}")
             if parts:
                 return "\n\n".join(parts)
         if self.what_happened_en and len(self.what_happened_en.strip()) > 50 and self.what_happened_en.strip().lower() != "none":
@@ -289,7 +293,7 @@ class CyberNews(db.Model, TimestampMixin):
     def effective_cure_remediation(self) -> list[str]:
         """Concrete, actionable cure & remediation steps."""
         if self.what_to_do_en and self.what_to_do_en.strip() and self.what_to_do_en.strip().lower() != "none":
-            lines = [l.strip().lstrip("0123456789.- ") for l in self.what_to_do_en.split("\n") if l.strip()]
+            lines = [line.strip().lstrip("0123456789.- ") for line in self.what_to_do_en.split("\n") if line.strip()]
             if lines:
                 return lines
         return [

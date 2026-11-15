@@ -190,7 +190,6 @@ def test_password_reset_request_never_reveals_whether_an_account_exists(client):
 
 
 def test_password_reset_token_changes_the_password(client, learner, app):
-    token = app.config["SECRET_KEY"]
     from app.auth.routes import _serializer
 
     signed = _serializer().dumps({"uid": learner.id})

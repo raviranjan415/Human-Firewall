@@ -32,9 +32,9 @@ def get_lesson_by_id_or_slug(
     if lesson_id and lesson_id in CURATED_LESSONS:
         return CURATED_LESSONS[lesson_id]
     if slug:
-        for l in CURATED_LESSONS.values():
-            if l.get("slug") == slug:
-                return l
+        for lesson_item in CURATED_LESSONS.values():
+            if lesson_item.get("slug") == slug:
+                return lesson_item
     return None
 
 
