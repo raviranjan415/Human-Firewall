@@ -808,7 +808,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   // 30-SECOND SYNCHRONIZED CLASSROOM VIDEO & TEACHER AUDIO ENGINE
   // =========================================================================
   var canvas = document.getElementById('simCanvas');
-  var ctx = canvas.getContext('2d');
+  var ctx = canvas ? canvas.getContext('2d') : null;
   var isPlaying = false;
   var currentVideoSecond = 0; // 0 to 30
   var totalDuration = 30; // exactly 30 seconds
@@ -817,6 +817,35 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   var selectedTeacher = 'alex'; // 'alex' or 'maya'
   var playbackSpeed = 1.0; // 0.75, 1.0, 1.25, 1.5
 
+  // Robust universal rounded rectangle helper (works across all browsers)
+  function drawRoundedRect(c, x, y, w, h, r, fill, stroke) {
+    if (!c) return;
+    if (!r) r = 0;
+    if (typeof r === 'number') r = [r, r, r, r];
+    var r0 = r[0] || 0, r1 = r[1] || r0, r2 = r[2] || r0, r3 = r[3] || r1;
+    c.beginPath();
+    c.moveTo(x + r0, y);
+    c.lineTo(x + w - r1, y);
+    c.quadraticCurveTo(x + w, y, x + w, y + r1);
+    c.lineTo(x + w, y + h - r2);
+    c.quadraticCurveTo(x + w, y + h, x + w - r2, y + h);
+    c.lineTo(x + r3, y + h);
+    c.quadraticCurveTo(x, y + h, x, y + h - r3);
+    c.lineTo(x, y + r0);
+    c.quadraticCurveTo(x, y, x + r0, y);
+    c.closePath();
+    if (fill) c.fill();
+    if (stroke) c.stroke();
+  }
+
+  // Polyfill CanvasRenderingContext2D if roundRect is missing in browser
+  if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      drawRoundedRect(this, x, y, w, h, r, false, false);
+      return this;
+    };
+  }
+
   // Classroom Web Audio Synthesizer for natural sounds
   function playClassroomAudio(type) {
     if (isMuted) return;
@@ -824,6 +853,9 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       var AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
       var actx = new AudioCtx();
+      if (actx.state === 'suspended') {
+        actx.resume();
+      }
       var now = actx.currentTime;
       if (type === 'bell' || type === 'start') {
         var o1 = actx.createOscillator(), o2 = actx.createOscillator();
@@ -843,19 +875,19 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
         osc.start(now); osc.stop(now + 0.1);
       } else if (type === 'shield') {
         [440, 554.37, 659.25].forEach(function(freq) {
-          var o = actx.createOscillator(), g = actx.createGain();
+          var o = actx.createOscillator(), gr = actx.createGain();
           o.type = 'sine'; o.frequency.setValueAtTime(freq, now);
-          g.gain.setValueAtTime(0.06, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-          o.connect(g); g.connect(actx.destination);
+          gr.gain.setValueAtTime(0.06, now); gr.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+          o.connect(gr); gr.connect(actx.destination);
           o.start(now); o.stop(now + 0.8);
         });
       } else if (type === 'win') {
         [523.25, 659.25, 783.99, 1046.5].forEach(function(freq, idx) {
-          var o = actx.createOscillator(), g = actx.createGain();
+          var o = actx.createOscillator(), gw = actx.createGain();
           o.type = 'sine'; o.frequency.setValueAtTime(freq, now + idx * 0.12);
-          g.gain.setValueAtTime(0.09, now + idx * 0.12);
-          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.6);
-          o.connect(g); g.connect(actx.destination);
+          gw.gain.setValueAtTime(0.09, now + idx * 0.12);
+          gw.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.6);
+          o.connect(gw); gw.connect(actx.destination);
           o.start(now + idx * 0.12); o.stop(now + idx * 0.12 + 0.6);
         });
       }
@@ -968,292 +1000,311 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     ];
   }
 
+  window._speechUtterance = null;
   function playNarrationSegment(text) {
     if (isMuted || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    var utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
-    utterance.rate = playbackSpeed;
-    utterance.pitch = selectedTeacher === 'maya' ? 1.12 : 1.02;
-    var v = getTeacherVoice(currentLang);
-    if (v) utterance.voice = v;
-    window.speechSynthesis.speak(utterance);
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+      window.speechSynthesis.cancel();
+      var utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-US';
+      utterance.rate = playbackSpeed;
+      utterance.pitch = selectedTeacher === 'maya' ? 1.12 : 1.02;
+      var v = getTeacherVoice(currentLang);
+      if (v) utterance.voice = v;
+      window._speechUtterance = utterance;
+      utterance.onend = function () {
+        window._speechUtterance = null;
+      };
+      utterance.onerror = function () {
+        window._speechUtterance = null;
+      };
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {}
   }
 
   // =========================================================================
   // VIBRANT CARTOON CLASSROOM RENDERER (DRAW SIM)
   // =========================================================================
   function drawSim(sec) {
-    var w = canvas.width;
-    var h = canvas.height;
-    var title = ROOM_DATA.title[currentLang] || ROOM_DATA.title.en;
+    if (!ctx || !canvas) return;
+    try {
+      var w = canvas.width;
+      var h = canvas.height;
+      var title = ROOM_DATA.title[currentLang] || ROOM_DATA.title.en;
 
-    // 1. Classroom Background & Wall Lighting
-    var wallGrad = ctx.createLinearGradient(0, 0, 0, 310);
-    wallGrad.addColorStop(0, "#0b1120");
-    wallGrad.addColorStop(1, "#1e293b");
-    ctx.fillStyle = wallGrad;
-    ctx.fillRect(0, 0, w, 310);
+      // 1. Classroom Background & Wall Lighting
+      var wallGrad = ctx.createLinearGradient(0, 0, 0, 310);
+      wallGrad.addColorStop(0, "#0b1120");
+      wallGrad.addColorStop(1, "#1e293b");
+      ctx.fillStyle = wallGrad;
+      ctx.fillRect(0, 0, w, 310);
 
-    // Ceiling Downlights Radial Glow Cones
-    var glow1 = ctx.createRadialGradient(130, 0, 10, 130, 200, 260);
-    glow1.addColorStop(0, "rgba(56, 189, 248, 0.12)");
-    glow1.addColorStop(1, "transparent");
-    ctx.fillStyle = glow1;
-    ctx.fillRect(0, 0, 280, 310);
+      // Ceiling Downlights Radial Glow Cones
+      var glow1 = ctx.createRadialGradient(130, 0, 10, 130, 200, 260);
+      glow1.addColorStop(0, "rgba(56, 189, 248, 0.12)");
+      glow1.addColorStop(1, "transparent");
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, 280, 310);
 
-    var glow2 = ctx.createRadialGradient(415, 0, 20, 415, 200, 320);
-    glow2.addColorStop(0, "rgba(251, 191, 36, 0.08)");
-    glow2.addColorStop(1, "transparent");
-    ctx.fillStyle = glow2;
-    ctx.fillRect(200, 0, 430, 310);
+      var glow2 = ctx.createRadialGradient(415, 0, 20, 415, 200, 320);
+      glow2.addColorStop(0, "rgba(251, 191, 36, 0.08)");
+      glow2.addColorStop(1, "transparent");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(200, 0, 430, 310);
 
-    // Wall Chair-Rail Trim
-    ctx.fillStyle = "#334155";
-    ctx.fillRect(0, 296, w, 6);
-    ctx.fillStyle = "#1e293b";
-    ctx.fillRect(0, 302, w, 4);
+      // Wall Chair-Rail Trim
+      ctx.fillStyle = "#334155";
+      ctx.fillRect(0, 296, w, 6);
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(0, 302, w, 4);
 
-    // Classroom Parquet Wood Floor
-    var floorGrad = ctx.createLinearGradient(0, 306, 0, h);
-    floorGrad.addColorStop(0, "#1e293b");
-    floorGrad.addColorStop(1, "#0f172a");
-    ctx.fillStyle = floorGrad;
-    ctx.fillRect(0, 306, w, h - 306);
+      // Classroom Parquet Wood Floor
+      var floorGrad = ctx.createLinearGradient(0, 306, 0, h);
+      floorGrad.addColorStop(0, "#1e293b");
+      floorGrad.addColorStop(1, "#0f172a");
+      ctx.fillStyle = floorGrad;
+      ctx.fillRect(0, 306, w, h - 306);
 
-    // Perspective Floor Plank Lines
-    ctx.strokeStyle = "rgba(71, 85, 105, 0.35)";
-    ctx.lineWidth = 1;
-    for (var fx = -100; fx < w + 200; fx += 70) {
-      ctx.beginPath();
-      ctx.moveTo(fx, 306);
-      ctx.lineTo(fx + (fx - w / 2) * 0.45, h);
-      ctx.stroke();
-    }
+      // Perspective Floor Plank Lines
+      ctx.strokeStyle = "rgba(71, 85, 105, 0.35)";
+      ctx.lineWidth = 1;
+      for (var fx = -100; fx < w + 200; fx += 70) {
+        ctx.beginPath();
+        ctx.moveTo(fx, 306);
+        ctx.lineTo(fx + (fx - w / 2) * 0.45, h);
+        ctx.stroke();
+      }
 
-    // Top Classroom Banner
-    ctx.fillStyle = "#0f172a";
-    ctx.fillRect(210, 14, 410, 26);
-    ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(210, 14, 410, 26);
-    ctx.fillStyle = "#facc15";
-    ctx.font = "bold 11px -apple-system, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("🎓 HUMAN FIREWALL ACADEMY · CYBER DEFENSE CLASSROOM", 415, 31);
-    ctx.textAlign = "start";
+      // Top Classroom Banner
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(210, 14, 410, 26);
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(210, 14, 410, 26);
+      ctx.fillStyle = "#facc15";
+      ctx.font = "bold 11px -apple-system, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("🎓 HUMAN FIREWALL ACADEMY · CYBER DEFENSE CLASSROOM", 415, 31);
+      ctx.textAlign = "start";
 
-    // Classroom Wall Clock with Animated Ticking Hand
-    var clockX = 745, clockY = 32, clockR = 17;
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath(); ctx.arc(clockX, clockY, clockR, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = "#f59e0b"; ctx.lineWidth = 2.5; ctx.stroke();
-    ctx.fillStyle = "#0f172a";
-    ctx.beginPath(); ctx.arc(clockX, clockY, 2, 0, Math.PI * 2); ctx.fill();
-    // Clock markers
-    for (var m = 0; m < 12; m++) {
-      var a = (m * 30) * Math.PI / 180;
-      ctx.fillRect(clockX + Math.sin(a) * 13 - 1, clockY - Math.cos(a) * 13 - 1, 2, 2);
-    }
-    // Clock hands
-    var secAngle = (sec * 12) * Math.PI / 180;
-    ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.sin(secAngle) * 12, clockY - Math.cos(secAngle) * 12); ctx.stroke();
-    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + 8, clockY); ctx.stroke();
+      // Classroom Wall Clock with Animated Ticking Hand
+      var clockX = 745, clockY = 32, clockR = 17;
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(clockX, clockY, clockR, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#f59e0b"; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath(); ctx.arc(clockX, clockY, 2, 0, Math.PI * 2); ctx.fill();
+      // Clock markers
+      for (var m = 0; m < 12; m++) {
+        var a = (m * 30) * Math.PI / 180;
+        ctx.fillRect(clockX + Math.sin(a) * 13 - 1, clockY - Math.cos(a) * 13 - 1, 2, 2);
+      }
+      // Clock hands
+      var secAngle = (sec * 12) * Math.PI / 180;
+      ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.sin(secAngle) * 12, clockY - Math.cos(secAngle) * 12); ctx.stroke();
+      ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + 8, clockY); ctx.stroke();
 
-    // Wall Cyber Defense Diploma
-    ctx.fillStyle = "#1e293b"; ctx.fillRect(660, 16, 52, 34);
-    ctx.strokeStyle = "#facc15"; ctx.lineWidth = 1.5; ctx.strokeRect(660, 16, 52, 34);
-    ctx.fillStyle = "#e2e8f0"; ctx.fillRect(664, 20, 44, 26);
-    ctx.fillStyle = "#1d4ed8"; ctx.font = "bold 6px sans-serif"; ctx.fillText("HONOR ROLL", 668, 28);
-    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(686, 38, 4, 0, Math.PI * 2); ctx.fill();
+      // Wall Cyber Defense Diploma
+      ctx.fillStyle = "#1e293b"; ctx.fillRect(660, 16, 52, 34);
+      ctx.strokeStyle = "#facc15"; ctx.lineWidth = 1.5; ctx.strokeRect(660, 16, 52, 34);
+      ctx.fillStyle = "#e2e8f0"; ctx.fillRect(664, 20, 44, 26);
+      ctx.fillStyle = "#1d4ed8"; ctx.font = "bold 6px sans-serif"; ctx.fillText("HONOR ROLL", 668, 28);
+      ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(686, 38, 4, 0, Math.PI * 2); ctx.fill();
 
-    // 2. Active Scene Detection
-    var scenes = (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[currentLang]) ? ROOM_DATA.video_scenes[currentLang] : [];
-    var activeIdx = 0;
-    if (sec >= 23) activeIdx = 3;
-    else if (sec >= 15) activeIdx = 2;
-    else if (sec >= 7) activeIdx = 1;
+      // 2. Active Scene Detection
+      var scenes = (ROOM_DATA.video_scenes && ROOM_DATA.video_scenes[currentLang]) ? ROOM_DATA.video_scenes[currentLang] : [];
+      var activeIdx = 0;
+      if (sec >= 23) activeIdx = 3;
+      else if (sec >= 15) activeIdx = 2;
+      else if (sec >= 7) activeIdx = 1;
 
-    var s = (scenes && scenes[activeIdx]) ? scenes[activeIdx] : null;
-    var chapterEl = document.getElementById('player-chapter-title');
+      var s = (scenes && scenes[activeIdx]) ? scenes[activeIdx] : null;
+      var chapterEl = document.getElementById('player-chapter-title');
 
-    // 3. Digital Smartboard Frame & Screen
-    var bX = 205, bY = 52, bW = 420, bH = 244;
-    // Outer brushed metal frame
-    ctx.fillStyle = "#334155";
-    ctx.beginPath(); ctx.roundRect(bX - 6, bY - 6, bW + 12, bH + 12, 10); ctx.fill();
-    ctx.strokeStyle = "#64748b"; ctx.lineWidth = 2; ctx.stroke();
+      // 3. Digital Smartboard Frame & Screen
+      var bX = 205, bY = 52, bW = 420, bH = 244;
+      // Outer brushed metal frame
+      ctx.fillStyle = "#334155";
+      ctx.strokeStyle = "#64748b";
+      ctx.lineWidth = 2;
+      drawRoundedRect(ctx, bX - 6, bY - 6, bW + 12, bH + 12, 10, true, true);
 
-    // Inner Smartboard Display Area
-    var scrGrad;
-    if (activeIdx === 1) {
-      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
-      scrGrad.addColorStop(0, "#1c0b0e"); scrGrad.addColorStop(1, "#0a0304");
-    } else if (activeIdx === 2) {
-      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
-      scrGrad.addColorStop(0, "#061a12"); scrGrad.addColorStop(1, "#020b08");
-    } else if (activeIdx === 3) {
-      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
-      scrGrad.addColorStop(0, "#0a172e"); scrGrad.addColorStop(1, "#040914");
-    } else {
-      scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
-      scrGrad.addColorStop(0, "#081326"); scrGrad.addColorStop(1, "#030812");
-    }
-    ctx.fillStyle = scrGrad;
-    ctx.beginPath(); ctx.roundRect(bX, bY, bW, bH, 6); ctx.fill();
+      // Inner Smartboard Display Area
+      var scrGrad;
+      if (activeIdx === 1) {
+        scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+        scrGrad.addColorStop(0, "#1c0b0e"); scrGrad.addColorStop(1, "#0a0304");
+      } else if (activeIdx === 2) {
+        scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+        scrGrad.addColorStop(0, "#061a12"); scrGrad.addColorStop(1, "#020b08");
+      } else if (activeIdx === 3) {
+        scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+        scrGrad.addColorStop(0, "#0a172e"); scrGrad.addColorStop(1, "#040914");
+      } else {
+        scrGrad = ctx.createLinearGradient(bX, bY, bX, bY + bH);
+        scrGrad.addColorStop(0, "#081326"); scrGrad.addColorStop(1, "#030812");
+      }
+      ctx.fillStyle = scrGrad;
+      drawRoundedRect(ctx, bX, bY, bW, bH, 6, true, false);
 
-    // Smartboard Border Glow
-    var bGlowColor = activeIdx === 1 ? "#ef4444" : activeIdx === 2 ? "#10b981" : activeIdx === 3 ? "#f59e0b" : "#38bdf8";
-    ctx.strokeStyle = bGlowColor; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.roundRect(bX, bY, bW, bH, 6); ctx.stroke();
+      // Smartboard Border Glow
+      var bGlowColor = activeIdx === 1 ? "#ef4444" : activeIdx === 2 ? "#10b981" : activeIdx === 3 ? "#f59e0b" : "#38bdf8";
+      ctx.strokeStyle = bGlowColor; ctx.lineWidth = 1.5;
+      drawRoundedRect(ctx, bX, bY, bW, bH, 6, false, true);
 
-    // Smartboard Header Bar
-    ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
-    ctx.fillRect(bX, bY, bW, 26);
-    ctx.strokeStyle = "rgba(100, 116, 139, 0.4)"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(bX, bY + 26); ctx.lineTo(bX + bW, bY + 26); ctx.stroke();
+      // Smartboard Header Bar
+      ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+      ctx.fillRect(bX, bY, bW, 26);
+      ctx.strokeStyle = "rgba(100, 116, 139, 0.4)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(bX, bY + 26); ctx.lineTo(bX + bW, bY + 26); ctx.stroke();
 
-    // Smartboard Title & Status LED
-    ctx.fillStyle = bGlowColor; ctx.beginPath(); ctx.arc(bX + 14, bY + 13, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px -apple-system, sans-serif";
-    var smartTitle = (s && s.board_title) ? s.board_title : (title.substring(0, 36) + " · LESSON");
-    ctx.fillText(smartTitle.toUpperCase(), bX + 26, bY + 17);
+      // Smartboard Title & Status LED
+      ctx.fillStyle = bGlowColor; ctx.beginPath(); ctx.arc(bX + 14, bY + 13, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px -apple-system, sans-serif";
+      var smartTitle = (s && s.board_title) ? s.board_title : (title.substring(0, 36) + " · LESSON");
+      ctx.fillText(smartTitle.toUpperCase(), bX + 26, bY + 17);
 
-    // Active Bullet Point Detection for Teacher Laser Pointer
-    var sceneElapsed = sec - (activeIdx === 3 ? 23 : activeIdx === 2 ? 15 : activeIdx === 1 ? 7 : 0);
-    var activeBullet = sceneElapsed < 2.5 ? 0 : (sceneElapsed < 5 ? 1 : 2);
-    var pointerTargetY = bY + 80 + activeBullet * 44;
-    var pointerTargetX = bX + 30;
+      // Active Bullet Point Detection for Teacher Laser Pointer
+      var sceneElapsed = sec - (activeIdx === 3 ? 23 : activeIdx === 2 ? 15 : activeIdx === 1 ? 7 : 0);
+      var activeBullet = sceneElapsed < 2.5 ? 0 : (sceneElapsed < 5 ? 1 : 2);
+      var pointerTargetY = bY + 80 + activeBullet * 44;
+      var pointerTargetX = bX + 30;
 
-    // 4. Whiteboard Visual Content by Phase
-    if (activeIdx === 0) {
-      if (chapterEl) chapterEl.textContent = s ? s.title : "1. Attack Vector (0:00)";
+      // 4. Whiteboard Visual Content by Phase
+      if (activeIdx === 0) {
+        if (chapterEl) chapterEl.textContent = s ? s.title : "1. Attack Vector (0:00)";
 
-      // Connected Flow Diagram on Board
-      ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.roundRect(bX + 18, bY + 36, 92, 28, 5); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎭 Attacker", bX + 32, bY + 54);
+        // Connected Flow Diagram on Board
+        ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 1.5;
+        drawRoundedRect(ctx, bX + 18, bY + 36, 92, 28, 5, true, true);
+        ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎭 Attacker", bX + 32, bY + 54);
 
-      // Arrow with moving packet
-      ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(bX + 112, bY + 50); ctx.lineTo(bX + 280, bY + 50); ctx.stroke();
-      var pktX = bX + 115 + ((sec * 55) % 155);
-      ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.arc(pktX, bY + 50, 4, 0, Math.PI * 2); ctx.fill();
+        // Arrow with moving packet
+        ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(bX + 112, bY + 50); ctx.lineTo(bX + 280, bY + 50); ctx.stroke();
+        var pktX = bX + 115 + ((sec * 55) % 155);
+        ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.arc(pktX, bY + 50, 4, 0, Math.PI * 2); ctx.fill();
 
-      ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.roundRect(bX + 282, bY + 36, 118, 28, 5); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎯 Target Asset", bX + 296, bY + 54);
+        ctx.fillStyle = "#1e293b"; ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 1.5;
+        drawRoundedRect(ctx, bX + 282, bY + 36, 118, 28, 5, true, true);
+        ctx.fillStyle = "#ffffff"; ctx.font = "bold 10px sans-serif"; ctx.fillText("🎯 Target Asset", bX + 296, bY + 54);
 
-      // Teaching Bullets
-      var b1_0 = s ? s.badge : "Perimeter Vector";
-      var b1_1 = (s && s.line1) ? s.line1 : "Initial deceptive contact via unverified channel.";
-      var b1_2 = (s && s.line2) ? s.line2 : "Exploits natural helpfulness and authority.";
+        // Teaching Bullets
+        var b1_0 = s ? s.badge : "Perimeter Vector";
+        var b1_1 = (s && s.line1) ? s.line1 : "Initial deceptive contact via unverified channel.";
+        var b1_2 = (s && s.line2) ? s.line2 : "Exploits natural helpfulness and authority.";
 
-      drawBoardBullet(ctx, bX + 18, bY + 86, "📌", "VECTOR:", b1_0, activeBullet === 0);
-      drawBoardBullet(ctx, bX + 18, bY + 130, "📌", "SCENARIO:", b1_1.substring(0, 52), activeBullet === 1);
-      drawBoardBullet(ctx, bX + 18, bY + 174, "📌", "TACTIC:", b1_2.substring(0, 52), activeBullet === 2);
+        drawBoardBullet(ctx, bX + 18, bY + 86, "📌", "VECTOR:", b1_0, activeBullet === 0);
+        drawBoardBullet(ctx, bX + 18, bY + 130, "📌", "SCENARIO:", b1_1.substring(0, 52), activeBullet === 1);
+        drawBoardBullet(ctx, bX + 18, bY + 174, "📌", "TACTIC:", b1_2.substring(0, 52), activeBullet === 2);
 
-    } else if (activeIdx === 1) {
-      if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:07)";
+      } else if (activeIdx === 1) {
+        if (chapterEl) chapterEl.textContent = s ? s.title : "2. Tactical Red Flags (0:07)";
 
-      // Warning Banner on Board
-      ctx.fillStyle = "#7f1d1d"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
-      ctx.fillStyle = "#fef2f2"; ctx.font = "bold 11px sans-serif";
-      ctx.fillText("🚨 CRITICAL WARNING SIGNS (DON'T IGNORE)", bX + 24, bY + 50);
+        // Warning Banner on Board
+        ctx.fillStyle = "#7f1d1d"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+        ctx.fillStyle = "#fef2f2"; ctx.font = "bold 11px sans-serif";
+        ctx.fillText("🚨 CRITICAL WARNING SIGNS (DON'T IGNORE)", bX + 24, bY + 50);
 
-      var b2_0 = s ? s.badge : "High Severity Lever";
-      var b2_1 = (s && s.line1) ? s.line1 : "Manufactured urgency to trigger impulsive action.";
-      var b2_2 = (s && s.line2) ? s.line2 : "Demand to skip verification or keep secrecy.";
+        var b2_0 = s ? s.badge : "High Severity Lever";
+        var b2_1 = (s && s.line1) ? s.line1 : "Manufactured urgency to trigger impulsive action.";
+        var b2_2 = (s && s.line2) ? s.line2 : "Demand to skip verification or keep secrecy.";
 
-      drawBoardBullet(ctx, bX + 18, bY + 76, "⚠️", "LEVER:", b2_0, activeBullet === 0, "#f87171");
-      drawBoardBullet(ctx, bX + 18, bY + 120, "⚠️", "RED FLAG:", b2_1.substring(0, 52), activeBullet === 1, "#fca5a5");
-      drawBoardBullet(ctx, bX + 18, bY + 164, "⚠️", "PRESSURE:", b2_2.substring(0, 52), activeBullet === 2, "#fca5a5");
+        drawBoardBullet(ctx, bX + 18, bY + 76, "⚠️", "LEVER:", b2_0, activeBullet === 0, "#f87171");
+        drawBoardBullet(ctx, bX + 18, bY + 120, "⚠️", "RED FLAG:", b2_1.substring(0, 52), activeBullet === 1, "#fca5a5");
+        drawBoardBullet(ctx, bX + 18, bY + 164, "⚠️", "PRESSURE:", b2_2.substring(0, 52), activeBullet === 2, "#fca5a5");
 
-      // Cartoon Scammer Mascot Peeking from top right of the board
-      drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, false);
+        // Cartoon Scammer Mascot Peeking from top right of the board
+        drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, false);
 
-    } else if (activeIdx === 2) {
-      if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:15)";
+      } else if (activeIdx === 2) {
+        if (chapterEl) chapterEl.textContent = s ? s.title : "3. Human Firewall Defense (0:15)";
 
-      // Defense Protocol Banner
-      ctx.fillStyle = "#064e3b"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
-      ctx.fillStyle = "#ecfdf5"; ctx.font = "bold 11px sans-serif";
-      ctx.fillText("🛡️ 3-STEP HUMAN FIREWALL PROTOCOL", bX + 24, bY + 50);
+        // Defense Protocol Banner
+        ctx.fillStyle = "#064e3b"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+        ctx.fillStyle = "#ecfdf5"; ctx.font = "bold 11px sans-serif";
+        ctx.fillText("🛡️ 3-STEP HUMAN FIREWALL PROTOCOL", bX + 24, bY + 50);
 
-      var b3_0 = "STEP 1: ⏸️ 60-Sec Pause — Stop the panic reflex.";
-      var b3_1 = "STEP 2: 🔍 INSPECT — " + (s && s.line1 ? s.line1.substring(0, 42) : "Verify sender & indicators");
-      var b3_2 = "STEP 3: 📞 OUT-OF-BAND — " + (s && s.line2 ? s.line2.substring(0, 40) : "Confirm via official channel");
+        var b3_0 = "STEP 1: ⏸️ 60-Sec Pause — Stop the panic reflex.";
+        var b3_1 = "STEP 2: 🔍 INSPECT — " + (s && s.line1 ? s.line1.substring(0, 42) : "Verify sender & indicators");
+        var b3_2 = "STEP 3: 📞 OUT-OF-BAND — " + (s && s.line2 ? s.line2.substring(0, 40) : "Confirm via official channel");
 
-      drawBoardBullet(ctx, bX + 18, bY + 76, "✅", "", b3_0, activeBullet === 0, "#34d399");
-      drawBoardBullet(ctx, bX + 18, bY + 120, "✅", "", b3_1, activeBullet === 1, "#6ee7b7");
-      drawBoardBullet(ctx, bX + 18, bY + 164, "✅", "", b3_2, activeBullet === 2, "#6ee7b7");
+        drawBoardBullet(ctx, bX + 18, bY + 76, "✅", "", b3_0, activeBullet === 0, "#34d399");
+        drawBoardBullet(ctx, bX + 18, bY + 120, "✅", "", b3_1, activeBullet === 1, "#6ee7b7");
+        drawBoardBullet(ctx, bX + 18, bY + 164, "✅", "", b3_2, activeBullet === 2, "#6ee7b7");
 
-      // Holographic Shield Deflecting Threats
-      drawHolographicShield(ctx, bX + bW - 68, bY + 130, sec);
-      drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, true);
+        // Holographic Shield Deflecting Threats
+        drawHolographicShield(ctx, bX + bW - 68, bY + 130, sec);
+        drawCartoonScammer(ctx, bX + bW - 65, bY + 30, sec, true);
 
-    } else {
-      if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (0:23)";
+      } else {
+        if (chapterEl) chapterEl.textContent = s ? s.title : "4. Legal & Regulatory Recourse (0:23)";
 
-      // Legal Framework Banner
-      ctx.fillStyle = "#1e3a8a"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
-      ctx.fillStyle = "#eff6ff"; ctx.font = "bold 11px sans-serif";
-      ctx.fillText("⚖️ STATUTORY RIGHTS & HELPLINE 1930", bX + 24, bY + 50);
+        // Legal Framework Banner
+        ctx.fillStyle = "#1e3a8a"; ctx.fillRect(bX + 14, bY + 34, bW - 28, 24);
+        ctx.fillStyle = "#eff6ff"; ctx.font = "bold 11px sans-serif";
+        ctx.fillText("⚖️ STATUTORY RIGHTS & HELPLINE 1930", bX + 24, bY + 50);
 
-      var b4_0 = "LAW: " + (s ? s.badge : "IT Act & DPDP Protections");
-      var b4_1 = "RBI RULE: Zero Liability if reported within 3 days";
-      var b4_2 = "HELPLINE: Dial 1930 (National Cybercrime Portal 24x7)";
+        var b4_0 = "LAW: " + (s ? s.badge : "IT Act & DPDP Protections");
+        var b4_1 = "RBI RULE: Zero Liability if reported within 3 days";
+        var b4_2 = "HELPLINE: Dial 1930 (National Cybercrime Portal 24x7)";
 
-      drawBoardBullet(ctx, bX + 18, bY + 76, "🏛️", "", b4_0, activeBullet === 0, "#60a5fa");
-      drawBoardBullet(ctx, bX + 18, bY + 120, "📜", "", b4_1, activeBullet === 1, "#93c5fd");
-      drawBoardBullet(ctx, bX + 18, bY + 164, "📞", "", b4_2, activeBullet === 2, "#facc15");
+        drawBoardBullet(ctx, bX + 18, bY + 76, "🏛️", "", b4_0, activeBullet === 0, "#60a5fa");
+        drawBoardBullet(ctx, bX + 18, bY + 120, "📜", "", b4_1, activeBullet === 1, "#93c5fd");
+        drawBoardBullet(ctx, bX + 18, bY + 164, "📞", "", b4_2, activeBullet === 2, "#facc15");
 
-      // Golden Regulatory Seal
-      drawStatutorySeal(ctx, bX + bW - 68, bY + 130);
-    }
+        // Golden Regulatory Seal
+        drawStatutorySeal(ctx, bX + bW - 68, bY + 130);
+      }
 
-    // 5. Cartoon Teacher Character (Prof. Alex or Prof. Maya)
-    drawCartoonTeacher(ctx, 115, 140, sec, activeIdx, isPlaying && !isMuted, pointerTargetX, pointerTargetY);
+      // 5. Cartoon Teacher Character (Prof. Alex or Prof. Maya)
+      drawCartoonTeacher(ctx, 115, 140, sec, activeIdx, isPlaying && !isMuted, pointerTargetX, pointerTargetY);
 
-    // 6. Cartoon Student Characters in the Front Row
-    drawCartoonStudents(ctx, 660, 205, sec, activeIdx === 2);
+      // 6. Cartoon Student Characters in the Front Row
+      drawCartoonStudents(ctx, 660, 205, sec, activeIdx === 2);
 
-    // 7. Dynamic Laser Pointer Line from Teacher to Board
-    drawTeacherLaser(ctx, 155, 195, pointerTargetX, pointerTargetY + 12, sec);
+      // 7. Dynamic Laser Pointer Line from Teacher to Board
+      drawTeacherLaser(ctx, 155, 195, pointerTargetX, pointerTargetY + 12, sec);
 
-    // 8. Bottom Subtitle & Speech Banner
-    ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
-    ctx.fillRect(0, h - 54, w, 54);
-    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, h - 54); ctx.lineTo(w, h - 54); ctx.stroke();
+      // 8. Bottom Subtitle & Speech Banner
+      ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+      ctx.fillRect(0, h - 54, w, 54);
+      ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, h - 54); ctx.lineTo(w, h - 54); ctx.stroke();
 
-    // Teacher Avatar Pill
-    ctx.fillStyle = "#1e293b";
-    ctx.beginPath(); ctx.roundRect(14, h - 42, 128, 30, 15); ctx.fill();
-    ctx.strokeStyle = selectedTeacher === 'maya' ? "#ec4899" : "#38bdf8"; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px sans-serif";
-    ctx.fillText(selectedTeacher === 'maya' ? "👩‍🏫 Prof. Maya" : "👨‍🏫 Prof. Alex", 28, h - 23);
+      // Teacher Avatar Pill
+      ctx.fillStyle = "#1e293b";
+      ctx.strokeStyle = selectedTeacher === 'maya' ? "#ec4899" : "#38bdf8"; ctx.lineWidth = 1.5;
+      drawRoundedRect(ctx, 14, h - 42, 128, 30, 15, true, true);
+      ctx.fillStyle = "#ffffff"; ctx.font = "bold 11px sans-serif";
+      ctx.fillText(selectedTeacher === 'maya' ? "👩‍🏫 Prof. Maya" : "👨‍🏫 Prof. Alex", 28, h - 23);
 
-    // Subtitle Text
-    ctx.fillStyle = "#f8fafc"; ctx.font = "13px -apple-system, sans-serif";
-    var activeSub = (s && (s.teacher_script || s.narration)) ? (s.teacher_script || s.narration) : "Mastering cybersecurity defenses...";
-    var clippedSub = activeSub.length > 88 ? (activeSub.substring(0, 85) + "...") : activeSub;
-    ctx.fillText(clippedSub, 156, h - 23);
+      // Subtitle Text
+      ctx.fillStyle = "#f8fafc"; ctx.font = "13px -apple-system, sans-serif";
+      var activeSub = (s && (s.teacher_script || s.narration)) ? (s.teacher_script || s.narration) : "Mastering cybersecurity defenses...";
+      var clippedSub = activeSub.length > 88 ? (activeSub.substring(0, 85) + "...") : activeSub;
+      ctx.fillText(clippedSub, 156, h - 23);
 
-    // Update Scrubber & Timer UI
-    var scrubber = document.getElementById('videoScrubber');
-    if (scrubber) scrubber.value = sec;
+      // Update Scrubber & Timer UI
+      var scrubber = document.getElementById('videoScrubber');
+      if (scrubber) scrubber.value = sec;
 
-    var curSec = Math.floor(sec);
-    var timerEl = document.getElementById('video-timer');
-    if (timerEl) timerEl.textContent = "0:" + (curSec < 10 ? "0" : "") + curSec + " / 0:30";
+      var curSec = Math.floor(sec);
+      var timerEl = document.getElementById('video-timer');
+      if (timerEl) timerEl.textContent = "0:" + (curSec < 10 ? "0" : "") + curSec + " / 0:30";
 
-    // Synchronize Live Transcript in Right Pane
-    var narEl = document.getElementById('dyn-task1-narration');
-    if (narEl && s && (s.teacher_script || s.narration)) {
-      narEl.textContent = s.teacher_script || s.narration;
+      // Synchronize Live Transcript in Right Pane
+      var narEl = document.getElementById('dyn-task1-narration');
+      if (narEl && s && (s.teacher_script || s.narration)) {
+        narEl.textContent = s.teacher_script || s.narration;
+      }
+    } catch (simErr) {
+      console.warn("drawSim warning:", simErr);
     }
   }
 
@@ -1264,8 +1315,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     color = color || "#e2e8f0";
     if (isActive) {
       ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
-      ctx.beginPath(); ctx.roundRect(x - 4, y - 14, 340, 36, 4); ctx.fill();
-      ctx.strokeStyle = "rgba(56, 189, 248, 0.4)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.4)"; ctx.lineWidth = 1;
+      drawRoundedRect(ctx, x - 4, y - 14, 340, 36, 4, true, true);
     }
     ctx.fillStyle = "#facc15"; ctx.font = "13px sans-serif";
     ctx.fillText(icon, x, y + 8);
@@ -1285,8 +1336,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
     // Body / Suit Jacket
     ctx.fillStyle = isMaya ? "#0f766e" : "#1e3a8a"; // Teal or Navy
-    ctx.beginPath(); ctx.roundRect(x - 22, cy + 62, 44, 76, 8); ctx.fill();
-    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1.5;
+    drawRoundedRect(ctx, x - 22, cy + 62, 44, 76, 8, true, true);
 
     // White Shirt Collar
     ctx.fillStyle = "#ffffff";
@@ -1382,7 +1433,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     // Desk 1 (Sam in Orange Hoodie)
     var s1Bob = Math.sin(sec * 2.8) * 1.5;
     ctx.fillStyle = "#ea580c"; // Orange hoodie
-    ctx.beginPath(); ctx.roundRect(x, y + 42 + s1Bob, 36, 44, 6); ctx.fill();
+    drawRoundedRect(ctx, x, y + 42 + s1Bob, 36, 44, 6, true, false);
     // Head
     ctx.fillStyle = "#fed7aa";
     ctx.beginPath(); ctx.arc(x + 18, y + 26 + s1Bob, 14, 0, Math.PI * 2); ctx.fill();
@@ -1411,7 +1462,7 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
     var pX = x + 62;
     var s2Bob = Math.cos(sec * 2.4) * 1.5;
     ctx.fillStyle = "#0d9488"; // Teal shirt
-    ctx.beginPath(); ctx.roundRect(pX, y + 44 + s2Bob, 34, 42, 6); ctx.fill();
+    drawRoundedRect(ctx, pX, y + 44 + s2Bob, 34, 42, 6, true, false);
     // Head
     ctx.fillStyle = "#fcd34d";
     ctx.beginPath(); ctx.arc(pX + 17, y + 27 + s2Bob, 13, 0, Math.PI * 2); ctx.fill();
@@ -1490,9 +1541,20 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
   // =========================================================================
   function startPlayback() {
     isPlaying = true;
-    document.getElementById('playBtn').textContent = '⏸ Pause';
+    var pBtn = document.getElementById('playBtn');
+    if (pBtn) pBtn.textContent = '⏸ Pause';
     playClassroomAudio('start');
+
+    // Speak segment 0 immediately if starting from beginning
+    if (lastSpokenSegment === -1) {
+      lastSpokenSegment = 0;
+      var initSegs = getSegments(currentLang);
+      if (initSegs && initSegs[0]) {
+        playNarrationSegment(initSegs[0].text);
+      }
+    }
     
+    if (playbackTimer) clearInterval(playbackTimer);
     playbackTimer = setInterval(function () {
       currentVideoSecond += 0.25;
 
@@ -1517,7 +1579,8 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
       if (currentVideoSecond >= totalDuration) {
         pausePlayback();
         playClassroomAudio('win');
-        document.getElementById('playBtn').textContent = '▶ Replay Lesson';
+        var b = document.getElementById('playBtn');
+        if (b) b.textContent = '▶ Replay Lesson';
         currentVideoSecond = 30;
         drawSim(30);
       }
@@ -1526,35 +1589,68 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
   function pausePlayback() {
     isPlaying = false;
-    document.getElementById('playBtn').textContent = '▶ Play Lesson';
-    if (playbackTimer) clearInterval(playbackTimer);
+    var pBtn = document.getElementById('playBtn');
+    if (pBtn) pBtn.textContent = '▶ Play Lesson';
+    if (playbackTimer) {
+      clearInterval(playbackTimer);
+      playbackTimer = null;
+    }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   }
 
-  document.getElementById('playBtn').addEventListener('click', function () {
-    if (isPlaying) {
-      pausePlayback();
-    } else {
-      if (currentVideoSecond >= totalDuration) {
-        currentVideoSecond = 0;
-        lastSpokenSegment = -1;
+  var playBtnEl = document.getElementById('playBtn');
+  if (playBtnEl) {
+    playBtnEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        if (currentVideoSecond >= totalDuration) {
+          currentVideoSecond = 0;
+          lastSpokenSegment = -1;
+        }
+        startPlayback();
       }
-      startPlayback();
-    }
-  });
+    });
+  }
 
-  document.getElementById('restartBtn').addEventListener('click', function () {
-    pausePlayback();
-    currentVideoSecond = 0;
-    lastSpokenSegment = -1;
-    drawSim(0);
-  });
+  var screenAreaEl = document.getElementById('videoScreenArea');
+  if (screenAreaEl) {
+    screenAreaEl.addEventListener('click', function (e) {
+      if (e.target && e.target.closest('#playBtn, #restartBtn, #muteBtn, #cycleSpeedBtn, #videoScrubber')) {
+        return;
+      }
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        if (currentVideoSecond >= totalDuration) {
+          currentVideoSecond = 0;
+          lastSpokenSegment = -1;
+        }
+        startPlayback();
+      }
+    });
+  }
 
-  document.getElementById('videoScrubber').addEventListener('input', function () {
-    currentVideoSecond = parseFloat(this.value);
-    lastSpokenSegment = -1;
-    drawSim(currentVideoSecond);
-  });
+  var restartBtnEl = document.getElementById('restartBtn');
+  if (restartBtnEl) {
+    restartBtnEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      pausePlayback();
+      currentVideoSecond = 0;
+      lastSpokenSegment = -1;
+      drawSim(0);
+    });
+  }
+
+  var scrubberEl = document.getElementById('videoScrubber');
+  if (scrubberEl) {
+    scrubberEl.addEventListener('input', function () {
+      currentVideoSecond = parseFloat(this.value);
+      lastSpokenSegment = -1;
+      drawSim(currentVideoSecond);
+    });
+  }
 
   window.seekToSecond = function (sec) {
     currentVideoSecond = sec;
@@ -1564,15 +1660,6 @@ Attachment: Invoice_URGENT_MARCH.pdf.exe
 
   window.toggleMute = function () {
     isMuted = !isMuted;
-    var btn = document.getElementById('muteBtn');
-    if (btn) {
-      btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound On';
-      btn.className = isMuted ? 'btn btn-outline-danger btn-sm px-2' : 'btn btn-outline-light btn-sm px-2';
-    }
-    if (isMuted && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-  };
     var btn = document.getElementById('muteBtn');
     if (btn) {
       btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound On';
