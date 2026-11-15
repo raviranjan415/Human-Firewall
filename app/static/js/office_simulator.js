@@ -1,12 +1,12 @@
 /**
  * Human Firewall — Corporate Office & Cybersecurity Career Simulator Engine
  * 
- * Features:
+ * Supports both standalone flagship mode and dynamic scenario execution across all 35 games:
  * - 3D Corporate Office Environment (Reception, Open Floor, Manager's Office, Server Room, SOC)
  * - Spatial Audio Synthesizer (Zero external audio files required)
  * - Proximity detection and interactive workstations
  * - In-Game CyberWork OS Desktop:
- *   - CyberMail (Email Client with MIME headers, link inspector, quarantine)
+ *   - CyberMail (Email Client with dynamic MIME headers, link inspector, quarantine)
  *   - DeskFlow (IT Helpdesk with Identity Verification & Pretexting checks)
  *   - CyberSIEM (Real-time telemetry, host network isolation, IP blocking)
  *   - Incident Desk (Report builder & investigation dossier)
@@ -156,13 +156,35 @@
     this.isDesktopOpen = false;
     this.activeApp = "mail"; // 'mail' | 'helpdesk' | 'siem' | 'report' | 'chat'
 
-    // Task & Progress Tracker
-    this.tasks = [
-      { id: "task1", title: "Investigate Suspicious HR Payroll Email", completed: false, score: 0, points: 25 },
-      { id: "task2", title: "Triage Urgent Executive Password Reset Request", completed: false, score: 0, points: 25 },
-      { id: "task3", title: "Contain EDR Beaconing Alert in SIEM", completed: false, score: 0, points: 25 },
-      { id: "task4", title: "Compile & Submit Investigation Report", completed: false, score: 0, points: 25 }
-    ];
+    // Scenarios from game or default fallback
+    this.scenarios = config.scenarios || [];
+    this.gameTitle = config.gameTitle || "Corporate Cybersecurity Mission";
+    this.debriefText = config.debriefText || "Rigorous verification and multi-factor defense protect the human firewall.";
+
+    // Build tasks from scenarios or default 4 tasks
+    this.tasks = [];
+    if (this.scenarios && this.scenarios.length > 0) {
+      var pts = Math.max(10, Math.floor(100 / this.scenarios.length));
+      for (var sIdx = 0; sIdx < this.scenarios.length; sIdx++) {
+        var sc = this.scenarios[sIdx];
+        this.tasks.push({
+          id: "task" + (sIdx + 1),
+          scenarioId: sc.id,
+          title: sc.subject || (sc.sender ? "Investigate: " + sc.sender : "Incident Inspection #" + (sIdx + 1)),
+          completed: false,
+          score: 0,
+          points: pts,
+          scenario: sc
+        });
+      }
+    } else {
+      this.tasks = [
+        { id: "task1", title: "Investigate Suspicious HR Payroll Email", completed: false, score: 0, points: 25 },
+        { id: "task2", title: "Triage Urgent Executive Password Reset Request", completed: false, score: 0, points: 25 },
+        { id: "task3", title: "Contain EDR Beaconing Alert in SIEM", completed: false, score: 0, points: 25 },
+        { id: "task4", title: "Compile & Submit Investigation Report", completed: false, score: 0, points: 25 }
+      ];
+    }
 
     this.timeRemaining = 600; // 10 minutes
     this.shiftStartTime = Date.now();
@@ -248,13 +270,11 @@
       return;
     }
 
-    // Set viewport resolution
     var rect = this.canvas.getBoundingClientRect();
     this.canvas.width = rect.width * (window.devicePixelRatio || 1);
     this.canvas.height = rect.height * (window.devicePixelRatio || 1);
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-    // Simple robust shaders for 3D corporate office geometry
     var vsSource = [
       "attribute vec3 aPosition;",
       "attribute vec3 aColor;",
@@ -301,7 +321,6 @@
   };
 
   CorporateOfficeSimulator.prototype.buildOfficeGeometry = function (gl) {
-    // Vertices: [x, y, z, r, g, b]
     var vertices = [];
 
     function addQuad(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, r, g, b) {
@@ -315,39 +334,29 @@
       );
     }
 
-    // 1. Corporate Office Floor (Warm polished slate with grid)
+    // 1. Corporate Office Floor
     addQuad(-9, 0, -9,  9, 0, -9,  9, 0, 9, -9, 0, 9, 0.12, 0.16, 0.22);
-
-    // 2. Back Corporate Wall (Navy accent with glass accent)
+    // 2. Back Corporate Wall
     addQuad(-9, 0, -9,  9, 0, -9,  9, 4.5, -9, -9, 4.5, -9, 0.08, 0.11, 0.16);
-
     // 3. Side Walls
     addQuad(-9, 0, -9, -9, 0, 9, -9, 4.5, 9, -9, 4.5, -9, 0.10, 0.14, 0.20);
     addQuad( 9, 0, -9,  9, 0, 9,  9, 4.5, 9,  9, 4.5, -9, 0.10, 0.14, 0.20);
-
-    // 4. Glass Partition for Manager's Office (Cyan translucent tint)
+    // 4. Glass Partition for Manager's Office
     addQuad(2.5, 0, -8.5, 2.5, 0, -2, 2.5, 3.5, -2, 2.5, 3.5, -8.5, 0.15, 0.35, 0.50);
-
-    // 5. Server Room Partition (Dark obsidian with red indicator bar)
+    // 5. Server Room Partition
     addQuad(-2.5, 0, -8.5, -2.5, 0, -2, -2.5, 3.5, -2, -2.5, 3.5, -8.5, 0.09, 0.10, 0.14);
-
-    // 6. Player Workstation Desk #1 (Main Pod center)
+    // 6. Player Workstation Desk #1
     addQuad(-1.5, 0.8, 1.5, 1.5, 0.8, 1.5, 1.5, 0.8, 3.0, -1.5, 0.8, 3.0, 0.25, 0.32, 0.42);
-    // Desk Monitors
     addQuad(-1.0, 0.9, 1.8, -0.1, 0.9, 1.8, -0.1, 1.6, 1.8, -1.0, 1.6, 1.8, 0.05, 0.65, 0.95);
     addQuad( 0.1, 0.9, 1.8,  1.0, 0.9, 1.8,  1.0, 1.6, 1.8,  0.1, 1.6, 1.8, 0.10, 0.85, 0.45);
-
-    // 7. Manager's Desk (Right Wing)
+    // 7. Manager's Desk
     addQuad(3.5, 0.8, -4.5, 6.5, 0.8, -4.5, 6.5, 0.8, -3.0, 3.5, 0.8, -3.0, 0.35, 0.22, 0.18);
-
-    // 8. Server Racks (Left Wing)
+    // 8. Server Racks
     addQuad(-6.5, 0, -5.5, -4.5, 0, -5.5, -4.5, 3.2, -5.5, -6.5, 3.2, -5.5, 0.05, 0.08, 0.12);
-    // Server Rack LED strips
     addQuad(-6.4, 0.5, -5.48, -4.6, 0.5, -5.48, -4.6, 0.6, -5.48, -6.4, 0.6, -5.48, 0.2, 0.9, 0.3);
     addQuad(-6.4, 1.5, -5.48, -4.6, 1.5, -5.48, -4.6, 1.6, -5.48, -6.4, 1.6, -5.48, 0.9, 0.2, 0.2);
     addQuad(-6.4, 2.5, -5.48, -4.6, 2.5, -5.48, -4.6, 2.6, -5.48, -6.4, 2.6, -5.48, 0.2, 0.7, 1.0);
-
-    // 9. SOC Video Wall (Central Back Display)
+    // 9. SOC Video Wall
     addQuad(-2.0, 1.5, -8.8, 2.0, 1.5, -8.8, 2.0, 3.8, -8.8, -2.0, 3.8, -8.8, 0.05, 0.45, 0.85);
 
     this.vertexCount = vertices.length / 6;
@@ -373,7 +382,6 @@
       self.keys[e.key.toLowerCase()] = false;
     });
 
-    // Touch / Virtual button controls
     var btnSit = document.getElementById("btnVirtualSit");
     if (btnSit) {
       btnSit.addEventListener("click", function () {
@@ -407,7 +415,7 @@
     if (hudEl) {
       hudEl.style.display = this.isDesktopOpen ? "none" : "block";
     }
-    this.playSound(this.isDesktopOpen ? "click" : "click");
+    this.playSound("click");
   };
 
   CorporateOfficeSimulator.prototype.startShiftTimer = function () {
@@ -444,11 +452,9 @@
       this.playerX += speed;
     }
 
-    // Clamp inside office boundaries (-7 to 7)
     this.playerX = Math.max(-7.5, Math.min(7.5, this.playerX));
     this.playerZ = Math.max(-7.5, Math.min(7.5, this.playerZ));
 
-    // Proximity detection
     var nearest = null;
     var minD = 999;
     for (var i = 0; i < this.hotspots.length; i++) {
@@ -496,7 +502,6 @@
     Mat4.perspective(pMatrix, 45 * Math.PI / 180, aspect, 0.1, 100.0);
 
     var vMatrix = Mat4.create();
-    // Camera follows player smoothly from an elevated isometric/third-person vantage
     var camX = this.playerX * 0.4;
     var camY = 6.8;
     var camZ = this.playerZ + 6.2;
@@ -518,7 +523,6 @@
 
     gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 
-    // Draw dynamic Player Avatar Token in 3D
     this.renderPlayerAvatar(gl, pMatrix, vMatrix);
   };
 
@@ -526,9 +530,6 @@
     var m = Mat4.create();
     Mat4.translate(m, m, [this.playerX, 0.45, this.playerZ]);
     gl.uniformMatrix4fv(this.uModel, false, m);
-
-    // Dynamic player marker
-    // Uses first quad slice as avatar billboard
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
 
@@ -540,29 +541,26 @@
     ctx.fillStyle = "#0a0f1d";
     ctx.fillRect(0, 0, w, h);
 
-    // Top-down isometric office blueprint
     ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
     ctx.lineWidth = 2;
     ctx.strokeRect(40, 40, w - 80, h - 80);
 
-    // Draw zones
     ctx.fillStyle = "rgba(14, 165, 233, 0.15)";
-    ctx.fillRect(w * 0.35, h * 0.5, w * 0.3, h * 0.3); // Workstation Pod
+    ctx.fillRect(w * 0.35, h * 0.5, w * 0.3, h * 0.3);
     ctx.fillStyle = "#38bdf8";
     ctx.font = "bold 12px monospace";
     ctx.fillText("💻 WORKSTATION POD #1", w * 0.38, h * 0.65);
 
     ctx.fillStyle = "rgba(239, 68, 68, 0.15)";
-    ctx.fillRect(60, 60, w * 0.25, h * 0.35); // Server Room
+    ctx.fillRect(60, 60, w * 0.25, h * 0.35);
     ctx.fillStyle = "#ef4444";
     ctx.fillText("🚨 SERVER ROOM A1", 70, 90);
 
     ctx.fillStyle = "rgba(16, 185, 129, 0.15)";
-    ctx.fillRect(w * 0.68, 60, w * 0.25, h * 0.35); // Manager Office
+    ctx.fillRect(w * 0.68, 60, w * 0.25, h * 0.35);
     ctx.fillStyle = "#10b981";
     ctx.fillText("👔 CISO MARCUS VANCE", w * 0.70, 90);
 
-    // Player position
     var px = w * 0.5 + (this.playerX / 8) * (w * 0.4);
     var pz = h * 0.5 + (this.playerZ / 8) * (h * 0.4);
 
@@ -597,11 +595,31 @@
       });
     }
 
-    // Email client interactivity
+    // Render dynamic task board if container exists
+    this.renderTaskBoard();
+
+    // Initialize applications
     this.initMailClient();
     this.initHelpdeskClient();
     this.initSiemClient();
     this.initIncidentReport();
+  };
+
+  CorporateOfficeSimulator.prototype.renderTaskBoard = function () {
+    var container = document.getElementById("simTaskListContainer");
+    if (!container) return;
+
+    container.innerHTML = "";
+    for (var i = 0; i < this.tasks.length; i++) {
+      var t = this.tasks[i];
+      var div = document.createElement("div");
+      div.className = "list-group-item bg-transparent text-light border-secondary p-2";
+      div.id = "simTaskRow_" + t.id;
+      div.innerHTML =
+        '<div class="small fw-semibold">' + (i + 1) + '. ' + t.title + '</div>' +
+        '<span class="badge bg-secondary mt-1">Pending (' + t.points + ' XP)</span>';
+      container.appendChild(div);
+    }
   };
 
   CorporateOfficeSimulator.prototype.switchApp = function (appName) {
@@ -657,13 +675,34 @@
     var btnQuarantine = document.getElementById("btnQuarantinePhish");
     if (btnQuarantine) {
       btnQuarantine.addEventListener("click", function () {
-        self.completeTask("task1", 25, "Threat Quarantined! Phishing payroll email isolated before credential exposure.");
+        self.completeTask("task1", 25, "Threat Quarantined! Phishing communication isolated before credential exposure.");
         this.disabled = true;
         this.innerHTML = "✓ Quarantined & Blocked";
         this.className = "btn btn-sm btn-success";
         self.playSound("success");
       });
     }
+
+    // Dynamic Scenario Choices (if current scenario has multiple choices)
+    var choiceBtns = document.querySelectorAll(".sim-dynamic-choice-btn");
+    choiceBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var isCorrect = this.getAttribute("data-correct") === "true";
+        var feedback = this.getAttribute("data-feedback") || (isCorrect ? "Correct assessment!" : "Dangerous choice!");
+        var taskId = this.getAttribute("data-task-id") || "task1";
+
+        if (isCorrect) {
+          self.completeTask(taskId, 25, "✓ " + feedback);
+          self.playSound("success");
+          this.classList.remove("btn-outline-info", "btn-outline-secondary");
+          this.classList.add("btn-success");
+        } else {
+          self.mistakesCount++;
+          self.playSound("alert");
+          alert("SECURITY WARNING: " + feedback);
+        }
+      });
+    });
   };
 
   // APP 2: DeskFlow IT Helpdesk
@@ -688,7 +727,7 @@
       btnApproveBad.addEventListener("click", function () {
         self.mistakesCount++;
         self.playSound("alert");
-        alert("SECURITY BREACH! You texted a temporary password to an unverified mobile number! The attacker compromised the VP of Finance account!");
+        alert("SECURITY BREACH! You texted a temporary password to an unverified mobile number! The attacker compromised the executive account!");
       });
     }
   };
@@ -700,9 +739,9 @@
     var btnIsolate = document.getElementById("btnIsolateHost");
     if (btnIsolate) {
       btnIsolate.addEventListener("click", function () {
-        self.completeTask("task3", 25, "Host WS-FIN-08 Isolated! Command-and-control beacon terminated at perimeter.");
+        self.completeTask("task3", 25, "Host Isolated! Command-and-control beacon terminated at perimeter.");
         this.disabled = true;
-        this.innerHTML = "🔒 Host WS-FIN-08 ISOLATED";
+        this.innerHTML = "🔒 Host ISOLATED from LAN";
         this.className = "btn btn-sm btn-success";
         self.playSound("success");
       });
@@ -717,7 +756,7 @@
     if (reportForm) {
       reportForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        self.completeTask("task4", 25, "Formal Incident Report #IR-2026-042 Submitted & Approved by CISO Marcus Vance.");
+        self.completeTask("task4", 25, "Formal Incident Report Submitted & Approved by CISO Marcus Vance.");
         self.playSound("success");
         self.showEndOfDayReview();
       });
@@ -736,11 +775,10 @@
           var badge = row.querySelector(".badge");
           if (badge) {
             badge.className = "badge bg-success";
-            badge.textContent = "✓ COMPLETED (+25 XP)";
+            badge.textContent = "✓ COMPLETED (+" + points + " XP)";
           }
         }
 
-        // Show toast notification
         var toast = document.getElementById("simNotificationToast");
         var toastBody = document.getElementById("simNotificationBody");
         if (toast && toastBody) {
@@ -752,6 +790,15 @@
       }
     }
     this.updateReadinessMeter();
+
+    // Check if all tasks complete
+    var allDone = this.tasks.every(function (t) { return t.completed; });
+    if (allDone) {
+      var self = this;
+      setTimeout(function () {
+        self.showEndOfDayReview();
+      }, 1000);
+    }
   };
 
   CorporateOfficeSimulator.prototype.updateReadinessMeter = function () {
@@ -773,15 +820,20 @@
 
     var modal = document.getElementById("simEndOfDayModal");
     if (modal) {
-      document.getElementById("simReviewTasks").textContent = completed + " / " + this.tasks.length;
-      document.getElementById("simReviewTime").textContent = durationStr;
-      document.getElementById("simReviewMistakes").textContent = this.mistakesCount;
-      document.getElementById("simReviewXP").textContent = "+" + totalPoints + " XP";
+      var tasksEl = document.getElementById("simReviewTasks");
+      var timeEl = document.getElementById("simReviewTime");
+      var mistakesEl = document.getElementById("simReviewMistakes");
+      var xpEl = document.getElementById("simReviewXP");
+
+      if (tasksEl) tasksEl.textContent = completed + " / " + this.tasks.length;
+      if (timeEl) timeEl.textContent = durationStr;
+      if (mistakesEl) mistakesEl.textContent = this.mistakesCount;
+      if (xpEl) xpEl.textContent = "+" + totalPoints + " XP";
+
       modal.style.display = "flex";
       this.playSound("success");
     }
 
-    // Submit completion to backend API
     this.submitBackendCompletion(totalPoints, timeSpent);
   };
 
@@ -801,7 +853,6 @@
     })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        console.log("Shift completed and persisted:", data);
         var alertEl = document.getElementById("simReviewApiFeedback");
         if (alertEl && data.ok) {
           alertEl.style.display = "block";

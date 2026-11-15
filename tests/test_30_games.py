@@ -142,3 +142,38 @@ def test_games_hub_view(client, learner, app):
     assert b"Interactive Awareness Arena" in res.data
     assert b"Phishing Detective" in res.data
     assert b"Ultimate Human Firewall" in res.data
+
+
+def test_executive_honeytrap_games_and_dual_engine_rendering(client, learner, app):
+    """Verify that both CEO/Executive honeytrap games exist and render with dual 3D/2D engines."""
+    with app.app_context():
+        from app.services.seed import ensure_games
+
+        ensure_games()
+
+        whaling_game = Game.query.filter_by(slug="c-suite-honeytrap-whaling").first()
+        assert whaling_game is not None
+        assert len(whaling_game.scenarios) >= 3
+
+        wire_game = Game.query.filter_by(slug="boardroom-wire-fraud-honeytrap").first()
+        assert wire_game is not None
+        assert len(wire_game.scenarios) >= 3
+
+    login(client, "learner1", LEARNER_PASSWORD)
+
+    # Verify C-Suite Whaling page renders dual simulator modes
+    res_whaling = client.get("/games/c-suite-honeytrap-whaling")
+    assert res_whaling.status_code == 200
+    assert b"3D Cyber Simulator" in res_whaling.data
+    assert b"2D Field Patrol" in res_whaling.data
+    assert b"officeCanvas3D" in res_whaling.data
+    assert b"gameCanvas2D" in res_whaling.data
+
+    # Verify Boardroom Wire Fraud page renders dual simulator modes
+    res_wire = client.get("/games/boardroom-wire-fraud-honeytrap")
+    assert res_wire.status_code == 200
+    assert b"3D Cyber Simulator" in res_wire.data
+    assert b"2D Field Patrol" in res_wire.data
+    assert b"officeCanvas3D" in res_wire.data
+    assert b"gameCanvas2D" in res_wire.data
+
