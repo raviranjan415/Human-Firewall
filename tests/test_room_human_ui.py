@@ -20,15 +20,21 @@ def test_room_human_ui_and_regulations(app, client, learner):
     html = response.get_data(as_text=True)
 
     # 1. Human Step Navigation with Merged Practical Lab
-    assert "80s Video Lecture" in html or "30s Synced Video" in html
+    assert (
+        "Study Video" in html
+        or "80s Video Lecture" in html
+        or "30s Synced Video" in html
+    )
     assert "Incident Chat" in html
     assert "Practical Lab" in html
     assert (
-        "Study &amp; Laws" in html
+        "Theory &amp; Study Room" in html
+        or "Theory & Study Room" in html
+        or "Study &amp; Laws" in html
         or "Study & Laws" in html
         or "Deep Study &amp; Laws" in html
     )
-    assert "3 MCQs Quiz" in html
+    assert "Scenario Quiz" in html or "3 MCQs Quiz" in html
 
     # 2. Reading Material & Government Regulations
     assert "IT Act" in html or "66D" in html
@@ -41,7 +47,11 @@ def test_room_human_ui_and_regulations(app, client, learner):
     assert "9002" in html
 
     # 4. Synced Video Player tokens
-    assert "80-Second Synced Video" in html or "30-Second Synced Video" in html
+    assert (
+        "Interactive Study Video" in html
+        or "80-Second Synced Video" in html
+        or "30-Second Synced Video" in html
+    )
     assert "1:20" in html or "0:30" in html
 
 
@@ -105,11 +115,19 @@ def test_curated_lessons_integrity(app):
             assert len(lab.get("options", [])) >= 3
             assert any(opt.get("is_correct") for opt in lab.get("options", []))
 
-            # 4. Reading Material: 4 Red Flags & 4 Laws
+            # 4. Reading Material: 4 Red Flags, 4 Laws, and TryHackMe Compact Modules
             reading = data.get("reading", {})
             assert "overview" in reading
             assert len(reading.get("red_flags", [])) == 4
             assert len(reading.get("regulations", [])) == 4
+            assert "objectives" in reading and len(reading["objectives"]) == 3
+            assert "concept_explanation" in reading
+            assert "real_world_scenario" in reading
+            assert "technical_breakdown" in reading
+            assert "practical_investigation" in reading
+            assert "analyst_notes" in reading
+            assert "common_mistakes" in reading and len(reading["common_mistakes"]) == 3
+            assert "knowledge_check" in reading and len(reading["knowledge_check"]) == 3
 
             # 5. 3 Scenario MCQs with coaching explanations
             questions = data.get("questions", [])
