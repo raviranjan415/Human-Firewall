@@ -40,7 +40,7 @@
                 {{ row.rank }}{% if row.rank <= 3 %} <span aria-hidden="true">★</span>{% endif %}
               </td>
               <td>
-                <a href="{{ url_for('analytics.user_report', user_id=row.user_id) }}" class="text-light fw-bold text-decoration-none" title="View Learner Report">
+                <a href="{{ url_for('analytics.user_report', user_id=row.user_id) }}" class="fw-bold text-decoration-none text-dark" style="color: #0f172a !important;" title="View Learner Report">
                   {{ row.name }}
                 </a>
                 {% if row.user_id == current_user.id %}<span class="cq-badge cq-badge-cyan ms-1">You</span>{% endif %}

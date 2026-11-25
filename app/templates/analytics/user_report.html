@@ -32,7 +32,7 @@
           {{ (target_user.name or target_user.username)[:2]|upper }}
         </div>
         <div>
-          <h2 class="h5 mb-0 text-white fw-bold">{{ target_user.name or target_user.username }}</h2>
+          <h2 class="h5 mb-0 text-dark fw-bold">{{ target_user.name or target_user.username }}</h2>
           <div class="cq-muted small">@{{ target_user.username }}</div>
           <span class="badge {% if target_user.role_name == 'admin' %}bg-danger{% elif target_user.role_name == 'instructor' %}bg-purple{% else %}bg-info text-dark{% endif %} mt-1">
             {{ target_user.role_name|capitalize }}
@@ -48,15 +48,15 @@
       <div class="border-top pt-3">
         <div class="mb-3">
           <span class="cq-muted small d-block">REGISTERED EMAIL:</span>
-          <strong class="text-light font-monospace">{{ target_user.email }}</strong>
+          <strong class="text-dark font-monospace">{{ target_user.email }}</strong>
         </div>
         <div class="mb-3">
           <span class="cq-muted small d-block">MEMBER JOIN DATE:</span>
-          <strong class="text-light">{{ target_user.created_at.strftime('%d %B %Y') if target_user.created_at else 'Foundation Cohort' }}</strong>
+          <strong class="text-dark">{{ target_user.created_at.strftime('%d %B %Y') if target_user.created_at else 'Foundation Cohort' }}</strong>
         </div>
         <div class="mb-3">
           <span class="cq-muted small d-block">LAST ACTIVITY LOGIN:</span>
-          <strong class="text-light">{{ target_user.last_login_at.strftime('%d %b %Y %H:%M') if target_user.last_login_at else 'Active Session' }}</strong>
+          <strong class="text-dark">{{ target_user.last_login_at.strftime('%d %b %Y %H:%M') if target_user.last_login_at else 'Active Session' }}</strong>
         </div>
         <div>
           <span class="cq-muted small d-block">DEFENSE CREDENTIAL STATUS:</span>
@@ -99,44 +99,44 @@
       </div>
 
       <!-- Domain Breakdown Progress Bars -->
-      <h3 class="h6 fw-bold text-light mb-3">Multi-Domain Attack Vector Readiness</h3>
+      <h3 class="h6 fw-bold text-dark mb-3">Multi-Domain Attack Vector Readiness</h3>
       
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">🎣 Phishing &amp; Social Engineering Defense</span>
+          <span class="text-dark">🎣 Phishing &amp; Social Engineering Defense</span>
           <span class="text-info fw-bold">{{ metrics.phishing_defense }}%</span>
         </div>
-        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+        <div class="progress" style="height: 8px; background: rgba(0,0,0,0.08);">
           <div class="progress-bar bg-info" style="width: {{ metrics.phishing_defense }}%;"></div>
         </div>
       </div>
 
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">☣️ Ransomware Containment &amp; Air-Gapped Backups</span>
+          <span class="text-dark">☣️ Ransomware Containment &amp; Air-Gapped Backups</span>
           <span class="text-success fw-bold">{{ metrics.ransomware_readiness }}%</span>
         </div>
-        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+        <div class="progress" style="height: 8px; background: rgba(0,0,0,0.08);">
           <div class="progress-bar bg-success" style="width: {{ metrics.ransomware_readiness }}%;"></div>
         </div>
       </div>
 
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">🚨 SOC Telemetry &amp; SIEM Log Triage</span>
+          <span class="text-dark">🚨 SOC Telemetry &amp; SIEM Log Triage</span>
           <span class="text-warning fw-bold">{{ metrics.soc_investigation }}%</span>
         </div>
-        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+        <div class="progress" style="height: 8px; background: rgba(0,0,0,0.08);">
           <div class="progress-bar bg-warning" style="width: {{ metrics.soc_investigation }}%;"></div>
         </div>
       </div>
 
       <div class="mb-0">
         <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">🔑 Identity Governance &amp; Zero-Trust MFA</span>
+          <span class="text-dark">🔑 Identity Governance &amp; Zero-Trust MFA</span>
           <span class="text-primary fw-bold">{{ metrics.iam_governance }}%</span>
         </div>
-        <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+        <div class="progress" style="height: 8px; background: rgba(0,0,0,0.08);">
           <div class="progress-bar bg-primary" style="width: {{ metrics.iam_governance }}%;"></div>
         </div>
       </div>
@@ -149,7 +149,7 @@
   <div class="col-12 col-lg-6">
     <div class="cq-card p-4 h-100">
       <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="h6 fw-bold text-light mb-0">Defense Readiness Radar Chart</h2>
+        <h2 class="h6 fw-bold text-dark mb-0">Defense Readiness Radar Chart</h2>
         <span class="badge bg-secondary small">Live Telemetry</span>
       </div>
       <div style="position: relative; height: 280px; width: 100%;">
@@ -161,7 +161,7 @@
   <div class="col-12 col-lg-6">
     <div class="cq-card p-4 h-100">
       <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="h6 fw-bold text-light mb-0">Verified Badges &amp; Medallions</h2>
+        <h2 class="h6 fw-bold text-dark mb-0">Verified Badges &amp; Medallions</h2>
         <span class="badge bg-warning text-dark small">{{ badges|length }} Earned</span>
       </div>
 
